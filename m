@@ -1,152 +1,162 @@
-Return-Path: <linux-ext4+bounces-12143-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12144-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4BAC9FD28
-	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 17:08:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFA0CA0E94
+	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 19:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6C0CD30071A5
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 16:08:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 872EF33E2651
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 17:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A6734FF58;
-	Wed,  3 Dec 2025 16:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA113148D8;
+	Wed,  3 Dec 2025 17:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dFfvKWWY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWDV3i9a"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A6E340D82
-	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 16:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE74241696
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 17:04:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764778094; cv=none; b=NSFZGGwhidBhFtBGZygHpeUNxUGKdUfr9IYN/1fcVHAkxGsG6f3DkKHKKVHukoELO4zeoeBYNr/H/esDsgIhcvMgzIHooMkYPAKH+gg3KzHVbERP7+WhswhfzkgnKfEWPXH/pmkqOmL9+mEaCbfTDeyEDbOuPD8T/1oD+SeHhBE=
+	t=1764781466; cv=none; b=urHaYWCPvOaUf9GKYkJGHsDP1U4mxr26peGut3GPkgh/9wvHeR6Ad4UpUGa6uVDHR7Vl96Xmh1SXuOMwkcKECzyWJPyR8OK8EPUnGfaikpPCO83T17stMfwE+tb7MdRnQVuaK/VRvYK9CQ5ncyXnlBG5kbZkYCFJ7C5pRLfT2Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764778094; c=relaxed/simple;
-	bh=t8UdtXjAc59D4J6GvJTeXGoV+4cjmIdKxrqekSmeSRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e56b5JNKC72/YwpH2DZGnCH0ZHhFV8u7IOAxPePwP4u7yJeqQtAB6eul9tma2WL43FGjtL2WRDIZBlWO6Zw2V+rDQSYvpF08QUS9Ee7YDU8nWpygQgAG82MsNUqINj6WfuMNn4CF7WwwmWnxqmEtMTlHYKG5RcSWrzprgHa9gJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dFfvKWWY; arc=none smtp.client-ip=209.85.222.171
+	s=arc-20240116; t=1764781466; c=relaxed/simple;
+	bh=BU2ezFNwbfqu+Df86HJ+cluDhwGzAGwq44UpTK6M+oY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PYwwCYGJD2ZQ4m3d7fZsjax9rxEumWEFA1mtp5eY1mDLaQFEEhgyJF/vMzXx0XAOOOpJRCoi7RxBAuLjIR/Ro9RL6Kmcs2POHOMmbtrmrQhzwvOaOgvlRupKHmLrUqZ3UZ7BGRoWdb2kansr40sQx+sn9H8mpXuZQNUzskQz1l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWDV3i9a; arc=none smtp.client-ip=74.125.224.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8b1e54aefc5so508592685a.1
-        for <linux-ext4@vger.kernel.org>; Wed, 03 Dec 2025 08:08:12 -0800 (PST)
+Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-63f996d4e1aso7540446d50.0
+        for <linux-ext4@vger.kernel.org>; Wed, 03 Dec 2025 09:04:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764778092; x=1765382892; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vjK1XAu2xT25O+AavGRfhzxz/zLiQnbfHyTquGAL0Ms=;
-        b=dFfvKWWYFDmjSYj1bgic3CbMIl+7PQ9pzh01xlPUlw1Lq/3hsAvvtVOLGuGIyEjYJO
-         eASOAIdCdVFV0buL93CzmAsC9nmm2NeOGTLBe8DdF4yXPeyRvRrf+5niEpfX5CK1EpP8
-         nB9MkKFvBb5aAwdckyK4EM71mm8TrQcB0VRGe98Hqp1e7+pLOWaq8DD0mZjly70bYonB
-         I8eFi8pG46sWv6TxT7RJFCw7mMJj9vJ0bxEErO7A8MZ0Iya1SvDYDSDWL2tU5/JCcOvn
-         UsDHyXuSqrmLzpWrnB+kiWP8ykfla7tJTt6rE9UieHVSksLzsSRKawUVDLWwcMOaWJZt
-         iH3w==
+        d=gmail.com; s=20230601; t=1764781464; x=1765386264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RapwvFp73r9FIxKF5Q6+NnflLxxHgF02Iv0NbfM2w9Q=;
+        b=IWDV3i9an30SmeyReKPzu6Udn04HpUh4eCUuJzb5Iw76h6LTZD7XVEZhTgtwI5JsIQ
+         EeMZq+VNpUZCyftLOjIBUe/3/+XHhL0FZHa3qi6Xwhhr6L5Bj81P7SjI77qrWJ1a7+pP
+         hSbRqD3E5IywddObkK4rHKtoGZRKFc5/WQgSa47waA0ecXIIRoZq8z/8+EQ8Ti1wo5hC
+         vYlC71gJIxIOuEzXwGhuSq30dvz4CRDPqbd62YmPYRNPLPzYPG7hcm1gzHmRPqKalQPW
+         1takyuRd+dJ5CaK1I/0+Vm02367LJfoTqrkAOrQxPOc0dvBjNt+oA+rlCtrBRpbH647p
+         0Brg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764778092; x=1765382892;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vjK1XAu2xT25O+AavGRfhzxz/zLiQnbfHyTquGAL0Ms=;
-        b=LoVnTyEe0ev/ldWC/rSOGhEDGd7pSxf26xqKygt4Tw98xMgkxN0Rq6POyVo4CNo00r
-         P8pHpcGvlBp5HaEVwP5O/LjVN+hmFbXKhnpohhzhW0ngYdovAyabQ3A3VF+IT31pTVlk
-         XpsC2H4ikw9u7O9z51BNARZ1dnhkttDS5OF8vbX6KG6cxYMpL/Lglae9dYabcq3mIz80
-         DROUqAHQhAqU2KgNvFSyM9Ht//cCypg0hF7uyTcIDc/pqZ9pRMZOhL9cF0pUhWH9hkB8
-         456+evJHAUYQtGQpMbsqZ+ccHPshbBgmIiHP/VYlWLVthzcLtfGH5WoUqOVSZSzMtgS4
-         ym+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWIAD4lqAql92zE55ly/Ki7XVVF+R95ut8peWNXJX6smxJSaDLUjTHUOMObS/vP8wNKmaG8mSwnQZ2b@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzog6DC0EQ1VcAVWIC6cXadwRBHP4o4mkpFncFO3dscZagMifxu
-	Eo9grXNi1Fyr7rKXf4EycY8c//XfvcJaWNJSGlpiEqGYqEUGBjM1mc5w
-X-Gm-Gg: ASbGncs98/sFSiWYdCLwn+jlkXylBKnYNQ2YT8czqKDxWiJ5mz0KUbLqUNRQ0eQojhx
-	K1d+KUDIkbYpYNRj0pLBrDcZltBbk1mXksc+s5PJz56fKIHxjbyuzCdvXLeZE6YrG0o48IvIXJd
-	jsBHdDHpvXIWRaiJgZtu48Js0LZkJ70cs2pT09Yqhawk+C0inLMJGIdPcuyODYcODw8RT0slOHl
-	M2Q9QjxP6UxNNE1V9IOMzZDBdznVLyncpx5lGwTgXclEc6ijcddei3SZ2lJ1LWC9I3kII96mFUO
-	JipM25ti9sGvilq7w86pdu95I8of+8eJaG7sv98tt23HWGUBSmr9A/j2iHy34RttzfF5OeOuStm
-	nzJbOvmDvGysAjPogPiWfIZtd7KbUmxMeZA9jZie7rc4EENDnnWrKiJy5N3FCjhZFQI8iEk7iKe
-	v35n3232zHn3/V8feUiWqidMJW1wFUfOQo5YAPBQ==
-X-Google-Smtp-Source: AGHT+IG8XNHFYN5A+3Cg7wEkan0iO0paJZc5a0d8DfhoogQB7q95o21uPOmzpwu8og6VMUZxzU+/rA==
-X-Received: by 2002:a05:620a:c55:b0:8b2:e38d:2f03 with SMTP id af79cd13be357-8b5e47d0321mr308095785a.9.1764778091859;
-        Wed, 03 Dec 2025 08:08:11 -0800 (PST)
-Received: from [192.168.0.155] ([170.10.253.128])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b5299a6fdcsm1324637585a.20.2025.12.03.08.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Dec 2025 08:08:11 -0800 (PST)
-Message-ID: <cc17bad2-ef56-40bc-9fae-073c1065a57b@gmail.com>
-Date: Wed, 3 Dec 2025 11:08:10 -0500
+        d=1e100.net; s=20230601; t=1764781464; x=1765386264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=RapwvFp73r9FIxKF5Q6+NnflLxxHgF02Iv0NbfM2w9Q=;
+        b=a3scKjCZmDgnfZSsnPWaJpJM1nQj6dcXJ0Qw3HkJ4OhA0VW8PzWw/6G055wN/uQmfR
+         Ah/VQ3PVfvAwJ8Q7strxDvWND9E4fhqYncy/6R6lnR/UESMWcflAA6r4cqa3E3SAIPRc
+         Xl8JqLft5IzQkrkKnf3O7UolVzfjsQKYHgj8qn5lAm5hw/tnQjkrG3TJ7HMyl+3uV9j5
+         /pyOpOUPSC6RdWZEZGpHwHRG0KLJfRe9adFjN8np2KXMWFYVnP2fiInjUbV4ELuu3W4L
+         Ul8XwoXHoQwQkELe+eWRvepdzrCbDwM7Xp3EcvxStNS7zEKdP/c5KiRJ9gDIb7/QzQTt
+         qYqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8ahPLizMrjNPmorjBHqnfr6nHLKtE9E2rExqgAmIvZE+J/+PtRfZo9uQEalinseTfs+prY82csHu3@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGU5EyRg9+k8A0hRPR3o3jasUUu9nXXo0CuD0NA4NVDFt9kZMi
+	ov19NCPpO1rLCzWEHClN7NlDfc++Gp6gGv4U581nWrNKdP106CnGYSLEoLRKKPa3FbaZatlFMeN
+	j+POjwvyXbgRzq/4jeSlX8HQFAZJB7os=
+X-Gm-Gg: ASbGncsuOEzc9ma0Zl50xi0OnOHT8CZr6QYqOY/teyQUxvuPfURermpPZ93t+wXN9Hc
+	RbLtug2dlicIFk+gA+DLUSV9BqCXl90vxZ06z8HAFPnuidT/2YUEwFE10CPCRIT6B0q9dEachOO
+	2gFtn4hnED67x3UXI26JrYPq7INZ0FAqgmC+JTq49jhFWulvUsmNyHm4XKvTa30Ch2KpcySwDTH
+	dTOL8f5mWMT03SyJe8mPybohP3roj2WVp6Rpern9kRmG31EanZdTXlpFhYyoBr68sR02faj7Zxn
+	3rQEJTUQcvdX+0+w4VkQAIDyzQ4SK+EdWSoY567U0/sAUdrWPDLR8wfDMOv5
+X-Google-Smtp-Source: AGHT+IGqADAqlqgSqwhMBd/MaJL11lF5vFRpJc8CNKcwj0b5YPlrpcfqOyHi2tpJmN/ycTywlR2VPusVUY34ZS98Gz8=
+X-Received: by 2002:a05:690e:12c1:b0:63f:b922:ed79 with SMTP id
+ 956f58d0204a3-64436f96e1fmr2250170d50.14.1764781463629; Wed, 03 Dec 2025
+ 09:04:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext2: factor out ext2_fill_super() teardown path
-To: Jan Kara <jack@suse.cz>
-Cc: jack@suse.com, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20251203045048.2463502-1-vivek.balachandhar@gmail.com>
- <herlaqmrxfzbh2yqumcquf4ex7qxz5sk47uswmwucdg3pmryez@bvyyavacx5rq>
-Content-Language: en-CA
-From: Vivek BalachandharTN <vivek.balachandhar@gmail.com>
-In-Reply-To: <herlaqmrxfzbh2yqumcquf4ex7qxz5sk47uswmwucdg3pmryez@bvyyavacx5rq>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20251122015742.362444-1-kartikey406@gmail.com>
+ <CADhLXY5k9nmFGRLLxguWB9sQ4_B6-Cxu=xHs71c5kCEyj49Vuw@mail.gmail.com>
+ <7b2fafab-a156-47e3-b504-469133b8793d@huaweicloud.com> <CADhLXY7AVVfxeTtDfEJXsYvk66CV7vsRMVw4P8PEn3rgOuSOLA@mail.gmail.com>
+ <aadd43df-3df4-4dcc-a0b3-e7bfded0dff8@huaweicloud.com> <CADhLXY4Pk60+sSLtOOuR2QdTKbYXUAjwhgb7nH8qugf4DROT7w@mail.gmail.com>
+ <20251203154657.GC93777@macsyma.lan>
+In-Reply-To: <20251203154657.GC93777@macsyma.lan>
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+Date: Wed, 3 Dec 2025 22:34:10 +0530
+X-Gm-Features: AWmQ_bmQlPSYgiYEwXsRmlBYIJXIhOI-2mVi6rRJ9OmLGCmG5Ev6APZwHUbduKU
+Message-ID: <CADhLXY7pSghxkjw5g2pzbuB3KM7Ms7HByrn-wRRbjxrUxHwV_g@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: check folio uptodate state in ext4_page_mkwrite()
+To: Theodore Tso <tytso@mit.edu>
+Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com, 
+	adilger.kernel@dilger.ca, djwong@kernel.org, 
+	Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-thanks for the review. You are right — the helper has only one call site 
-and bh is uninitialized on some failed_sbi paths. I will drop this patch 
-and look for a more meaningful cleanup in ext2.
-
-Vivek
-
-On 2025-12-03 5:40 a.m., Jan Kara wrote:
-> On Wed 03-12-25 04:50:48, Vivek BalachandharTN wrote:
->> The error path at the end of ext2_fill_super() open-codes the final
->> teardown of the ext2_sb_info structure and associated resources.
->> Centralize this into a small helper to make the control flow a bit
->> clearer and avoid repeating the same cleanup sequence in multiple
->> labels.
->>
->> Behavior is unchanged.
->>
->> Signed-off-by: Vivek BalachandharTN <vivek.balachandhar@gmail.com>
-> This is pointless - no point in factoring out helper when it has a single
-> call site. Also your patch is broken in several ways (both in correctness
-> and style). Please be more thoughtful when submitting patches.
+On Wed, Dec 3, 2025 at 9:18=E2=80=AFPM Theodore Tso <tytso@mit.edu> wrote:
 >
-> 								Honza
+> My main concern with your patch is folio_lock() is *incredibly*
+> heavyweight and is going to be a real scalability concern if we need
+> to take it every single time we need to make a page writeable.
 >
->> +static void ext2_free_sbi(struct super_block *sb,
->> +			  struct ext2_sb_info *sbi,
->> +			  struct buffer_head *bh)
->> +{
->> +	if (bh)
->> +		brelse(bh);
->> +
->> +	fs_put_dax(sbi->s_daxdev, NULL);
->> +	sb->s_fs_info = NULL;
->> +	kfree(sbi->s_blockgroup_lock);
->> +	kfree(sbi);
->> +}
->> +
->>   static int ext2_fill_super(struct super_block *sb, struct fs_context *fc)
->>   {
->>   	struct ext2_fs_context *ctx = fc->fs_private;
->> @@ -1251,12 +1264,8 @@ static int ext2_fill_super(struct super_block *sb, struct fs_context *fc)
->>   	kvfree(sbi->s_group_desc);
->>   	kfree(sbi->s_debts);
->>   failed_mount:
->> -	brelse(bh);
->>   failed_sbi:
->> -	fs_put_dax(sbi->s_daxdev, NULL);
->> -	sb->s_fs_info = NULL;
->> -	kfree(sbi->s_blockgroup_lock);
->> -	kfree(sbi);
->> +	ext2_free_sbi(sb, sbi, bh);
->>   	return ret;
->>   }
->>   
->> -- 
->> 2.34.1
->>
+> So could we perhaps do something like this?  So the first question is
+> do we need to take the lock at all?  I'm not sure we need to worry
+> about the case where the page is not uptodate because we're racing
+> with the page being brought into memory; if we that could happen under
+> normal circumstances we would be triggering the warning even without
+> these situations such as a delayed allocaiton write failing due to a
+> corrupted file system image.   So can we just do this?
+>
+>         if (!folio_test_uptodate(folio)) {
+>                 ret =3D VM_FAULT_SIGBUS;
+>                 goto out;
+>         }
+>
+> If it is legitmate that ext4_page_mkwrite() could be called while the
+> page is still being read in (and again, I don't think it is), then we
+> could do something like this:
+>
+>         if (!folio_test_uptodate(folio)) {
+>                 folio_lock(folio);
+>                 if (!folio_test_uptodate(folio)) {
+>                         folio_unlock(folio);
+>                         ret =3D VM_FAULT_SIGBUS;
+>                         goto out;
+>                 }
+>                 folio_unlock(folio);
+>         }
+>
+> Matthew, as the page cache maintainer, do we actually need this extra
+> rigamarole.  Or can we just skip taking the lock before checking to
+> see if the folio is uptodate in ext4_page_mkwrite()?
+>
+>                                                         - Ted
+
+
+Hi Ted,
+
+Thank you for the feedback and the performance concern!
+
+You're absolutely right that folio_lock() is heavyweight. I included
+it because I was being overly cautious about potential races, but I
+agree with your analysis that under normal circumstances,
+ext4_page_mkwrite() should never be called with a non-uptodate folio.
+
+The non-uptodate state only occurs in this specific error case where:
+1. Delayed allocation fails due to corruption
+2. mpage_release_unused_pages() invalidates the folio
+3. A subsequent operation triggers the fault
+
+In this error path, the folio is already in an inconsistent state, so
+checking folio_test_uptodate() without the lock should be sufficient
+to catch it.
+
+I'll wait for Matthew's input on the locking question, and then send
+v3 with the appropriate changes.
+
+Thank you for the guidance!
+
+Best regards,
+Deepanshu
 
