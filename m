@@ -1,127 +1,260 @@
-Return-Path: <linux-ext4+bounces-12128-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12129-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B37FC9BA96
-	for <lists+linux-ext4@lfdr.de>; Tue, 02 Dec 2025 14:47:51 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF184C9D82A
+	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 02:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 805A64E41AC
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Dec 2025 13:47:19 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3143B34AE33
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 01:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FA82C158F;
-	Tue,  2 Dec 2025 13:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A74822D7B5;
+	Wed,  3 Dec 2025 01:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Am9zXgga"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD1031D38F
-	for <linux-ext4@vger.kernel.org>; Tue,  2 Dec 2025 13:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4315F226541
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 01:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764683227; cv=none; b=InVDlmlyL1gki6edR4XpfvAEMaAjkGCx9XI5JbSROXiO5BuJL2hgEOwLEV8SY04um/iWbFv/Y9TaTysFASPOfGHifuPgkB7OfI8wvWHZdTqhNW+4lA7O9oKL2KS3oEq2K0DYDIV4jLV0EgsfB9bOvCDWBvO0xlaHvCbPchE03h0=
+	t=1764725891; cv=none; b=uubyk2/KD6ANu5jJaI5sHjQjRw1bhsI60jL34mCAUvivjsowqolO58BCNRawTIQcWaTWu4g9UEpxhJTAee5gtEmptSOs7gG+A7aB/OY8P0mFCtDykt8HoKVI2SvP6Zg0j7mIH4FyRKJyIdzD6UJGOI+QrJkA+PCTsOjtx19i2pQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764683227; c=relaxed/simple;
-	bh=gq4RH7/rXPBc848MQObPZFz2syRF52XAl2b3tQIWS+Q=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ZvLopCfbfLP8yvN4wheVWUyHzq4NwFMcyy4xTzTJ6xxRnrf0NVjexI8E44xCqcZd652ld7it1lSZNU4x2BA6vtrJhmuRRLXVn2uDVSvcz9EdShNi+eDyxhyGCXlOY8snVKy2F6iKRiZ0aI+HrvjXtPYEsEQwaemL0zUQJCCPqqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-450b8303c1cso5102774b6e.0
-        for <linux-ext4@vger.kernel.org>; Tue, 02 Dec 2025 05:47:04 -0800 (PST)
+	s=arc-20240116; t=1764725891; c=relaxed/simple;
+	bh=ivBEWAn6Qc9em8Wo7P+U93se6vWYd+RQQN4Dp5R4vxU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ln8cNDbAOC98HQ2wGzb52B31/J9T9mTcAcp9aGKgMrIGGEHG0BvTiseVna8UbVXX0IZg+hV+nbxIj09jfi13s/zqbDXNHzpHQevz1KO0IxaBRA9Y13C6rIDmYkf9PrZ++1CZ/T5NSJbLnUxlJgp4F6vdj9jHNveFXE8y9WCPn3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Am9zXgga; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-787e84ceaf7so61635037b3.2
+        for <linux-ext4@vger.kernel.org>; Tue, 02 Dec 2025 17:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764725889; x=1765330689; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5NXWG4xH8YKl04Fp/mD3CU2nd+rC/QdIJE3L2Y7f3t0=;
+        b=Am9zXggap0AyxyzzO3XimqAUGvGk9Im67uJrf+Ww9DeU5mvPQq58xPwvbh/XRXEENX
+         q5hTSTr4/12Wi4jMCrVeP1gyapdBKXlMjTezLuJT3rwR0baSra3nqG0+fWXyX9mYwf6q
+         gVlHgSPnO0X5o6Uw/XT57BxHSkW+8aZDE/r7qsTn/c5i6zTQlOTsrsdjd/XpCMwVsOlO
+         21oHXIODoXN1rf1rjhrBsCSnAkabmEXInDvuVw70+ACQB6hnA34bVwARVQoMoNcsVpdJ
+         J1+F/XgO7egAbpQgLKjMQ4rF1LnZKQpxkbQdqAyvwU3lAfCAhPxuUS+wg6ZB7hOFbd/q
+         zCPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764683223; x=1765288023;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GFFITXgcbn3BF5XGL3IGOv0vn/QQzSLXJ0ctS9VxMf4=;
-        b=AK/pxUTxHXq/uTZDw7gQdipFtvI/cF1yZNV6Tf+UDvh2G/owz1k5J/jktV/R0/AwGa
-         qH+PiUPsnyhLGw1wdyM0QMyq8txgS6po6zboCqzJd9CejXMsLAc7zFFifvkl8Voz84An
-         CyEq8RKnlj9etDG8weTPxUKwvyPQAtV51vGkk/EWxaduj/yZce8SXvvqrDRquyvvzG/F
-         7LI8OMZ/+nCQp4KNoYFBIt9CT9Lm9F4cN0ByQZaBNK1YzUV6LccF3RaN99xSAW4Y455g
-         LVCtBF02r2OS1ZvJHajCWoRCSCYKiH6JFYKICJm9unMpziinGoqJdE55FEmL2Y7n3qF3
-         wmUg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUnC3EELfkVVyz2dZAr2CaeR+ZUIicwAnCt1+M6hrPZ0e2OemZkIZA8gVBQsbuy0pgBws79b6TGhZg@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCzFn16DBwWkxZsSlb8po/mUQyzHDrPQhoQphGzQe3cW8hBgf/
-	sHh8lFZdJfWDLnAdtHJ3LEtOfKnzcmr5JQkP4bLJU03wqtaaKPhSyHLYGf6aryKOH8QRSlOzQyI
-	QWO1DRED2mCVHawcMB+/gKRaSB2Cg3TfowUU9zjpSN8DCAD7t/lIpLLikU4Q=
-X-Google-Smtp-Source: AGHT+IH7K/LOkJUjlG3rKR7P/dRxolDR4iQGe2TKbFAebnEenAr/rpGcGAnpJoEc4BiGxFc8dUSs0azB+1dptAF2mz5PbyKwGhNN
+        d=1e100.net; s=20230601; t=1764725889; x=1765330689;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5NXWG4xH8YKl04Fp/mD3CU2nd+rC/QdIJE3L2Y7f3t0=;
+        b=gpvtezcA/w09N9Q0M5akOpJbfHPUkt5wp3lcOiKdlpIeMTXjrKGEMwE3rrPU6xjfdq
+         Hs8/TODiz3VBt0xLfCIg2/PCSjxrYLrrnmRsoVW5ZL70Ov9ExVRoCu9fp1BfWkIc3H/N
+         fiAnq8y4++8FxprycV8e3uch7CR75H29iHfACOt5KLwNH03eeaTt8LpegfDv7hIa9A43
+         5Tk3dT006vq8QR0GPJhw/8y6DXW4ORxIw+YCDIiqVLeDZs7wXIlHJY8KviWNznzz0Ufi
+         wKGGELoWrmo2LBxdnSnr0m7/wb8I+ivL5XmjYuf5PwCpHuaV1uLPbJq3sDBjUijAiWAe
+         zE1Q==
+X-Gm-Message-State: AOJu0YwGuQpPTK3M1xSzQfXCbyktFXD51F+eI8wJKdDtl+qSodk9pgUx
+	YelYKGh92Yji/QdX+1jhYYOC5/hBEYl8w3mgXRC6DiuciMHukcjABvd+9W2Cv85eKwp8ZgUuRGi
+	q2OJYiXUS6v3MLO+rkfFMJTxqeH/nDRY=
+X-Gm-Gg: ASbGncv0HBtPqL/8Cv9WeVFwFHVxRfCGQHqA9nl6T0D45vHXknFx202LqL/8O+IX8I1
+	wzwhIJXjH4ZOwmGncjqYijXWXMoR78OioqeQn5/IupMSh53jMD2QH3MLfruvksLoRAFIAX2wAZL
+	w9etpJ/10dQIDtvL1oKscpVxxHfVczqsV/BnC6Tqc2RCwuFPr+apUNx+/BUl2Gq/S/ex0klBZEi
+	CyWupLTeBl9Mvgf9ath9rzwoQlvq0KC0VvH7QjmUFy00eQ5yvRUAoRS3MU98RceRk8scMvdzbED
+	IQ35y4lxA7wKg5d+8q7cmhPhaAk8hT1lgtz2v0nRyhaRKYuWNaySWGEASJE=
+X-Google-Smtp-Source: AGHT+IHXzVRCEGB5PDvtyDXja+nZBNYTd/jhSb0I48MN2sEMR2lv5+C7XbKheoytGkZaWQo4cCR2egFmfm1Xy7jQQQQ=
+X-Received: by 2002:a05:690c:360b:b0:786:4fd5:e5df with SMTP id
+ 00721157ae682-78c0c0259d1mr6031737b3.39.1764725889161; Tue, 02 Dec 2025
+ 17:38:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:6787:b0:450:d558:76f5 with SMTP id
- 5614622812f47-4511290cecemr19418847b6e.13.1764683223510; Tue, 02 Dec 2025
- 05:47:03 -0800 (PST)
-Date: Tue, 02 Dec 2025 05:47:03 -0800
-In-Reply-To: <20251202132545.GA86223@macsyma.lan>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <692eedd7.a70a0220.2ea503.00c5.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in __folio_mark_dirty (3)
-From: syzbot <syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	willy@infradead.org
+References: <20251122015742.362444-1-kartikey406@gmail.com>
+ <CADhLXY5k9nmFGRLLxguWB9sQ4_B6-Cxu=xHs71c5kCEyj49Vuw@mail.gmail.com> <7b2fafab-a156-47e3-b504-469133b8793d@huaweicloud.com>
+In-Reply-To: <7b2fafab-a156-47e3-b504-469133b8793d@huaweicloud.com>
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+Date: Wed, 3 Dec 2025 07:07:57 +0530
+X-Gm-Features: AWmQ_bmYGAk6l7oLISYJFcjW59HY7Dz-DN8q2Bdljv1tuM13LL3Y99ckGc_n8Bc
+Message-ID: <CADhLXY7AVVfxeTtDfEJXsYvk66CV7vsRMVw4P8PEn3rgOuSOLA@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: check folio uptodate state in ext4_page_mkwrite()
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, djwong@kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Dec 2, 2025 at 5:54=E2=80=AFPM Zhang Yi <yi.zhang@huaweicloud.com> =
+wrote:
+>
+> Hi Deepanshu!
+>
+> On 11/30/2025 10:06 AM, Deepanshu Kartikey wrote:
+> > On Sat, Nov 22, 2025 at 7:27=E2=80=AFAM Deepanshu Kartikey
+> > <kartikey406@gmail.com> wrote:
+> >>
+> >> When delayed block allocation fails due to filesystem corruption,
+> >> ext4's writeback error handling invalidates affected folios by calling
+> >> mpage_release_unused_pages() with invalidate=3Dtrue, which explicitly
+> >> clears the uptodate flag:
+> >>
+> >>     static void mpage_release_unused_pages(..., bool invalidate)
+> >>     {
+> >>         ...
+> >>         if (invalidate) {
+> >>             block_invalidate_folio(folio, 0, folio_size(folio));
+> >>             folio_clear_uptodate(folio);
+> >>         }
+> >>     }
+> >>
+> >> If ext4_page_mkwrite() is subsequently called on such a non-uptodate
+> >> folio, it can proceed to mark the folio dirty without checking its
+> >> state. This triggers a warning in __folio_mark_dirty():
+> >>
+> >>     WARNING: CPU: 0 PID: 5 at mm/page-writeback.c:2960
+> >>     __folio_mark_dirty+0x578/0x880
+> >>
+> >>     Call Trace:
+> >>      fault_dirty_shared_page+0x16e/0x2d0
+> >>      do_wp_page+0x38b/0xd20
+> >>      handle_pte_fault+0x1da/0x450
+> >>      __handle_mm_fault+0x652/0x13b0
+> >>      handle_mm_fault+0x22a/0x6f0
+> >>      do_user_addr_fault+0x200/0x8a0
+> >>      exc_page_fault+0x81/0x1b0
+> >>
+> >> This scenario occurs when:
+> >> 1. A write with delayed allocation marks a folio dirty (uptodate=3D1)
+> >> 2. Writeback attempts block allocation but detects filesystem corrupti=
+on
+> >> 3. Error handling calls mpage_release_unused_pages(invalidate=3Dtrue),
+> >>    which clears the uptodate flag via folio_clear_uptodate()
+> >> 4. A subsequent ftruncate() triggers ext4_truncate()
+> >> 5. ext4_block_truncate_page() attempts to zero the page tail
+> >> 6. This triggers a write fault on the mmap'd page
+> >> 7. ext4_page_mkwrite() is called with the non-uptodate folio
+> >> 8. Without checking uptodate, it proceeds to mark the folio dirty
+> >> 9. __folio_mark_dirty() triggers: WARN_ON_ONCE(!folio_test_uptodate())
+>
+> Thank you a lot for analyzing this issue and the fix patch. As I was
+> going through the process of understanding this issue, I had one
+> question. Is the code flow that triggers the warning as follows?
+>
+> wp_page_shared()
+>   do_page_mkwrite()
+>     ext4_page_mkwrite()
+>       block_page_mkwrite()   //The default delalloc path
+>         block_commit_write()
+>           mark_buffer_dirty()
+>             __folio_mark_dirty(0)  //'warn' is false, doesn't trigger war=
+ning
+>         folio_mark_dirty()
+>           ext4_dirty_folio()
+>             block_dirty_folio  //newly_dirty is false, doesn't call __fol=
+io_mark_dirty()
+>   fault_dirty_shared_page()
+>     folio_mark_dirty()  //Trigger warning ?
+>
+> This folio has been marked as dirty. How was this warning triggered?
+> Am I missing something?
+>
+> Thanks,
+> Yi.
+>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in __folio_mark_dirty
+Hi Yi,
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6740 at mm/page-writeback.c:2716 __folio_mark_dirty+0x1fb/0xe20 mm/page-writeback.c:2716
-Modules linked in:
-CPU: 1 UID: 0 PID: 6740 Comm: syz.0.31 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
-RIP: 0010:__folio_mark_dirty+0x1fb/0xe20 mm/page-writeback.c:2716
-Code: 3c 38 00 74 08 48 89 df e8 d2 a1 26 00 4c 8b 33 4c 89 f6 48 83 e6 08 31 ff e8 71 ef c4 ff 49 83 e6 08 75 1c e8 06 ea c4 ff 90 <0f> 0b 90 eb 16 e8 fb e9 c4 ff e9 7e 07 00 00 e8 f1 e9 c4 ff eb 05
-RSP: 0018:ffffc90003a979d0 EFLAGS: 00010293
-RAX: ffffffff81f9d61a RBX: ffffea0001056b40 RCX: ffff888020775a00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffff9400020ad69 R12: ffff88805b014d00
-R13: ffff88805b014cf8 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000555575052500(0000) GS:ffff888126ef6000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000200000000440 CR3: 0000000036d66000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- block_dirty_folio+0x17a/0x1d0 fs/buffer.c:754
- fault_dirty_shared_page+0x103/0x570 mm/memory.c:3518
- wp_page_shared mm/memory.c:3905 [inline]
- do_wp_page+0x263e/0x4930 mm/memory.c:4108
- handle_pte_fault mm/memory.c:6193 [inline]
- __handle_mm_fault mm/memory.c:6318 [inline]
- handle_mm_fault+0x97c/0x3400 mm/memory.c:6487
- do_user_addr_fault+0xa7c/0x1380 arch/x86/mm/fault.c:1336
- handle_page_fault arch/x86/mm/fault.c:1476 [inline]
- exc_page_fault+0x82/0x100 arch/x86/mm/fault.c:1532
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
-RIP: 0033:0x7f1eba837398
-Code: fc 89 37 c3 c5 fa 6f 06 c5 fa 6f 4c 16 f0 c5 fa 7f 07 c5 fa 7f 4c 17 f0 c3 66 0f 1f 84 00 00 00 00 00 48 8b 4c 16 f8 48 8b 36 <48> 89 37 48 89 4c 17 f8 c3 c5 fe 6f 54 16 e0 c5 fe 6f 5c 16 c0 c5
-RSP: 002b:00007ffd39d5fc68 EFLAGS: 00010246
-RAX: 0000200000000440 RBX: 0000000000000004 RCX: 0030656c69662f2e
-RDX: 0000000000000008 RSI: 0030656c69662f2e RDI: 0000200000000440
-RBP: 00007f1ebaac7da0 R08: 0000001b2cc20000 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000009 R12: 00007f1ebaac5fac
-R13: 00007f1ebaac5fa0 R14: fffffffffffffffe R15: 00007ffd39d5fd80
- </TASK>
+Thank you for your question about the exact flow that triggers the warning.
 
+You're correct that the code paths within ext4_page_mkwrite() and
+block_page_mkwrite() call __folio_mark_dirty() with warn=3D0, so no
+warning occurs there. The warning actually triggers later, in
+fault_dirty_shared_page() after page_mkwrite returns.
 
-Tested on:
+Here's the complete flow:
 
-commit:         6fb67ac8 ext4: drop the TODO comment in ext4_es_insert..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-console output: https://syzkaller.appspot.com/x/log.txt?x=16156192580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41ad820f608cb833
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0a0670332b6b3230a0a
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+  wp_page_shared()
+    =E2=86=93
+    do_page_mkwrite()
+      =E2=86=93
+      ext4_page_mkwrite()
+        =E2=86=93
+        block_page_mkwrite()
+          =E2=86=93
+          mark_buffer_dirty() =E2=86=92 __folio_mark_dirty(warn=3D0)  // No=
+ warning
+        =E2=86=93
+        Returns success
+    =E2=86=93
+    fault_dirty_shared_page(vma, folio)  =E2=86=90 Warning triggers here
+      =E2=86=93
+      folio_mark_dirty(folio)
+        =E2=86=93
+        ext4_dirty_folio()
+          =E2=86=93
+          block_dirty_folio()
+            =E2=86=93
+            if (!folio_test_set_dirty(folio))  // Folio not already dirty
+              __folio_mark_dirty(folio, mapping, 1)  =E2=86=90 warn=3D1, tr=
+iggers WARNING
 
-Note: no patches were applied.
+The key is that the folio can become non-uptodate between when it's
+initially read and when wp_page_shared() is called. This happens when:
+
+1. Delayed block allocation fails due to filesystem corruption
+2. Error handling in mpage_release_unused_pages() explicitly clears uptodat=
+e:
+
+     if (invalidate) {
+         block_invalidate_folio(folio, 0, folio_size(folio));
+         folio_clear_uptodate(folio);
+     }
+
+3. A subsequent operation (like ftruncate) triggers ext4_block_truncate_pag=
+e()
+4. This causes a write fault on the mmap'd page
+5. wp_page_shared() is called with the now-non-uptodate folio
+
+From my debug logs with a test kernel:
+
+  [22.387777] EXT4-fs error: lblock 0 mapped to illegal pblock 0
+  [22.389798] EXT4-fs: Delayed block allocation failed... error 117
+  [22.390401] EXT4-fs: This should not happen!! Data will be lost
+
+  [22.399463] EXT4-fs error: Corrupt filesystem
+
+  [22.400513] WP_PAGE_SHARED: ENTER folio=3D... uptodate=3D0 dirty=3D0
+  [22.401953] WP_PAGE_SHARED: page_mkwrite failed, returning 2
+
+With my fix, ext4_page_mkwrite() detects the non-uptodate state and
+returns VM_FAULT_SIGBUS before block_page_mkwrite() is called,
+preventing wp_page_shared() from reaching fault_dirty_shared_page().
+
+Without the fix, the sequence would be:
+- ext4_page_mkwrite() succeeds (doesn't check uptodate)
+- block_page_mkwrite() marks buffers dirty (warn=3D0, no warning)
+- Returns to wp_page_shared()
+- fault_dirty_shared_page() calls folio_mark_dirty()
+- block_dirty_folio() finds folio not dirty (uptodate=3D0, dirty=3D0)
+- Calls __folio_mark_dirty() with warn=3D1
+- WARNING triggers: WARN_ON_ONCE(warn && !folio_test_uptodate(folio)
+&& !folio_test_dirty(folio))
+
+The syzbot call trace confirms this:
+
+  Call Trace:
+   fault_dirty_shared_page+0x16e/0x2d0
+   do_wp_page+0x38b/0xd20
+   handle_pte_fault+0x1da/0x450
+
+Does this clarify the flow?
+
+Best regards,
+Deepanshu
 
