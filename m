@@ -1,364 +1,241 @@
-Return-Path: <linux-ext4+bounces-12131-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12132-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3B7C9DA60
-	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 04:31:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22674C9DBF4
+	for <lists+linux-ext4@lfdr.de>; Wed, 03 Dec 2025 05:32:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 167FA347C00
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 03:31:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 906C73A84F4
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Dec 2025 04:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06870246783;
-	Wed,  3 Dec 2025 03:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6239B1E832A;
+	Wed,  3 Dec 2025 04:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="ezocLxgi"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="PrrKzw7K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-108-mta1.mxroute.com (mail-108-mta1.mxroute.com [136.175.108.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC517081F
-	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 03:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F7F27732
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Dec 2025 04:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764732710; cv=none; b=u/JuzdGqkJI/GMRaS3SycL64NDpqsYvAg62OHDUiw30rWrwob6LiOUZRdTTRSdj5RH6CnQBq6wHO4O56cM8+bVmyB6vrakzX0m9LWEomX/P088konbM/9WAUuarqjmuWmgOrXtLW4Xy79G+Pb/d8eQW9poFoHR3wgtfL9O4ms50=
+	t=1764736356; cv=none; b=pmdiC70Wr7Cul+muuLcUrLXTWMEu2Vk3uZW0s2/c3zkhOCm6mhBIdFkktVy2RA4m5adPQnOVZVzcTebm6dhrSShm7KmYbsc+EimJaa66LPADDIrzLGAi98hsFKNzGsipTOPkA6lqtQ5lrTVn5DrXqbPbrSdPfizTwjS8+WdfyRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764732710; c=relaxed/simple;
-	bh=HL6y0HW6ppNWmWdM2TleC2h/mEI4CLRlqyWjfVA0auc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aJVkvFFx2q91S2iIRrIOnEJerY+DTtAK1NSowMFqeM8TYDq/YrxHs62N/mv5yAyheVI38ZT5Vewk6MIeiwcP35THdWiXR188MU2bECpnqHUCsYtgURwjSsH0LuD4mZPEt5lxYNe5kHBPLDZFIEnbuyDxWTLCRcLHm17i9xrpi3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=ezocLxgi; arc=none smtp.client-ip=136.175.108.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Received: from filter006.mxroute.com ([140.82.40.27] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta1.mxroute.com (ZoneMTA) with ESMTPSA id 19ae23f56950004eea.004
- for <linux-ext4@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Wed, 03 Dec 2025 03:26:33 +0000
-X-Zone-Loop: 0f8ba5deed0556ed28e4529cbfec3343a706b5cc2122
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Type:MIME-Version:Message-ID:Date:References:In-Reply-To:
-	Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=DBSJG38ktnT2q1HRu9FZWZPNIQH7YkG3Qv+57BXe230=; b=ezocLxgiRETtNDJFSksWljMy4V
-	fcrDGabrOXaoA8pifQBLI6hN0IuT6bUPJ7gmdqKZ1Fh/mckkTjWIu0G8ffcpaJrVo0siH7zk0+9DY
-	1znVy77EeUSQ73vzFwYPoR/z5bLxSO2gOkwTYFnid+WIvZQqV5l2Wsr+tMQeqqdRcY3Uv4McUA7rY
-	DcClKCy5jB3oDT8xf2vVTT1E0MB49WGsuAFIyTQx2UZI5n91iTSk4UOZgQp87recWScZ3j977imO3
-	Y+cfT8LB47Af8xHuYgcDfwvjH2qVj2quXnoMHZd4Z28o0/VX7rrZtip/IXv0Gmv/Pp3KWWosLEVj5
-	ImQ6jLVw==;
-From: Su Yue <l@damenly.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Su Yue <glass.su@suse.com>,  fstests@vger.kernel.org,
-  linux-ext4@vger.kernel.org,  linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] generic: use _qmount_option and _qmount
-In-Reply-To: <20251201225924.GA89454@frogsfrogsfrogs> (Darrick J. Wong's
-	message of "Mon, 1 Dec 2025 14:59:24 -0800")
-References: <20251124132004.23965-1-glass.su@suse.com>
-	<20251201225924.GA89454@frogsfrogsfrogs>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Wed, 03 Dec 2025 11:26:22 +0800
-Message-ID: <cy4wfdpd.fsf@damenly.org>
+	s=arc-20240116; t=1764736356; c=relaxed/simple;
+	bh=txidUmZVnION0YDh8T5e8WTVBqtHZ0bBxg+DRgN4D8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TrXD3TC/n6Tjf1fX2nigkyiyNVtu0hqLs6RQ2qAlCYG43jsU3xVxDd1doTFwfhmgkxPgTHctQKMbwQMdrghFet8EpyS1IMpw8jOX7ohMG+t/SJd1kDEYFH7xqNgQecz6+EerW+gSJIU7oqiT3NEjhXGXHZXkYRDj8kpkNzqtow0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=PrrKzw7K; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from trampoline.thunk.org (pool-173-48-102-12.bstnma.fios.verizon.net [173.48.102.12])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5B34WSq3026385
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Dec 2025 23:32:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1764736350; bh=4SW2LXTp/plZp45CkPinIHGm314GmfhMsKjhzXjON5s=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=PrrKzw7KJPmYMvcJFUawDGLgM7lXXfSl6LH4DSRP2UpYLgAw2eW7qzTXAIontGZxs
+	 MVNMspKtakgXESBPk74VzsMphuezXnW5UsYi80HvN54dfj+rXIcj4bFAr30qv49rSX
+	 D3LLW3z4GNuDH8FG/YeYtPYLE6JJEY3omFheUzmiNc2bohRd8coH23w98wUOzj0LKD
+	 vrRx6nNWQWHZUY51TBVyI5Q0+4uws3vrHxOGaTH2aLHdNz7cOg/8fFTkDT5+6AOD55
+	 C5DC12JC+pqAyglUsQDTbClh5RVWaepz0Ab12JG9RDfya5yJyM3+xk18ysXezaNmZO
+	 P6iSjnwoNgOaQ==
+Received: by trampoline.thunk.org (Postfix, from userid 15806)
+	id 966492E00D9; Tue, 02 Dec 2025 23:32:28 -0500 (EST)
+Date: Tue, 2 Dec 2025 23:32:28 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] ext4 changes for 6.19-rc1
+Message-ID: <20251203043228.GA1712448@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Authenticated-Id: l@damenly.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon 01 Dec 2025 at 14:59, "Darrick J. Wong" <djwong@kernel.org> 
-wrote:
+The following changes since commit 6146a0f1dfae5d37442a9ddcba012add260bceb0:
 
-> On Mon, Nov 24, 2025 at 09:20:04PM +0800, Su Yue wrote:
->> Many generic tests call `_scratch_mount -o usrquota` then
->> chmod 777, quotacheck and quotaon.
->
-> What does the chmod 777 do, in relation to the quota{check,on} 
-> programs?
-> Is it necessary for the root dir to be world writable (and 
-> executable!)
-> for quota tools to work?
->
-It's unnecessary. Only tests calling `_su $qa_user` or 
-`_file_as_id` need
-the permisson.
+  Linux 6.18-rc4 (2025-11-02 11:28:02 -0800)
 
->> It can be simpilfied to _qmount_option and _qmount. The later
->> function already calls quotacheck, quota and chmod.
->>
->> Convertaions can save a few lines. tests/generic/380 is an 
->> exception
->
-> "Conversions" ?
->
-Yeah...
+are available in the Git repository at:
 
---
-Su
-> --D
->
->> because it tests chown.
->>
->> Signed-off-by: Su Yue <glass.su@suse.com>
->> ---
->>  tests/generic/082 |  9 ++-------
->>  tests/generic/219 | 11 ++++-------
->>  tests/generic/230 | 11 ++++++-----
->>  tests/generic/231 |  6 ++----
->>  tests/generic/232 |  6 ++----
->>  tests/generic/233 |  6 ++----
->>  tests/generic/234 |  5 ++---
->>  tests/generic/235 |  5 ++---
->>  tests/generic/244 |  1 -
->>  tests/generic/270 |  6 ++----
->>  tests/generic/280 |  5 ++---
->>  tests/generic/400 |  2 +-
->>  12 files changed, 27 insertions(+), 46 deletions(-)
->>
->> diff --git a/tests/generic/082 b/tests/generic/082
->> index f078ef2ffff9..6bb9cf2a22ae 100755
->> --- a/tests/generic/082
->> +++ b/tests/generic/082
->> @@ -23,13 +23,8 @@ _require_scratch
->>  _require_quota
->>
->>  _scratch_mkfs >>$seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -
->> -# xfs doesn't need these setups and quotacheck even fails on 
->> xfs, so just
->> -# redirect the output to $seqres.full for debug purpose and 
->> ignore the results,
->> -# as we check the quota status later anyway.
->> -quotacheck -ug $SCRATCH_MNT >>$seqres.full 2>&1
->> -quotaon $SCRATCH_MNT >>$seqres.full 2>&1
->> +_qmount_option 'usrquota,grpquota'
->> +_qmount "usrquota,grpquota"
->>
->>  # first remount ro with a bad option, a failed remount ro 
->>  should not disable
->>  # quota, but currently xfs doesn't fail in this case, the 
->>  unknown option is
->> diff --git a/tests/generic/219 b/tests/generic/219
->> index 642823859886..a2eb0b20f408 100755
->> --- a/tests/generic/219
->> +++ b/tests/generic/219
->> @@ -91,25 +91,22 @@ test_accounting()
->>
->>  _scratch_unmount 2>/dev/null
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>  _force_vfs_quota_testing $SCRATCH_MNT
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon $SCRATCH_MNT 2>/dev/null
->>  _scratch_unmount
->>
->>  echo; echo "### test user accounting"
->> -export MOUNT_OPTIONS="-o usrquota"
->> +_qmount_option "usrquota"
->>  _qmount
->> -quotaon $SCRATCH_MNT 2>/dev/null
->>  type=u
->>  test_files
->>  test_accounting
->>  _scratch_unmount 2>/dev/null
->>
->>  echo; echo "### test group accounting"
->> -export MOUNT_OPTIONS="-o grpquota"
->> +_qmount_option "grpquota"
->>  _qmount
->> -quotaon $SCRATCH_MNT 2>/dev/null
->>  type=g
->>  test_files
->>  test_accounting
->> diff --git a/tests/generic/230 b/tests/generic/230
->> index a8caf5a808c3..0a680dbc874b 100755
->> --- a/tests/generic/230
->> +++ b/tests/generic/230
->> @@ -99,7 +99,8 @@ grace=2
->>  _qmount_option 'defaults'
->>
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>  _force_vfs_quota_testing $SCRATCH_MNT
->>  BLOCK_SIZE=$(_get_file_block_size $SCRATCH_MNT)
->>  quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> @@ -113,8 +114,8 @@ setquota -g -t $grace $grace $SCRATCH_MNT
->>  _scratch_unmount
->>
->>  echo; echo "### test user limit enforcement"
->> -_scratch_mount "-o usrquota"
->> -quotaon $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota"
->> +_qmount
->>  type=u
->>  test_files
->>  test_enforcement
->> @@ -122,8 +123,8 @@ cleanup_files
->>  _scratch_unmount 2>/dev/null
->>
->>  echo; echo "### test group limit enforcement"
->> -_scratch_mount "-o grpquota"
->> -quotaon $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "grpquota"
->> +_qmount
->>  type=g
->>  test_files
->>  test_enforcement
->> diff --git a/tests/generic/231 b/tests/generic/231
->> index ce7e62ea1886..02910523d0b5 100755
->> --- a/tests/generic/231
->> +++ b/tests/generic/231
->> @@ -47,10 +47,8 @@ _require_quota
->>  _require_user
->>
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -chmod 777 $SCRATCH_MNT
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>
->>  if ! _fsx 1; then
->>  	_scratch_unmount 2>/dev/null
->> diff --git a/tests/generic/232 b/tests/generic/232
->> index c903a5619045..21375809d299 100755
->> --- a/tests/generic/232
->> +++ b/tests/generic/232
->> @@ -44,10 +44,8 @@ _require_scratch
->>  _require_quota
->>
->>  _scratch_mkfs > $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -chmod 777 $SCRATCH_MNT
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>
->>  _fsstress
->>  _check_quota_usage
->> diff --git a/tests/generic/233 b/tests/generic/233
->> index 3fc1b63abb24..4606f3bde2ab 100755
->> --- a/tests/generic/233
->> +++ b/tests/generic/233
->> @@ -59,10 +59,8 @@ _require_quota
->>  _require_user
->>
->>  _scratch_mkfs > $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -chmod 777 $SCRATCH_MNT
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>  setquota -u $qa_user 32000 32000 1000 1000 $SCRATCH_MNT 
->>  2>/dev/null
->>
->>  _fsstress
->> diff --git a/tests/generic/234 b/tests/generic/234
->> index 4b25fc6507cc..2c596492a3e0 100755
->> --- a/tests/generic/234
->> +++ b/tests/generic/234
->> @@ -66,9 +66,8 @@ _require_quota
->>
->>
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>  test_setting
->>  _scratch_unmount
->>
->> diff --git a/tests/generic/235 b/tests/generic/235
->> index 037c29e806db..7a616650fc8f 100755
->> --- a/tests/generic/235
->> +++ b/tests/generic/235
->> @@ -25,9 +25,8 @@ do_repquota()
->>
->>
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>
->>  touch $SCRATCH_MNT/testfile
->>  chown $qa_user:$qa_user $SCRATCH_MNT/testfile
->> diff --git a/tests/generic/244 b/tests/generic/244
->> index b68035129c82..989bb4f5385e 100755
->> --- a/tests/generic/244
->> +++ b/tests/generic/244
->> @@ -66,7 +66,6 @@ done
->>  # remount just for kicks, make sure we get it off disk
->>  _scratch_unmount
->>  _qmount
->> -quotaon $SCRATCH_MNT 2>/dev/null
->>
->>  # Read them back by iterating based on quotas returned.
->>  # This should match what we set, even if we don't directly
->> diff --git a/tests/generic/270 b/tests/generic/270
->> index c3d5127a0b51..9ac829a7379f 100755
->> --- a/tests/generic/270
->> +++ b/tests/generic/270
->> @@ -62,10 +62,8 @@ _require_command "$SETCAP_PROG" setcap
->>  _require_attrs security
->>
->>  _scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 
->>  2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -chmod 777 $SCRATCH_MNT
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>
->>  if ! _workout; then
->>  	_scratch_unmount 2>/dev/null
->> diff --git a/tests/generic/280 b/tests/generic/280
->> index 3108fd23fb70..fae0a02145cf 100755
->> --- a/tests/generic/280
->> +++ b/tests/generic/280
->> @@ -34,9 +34,8 @@ _require_freeze
->>
->>  _scratch_unmount 2>/dev/null
->>  _scratch_mkfs >> $seqres.full 2>&1
->> -_scratch_mount "-o usrquota,grpquota"
->> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
->> -quotaon $SCRATCH_MNT 2>/dev/null
->> +_qmount_option "usrquota,grpquota"
->> +_qmount
->>  xfs_freeze -f $SCRATCH_MNT
->>  setquota -u root 1 2 3 4 $SCRATCH_MNT &
->>  pid=$!
->> diff --git a/tests/generic/400 b/tests/generic/400
->> index 77970da69a41..ef27c254167c 100755
->> --- a/tests/generic/400
->> +++ b/tests/generic/400
->> @@ -22,7 +22,7 @@ _require_scratch
->>
->>  _scratch_mkfs >> $seqres.full 2>&1
->>
->> -MOUNT_OPTIONS="-o usrquota,grpquota"
->> +_qmount_option "usrquota,grpquota"
->>  _qmount
->>  _require_getnextquota
->>
->> --
->> 2.48.1
->>
->>
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.19-rc1
+
+for you to fetch changes up to 91ef18b567dae84c0cea9b996d933c856e366f52:
+
+  ext4: mark inodes without acls in __ext4_iget() (2025-11-28 22:35:28 -0500)
+
+----------------------------------------------------------------
+New features and improvements for the ext4 file system
+
+* Optimize online defragmentation by using folios instead of individual
+  buffer heads
+* Improve error codes stored in the superblock when the journal aborts
+* Minor cleanups and clarifications in ext4_map_blocks()
+* Add documentation of the casefold and encrypt flags
+* Add support for file systems with a blocksize greater than the pagesize
+* Improve performance by enabling the caching the fact that an inode does
+  not have a Posix ACL.
+
+Various Bug Fixes
+
+* Fix false positive compliants from smatch
+* Fix error code which is returned by ext4fs_dirhash() when Siphash is
+  used without the encryption key
+* Fix races when writing to inline data files which could trigger a BUG
+* Fix potential NULL dereference when there is an corrupt file system with
+  an extended attribute value stored in a inode
+* Fix false positive lockdep report when syzbot uses ext4 and ocfs2 together
+* Fix false positive reported by DEPT by adjusting lock annotation
+* Avoid a potential BUG_ON in jbd2 when a file system is massively corrupted
+* Fix a WARN_ON when superblock is corrupted with a non-NULL terminated
+  mount options field
+* Add check if the userspace passes in a non-NULL terminated mount options
+  field to EXT4_IOC_SET_TUNE_SB_PARAM
+* Fix a potential journal checksum failure whena file system is copied while
+  it is mounted read-only
+* Fix a potential potential orphan file tracking error which only showed
+  on 32-bit systems
+* Fix assertion checks in mballoc (which have to be explicitly enbled by
+  manually enabling AGGRESSIVE_CHECKS and recompiling)
+* Avoid complaining about overly large orphan files created by mke2fs with
+  with file systems with a 64k block size
+
+----------------------------------------------------------------
+Alexey Nepomnyashih (1):
+      ext4: add i_data_sem protection in ext4_destroy_inline_data_nolock()
+
+Baokun Li (22):
+      ext4: align max orphan file size with e2fsprogs limit
+      ext4: remove page offset calculation in ext4_block_truncate_page()
+      ext4: remove PAGE_SIZE checks for rec_len conversion
+      ext4: make ext4_punch_hole() support large block size
+      ext4: enable DIOREAD_NOLOCK by default for BS > PS as well
+      ext4: introduce s_min_folio_order for future BS > PS support
+      ext4: support large block size in ext4_calculate_overhead()
+      ext4: support large block size in ext4_readdir()
+      ext4: add EXT4_LBLK_TO_B macro for logical block to bytes conversion
+      ext4: add EXT4_LBLK_TO_PG and EXT4_PG_TO_LBLK for block/page conversion
+      ext4: support large block size in ext4_mb_load_buddy_gfp()
+      ext4: support large block size in ext4_mb_get_buddy_page_lock()
+      ext4: support large block size in ext4_mb_init_cache()
+      ext4: prepare buddy cache inode for BS > PS with large folios
+      ext4: support large block size in ext4_mpage_readpages()
+      ext4: support large block size in ext4_block_write_begin()
+      ext4: support large block size in mpage_map_and_submit_buffers()
+      ext4: support large block size in mpage_prepare_extent_to_map()
+      ext4: make data=journal support large block size
+      ext4: support verifying data from large folios with fs-verity
+      ext4: add checks for large folio incompatibilities when BS > PS
+      ext4: enable block size larger than page size
+
+Byungchul Park (1):
+      jbd2: use a weaker annotation in journal handling
+
+Daniel Tang (1):
+      Documentation: ext4: Document casefold and encrypt flags
+
+Deepanshu Kartikey (1):
+      ext4: refresh inline data size before write operations
+
+Fedor Pchelkin (2):
+      ext4: fix string copying in parse_apply_sb_mount_options()
+      ext4: check if mount_opts is NUL-terminated in ext4_ioctl_set_tune_sb()
+
+Haibo Chen (1):
+      ext4: clear i_state_flags when alloc inode
+
+Haodong Tian (1):
+      fs/ext4: fix typo in comment
+
+Jan Kara (1):
+      ext4: mark inodes without acls in __ext4_iget()
+
+Julian Sun (1):
+      ext4: make error code in __ext4fs_dirhash() consistent.
+
+Karina Yankevich (1):
+      ext4: xattr: fix null pointer deref in ext4_raw_inode()
+
+Ranganath V N (1):
+      fs: ext4: fix uninitialized symbols
+
+Tetsuo Handa (1):
+      jbd2: use a per-journal lock_class_key for jbd2_trans_commit_key
+
+Wengang Wang (1):
+      jbd2: store more accurate errno in superblock when possible
+
+Yang Erkun (3):
+      ext4: rename EXT4_GET_BLOCKS_PRE_IO
+      ext4: cleanup for ext4_map_blocks
+      ext4: correct the comments place for EXT4_EXT_MAY_ZEROOUT
+
+Ye Bin (2):
+      jbd2: avoid bug_on in jbd2_journal_get_create_access() when file system corrupted
+      jbd2: fix the inconsistency between checksum and data in memory for journal sb
+
+Yongjian Sun (2):
+      ext4: fix incorrect group number assertion in mb_check_buddy
+      ext4: improve integrity checking in __mb_check_buddy by enhancing order-0 validation
+
+Zhang Yi (12):
+      ext4: correct the checking of quota files before moving extents
+      ext4: introduce seq counter for the extent status entry
+      ext4: make ext4_es_lookup_extent() pass out the extent seq counter
+      ext4: pass out extent seq counter when mapping blocks
+      ext4: use EXT4_B_TO_LBLK() in mext_check_arguments()
+      ext4: add mext_check_validity() to do basic check
+      ext4: refactor mext_check_arguments()
+      ext4: rename mext_page_mkuptodate() to mext_folio_mkuptodate()
+      ext4: introduce mext_move_extent()
+      ext4: switch to using the new extent movement method
+      ext4: add large folios support for moving extents
+      ext4: add two trace points for moving extents
+
+Zhihao Cheng (3):
+      ext4: remove page offset calculation in ext4_block_zero_page_range()
+      ext4: rename 'page' references to 'folio' in multi-block allocator
+      ext4: support large block size in __ext4_block_zero_page_range()
+
+ Documentation/filesystems/ext4/inodes.rst |   2 +
+ Documentation/filesystems/ext4/super.rst  |   4 +-
+ fs/ext4/balloc.c                          |   2 +-
+ fs/ext4/dir.c                             |   8 +-
+ fs/ext4/ext4.h                            |  50 +--
+ fs/ext4/ext4_jbd2.c                       |   3 +-
+ fs/ext4/extents.c                         |  28 +-
+ fs/ext4/extents_status.c                  |  31 +-
+ fs/ext4/extents_status.h                  |   2 +-
+ fs/ext4/hash.c                            |   2 +-
+ fs/ext4/ialloc.c                          |   1 -
+ fs/ext4/inline.c                          |  14 +-
+ fs/ext4/inode.c                           | 165 +++++-----
+ fs/ext4/ioctl.c                           |  14 +-
+ fs/ext4/mballoc.c                         | 188 ++++++-----
+ fs/ext4/move_extent.c                     | 786 +++++++++++++++++++++-----------------------
+ fs/ext4/namei.c                           |  18 +-
+ fs/ext4/orphan.c                          |   4 +-
+ fs/ext4/readpage.c                        |   7 +-
+ fs/ext4/super.c                           |  72 +++-
+ fs/ext4/sysfs.c                           |   6 +
+ fs/ext4/verity.c                          |   2 +-
+ fs/ext4/xattr.c                           |   6 +-
+ fs/jbd2/checkpoint.c                      |   2 +-
+ fs/jbd2/journal.c                         |  35 +-
+ fs/jbd2/transaction.c                     |  26 +-
+ include/linux/jbd2.h                      |   6 +
+ include/trace/events/ext4.h               |  99 +++++-
+ 28 files changed, 872 insertions(+), 711 deletions(-)
 
