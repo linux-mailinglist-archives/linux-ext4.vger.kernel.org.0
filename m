@@ -1,137 +1,112 @@
-Return-Path: <linux-ext4+bounces-12153-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12154-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 077A0CA33B9
-	for <lists+linux-ext4@lfdr.de>; Thu, 04 Dec 2025 11:31:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE5D5CA39FD
+	for <lists+linux-ext4@lfdr.de>; Thu, 04 Dec 2025 13:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 02A03300452D
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Dec 2025 10:31:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2B92F303280B
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Dec 2025 12:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084E92DECA1;
-	Thu,  4 Dec 2025 10:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D42338590;
+	Thu,  4 Dec 2025 12:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y6EfkqoL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tbzO//ar";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y6EfkqoL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tbzO//ar"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e/cs7GO/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAA62DE200
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Dec 2025 10:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5C533F386
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Dec 2025 12:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764844292; cv=none; b=KVxahtcUS1km35E6quMVycxjXpy18n35LDb3nZ189WKHoFMTdI8CLE3JFV9by4xGlUFZBTXOUO3V6Zp85NTKU2vNjQCD3xnna6gIBUHp5HfQ+niLgNUdzjU0FFNqXKoTzDxb+tSMOrXsA1Vwomn1TWfJ43sRaEo7t0vDcIydFMg=
+	t=1764851714; cv=none; b=YloHPguOaVZhy/22A3EKotW5AK29ju8D1ZwK2k2Wy4VcPo1xeb0yEoASoE4K+yAtXDauohnMuY5RpWEtacSB+5Xskc7rLD3psMGd6rDceM7ChAuiMJ/rTZfpnmduwRD/PIM+klV9dg9+4aitmJ6Zy5mJG5h5N/NobJMRvPLSisA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764844292; c=relaxed/simple;
-	bh=mJcQOkwx01cZA2MtOGKXlSdx4kWVSvWOiXxqq3qdeck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gmdizN2T1yEG1Tei0FHfQKcEtK5MbLbpE/S6bluyhQRonqpslUOETcDPU1w/TdvazGaF3yXHWCSsoqWn0v3B+XRdZK1o5VYxwMqNUgW8RXiGGtnFJCBKf/2BWuhQHQpdV2Poduln1Dv3P0a+eeR2VbyIqSIUSe8eQ+EhpQUZnh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y6EfkqoL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tbzO//ar; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y6EfkqoL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tbzO//ar; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 201475BE91;
-	Thu,  4 Dec 2025 10:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764844289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7y959UByP5GnQCtqyHvvALyBRK6rNWNRFyZypSIc8Tc=;
-	b=Y6EfkqoLqatYe6a15pEL8DDeE8VNK/kFiiAt2I8RvZNTi4C9/OpisNARMEVI3R25wZqEF4
-	4DojH7RZr2vU9kGYNhgGNaoixZQLGSIoX849bxrJlmT86M+Rwt9KXrxc4T8G649jfJ8hpa
-	9HSVuf0ewF9e7LtsGPGllvVD64H3qz4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764844289;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7y959UByP5GnQCtqyHvvALyBRK6rNWNRFyZypSIc8Tc=;
-	b=tbzO//ar88CA84D60Xla0F/goAc6sAUpHeSPtyfNRJ5LN/6hxklKCKQ/h1IgAEC8ljHs8m
-	d8oM14/25qd9cQAQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1764844289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7y959UByP5GnQCtqyHvvALyBRK6rNWNRFyZypSIc8Tc=;
-	b=Y6EfkqoLqatYe6a15pEL8DDeE8VNK/kFiiAt2I8RvZNTi4C9/OpisNARMEVI3R25wZqEF4
-	4DojH7RZr2vU9kGYNhgGNaoixZQLGSIoX849bxrJlmT86M+Rwt9KXrxc4T8G649jfJ8hpa
-	9HSVuf0ewF9e7LtsGPGllvVD64H3qz4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1764844289;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7y959UByP5GnQCtqyHvvALyBRK6rNWNRFyZypSIc8Tc=;
-	b=tbzO//ar88CA84D60Xla0F/goAc6sAUpHeSPtyfNRJ5LN/6hxklKCKQ/h1IgAEC8ljHs8m
-	d8oM14/25qd9cQAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 144043EA63;
-	Thu,  4 Dec 2025 10:31:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GpvtBAFjMWmrCAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Dec 2025 10:31:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C11D6A09A3; Thu,  4 Dec 2025 11:31:24 +0100 (CET)
-Date: Thu, 4 Dec 2025 11:31:24 +0100
-From: Jan Kara <jack@suse.cz>
+	s=arc-20240116; t=1764851714; c=relaxed/simple;
+	bh=giuujw4wWMYFZ/L9uYZJHqcifqomR2Z2F8dz07NJerk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uPBESp+bBFOzc8KbVDqp+UIOujhUv8+vDlE0Lle64sqxjjCOBUUwA1KzuGrKfzCu+cfHFlF/eCKAo3vEImErcd/cxacTsht4ujQDqezXNkY3gM43UAXWP11lKDN+D8MVHhCb+5J2yWBKVe0DQJ2cIQnMnzshuwspB5TToWZqSTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e/cs7GO/; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-429ce7e79f8so610445f8f.0
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Dec 2025 04:35:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764851710; x=1765456510; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+rTyTaZGfT5ilY6rp9NwT1cgeVzIfAo+7DLel/usj2k=;
+        b=e/cs7GO/DTMkPrE8bLqKn4uoCqSF1rL/RBTXDU5V+l7+W+KJFIfC3l92z2z1Rj6AnZ
+         ECZ7Qlu6h8V1Imgi9nXj8WU/PoWR5MjXkUz1YIYue8N/QrORQe92dfkSKKmKPDge8GtM
+         zHsTni0gYAgppC9BpOxrXYVDesbjLyNOW3HKKjvV7f51cvinxW+UnXRMTgFAYtbI+qMK
+         ZpiG93G9qV46kwwZIP8DZtFwEKgQR3p8237Z/huMdXeqM4BgCvWfYrBJFTaLMCuT1ihG
+         MCrs9+IjLWWye5sg9edVO/MqlAXUjwvzTtC56wUDN9FQpzv2Db58W1LK1raqqPytxCJF
+         MYMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764851710; x=1765456510;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=+rTyTaZGfT5ilY6rp9NwT1cgeVzIfAo+7DLel/usj2k=;
+        b=gf/Ft78LH4YQnpshIUsyByvrbglQkcegNjWRHx/KKmexHTZPSx+yITF6rg+4B0Ewer
+         kfuyDw/+gSni2+mf7fK/jQNB3mHIJ0cnO17+Fm5ViGDVmhabqGJsXp+O5IpCbOb3zvfe
+         JopOS8MHLI2bKgjUwO/YAloOGostt/LjA2G4m50eSZdBGE5/xywxak01gQVFhffTMgb5
+         eQG37/ddBfOQ1WwqZXk26iA6EMQva4wUMuD9A4Wqurai+kH8cZKG3hLWBE5gEdgTh8lP
+         EOuBQMIAvwzQNLe9EqOnvk8f7eVEqcs8khjsm+qku14WgX0Ii5n9TrHrk5vlSGuCrY+h
+         O1cA==
+X-Forwarded-Encrypted: i=1; AJvYcCUB/gTjuHjoSEx7MaGYAyNi0m7wyl9FQuPAcjAK00CswAwVqBIZ0BVpuNVFSB1hJu57+PXNcWYgmu1M@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxfnvdhT2Ig/SR5C2NuaL0jIv8J2XK+PyO22+T2owwe0TSdY4r
+	XuNVMXnR2xORRKY+YdGpsWhJtIDVIasUihRVoD+3Gzyaqmcsl7xZpMdlQIVATA==
+X-Gm-Gg: ASbGncsMe07jyyoxNt3bz3ejAmoEJrGwUtY3Xm7+EHjq9+8v2iqjdPN3QAzYV7etvlP
+	jXktAlZOO5XSo/rks47ttA3A+8QVFH4IuKGZC+9dtMv13/+ORQjNVwNZ8KWcfrsfI8/kzM88CgI
+	0y0BVLYyUMnu08RcidhxewXV2LhISU/7xdng+UMZrDnmrMn17pbYoJF03sIbBimAYAbzN2aTDiM
+	tFDuIFIs6UgIOtZXyLxZ/z3+ZSVmgJZD91iI61j5zatgaT2RVo/CQzbA0GniFofzR9Jz3BYQCCB
+	UnPVrodqtfie3r2FuN9hB8yaowZ2P87TxOWFDKxK98DuSgb8FzG57cndIM5KpTh2EmDCuZ9Z4xP
+	rZQZXi6x6gBE88xtjbbvaUIkvfM43VI/XTqKipOgGXinqvwse0RxPxiik4ZAYlWlJ8yfJ+FuaLQ
+	pZZzFBBLVnMbiF6yjiYUMg371dmbHDXVLDVSFZywMzb/0LjiViKybnIP6llN7I93E=
+X-Google-Smtp-Source: AGHT+IFZz2nOAObl8bUScuFmASw62b5fUYYMyCWjTcl+7miVCAVGtUBlGJQB7wCxtgJ5k5wOHJl3Zg==
+X-Received: by 2002:a5d:5d01:0:b0:429:c851:69ab with SMTP id ffacd0b85a97d-42f7985d653mr2308940f8f.55.1764851709860;
+        Thu, 04 Dec 2025 04:35:09 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7d353c9esm2839400f8f.40.2025.12.04.04.35.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Dec 2025 04:35:09 -0800 (PST)
+Date: Thu, 4 Dec 2025 12:35:07 +0000
+From: David Laight <david.laight.linux@gmail.com>
 To: Arnd Bergmann <arnd@kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, "Darrick J. Wong"
+ <djwong@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] ext4: fix ext4_tune_sb_params padding
-Message-ID: <3ueamfhbmtwmclmtm77msvsuylgxabt3zqkrtvxqtajqhupfdd@vy7bw3e3wiwn>
+Message-ID: <20251204123507.2e6091a9@pumpkin>
+In-Reply-To: <20251204101914.1037148-1-arnd@kernel.org>
 References: <20251204101914.1037148-1-arnd@kernel.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251204101914.1037148-1-arnd@kernel.org>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.992];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,arndb.de:email,suse.cz:email,suse.com:email]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu 04-12-25 11:19:10, Arnd Bergmann wrote:
+On Thu,  4 Dec 2025 11:19:10 +0100
+Arnd Bergmann <arnd@kernel.org> wrote:
+
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
 > The padding at the end of struct ext4_tune_sb_params is architecture
 > specific and in particular is different between x86-32 and x86-64,
 > since the __u64 member only enforces struct alignment on the latter.
+
+Is it worth adding a compile-time check for the size somewhere?
+Since the intention seems to be that any extensions will use the padding.
+
+	David
+
 > 
 > This shows up as a new warning when test-building the headers with
 > -Wpadded:
@@ -151,14 +126,6 @@ On Thu 04-12-25 11:19:10, Arnd Bergmann wrote:
 > 
 > Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Indeed. I agree this is fairly new so we can just fix the structure. Feel
-free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
 > ---
 >  include/uapi/linux/ext4.h | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -176,10 +143,5 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 >  };
 >  
 >  #define EXT4_TUNE_FL_ERRORS_BEHAVIOR	0x00000001
-> -- 
-> 2.39.5
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
 
