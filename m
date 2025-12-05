@@ -1,518 +1,254 @@
-Return-Path: <linux-ext4+bounces-12205-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12206-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF0DDCA6E19
-	for <lists+linux-ext4@lfdr.de>; Fri, 05 Dec 2025 10:23:11 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20698CA6E8B
+	for <lists+linux-ext4@lfdr.de>; Fri, 05 Dec 2025 10:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2F1373175B7C
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Dec 2025 09:21:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 065C830152B5
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Dec 2025 09:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99082329E7D;
-	Fri,  5 Dec 2025 09:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BDC3358DA;
+	Fri,  5 Dec 2025 09:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kll9ZZOx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YRrD1Ibi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E9D32A3CF
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Dec 2025 09:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B926E3164D3;
+	Fri,  5 Dec 2025 09:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764925862; cv=none; b=s84XOenpkOSXBZE/yBMcGmaGaQoHR8Zte0M0zdcqnYQgUsdaxQFDkQmurVP7QRV/PBLl1dOd5X8Vx1IQgnSxX3pXVuddslA5D2tf9djQIgoZsQR8IZ9Gwha7Rg+MrEBHGe6bQBLSsdvJOcn7a2oiVg4bhZK0zVuxU3g7T5p7jLw=
+	t=1764926887; cv=none; b=BG46cNz3JwOs33ZpLgEv3YkN197PiWn4c0jY6s3ZndW0iTKepVbKLm0yUkpNS1b+Sq2cISr2yR4sH5CVLTUFsCsmNOv/J+aLK70saXpEh9/2fwlfZ0qNkLotjyjk3EQLYugBBTcKzlV/zfA8YXoruIMjwn8SXDmFZsd7DU/ZnRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764925862; c=relaxed/simple;
-	bh=Skd53DxdHhiPnuL2cuiHMz+NR6hEM5RNHEO0cyvIt6A=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=WXNGwwTy0AcHq6D2Lf6LBYCeA94ojtBgtPkV/ABbzm53Woi2Uzp4RpVE+/bdhzSNdDNGx6Np2AgcXeiC+ZV42sL4h8emSNZ+m0AKbVeinW350O8tZROOXM5p5ZLbNGUqWgMnPkuh46oCdsMGvjsYrd78NJa9n0mJXTQTKu/H5Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kll9ZZOx; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-477ba2c1ca2so23280655e9.2
-        for <linux-ext4@vger.kernel.org>; Fri, 05 Dec 2025 01:10:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1764925853; x=1765530653; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AhvjhQdtncVGuFWoHbJNotQHQb+6urCBIiQa0SvWTDc=;
-        b=kll9ZZOxcgZcGcKnymVACTqISlCn/lMC67z+yOiRa/AmY7Ct4FBpkqpvREjFhAcib8
-         r0h8M5VmFYCt/Untuk1h1l7D5u5DbJfl29mf7UZxs9YaOsn5mhBginS6q3JEBEet63A7
-         +Y9iPqoMGg0aN94B88b1GdvbogvK+FLz4pIcWypvmffhZ0Bn69ARYhTV7m/3OkXiSZ1b
-         WtwzI8bYY9mLvOaCkdNed+48qfRqqel2h1KS6C7PjYlt7RgggPUPr7dVN4t8+zhecyUq
-         VC4clkXpmDPgy9SjXPIFPtaZpililx2N5GWQaA9pU/PtpKr2QRYbWXurONq/XTIG1iWL
-         ZqeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764925853; x=1765530653;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AhvjhQdtncVGuFWoHbJNotQHQb+6urCBIiQa0SvWTDc=;
-        b=uM4t7ufNknTrEEE5w2fstUDtBe6cWQOLf/cVouyA2YALcDmA1196DzdD2FPhaDm2Ll
-         hTnBkBXlj4zMElsnS0cvwx8d83v6wr2UdqTCnJd1kF8OR+lgpu+rLjBsGi6uBSjnAFOw
-         5qjBSRzoNNxJDUaYvfRiIf3MWiEVO2sPLSHgd3JGlbHjCcogjYreltbZ+Q+EbTYSY3bJ
-         aG+ENMcbuIwHG32R5MbSLbAOaVE6DlSsl+1oSTb8JVibOnwR0YrLTvsiKV2IZxffeZyh
-         mY9ajfAer36vSdxIiarrhaRUNsLIOdfJ5SWZEeDxIQixKNFyESwYlfr2NpEqLiQSZYCi
-         cQPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW2EpNUlkmXSfrYZYy5g17O04cDZIcHy0Nilf2QPD960hALOnL3yEHM+dhhcZho4h2XofPS3+WOMhm5@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUowHDOUJbvBpLNRfYNrXlDCgf4aMx9jd2hsmIC118TFNsgXgQ
-	hmSJ5XC3maVeYe9XOAvpBGg+tZJ6IkfUo6ojhR1XGvpZDcDpU6aa66ned3GowjIU4xqXnsymtF6
-	YoWkR
-X-Gm-Gg: ASbGncvMuZCZkVBw2AuPZLinpvNQYSgHwTbstFnqewKj61/b3JSxBn0+vl1tE41hXFp
-	JVitjfkGxymX9W+MX2/SgBmKqg3yclp1ctkjizH/JA7dP4dKAIyA5KEPFR2pqSTFvwUzA1EH5Nq
-	UoXsPpLOVBG+CpU2YmBwDVspb14xhEes7GQFPDDVOvoAsyNPqZs6G6yTfuiGcT/Pe/sNTNQCfWR
-	wqQXSOysmXwJW91Vm7/I3zyUCeDkgSOMQf9mtHQ6sDutLBg2WkOe/XOrP6KKbKHMH/SvVOeW04n
-	PsRNrDrsr0KtH+BWz07OMw1zj6mpUwl4eR1FT7ajG0y0yf6oVco4IDDVIE17yzrKF2LTUHDzh5s
-	LYt0mx75mzb7bRswcFtoHt58/9BguWEAVkAeZtuBZK5aqb/56NHsuYlMsn7RThIKme9eetDWKhc
-	rTPz5u0y8jIxmcm7QA
-X-Google-Smtp-Source: AGHT+IHcl3I2muWycrQWdLekodvdXpiacXX0Nt+bp9XDm+LnOWNnveSI7lwUbzQak2Uc4F9iFHHbpA==
-X-Received: by 2002:a05:600c:35c7:b0:479:1b0f:dfff with SMTP id 5b1f17b1804b1-4792f24d432mr62721005e9.10.1764925852771;
-        Fri, 05 Dec 2025 01:10:52 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4792afd47b3sm55186105e9.0.2025.12.05.01.10.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Dec 2025 01:10:52 -0800 (PST)
-Date: Fri, 5 Dec 2025 12:10:48 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev,
-	Vivek BalachandharTN <vivek.balachandhar@gmail.com>, jack@suse.com
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	vivek.balachandhar@gmail.com
-Subject: Re: [PATCH] ext2: factor out ext2_fill_super() teardown path
-Message-ID: <202512042321.fuAOlXGn-lkp@intel.com>
+	s=arc-20240116; t=1764926887; c=relaxed/simple;
+	bh=/3K8i488KBtohoPjUWcmwxOuPxkVYp8UF2/iPAPxq7Y=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lKw9+O+uy/86AULuO8cYBWv9WjJg32FgE8adnVGu+x0KUkv8vXjCALTH7R7Qm2KLjVWDLmFzt0F0BZ1i6zm90WF8asFEd0AwxKHzVhJ73sTnKBIVACqtPjRmrsj/H6mFSEtB3dD6YP6YWZkbDDBmU0QnuKPuZVuE0deb7pwnMgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YRrD1Ibi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3F54C4CEF1;
+	Fri,  5 Dec 2025 09:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764926885;
+	bh=/3K8i488KBtohoPjUWcmwxOuPxkVYp8UF2/iPAPxq7Y=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=YRrD1IbijzZtM+qkYdKqMCtJSY7HW/b2RS+RGwoFe9bPK/qWFg3n6jePfSjkEJ252
+	 CAstxESV1t5hIfHaNpivukj3cMXOpAMg0/UqoCgsIZzotoaILL21oKFa9ikkMb7YNl
+	 qqNVditrpYtGa7rGlqrjiS8gpKMFlw9u1U78kVXNQ6fZ18DGyDH2qOcSrxYOJtk1WN
+	 dF0rZn265IWR71TmnUtnGq8SAs1Q/6QTETPixkqjPtVt06ZheKAgeGXqIyF47v2gee
+	 2OnhEW5m8+31fx4RYUVZM3XYN7ukMj5estutAcl9/Ron0WYtClPzGLKIvzh03vv/vR
+	 FOpwVUcjkVvvA==
+Message-ID: <cd65b963dd4edade3afb2e7d27eb33af1c62682e.camel@kernel.org>
+Subject: Re: [PATCH v18 41/42] SUNRPC: relocate struct rcu_head to the first
+ field of struct rpc_xprt
+From: Jeff Layton <jlayton@kernel.org>
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org, 
+	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org, 
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com, 
+	peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, 	joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, 	duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, 	willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, 	gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, 	akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, 	hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, 	dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, 	vbabka@suse.cz,
+ ngupta@vflare.org, linux-block@vger.kernel.org, 	josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, 	dan.j.williams@intel.com,
+ hch@infradead.org, djwong@kernel.org, 	dri-devel@lists.freedesktop.org,
+ rodrigosiqueiramelo@gmail.com, 	melissa.srw@gmail.com,
+ hamohammed.sa@gmail.com, harry.yoo@oracle.com, 	chris.p.wilson@intel.com,
+ gwan-gyeong.mun@intel.com, 	max.byungchul.park@gmail.com,
+ boqun.feng@gmail.com, longman@redhat.com, 	yunseong.kim@ericsson.com,
+ ysk@kzalloc.com, yeoreum.yun@arm.com, 	netdev@vger.kernel.org,
+ matthew.brost@intel.com, her0gyugyu@gmail.com, 	corbet@lwn.net,
+ catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com, 
+	luto@kernel.org, sumit.semwal@linaro.org, gustavo@padovan.org, 
+	christian.koenig@amd.com, andi.shyti@kernel.org, arnd@arndb.de, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	surenb@google.com, mcgrof@kernel.org, petr.pavlu@suse.com,
+ da.gomez@kernel.org, 	samitolvanen@google.com, paulmck@kernel.org,
+ frederic@kernel.org, 	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, 	urezki@gmail.com, mathieu.desnoyers@efficios.com,
+ jiangshanlai@gmail.com, 	qiang.zhang@linux.dev, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, 	dietmar.eggemann@arm.com, bsegall@google.com,
+ mgorman@suse.de, vschneid@redhat.com, 	chuck.lever@oracle.com,
+ neil@brown.name, okorniev@redhat.com, Dai.Ngo@oracle.com, 	tom@talpey.com,
+ trondmy@kernel.org, anna@kernel.org, kees@kernel.org, 
+	bigeasy@linutronix.de, clrkwllms@kernel.org, mark.rutland@arm.com, 
+	ada.coupriediaz@arm.com, kristina.martsenko@arm.com,
+ wangkefeng.wang@huawei.com, 	broonie@kernel.org, kevin.brodsky@arm.com,
+ dwmw@amazon.co.uk, 	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
+ yuzhao@google.com, 	baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, 	richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, 	linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net, 
+	chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com, 
+	link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, 	thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, 	andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, 	linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, 	linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, 	linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, 	dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ neilb@ownmail.net, 	bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, 	geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, 	bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, 	aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org
+Date: Fri, 05 Dec 2025 04:27:52 -0500
+In-Reply-To: <20251205071855.72743-42-byungchul@sk.com>
+References: <20251205071855.72743-1-byungchul@sk.com>
+	 <20251205071855.72743-42-byungchul@sk.com>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251203045048.2463502-1-vivek.balachandhar@gmail.com>
 
-Hi Vivek,
+On Fri, 2025-12-05 at 16:18 +0900, Byungchul Park wrote:
+> While compiling Linux kernel with DEPT on, the following error was
+> observed:
+>=20
+>    ./include/linux/rcupdate.h:1084:17: note: in expansion of macro
+>    =E2=80=98BUILD_BUG_ON=E2=80=99
+>    1084 | BUILD_BUG_ON(offsetof(typeof(*(ptr)), rhf) >=3D 4096);	\
+>         | ^~~~~~~~~~~~
+>    ./include/linux/rcupdate.h:1047:29: note: in expansion of macro
+>    'kvfree_rcu_arg_2'
+>    1047 | #define kfree_rcu(ptr, rhf) kvfree_rcu_arg_2(ptr, rhf)
+>         |                             ^~~~~~~~~~~~~~~~
+>    net/sunrpc/xprt.c:1856:9: note: in expansion of macro 'kfree_rcu'
+>    1856 | kfree_rcu(xprt, rcu);
+>         | ^~~~~~~~~
+>     CC net/kcm/kcmproc.o
+>    make[4]: *** [scripts/Makefile.build:203: net/sunrpc/xprt.o] Error 1
+>=20
+> Since kfree_rcu() assumes 'offset of struct rcu_head in a rcu-managed
+> struct < 4096', the offest of struct rcu_head in struct rpc_xprt should
+> not exceed 4096 but does, due to the debug information added by DEPT.
+>=20
+> Relocate struct rcu_head to the first field of struct rpc_xprt from an
+> arbitrary location to avoid the issue and meet the assumption.
+>=20
+> Reported-by: Yunseong Kim <ysk@kzalloc.com>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  include/linux/sunrpc/xprt.h | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/include/linux/sunrpc/xprt.h b/include/linux/sunrpc/xprt.h
+> index f46d1fb8f71a..666e42a17a31 100644
+> --- a/include/linux/sunrpc/xprt.h
+> +++ b/include/linux/sunrpc/xprt.h
+> @@ -211,6 +211,14 @@ enum xprt_transports {
+> =20
+>  struct rpc_sysfs_xprt;
+>  struct rpc_xprt {
+> +	/*
+> +	 * Place struct rcu_head within the first 4096 bytes of struct
+> +	 * rpc_xprt if sizeof(struct rpc_xprt) > 4096, so that
+> +	 * kfree_rcu() can simply work assuming that.  See the comment
+> +	 * in kfree_rcu().
+> +	 */
+> +	struct rcu_head		rcu;
+> +
+>  	struct kref		kref;		/* Reference count */
+>  	const struct rpc_xprt_ops *ops;		/* transport methods */
+>  	unsigned int		id;		/* transport id */
+> @@ -317,7 +325,6 @@ struct rpc_xprt {
+>  #if IS_ENABLED(CONFIG_SUNRPC_DEBUG)
+>  	struct dentry		*debugfs;		/* debugfs directory */
+>  #endif
+> -	struct rcu_head		rcu;
+>  	const struct xprt_class	*xprt_class;
+>  	struct rpc_sysfs_xprt	*xprt_sysfs;
+>  	bool			main; /*mark if this is the 1st transport */
 
-kernel test robot noticed the following build warnings:
+Seems fine to me.
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vivek-BalachandharTN/ext2-factor-out-ext2_fill_super-teardown-path/20251203-125544
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_next
-patch link:    https://lore.kernel.org/r/20251203045048.2463502-1-vivek.balachandhar%40gmail.com
-patch subject: [PATCH] ext2: factor out ext2_fill_super() teardown path
-config: i386-randconfig-141-20251204 (https://download.01.org/0day-ci/archive/20251204/202512042321.fuAOlXGn-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202512042321.fuAOlXGn-lkp@intel.com/
-
-smatch warnings:
-fs/ext2/super.c:1268 ext2_fill_super() error: uninitialized symbol 'bh'.
-fs/ext2/super.c:1268 ext2_fill_super() error: double free of 'bh' (line 1020)
-
-vim +/bh +1268 fs/ext2/super.c
-
-   890	static int ext2_fill_super(struct super_block *sb, struct fs_context *fc)
-   891	{
-   892		struct ext2_fs_context *ctx = fc->fs_private;
-   893		int silent = fc->sb_flags & SB_SILENT;
-   894		struct buffer_head * bh;
-   895		struct ext2_sb_info * sbi;
-   896		struct ext2_super_block * es;
-   897		struct inode *root;
-   898		unsigned long block;
-   899		unsigned long sb_block = ctx->s_sb_block;
-   900		unsigned long logic_sb_block;
-   901		unsigned long offset = 0;
-   902		long ret = -ENOMEM;
-   903		int blocksize = BLOCK_SIZE;
-   904		int db_count;
-   905		int i, j;
-   906		__le32 features;
-   907		int err;
-   908	
-   909		sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-   910		if (!sbi)
-   911			return -ENOMEM;
-   912	
-   913		sbi->s_blockgroup_lock =
-   914			kzalloc(sizeof(struct blockgroup_lock), GFP_KERNEL);
-   915		if (!sbi->s_blockgroup_lock) {
-   916			kfree(sbi);
-   917			return -ENOMEM;
-   918		}
-   919		sb->s_fs_info = sbi;
-   920		sbi->s_sb_block = sb_block;
-   921		sbi->s_daxdev = fs_dax_get_by_bdev(sb->s_bdev, &sbi->s_dax_part_off,
-   922						   NULL, NULL);
-   923	
-   924		spin_lock_init(&sbi->s_lock);
-   925		ret = -EINVAL;
-   926	
-   927		/*
-   928		 * See what the current blocksize for the device is, and
-   929		 * use that as the blocksize.  Otherwise (or if the blocksize
-   930		 * is smaller than the default) use the default.
-   931		 * This is important for devices that have a hardware
-   932		 * sectorsize that is larger than the default.
-   933		 */
-   934		blocksize = sb_min_blocksize(sb, BLOCK_SIZE);
-   935		if (!blocksize) {
-   936			ext2_msg(sb, KERN_ERR, "error: unable to set blocksize");
-   937			goto failed_sbi;
-
-bh uninitialized on this path, but the kbuild bot already sent a
-Clang warning for that so normally I wouldn't send this but ...
-
-   938		}
-   939	
-   940		/*
-   941		 * If the superblock doesn't start on a hardware sector boundary,
-   942		 * calculate the offset.  
-   943		 */
-   944		if (blocksize != BLOCK_SIZE) {
-   945			logic_sb_block = (sb_block*BLOCK_SIZE) / blocksize;
-   946			offset = (sb_block*BLOCK_SIZE) % blocksize;
-   947		} else {
-   948			logic_sb_block = sb_block;
-   949		}
-   950	
-   951		if (!(bh = sb_bread(sb, logic_sb_block))) {
-   952			ext2_msg(sb, KERN_ERR, "error: unable to read superblock");
-   953			goto failed_sbi;
-   954		}
-   955		/*
-   956		 * Note: s_es must be initialized as soon as possible because
-   957		 *       some ext2 macro-instructions depend on its value
-   958		 */
-   959		es = (struct ext2_super_block *) (((char *)bh->b_data) + offset);
-   960		sbi->s_es = es;
-   961		sb->s_magic = le16_to_cpu(es->s_magic);
-   962	
-   963		if (sb->s_magic != EXT2_SUPER_MAGIC)
-   964			goto cantfind_ext2;
-   965	
-   966		ext2_set_options(fc, sbi);
-   967	
-   968		sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
-   969			(test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
-   970		sb->s_iflags |= SB_I_CGROUPWB;
-   971	
-   972		if (le32_to_cpu(es->s_rev_level) == EXT2_GOOD_OLD_REV &&
-   973		    (EXT2_HAS_COMPAT_FEATURE(sb, ~0U) ||
-   974		     EXT2_HAS_RO_COMPAT_FEATURE(sb, ~0U) ||
-   975		     EXT2_HAS_INCOMPAT_FEATURE(sb, ~0U)))
-   976			ext2_msg(sb, KERN_WARNING,
-   977				"warning: feature flags set on rev 0 fs, "
-   978				"running e2fsck is recommended");
-   979		/*
-   980		 * Check feature flags regardless of the revision level, since we
-   981		 * previously didn't change the revision level when setting the flags,
-   982		 * so there is a chance incompat flags are set on a rev 0 filesystem.
-   983		 */
-   984		features = EXT2_HAS_INCOMPAT_FEATURE(sb, ~EXT2_FEATURE_INCOMPAT_SUPP);
-   985		if (features) {
-   986			ext2_msg(sb, KERN_ERR,	"error: couldn't mount because of "
-   987			       "unsupported optional features (%x)",
-   988				le32_to_cpu(features));
-   989			goto failed_mount;
-   990		}
-   991		if (!sb_rdonly(sb) && (features = EXT2_HAS_RO_COMPAT_FEATURE(sb, ~EXT2_FEATURE_RO_COMPAT_SUPP))){
-   992			ext2_msg(sb, KERN_ERR, "error: couldn't mount RDWR because of "
-   993			       "unsupported optional features (%x)",
-   994			       le32_to_cpu(features));
-   995			goto failed_mount;
-   996		}
-   997	
-   998		if (le32_to_cpu(es->s_log_block_size) >
-   999		    (EXT2_MAX_BLOCK_LOG_SIZE - BLOCK_SIZE_BITS)) {
-  1000			ext2_msg(sb, KERN_ERR,
-  1001				 "Invalid log block size: %u",
-  1002				 le32_to_cpu(es->s_log_block_size));
-  1003			goto failed_mount;
-  1004		}
-  1005		blocksize = BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
-  1006	
-  1007		if (test_opt(sb, DAX)) {
-  1008			if (!sbi->s_daxdev) {
-  1009				ext2_msg(sb, KERN_ERR,
-  1010					"DAX unsupported by block device. Turning off DAX.");
-  1011				clear_opt(sbi->s_mount_opt, DAX);
-  1012			} else if (blocksize != PAGE_SIZE) {
-  1013				ext2_msg(sb, KERN_ERR, "unsupported blocksize for DAX\n");
-  1014				clear_opt(sbi->s_mount_opt, DAX);
-  1015			}
-  1016		}
-  1017	
-  1018		/* If the blocksize doesn't match, re-read the thing.. */
-  1019		if (sb->s_blocksize != blocksize) {
-  1020			brelse(bh);
-
-Smatch complains that this calls brelse()
-
-  1021	
-  1022			if (!sb_set_blocksize(sb, blocksize)) {
-  1023				ext2_msg(sb, KERN_ERR,
-  1024					"error: bad blocksize %d", blocksize);
-  1025				goto failed_sbi;
-
-and this goto calls brelse(bh) a second time inside the
-ext2_free_sbi() function.
-
-  1026			}
-  1027	
-  1028			logic_sb_block = (sb_block*BLOCK_SIZE) / blocksize;
-  1029			offset = (sb_block*BLOCK_SIZE) % blocksize;
-  1030			bh = sb_bread(sb, logic_sb_block);
-  1031			if(!bh) {
-  1032				ext2_msg(sb, KERN_ERR, "error: couldn't read"
-  1033					"superblock on 2nd try");
-  1034				goto failed_sbi;
-  1035			}
-  1036			es = (struct ext2_super_block *) (((char *)bh->b_data) + offset);
-  1037			sbi->s_es = es;
-  1038			if (es->s_magic != cpu_to_le16(EXT2_SUPER_MAGIC)) {
-  1039				ext2_msg(sb, KERN_ERR, "error: magic mismatch");
-  1040				goto failed_mount;
-  1041			}
-  1042		}
-  1043	
-  1044		sb->s_maxbytes = ext2_max_size(sb->s_blocksize_bits);
-  1045		sb->s_max_links = EXT2_LINK_MAX;
-  1046		sb->s_time_min = S32_MIN;
-  1047		sb->s_time_max = S32_MAX;
-  1048	
-  1049		if (le32_to_cpu(es->s_rev_level) == EXT2_GOOD_OLD_REV) {
-  1050			sbi->s_inode_size = EXT2_GOOD_OLD_INODE_SIZE;
-  1051			sbi->s_first_ino = EXT2_GOOD_OLD_FIRST_INO;
-  1052		} else {
-  1053			sbi->s_inode_size = le16_to_cpu(es->s_inode_size);
-  1054			sbi->s_first_ino = le32_to_cpu(es->s_first_ino);
-  1055			if ((sbi->s_inode_size < EXT2_GOOD_OLD_INODE_SIZE) ||
-  1056			    !is_power_of_2(sbi->s_inode_size) ||
-  1057			    (sbi->s_inode_size > blocksize)) {
-  1058				ext2_msg(sb, KERN_ERR,
-  1059					"error: unsupported inode size: %d",
-  1060					sbi->s_inode_size);
-  1061				goto failed_mount;
-  1062			}
-  1063		}
-  1064	
-  1065		sbi->s_blocks_per_group = le32_to_cpu(es->s_blocks_per_group);
-  1066		sbi->s_inodes_per_group = le32_to_cpu(es->s_inodes_per_group);
-  1067	
-  1068		sbi->s_inodes_per_block = sb->s_blocksize / EXT2_INODE_SIZE(sb);
-  1069		if (sbi->s_inodes_per_block == 0 || sbi->s_inodes_per_group == 0)
-  1070			goto cantfind_ext2;
-  1071		sbi->s_itb_per_group = sbi->s_inodes_per_group /
-  1072						sbi->s_inodes_per_block;
-  1073		sbi->s_desc_per_block = sb->s_blocksize /
-  1074						sizeof (struct ext2_group_desc);
-  1075		sbi->s_sbh = bh;
-  1076		sbi->s_mount_state = le16_to_cpu(es->s_state);
-  1077		sbi->s_addr_per_block_bits =
-  1078			ilog2 (EXT2_ADDR_PER_BLOCK(sb));
-  1079		sbi->s_desc_per_block_bits =
-  1080			ilog2 (EXT2_DESC_PER_BLOCK(sb));
-  1081	
-  1082		if (sb->s_magic != EXT2_SUPER_MAGIC)
-  1083			goto cantfind_ext2;
-  1084	
-  1085		if (sb->s_blocksize != bh->b_size) {
-  1086			if (!silent)
-  1087				ext2_msg(sb, KERN_ERR, "error: unsupported blocksize");
-  1088			goto failed_mount;
-  1089		}
-  1090	
-  1091		if (es->s_log_frag_size != es->s_log_block_size) {
-  1092			ext2_msg(sb, KERN_ERR,
-  1093				"error: fragsize log %u != blocksize log %u",
-  1094				le32_to_cpu(es->s_log_frag_size), sb->s_blocksize_bits);
-  1095			goto failed_mount;
-  1096		}
-  1097	
-  1098		if (sbi->s_blocks_per_group > sb->s_blocksize * 8) {
-  1099			ext2_msg(sb, KERN_ERR,
-  1100				"error: #blocks per group too big: %lu",
-  1101				sbi->s_blocks_per_group);
-  1102			goto failed_mount;
-  1103		}
-  1104		/* At least inode table, bitmaps, and sb have to fit in one group */
-  1105		if (sbi->s_blocks_per_group <= sbi->s_itb_per_group + 3) {
-  1106			ext2_msg(sb, KERN_ERR,
-  1107				"error: #blocks per group smaller than metadata size: %lu <= %lu",
-  1108				sbi->s_blocks_per_group, sbi->s_inodes_per_group + 3);
-  1109			goto failed_mount;
-  1110		}
-  1111		if (sbi->s_inodes_per_group < sbi->s_inodes_per_block ||
-  1112		    sbi->s_inodes_per_group > sb->s_blocksize * 8) {
-  1113			ext2_msg(sb, KERN_ERR,
-  1114				"error: invalid #inodes per group: %lu",
-  1115				sbi->s_inodes_per_group);
-  1116			goto failed_mount;
-  1117		}
-  1118		if (sb_bdev_nr_blocks(sb) < le32_to_cpu(es->s_blocks_count)) {
-  1119			ext2_msg(sb, KERN_ERR,
-  1120				 "bad geometry: block count %u exceeds size of device (%u blocks)",
-  1121				 le32_to_cpu(es->s_blocks_count),
-  1122				 (unsigned)sb_bdev_nr_blocks(sb));
-  1123			goto failed_mount;
-  1124		}
-  1125	
-  1126		sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
-  1127					le32_to_cpu(es->s_first_data_block) - 1)
-  1128						/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
-  1129		if ((u64)sbi->s_groups_count * sbi->s_inodes_per_group !=
-  1130		    le32_to_cpu(es->s_inodes_count)) {
-  1131			ext2_msg(sb, KERN_ERR, "error: invalid #inodes: %u vs computed %llu",
-  1132				 le32_to_cpu(es->s_inodes_count),
-  1133				 (u64)sbi->s_groups_count * sbi->s_inodes_per_group);
-  1134			goto failed_mount;
-  1135		}
-  1136		db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
-  1137			   EXT2_DESC_PER_BLOCK(sb);
-  1138		sbi->s_group_desc = kvmalloc_array(db_count,
-  1139						   sizeof(struct buffer_head *),
-  1140						   GFP_KERNEL);
-  1141		if (sbi->s_group_desc == NULL) {
-  1142			ret = -ENOMEM;
-  1143			ext2_msg(sb, KERN_ERR, "error: not enough memory");
-  1144			goto failed_mount;
-  1145		}
-  1146		bgl_lock_init(sbi->s_blockgroup_lock);
-  1147		sbi->s_debts = kcalloc(sbi->s_groups_count, sizeof(*sbi->s_debts), GFP_KERNEL);
-  1148		if (!sbi->s_debts) {
-  1149			ret = -ENOMEM;
-  1150			ext2_msg(sb, KERN_ERR, "error: not enough memory");
-  1151			goto failed_mount_group_desc;
-  1152		}
-  1153		for (i = 0; i < db_count; i++) {
-  1154			block = descriptor_loc(sb, logic_sb_block, i);
-  1155			sbi->s_group_desc[i] = sb_bread(sb, block);
-  1156			if (!sbi->s_group_desc[i]) {
-  1157				for (j = 0; j < i; j++)
-  1158					brelse (sbi->s_group_desc[j]);
-  1159				ext2_msg(sb, KERN_ERR,
-  1160					"error: unable to read group descriptors");
-  1161				goto failed_mount_group_desc;
-  1162			}
-  1163		}
-  1164		if (!ext2_check_descriptors (sb)) {
-  1165			ext2_msg(sb, KERN_ERR, "group descriptors corrupted");
-  1166			goto failed_mount2;
-  1167		}
-  1168		sbi->s_gdb_count = db_count;
-  1169		get_random_bytes(&sbi->s_next_generation, sizeof(u32));
-  1170		spin_lock_init(&sbi->s_next_gen_lock);
-  1171	
-  1172		/* per filesystem reservation list head & lock */
-  1173		spin_lock_init(&sbi->s_rsv_window_lock);
-  1174		sbi->s_rsv_window_root = RB_ROOT;
-  1175		/*
-  1176		 * Add a single, static dummy reservation to the start of the
-  1177		 * reservation window list --- it gives us a placeholder for
-  1178		 * append-at-start-of-list which makes the allocation logic
-  1179		 * _much_ simpler.
-  1180		 */
-  1181		sbi->s_rsv_window_head.rsv_start = EXT2_RESERVE_WINDOW_NOT_ALLOCATED;
-  1182		sbi->s_rsv_window_head.rsv_end = EXT2_RESERVE_WINDOW_NOT_ALLOCATED;
-  1183		sbi->s_rsv_window_head.rsv_alloc_hit = 0;
-  1184		sbi->s_rsv_window_head.rsv_goal_size = 0;
-  1185		ext2_rsv_window_add(sb, &sbi->s_rsv_window_head);
-  1186	
-  1187		err = percpu_counter_init(&sbi->s_freeblocks_counter,
-  1188					ext2_count_free_blocks(sb), GFP_KERNEL);
-  1189		if (!err) {
-  1190			err = percpu_counter_init(&sbi->s_freeinodes_counter,
-  1191					ext2_count_free_inodes(sb), GFP_KERNEL);
-  1192		}
-  1193		if (!err) {
-  1194			err = percpu_counter_init(&sbi->s_dirs_counter,
-  1195					ext2_count_dirs(sb), GFP_KERNEL);
-  1196		}
-  1197		if (err) {
-  1198			ret = err;
-  1199			ext2_msg(sb, KERN_ERR, "error: insufficient memory");
-  1200			goto failed_mount3;
-  1201		}
-  1202	
-  1203	#ifdef CONFIG_EXT2_FS_XATTR
-  1204		sbi->s_ea_block_cache = ext2_xattr_create_cache();
-  1205		if (!sbi->s_ea_block_cache) {
-  1206			ret = -ENOMEM;
-  1207			ext2_msg(sb, KERN_ERR, "Failed to create ea_block_cache");
-  1208			goto failed_mount3;
-  1209		}
-  1210	#endif
-  1211		/*
-  1212		 * set up enough so that it can read an inode
-  1213		 */
-  1214		sb->s_op = &ext2_sops;
-  1215		sb->s_export_op = &ext2_export_ops;
-  1216		sb->s_xattr = ext2_xattr_handlers;
-  1217	
-  1218	#ifdef CONFIG_QUOTA
-  1219		sb->dq_op = &dquot_operations;
-  1220		sb->s_qcop = &ext2_quotactl_ops;
-  1221		sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP;
-  1222	#endif
-  1223	
-  1224		root = ext2_iget(sb, EXT2_ROOT_INO);
-  1225		if (IS_ERR(root)) {
-  1226			ret = PTR_ERR(root);
-  1227			goto failed_mount3;
-  1228		}
-  1229		if (!S_ISDIR(root->i_mode) || !root->i_blocks || !root->i_size) {
-  1230			iput(root);
-  1231			ext2_msg(sb, KERN_ERR, "error: corrupt root inode, run e2fsck");
-  1232			goto failed_mount3;
-  1233		}
-  1234	
-  1235		sb->s_root = d_make_root(root);
-  1236		if (!sb->s_root) {
-  1237			ext2_msg(sb, KERN_ERR, "error: get root inode failed");
-  1238			ret = -ENOMEM;
-  1239			goto failed_mount3;
-  1240		}
-  1241		if (EXT2_HAS_COMPAT_FEATURE(sb, EXT3_FEATURE_COMPAT_HAS_JOURNAL))
-  1242			ext2_msg(sb, KERN_WARNING,
-  1243				"warning: mounting ext3 filesystem as ext2");
-  1244		if (ext2_setup_super (sb, es, sb_rdonly(sb)))
-  1245			sb->s_flags |= SB_RDONLY;
-  1246		ext2_write_super(sb);
-  1247		return 0;
-  1248	
-  1249	cantfind_ext2:
-  1250		if (!silent)
-  1251			ext2_msg(sb, KERN_ERR,
-  1252				"error: can't find an ext2 filesystem on dev %s.",
-  1253				sb->s_id);
-  1254		goto failed_mount;
-  1255	failed_mount3:
-  1256		ext2_xattr_destroy_cache(sbi->s_ea_block_cache);
-  1257		percpu_counter_destroy(&sbi->s_freeblocks_counter);
-  1258		percpu_counter_destroy(&sbi->s_freeinodes_counter);
-  1259		percpu_counter_destroy(&sbi->s_dirs_counter);
-  1260	failed_mount2:
-  1261		for (i = 0; i < db_count; i++)
-  1262			brelse(sbi->s_group_desc[i]);
-  1263	failed_mount_group_desc:
-  1264		kvfree(sbi->s_group_desc);
-  1265		kfree(sbi->s_debts);
-  1266	failed_mount:
-  1267	failed_sbi:
-  1268		ext2_free_sbi(sb, sbi, bh);
-                                       ^^
-
-  1269		return ret;
-  1270	}
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
