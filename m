@@ -1,57 +1,71 @@
-Return-Path: <linux-ext4+bounces-12157-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12158-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4199ACA4BCD
-	for <lists+linux-ext4@lfdr.de>; Thu, 04 Dec 2025 18:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A83CA5E58
+	for <lists+linux-ext4@lfdr.de>; Fri, 05 Dec 2025 03:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 288B930989CB
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Dec 2025 17:18:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F1320304F11D
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Dec 2025 02:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1852FF165;
-	Thu,  4 Dec 2025 17:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39C3128467D;
+	Fri,  5 Dec 2025 02:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uTarys6P"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="IVxV0IBI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35625261B9D;
-	Thu,  4 Dec 2025 17:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406D91448D5
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Dec 2025 02:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764868735; cv=none; b=S0qvMzMCwPLIzPP9yuiBTz+Wb9DipsdRId9yyUqBsN5NRy0tYEh2uW3S5QD3am55JRsTWXoGIRoiwvFpZCbWMtu7AHly0NQYWtS9P8QcEd6GDOy7OczacAGobgZHrSX7zS7IdwHLlWaMKQn/9Jm8PbA2XUS3pZGi5ZBizd6VyEQ=
+	t=1764901258; cv=none; b=QWWHkSi4onhRDArjKpvlDbqg8+ph9MHR4CCaImufRpVhIxFkkYdPy9MKzVYgXJ5SGJDOwMRCH+DVmOI32xEf6TiHkgHXnK/Qq6H9IIE+0m3fNrFIIokhrtPFWlLQsJJ3s09XoiPBIRnFm4yo0EitFXKyHKO1yHVdcz0QZGt0eHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764868735; c=relaxed/simple;
-	bh=+s7C0ErrNbC+GByRFJIB9Zms5pwT6EhHNRa+xY/X8+M=;
+	s=arc-20240116; t=1764901258; c=relaxed/simple;
+	bh=5UyubtE1rEUpscGvD60LnLHFafRq3hNFUNA/EDp0QHg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kRQgBZ/u6qwXFd0jbfWQhUqUPmabgQlzh5apxi3akuih9fkxy5zht8jBe2koWohJRa6R8K2gyZ9JLADCqzb1T2IuO33Bz533OReyYz+4ZsEoq4zXE7b8L7rQFQC33vLuqj33o7ZwAgxO6Khigr4kOh3xmAYS8y55S/Asl/6MlQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uTarys6P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B623AC4CEFB;
-	Thu,  4 Dec 2025 17:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764868734;
-	bh=+s7C0ErrNbC+GByRFJIB9Zms5pwT6EhHNRa+xY/X8+M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uTarys6PVXXw7IHWf/u6Vm5kiLQrzBaIzZ9MHDAZKDA8Or5f24GgBvggfGIFbNZ7s
-	 DFqYWaSNpx6xKRUb6sWaeqlTUqlhFgQUHrGgyXJtuuWTGSCdTruR+1+pMGydoBtIoH
-	 pgagO79aYwePAZnAb9J1ogLHbr+Kp6sEAQThb3JSDiO/RVq6oRVweSjRE0uRo6zqZ7
-	 q7q+BpKwQqX1nwJrORVw5vly2fx7PCpcS7dlWKx2lbudsKgQwGsvniJniKEoW1RYG5
-	 yqs0ELlmgraOWJ82uF6folFscIQrtmo7Pk+Yxv+HtvFDCMyWP9JNM3i9PzM60UV9Eu
-	 kl3t0uoqhwTDQ==
-Date: Thu, 4 Dec 2025 09:18:54 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/7] generic/778: fix severe performance problems
-Message-ID: <20251204171854.GF89492@frogsfrogsfrogs>
-References: <176279908967.605950.2192923313361120314.stgit@frogsfrogsfrogs>
- <176279909041.605950.16815410156483574567.stgit@frogsfrogsfrogs>
- <aRXGyR9kj0kPirIE@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <20251115023251.GI196366@frogsfrogsfrogs>
- <aSq0OzvJHT1yOdvF@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
- <20251201231908.GB89492@frogsfrogsfrogs>
- <aS_WhMSGtfeYN5Tu@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=M+ilJM520S+/nBUu5bxTcF0hTvg7RQbrIAmOoZvpZCep//O5NOhutNALaNXP1XMcSMDaGaGQLgtorJugDjDg0qRu4Ibc8zHfKzdIXUWB5DEBiFdKsR92HZAuryo5INOoTZgsGvIwMDj/900xwScB0V8fVyHkaLidzAcMXVGWyTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=IVxV0IBI; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-102-187.bstnma.fios.verizon.net [173.48.102.187])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5B52JIPm008310
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Dec 2025 21:19:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1764901161; bh=csXeN1Bz1gMnpe84St82baBkMzHhmVVlUHhZVO7IN1U=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=IVxV0IBIgpA4vMRoe67sSjDq8u8mXtLz2riSRez9HPIT0RREMirwAgfMnSy1saYnS
+	 AjxVis2mFVZZVRxs+H8oHBkVn8bGDuTyuTUocdc57QjFknExTWGX4x2KVZH5EDw6Hm
+	 gtKiueKiUGbSS914qMsckntDvlTESrV2eFzTKOu3UCbluUPN8wCd5+fCqWHP5QTXi+
+	 sPFHoqzhJ8IvN8tL9dbTfA4U61hjnHQ+p9OtK8ibxKUc9JRP1NWVOYLw4TH8n9vybe
+	 agx2W5p8xHv9zhUpY/H285vlDrrwOfbJk/q1aU1Pr7KVUnl0ykp2fDvcX0uivGuFSo
+	 csOkZfslv8LYg==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 4325B4E78093; Thu,  4 Dec 2025 21:18:18 -0500 (EST)
+Date: Thu, 4 Dec 2025 21:18:18 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Zhang Yi <yi.zhang@huaweicloud.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com,
+        adilger.kernel@dilger.ca, djwong@kernel.org
+Subject: Re: [PATCH v2] ext4: check folio uptodate state in
+ ext4_page_mkwrite()
+Message-ID: <20251205021818.GF71988@macsyma.lan>
+References: <20251122015742.362444-1-kartikey406@gmail.com>
+ <CADhLXY5k9nmFGRLLxguWB9sQ4_B6-Cxu=xHs71c5kCEyj49Vuw@mail.gmail.com>
+ <7b2fafab-a156-47e3-b504-469133b8793d@huaweicloud.com>
+ <CADhLXY7AVVfxeTtDfEJXsYvk66CV7vsRMVw4P8PEn3rgOuSOLA@mail.gmail.com>
+ <aadd43df-3df4-4dcc-a0b3-e7bfded0dff8@huaweicloud.com>
+ <CADhLXY4Pk60+sSLtOOuR2QdTKbYXUAjwhgb7nH8qugf4DROT7w@mail.gmail.com>
+ <20251203154657.GC93777@macsyma.lan>
+ <aTCtITpW9yLNm2hz@casper.infradead.org>
+ <20251203223300.GB71988@macsyma.lan>
+ <CADhLXY4_yYdGQCYxq3=gQ6ZTJ7y_=dGsEBqdJ4g7JizX+ocVYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,253 +74,33 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aS_WhMSGtfeYN5Tu@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <CADhLXY4_yYdGQCYxq3=gQ6ZTJ7y_=dGsEBqdJ4g7JizX+ocVYA@mail.gmail.com>
 
-On Wed, Dec 03, 2025 at 11:49:48AM +0530, Ojaswin Mujoo wrote:
-> On Mon, Dec 01, 2025 at 03:19:08PM -0800, Darrick J. Wong wrote:
-> > On Sat, Nov 29, 2025 at 02:22:11PM +0530, Ojaswin Mujoo wrote:
-> > > On Fri, Nov 14, 2025 at 06:32:51PM -0800, Darrick J. Wong wrote:
-> > > > On Thu, Nov 13, 2025 at 05:23:45PM +0530, Ojaswin Mujoo wrote:
-> > > > > On Mon, Nov 10, 2025 at 10:26:32AM -0800, Darrick J. Wong wrote:
-> > > > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > > > > 
-> > > > > > This test takes 4800s to run, which is horrible.  AFAICT it starts out
-> > > > > > by timing how much can be written atomically to a new file in 0.2
-> > > > > > seconds, then scales up the file size by 3x.  On not very fast storage,
-> > > > > 
-> > > > > Hi Darrick,
-> > > 
-> > > (Sorry I missed this email somehow)
-> > > 
-> > > > > 
-> > > > > So 250MB in 0.2s is like 1.2GBps which seems pretty fast. Did you mean
-> > > > > "On fast storage ..." ?
-> > > > 
-> > > > No, I have even faster storage. ;)
-> > > 
-> > > :O
-> > > 
-> > > So that means on an even faster storage this problem would be even more
-> > > visible because our file size would be >250MB
-> > > 
-> > > > 
-> > > > > > this can result in file_size being set to ~250MB on a 4k fsblock
-> > > > > > filesystem.  That's about 64,000 blocks.
-> > > > > > 
-> > > > > > The next thing this test does is try to create a file of that size
-> > > > > > (250MB) of alternating written and unwritten blocks.  For some reason,
-> > > > > > it sets up this file by invoking xfs_io 64,000 times to write small
-> > > > > > amounts of data, which takes 3+ minutes on the author's system because
-> > > > > > exec overhead is pretty high when you do that.
-> > > > > 
-> > > > > > 
-> > > > > > As a result, one loop through the test takes almost 4 minutes.  The test
-> > > > > > loops 20 times, so it runs for 80 minutes(!!) which is a really long
-> > > > > > time.
-> > > > > > 
-> > > > > > So the first thing we do is observe that the giant slow loop is being
-> > > > > > run as a single thread on an empty filesystem.  Most of the time the
-> > > > > > allocator generates a mostly physically contiguous file.  We could
-> > > > > > fallocate the whole file instead of fallocating one block every other
-> > > > > > time through the loop.  This halves the setup time.
-> > > > > > 
-> > > > > > Next, we can also stuff the remaining pwrite commands into a bash array
-> > > > > > and only invoke xfs_io once every 128x through the loop.  This amortizes
-> > > > > > the xfs_io startup time, which reduces the test loop runtime to about 20
-> > > > > > seconds.
-> > > > > 
-> > > > > Oh right, this is very bad. Weirdly I never noticed the test taking such
-> > > > > a huge time while testing on scsi_debug and also on an enterprise SSD.
-> > > > 
-> > > > It doesn't help that xfs supports much larger awu_max than (say) ext4.
-> > > 
-> > > I did test on xfs as well. But yea maybe my SSD is just not fast enough.
-> > > 
-> > > > 
-> > > > > Thanks for fixing this up though, I will start using maybe dm-delay
-> > > > > while stressing the tests in the future to avoid such issues.
-> > > > 
-> > > > fork() is a bit expensive.
-> > > > 
-> > > > > > 
-> > > > > > Finally, replace the 20x loop with a _soak_loop_running 5x loop because
-> > > > > > 5 seems like enough.  Anyone who wants more can set TIME_FACTOR or
-> > > > > > SOAK_DURATION to get more intensive testing.  On my system this cuts the
-> > > > > > runtime to 75 seconds.
-> > > > > 
-> > > > > So about the loops, we were running a modified version of this test,
-> > > > > which used non atomic writes, to confirm if we are able to catch torn
-> > > > > writes this way. We noticed that it sometimes took 10+ loops to observe
-> > > > > the torn write. Hence we kept iters=20. Since catching a torn write is
-> > > > > critical for working of atomic writes, I think it might make sense to
-> > > > > leave it at 20. If we feel this is a very high value, we can perhaps
-> > > > > remove -g auto and keep -g stress -g atomicwrites so only people who
-> > > > > explicitly want to stress atomic writes will run it.
-> > > > 
-> > > > In that case we ought to limit the awu_max that we feed to the test
-> > > > because otherwise it starts running a lot of IO.
-> > > 
-> > > Yes I think that makes sense. Right now we get awu_max of 4M on xfs that
-> > > means we always end up only testing software atomic writes.  Maybe we
-> > > can instead cap awu_max at 64K or something. This way, we can test both
-> > > hw atomic writes (when device supports it) and sw atomic writes (when it
-> > > doesn't)
-> > 
-> > Yeah, capping the testing block size sounds like a good idea.  What do
-> > you think about using min(awu_max_opt * 2, awu_max) ?
+On Thu, Dec 04, 2025 at 03:24:50PM +0530, Deepanshu Kartikey wrote:
+> Based on Matthew's earlier feedback that we need to "prevent !uptodate
+> folios from being referenced by the page tables," I believe the
+> correct fix is not in ext4_page_mkwrite() at all, but rather in
+> mpage_release_unused_pages().
 > 
-> Im thinking that now that we are modifying this, maybe we can improve
-> coverage by also testing hardware atomic write paths. Right now the
-> test will mostly be testing SW fallback on XFS because we use awu_max
-> (usually 4M).
-> 
-> Maybe something like min(awu_max_opt, awu_max) gets us coverage of both
-> paths?
-> 
-> Also looking at xfs_get_atomic_write_max_opt() there is the caveat that 
-> awu_max_opt is returned as 0 if awu_max <= blocksize (should be rare
-> with software atomic writes but yeah) and ext4 always returns it as 0 so
-> we will need to handle that.
-> 
-> How about (psuedocode):
-> 
-> if (awu_max_opt == 0)
-> 		/* software only, limit to 128k */
->     awu_max = min(statx->awu_max, 128K)
-> else
->     awu_max = min(statx->awu_max_opt, statx->awu_max)
+> When we invalidate folios due to writeback failure, we should also
+> unmap them from page tables....
 
-I think that's worth trying!
+Hmm.... if the page is mmap'ed into the user process, on a writeback
+failure, the page contents will suddenly and without any warning,
+*disappear*.
 
---D
+So the other option is we could simply *not* invalidate the folio, but
+instead leave the folio dirty.  In some cases, where a particular
+block group is corrupted, if we retry the block allocation, the
+corrupted block group will be busied out, and so when the write back
+is retried, it's possible that the data will be actually be persisted.
 
-> 
-> Regards,
-> ojaswin
-> > 
-> > --D
-> > 
-> > > Regards,
-> > > ojaswin
-> > > 
-> > > > 
-> > > > --D
-> > > > 
-> > > > > > 
-> > > > > > Cc: <fstests@vger.kernel.org> # v2025.10.20
-> > > > > > Fixes: ca954527ff9d97 ("generic: Add sudden shutdown tests for multi block atomic writes")
-> > > > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > > > > > ---
-> > > > > >  tests/generic/778 |   59 ++++++++++++++++++++++++++++++++++++-----------------
-> > > > > >  1 file changed, 40 insertions(+), 19 deletions(-)
-> > > > > > 
-> > > > > > 
-> > > > > > diff --git a/tests/generic/778 b/tests/generic/778
-> > > > > > index 8cb1d8d4cad45d..7cfabc3a47a521 100755
-> > > > > > --- a/tests/generic/778
-> > > > > > +++ b/tests/generic/778
-> > > > > > @@ -42,22 +42,28 @@ atomic_write_loop() {
-> > > > > >  		# Due to sudden shutdown this can produce errors so just
-> > > > > >  		# redirect them to seqres.full
-> > > > > >  		$XFS_IO_PROG -c "open -fsd $testfile" -c "pwrite -S 0x61 -DA -V1 -b $size $off $size" >> /dev/null 2>>$seqres.full
-> > > > > > -		echo "Written to offset: $off" >> $tmp.aw
-> > > > > > -		off=$((off + $size))
-> > > > > > +		echo "Written to offset: $((off + size))" >> $tmp.aw
-> > > > > > +		off=$((off + size))
-> > > > > >  	done
-> > > > > >  }
-> > > > > >  
-> > > > > >  start_atomic_write_and_shutdown() {
-> > > > > >  	atomic_write_loop &
-> > > > > >  	awloop_pid=$!
-> > > > > > +	local max_loops=100
-> > > > > >  
-> > > > > >  	local i=0
-> > > > > > -	# Wait for at least first write to be recorded or 10s
-> > > > > > -	while [ ! -f "$tmp.aw" -a $i -le 50 ]; do i=$((i + 1)); sleep 0.2; done
-> > > > > > +	# Wait for at least first write to be recorded or too much time passes
-> > > > > > +	while [ ! -f "$tmp.aw" -a $i -le $max_loops ]; do
-> > > > > > +		i=$((i + 1))
-> > > > > > +		sleep 0.2
-> > > > > > +	done
-> > > > > >  
-> > > > > > -	if [[ $i -gt 50 ]]
-> > > > > > +	cat $tmp.aw >> $seqres.full
-> > > > > > +
-> > > > > > +	if [[ $i -gt $max_loops ]]
-> > > > > >  	then
-> > > > > > -		_fail "atomic write process took too long to start"
-> > > > > > +		_notrun "atomic write process took too long to start"
-> > > > > >  	fi
-> > > > > >  
-> > > > > >  	echo >> $seqres.full
-> > > > > > @@ -113,21 +119,34 @@ create_mixed_mappings() {
-> > > > > >  	local off=0
-> > > > > >  	local operations=("W" "U")
-> > > > > >  
-> > > > > > +	test $size_bytes -eq 0 && return
-> > > > > > +
-> > > > > > +	# fallocate the whole file once because preallocating single blocks
-> > > > > > +	# with individual xfs_io invocations is really slow and the allocator
-> > > > > > +	# usually gives out consecutive blocks anyway
-> > > > > > +	$XFS_IO_PROG -f -c "falloc 0 $size_bytes" $file
-> > > > > > +
-> > > > > > +	local cmds=()
-> > > > > >  	for ((i=0; i<$((size_bytes / blksz )); i++)); do
-> > > > > > -		index=$(($i % ${#operations[@]}))
-> > > > > > -		map="${operations[$index]}"
-> > > > > > +		if (( i % 2 == 0 )); then
-> > > > > > +			cmds+=(-c "pwrite -b $blksz $off $blksz")
-> > > > > > +		fi
-> > > > > > +
-> > > > > > +		# batch the write commands into larger xfs_io invocations to
-> > > > > > +		# amortize the fork overhead
-> > > > > > +		if [ "${#cmds[@]}" -ge 128 ]; then
-> > > > > > +			$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
-> > > > > > +			cmds=()
-> > > > > > +		fi
-> > > > > >  
-> > > > > > -		case "$map" in
-> > > > > > -		    "W")
-> > > > > > -			$XFS_IO_PROG -fc "pwrite -b $blksz $off $blksz" $file  >> /dev/null
-> > > > > > -			;;
-> > > > > > -		    "U")
-> > > > > > -			$XFS_IO_PROG -fc "falloc $off $blksz" $file >> /dev/null
-> > > > > > -			;;
-> > > > > > -		esac
-> > > > > >  		off=$((off + blksz))
-> > > > > >  	done
-> > > > > >  
-> > > > > > +	if [ "${#cmds[@]}" -gt 0 ]; then
-> > > > > > +		$XFS_IO_PROG "${cmds[@]}" "$file" >> /dev/null
-> > > > > > +		cmds=()
-> > > > > > +	fi
-> > > > > > +
-> > > > > >  	sync $file
-> > > > > >  }
-> > > > > >  
-> > > > > > @@ -336,9 +355,9 @@ echo >> $seqres.full
-> > > > > >  echo "# Populating expected data buffers" >> $seqres.full
-> > > > > >  populate_expected_data
-> > > > > >  
-> > > > > > -# Loop 20 times to shake out any races due to shutdown
-> > > > > > -for ((iter=0; iter<20; iter++))
-> > > > > > -do
-> > > > > > +# Loop to shake out any races due to shutdown
-> > > > > > +iter=0
-> > > > > > +while _soak_loop_running $TIME_FACTOR; do
-> > > > > >  	echo >> $seqres.full
-> > > > > >  	echo "------ Iteration $iter ------" >> $seqres.full
-> > > > > >  
-> > > > > > @@ -361,6 +380,8 @@ do
-> > > > > >  	echo >> $seqres.full
-> > > > > >  	echo "# Starting shutdown torn write test for append atomic writes" >> $seqres.full
-> > > > > >  	test_append_torn_write
-> > > > > > +
-> > > > > > +	iter=$((iter + 1))
-> > > > > >  done
-> > > > > >  
-> > > > > >  echo "Silence is golden"
-> > > > > > 
-> > > > > 
+We do need to make sure the right thing we unmount the filesystem,
+since at that point, we have no choice but the invalidate the page and
+the data will get lost when the file system is unmounted.  So it's a
+more complicated approach.  But if this is happening when the file
+system is corrupted, especially if it was maliciously corrupted, all
+bets are off anyway, so maybe it's not worth the complexity.
+
+     	     	     	      	       - Ted
 
