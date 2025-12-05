@@ -1,109 +1,146 @@
-Return-Path: <linux-ext4+bounces-12208-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12209-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2789ACA7598
-	for <lists+linux-ext4@lfdr.de>; Fri, 05 Dec 2025 12:19:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D58CA75AD
+	for <lists+linux-ext4@lfdr.de>; Fri, 05 Dec 2025 12:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 037CE30D10AF
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Dec 2025 11:19:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9E1A13079A04
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Dec 2025 11:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A599C2FB978;
-	Fri,  5 Dec 2025 11:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC3D31A545;
+	Fri,  5 Dec 2025 11:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ldhjJmJz"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="gvylSL66";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DSRCaNxa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D24A2C2368;
-	Fri,  5 Dec 2025 11:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3061F2F83C2;
+	Fri,  5 Dec 2025 11:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764933554; cv=none; b=IFBHxa8XA6qTf6KIq/KojsmjFYh5lwGUyhjdiSvFoAxAaXT8ix7ltC/ecEGsxOhiaX6VS/15L/7uoruM52mrwKfUkOA5P42XmyBjKT3fQSKiuFR6jMV2lqN62KvPM7RIu2/9qSIKQeuvx0BQNjGsN9swjdAwcR2yYx1Bg4djT7k=
+	t=1764933754; cv=none; b=QDNQbODDhKs25AoZyFtqoYbPhbwsE3ncfeIR1CQMrmNhR/PxSOscKGmMSKx6QMvkLf/s1x1RvcGDH/JS+oh+hOJk0ajw0KldWZ0nft5C5k59mkP6NX3R10M+H6cqGGiBxmmVKwm/Wjc2Nma9E0UW7JEpagYRt2PUN3wZt6fj4ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764933554; c=relaxed/simple;
-	bh=960NH/2dZazI3KrFVYftHxT87GmwClLTcUn+OCXPgVE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pdm5khDEUL/fi5ZYWyqc1QSzoJ4FrIuVe+Yv0w8gagbVZAOW+yafoBhtnl93JeyLnKfVAAYBXY4RR27jWyYDg88Z6hiD3iiRhoRnr8BuKcNJXbXntlKc9dHNS4hUpbQQ+8U5hOWZyx2+AUGdRqureibvABcd1Twd5Nv8JwfaZ3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ldhjJmJz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC939C4CEF1;
-	Fri,  5 Dec 2025 11:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764933551;
-	bh=960NH/2dZazI3KrFVYftHxT87GmwClLTcUn+OCXPgVE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ldhjJmJzcpVFJQjsJzkOZndfJL/7lMT08x63bCKti2gDWy4YZv+iGG1ZUquSph+88
-	 X/OzC8Jk0tFopgi8BR9hr84u3rqTQaSA1AquiXBJWh3pIg9NDwQzSSzk4X/KIQVqZJ
-	 QMRobq6tEgOF8EIXqnhDB92zAP/6qJuk52Ncf0aIfeh6fM+2M2iLtDo01UAEHS9Kt7
-	 1SodjmhieuEr7/UBvoSCnIrg84oaKqNddzjaaJf9Bye0V0dCsXDwZ2Cs7hFnvCycZ3
-	 pm51cPiA/v4u6r8xcSAMEVLaKfF9GYc7Na2ZhIaULvhOz6WGAQFGcRGSO5ZdOT9nIC
-	 EkQBDVQpdskRg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	"Darrick J. Wong" <djwong@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] ext4: fix ext4_tune_sb_params padding
-Date: Fri,  5 Dec 2025 12:19:00 +0100
-Message-Id: <20251205111906.1247452-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1764933754; c=relaxed/simple;
+	bh=EXpnFycUd01xtwVkQQKLYPp/XCCUu8IXPx6xasaMzVc=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=nmLfQQ4fo66PiKjnQF56tr9Lzq6Ty0Dy3Z5h0GTLILtxAAVGjqVU+XFtnlkp5d8Yv9nzXdE7fNVNE4aL8OyK/1oFyoFl5bqNRo1Mc11ilSb3GN1rvyHT3Of4pG1nawoUoV4rsylUCZUwR5k3WjpFOdZ8qAX/pwxS2vQ2At03UdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=gvylSL66; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DSRCaNxa; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id DC14E14000C5;
+	Fri,  5 Dec 2025 06:22:28 -0500 (EST)
+Received: from phl-imap-17 ([10.202.2.105])
+  by phl-compute-04.internal (MEProxy); Fri, 05 Dec 2025 06:22:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1764933748;
+	 x=1765020148; bh=ytIpZFjO4mbAU1yjjbdp7ZFalj0d4nWstswhFAtPa1s=; b=
+	gvylSL66HM68QYA6Vfh/5iz6WwebenrRoShNaWeRhE03+DKux80bXv9OiBTq+0OS
+	B/3yf0DVZTS81ggXsz64/brd7Pd+VtqIDkOjmSTpXSqPwj1xZLkDTYYCJEYzlkwY
+	wNMystn+v9YEx/EpMOdUxW1VFm2CCIvxorJGIOmqir1rjc2SZpkYzS695BPT+tjF
+	ReBQxSJ96DSWKy5brMAhQ1I0fBwNBcS1s8aNaAx8fkLgtYRmdukGGoUSj8dDyLI7
+	Mr1XLO47DejqZmNVRbDI70xySR5UbCXfvp1cUzrtQe3OfAC86AO1Kh3RQER6BcsI
+	HbfFyKRfn5Yf5wTiCaZ9PA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1764933748; x=
+	1765020148; bh=ytIpZFjO4mbAU1yjjbdp7ZFalj0d4nWstswhFAtPa1s=; b=D
+	SRCaNxajD7UPFMbXQUQDoEUhenPnm7HTndpdS1p/hfShzbHP4ktGMQ7Yn40ObqV0
+	eCR21U8l3u8mzc7kcc3RyGxkm0r6drh9qQwkEa/uCYLMgoGSXJjd//rR/AXpHMwK
+	teLRjZBnQa6tvNjy6cl4dwJdFSL/7ECVy3RoLXoppPPeIbV1mr8WoBxEHE0wM0Zk
+	OXH5RV3Q+PUH9fVesmlu+XYoesWwuEEYi4gljuuYfr+7QhoKYFBBEgjrL1PDh/kG
+	AhnakEPxnrBsqWSU+D/m8hsQf+/4Craj8G4qhnrjO8tzWT1o7Our5mPy78i4r3xm
+	o4pAWO5E/whs13sdyJ6Hg==
+X-ME-Sender: <xms:dMAyaSgUt2iCitWZy1gN06tDYOn8oPO2hGcydUDCteLC5D21MgfqWw>
+    <xme:dMAyad1YfjKcUBmkao34pUcj99HewGC3db2GM1FAESTMvZka9uVD4gPQ6IsX9xJL5
+    eJVRSNJCafG387pxFc0ckHfeg6YRK37bT_OsXktt7fec_Q-0s-rfqs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdekvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedftehrnhguuceu
+    vghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvghrnh
+    epvdfhvdekueduveffffetgfdvveefvdelhedvvdegjedvfeehtdeggeevheefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhguse
+    grrhhnuggsrdguvgdpnhgspghrtghpthhtohepjedpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtoheprgguihhlghgvrhesughilhhgvghrrdgtrgdprhgtphhtthhopegrrhhnug
+    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepughjfihonhhgsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopehthihtshhosehmihhtrdgvughupdhrtghpthhtohepjhgrtghkse
+    hsuhhsvgdrtgiipdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhn
+    vghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrh
+    hnvghlrdhorhhg
+X-ME-Proxy: <xmx:dMAyaYJkIho3ziAixiLrfpFrw1aYLIarr4W4TWUgiwepcOka3GkKXQ>
+    <xmx:dMAyaSP3Fr2JOhyynS3-DPiZwP9exRHw4pAmjwvod0Yn9tgsW3z7Og>
+    <xmx:dMAyaYkH78b4GB7l2g6-6KjTiOjddZuHx6f-VtQRDFhKKWym5HOK-Q>
+    <xmx:dMAyaW5GQMPveDdhDkhow8EPBJsc03Uy6cJboTFkKfmM9zpICGZ4Bg>
+    <xmx:dMAyadqvbYM8kmM5AZxdJ0_U91YdJqbGW_J3XDDhdkMyqdVxhiKXHohx>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 1AA8FC40054; Fri,  5 Dec 2025 06:22:28 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: AZXKNX32rXGF
+Date: Fri, 05 Dec 2025 12:22:07 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andreas Dilger" <adilger@dilger.ca>, "Jan Kara" <jack@suse.cz>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, "Darrick J. Wong" <djwong@kernel.org>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <a1807d6f-1b47-4a30-86d8-eea56d990ed9@app.fastmail.com>
+In-Reply-To: <B2AC14DC-0B9D-433A-A1B0-78D0778D0A39@dilger.ca>
+References: <20251204101914.1037148-1-arnd@kernel.org>
+ <3ueamfhbmtwmclmtm77msvsuylgxabt3zqkrtvxqtajqhupfdd@vy7bw3e3wiwn>
+ <B2AC14DC-0B9D-433A-A1B0-78D0778D0A39@dilger.ca>
+Subject: Re: [PATCH] ext4: fix ext4_tune_sb_params padding
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Dec 5, 2025, at 11:17, Andreas Dilger wrote:
+>> On Dec 4, 2025, at 3:31=E2=80=AFAM, Jan Kara <jack@suse.cz> wrote:
+>> On Thu 04-12-25 11:19:10, Arnd Bergmann wrote:
+>
+> While this change isn't _wrong_ per-se, it does seem very strange to h=
+ave
+> a 68-byte padding at the end of the struct.  You have to check the num=
+ber
+> of __u32 fields closely to see this,=20
 
-The padding at the end of struct ext4_tune_sb_params is architecture
-specific and in particular is different between x86-32 and x86-64,
-since the __u64 member only enforces struct alignment on the latter.
+I had the same thought but decided against that because it would be
+an ABI break on all architectures. The version I posted only changes
+the structure size on x86-32, csky, m68k and microblaze, as far
+as I can tell.
 
-This shows up as a new warning when test-building the headers with
--Wpadded:
+> and I wonder if this will perpetuate
+> errors in the future (e.g. adding a __u64 field after mount_opts[64]).
 
-include/linux/ext4.h:144:1: error: padding struct size to alignment boundary with 4 bytes [-Werror=padded]
+Indeed, I can see how that could become worse.
 
-All members inside the structure are naturally aligned, so the only
-difference here is the amount of padding at the end.
+> IMHO, it would be more clear to either add an explicit "__u32 pad_3;"
+> field after mount_opts[64], or alternately declare mount_opts[68] so it
+> will consume those bytes and leave the remaining fields properly align=
+ed.
+> It isn't critical if the user tools use the last 4 bytes of mount_opts=
+[]
+> or not, so they could be changed independently at some later time.
+>
+> Either will ensure that new fields added in place of pad[64] will be
+> properly aligned in the future.
 
-Add explicit padding to mount_opts[] to keep the struct members compatible
-with the original version and also keep the pad[64] member 8-byte
-aligned for future extensions.  This gives a consistent sizeof(struct
-ext4_tune_sb_params) of 232 on all architectures and avoids adding compat
-ioctl handling for EXT4_IOC_GET_TUNE_SB_PARAM/EXT4_IOC_SET_TUNE_SB_PARAM.
+Changing mount_opts[] to 68 bytes sounds fine to me, I'll send an
+updated patch for that. I've kept the Ack from Jan, please shout
+if I should drop that instead.
 
-This is an ABI break on x86-32 but hopefully this can go into 6.18.y
-early enough as a fixup so no actual users will be affected.
-
-Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: extend mount_opts[] instead of pad[], as suggested by Andreas Dilger
----
- include/uapi/linux/ext4.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
-index 6829d6f1497d..1c7cdcdb7dca 100644
---- a/include/uapi/linux/ext4.h
-+++ b/include/uapi/linux/ext4.h
-@@ -139,7 +139,7 @@ struct ext4_tune_sb_params {
- 	__u32 clear_feature_compat_mask;
- 	__u32 clear_feature_incompat_mask;
- 	__u32 clear_feature_ro_compat_mask;
--	__u8  mount_opts[64];
-+	__u8  mount_opts[68];
- 	__u8  pad[64];
- };
- 
--- 
-2.39.5
-
+   Arnd
 
