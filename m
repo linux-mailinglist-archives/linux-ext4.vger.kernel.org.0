@@ -1,551 +1,360 @@
-Return-Path: <linux-ext4+bounces-12213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12214-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03219CA9E03
-	for <lists+linux-ext4@lfdr.de>; Sat, 06 Dec 2025 03:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 407C4CAA1F1
+	for <lists+linux-ext4@lfdr.de>; Sat, 06 Dec 2025 07:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D331A329A4C5
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Dec 2025 02:02:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1D76C3151F45
+	for <lists+linux-ext4@lfdr.de>; Sat,  6 Dec 2025 06:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3582B253F05;
-	Sat,  6 Dec 2025 02:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="joTtwk03"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BE22D7DF1;
+	Sat,  6 Dec 2025 06:49:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f68.google.com (mail-qv1-f68.google.com [209.85.219.68])
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FACF254AFF
-	for <linux-ext4@vger.kernel.org>; Sat,  6 Dec 2025 02:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF59E2D7DC2
+	for <linux-ext4@vger.kernel.org>; Sat,  6 Dec 2025 06:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764986571; cv=none; b=DB6U/lDpng4UT5gv/rKw3hww6tVt88KiGS5Hfos1Ft12kKttH/WoFL7XZ0sNMsWNiVJwY9R88UO0CTxsZIAbmTpSgYLYosO4EV7y6usqVyKRpjggLc9Dz/lvfbYYaJJGvIlcdHKoJkQbb0y0SBNF7oaG1yZ7opNolX+DIi7Bj00=
+	t=1765003770; cv=none; b=q1p+pQsNHxOCeAU0UOk25cvGhSEpMsuLRYFFi0HvhX8hr2lShG/dyt/1SXO41qd63dNL7mFPw5hhaFftP/ZN6NUL3laahGxEXp4uuXZVWmXIiA8HFUJqYJTlGjHFhEdrMMjxBk1rB0gOcPJtxA1Yiyr6MndOH9JWHlIP/GXfJ7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764986571; c=relaxed/simple;
-	bh=Iy/dC9DMvwJJmRWZMLpi4XZSdwVA9s5IWC+8sP211f4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A7hCzRIOWtxaQSUSYAp2Pc8DH1fPOCoMkMnf3iaxCc+tYm7XChh2Viu9YbL0VDKD6I7y/tFpWuPAi3n9DCeHpsbypCTEAlSzZtw6YDZRjJYRD4QZ4EC6DSmcfw46mvyes5e7p3fCtQYGnwibBDfRTiWV7uFcHWNbqMtX0npGs+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=joTtwk03; arc=none smtp.client-ip=209.85.219.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f68.google.com with SMTP id 6a1803df08f44-8826b83e405so38902526d6.0
-        for <linux-ext4@vger.kernel.org>; Fri, 05 Dec 2025 18:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764986567; x=1765591367; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ikbW0KTFV2Hrw3Ofr3+X6/ogNZDuDLj9J6B0i4MyxZI=;
-        b=joTtwk03894ne9H+uAN42fUz4rwJx3x5hytdsGJl+IELo9lgRcoMYQI6gnC185HnqK
-         QG+WVK9Xga2+mbIBjov6djSgti8n47xzxkzU5h/vdUZjxMXTGyxOrR4GWv5SBAms9heQ
-         EKBDpOPqPiz/GtYW671M553/m8dngwXyHbcscWhnuWu6qGbm+XHpqfFNL4J7If/qLUfk
-         PktpSLdFnEmLn0BPdQvrTmhltPEJqKAI3jXcxN0ecparXMdiCcLVTEPF4/tmUuovIFyx
-         765BztKf/JZED3edYCoBGccGNdm/wx6j1cf0yFVjcdx0LpHbM/gdCEQRjZN9LBH3hh5y
-         3YTg==
+	s=arc-20240116; t=1765003770; c=relaxed/simple;
+	bh=y8zWfHfVpBQAV43gr76hJ4gWNmwple65RwrtFIzd7gs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=VSK+nHzbJ0vYqGO/oKEm4obTeTBXMODrX3gnE5Zf5xOBeQoJmKq8fcTD87iMLgqtwplWr2R0lO5O77Fzovlz/sTXsbgqrPoa+nMsIVUmBhL56sCozy0s1O2LTsHT+yY1380jjjza4jHL2bqWi/8IHdH9fgtitag1J5C3KWBd1Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-656ed76017aso4367680eaf.1
+        for <linux-ext4@vger.kernel.org>; Fri, 05 Dec 2025 22:49:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764986567; x=1765591367;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ikbW0KTFV2Hrw3Ofr3+X6/ogNZDuDLj9J6B0i4MyxZI=;
-        b=ko7JkuHh4J5HXHQCcjiyMrd0sJP9NNr2TWdeJQSrvG253jqIFbdk5A344WvF+hIN33
-         FGhSaTUf18ghgEmEKh5JSWZADTJCU+c8cFA9THIwntDjkNgGyxHiBAWE9E++ZeQmjOLW
-         VBzqzXMoPFtgEe4o5yd8Ywu0eU/ICMa5I7QWYp28ZC4yk19IQwc3ZS60isqtqMolg8eL
-         mhjqiwVDUaDBbZut9vT0FkamuI08/gTgWklDPJXcpzcPbU3Ep2IJ59KORSXoRukb7Y6n
-         IixgDETwPV0ykZSh6i6oGoS44bLCKNb092ICwLbc4QWOTR8PQbizj8QOktehoLOOlbxP
-         +PBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZuCGwDjCqGd/HdU1FNN6LDe1JDGxFF8k6IwETcxCL8UI4H0+62srtnkRRtJ6QbPz1sy3NhCFh+CFG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3wMVVGTOv0QZsERjBK7kA0AD5eYX6j6cbwG8KNDst9FZp038E
-	7T3Oysgph2uGag7ca+A8QBwqpQc9yFKNDWZBlUlzjI2X8gZ0Tz+AZpPw
-X-Gm-Gg: ASbGncvSPYdQjnHvchOi9/FA0N493qUd4NyzVJQ7y+Y5N5yhDpyJkCOkPUAIYHgZp1f
-	JHRQVj4U8YijPI2aE3iGhyIbhKNxvCIsM5o9CAxj0e9FlZ4ANrM3FqF8YIvj+VhGEIdaP7sqDms
-	5XCTQC3yRr2Y86UENPPfkmxME6kmttfBf8lSfFQOIbQYqEr1gB/5Er2uYAda8ZDYS49yQHfFAz4
-	rPVz9aVV6Kq7uFOi0gpVcnuFdHW6XbqohsTklDROR9fzxTwOVvp5QyTUfkpK0mFAvkfzlWacFDG
-	KpYf9jzHhtvy65XYOv2dgTb2z8dWr27Y8/LsEbGpD0JM2EdyQ2KZb+QmROtAbakHqI7Lo7AlHOJ
-	YqmKwZ+NAFEgGu6HirBXN91cNx58FZWeWypYBAAH47LrU1AFFHfGRM0KpTiMhNCDNN4dbrdxArv
-	0lnhyRuB1/+vM=
-X-Google-Smtp-Source: AGHT+IGd3Tx8h9j/d0f8+PnHkykV+pzsZzFX2hwgHqZ6hwE3sdFyB+hNtRyQiVIKUkdCjbb/9/d8ZQ==
-X-Received: by 2002:a17:902:d4ce:b0:295:557e:746a with SMTP id d9443c01a7336-29df556fa3cmr5536155ad.13.1764980727315;
-        Fri, 05 Dec 2025 16:25:27 -0800 (PST)
-Received: from archie.me ([210.87.74.117])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29dae49cbdfsm59025545ad.1.2025.12.05.16.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Dec 2025 16:25:26 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id C8B35421860F; Sat, 06 Dec 2025 07:25:22 +0700 (WIB)
-Date: Sat, 6 Dec 2025 07:25:22 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
-Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
-	damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-	tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
-	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
-	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
-	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
-	djwong@kernel.org, dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com, harry.yoo@oracle.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, yunseong.kim@ericsson.com, ysk@kzalloc.com,
-	yeoreum.yun@arm.com, netdev@vger.kernel.org,
-	matthew.brost@intel.com, her0gyugyu@gmail.com, corbet@lwn.net,
-	catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
-	hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
-	gustavo@padovan.org, christian.koenig@amd.com,
-	andi.shyti@kernel.org, arnd@arndb.de, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, rppt@kernel.org, surenb@google.com,
-	mcgrof@kernel.org, petr.pavlu@suse.com, da.gomez@kernel.org,
-	samitolvanen@google.com, paulmck@kernel.org, frederic@kernel.org,
-	neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
-	josh@joshtriplett.org, urezki@gmail.com,
-	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-	qiang.zhang@linux.dev, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
-	chuck.lever@oracle.com, neil@brown.name, okorniev@redhat.com,
-	Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
-	anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
-	clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
-	kristina.martsenko@arm.com, wangkefeng.wang@huawei.com,
-	broonie@kernel.org, kevin.brodsky@arm.com, dwmw@amazon.co.uk,
-	shakeel.butt@linux.dev, ast@kernel.org, ziy@nvidia.com,
-	yuzhao@google.com, baolin.wang@linux.alibaba.com,
-	usamaarif642@gmail.com, joel.granados@kernel.org,
-	richard.weiyang@gmail.com, geert+renesas@glider.be,
-	tim.c.chen@linux.intel.com, linux@treblig.org,
-	alexander.shishkin@linux.intel.com, lillian@star-ark.net,
-	chenhuacai@kernel.org, francesco@valla.it,
-	guoweikang.kernel@gmail.com, link@vivo.com, jpoimboe@kernel.org,
-	masahiroy@kernel.org, brauner@kernel.org,
-	thomas.weissschuh@linutronix.de, oleg@redhat.com, mjguzik@gmail.com,
-	andrii@kernel.org, wangfushuai@baidu.com, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-	linaro-mm-sig@lists.linaro.org, linux-i2c@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-modules@vger.kernel.org,
-	rcu@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev, 2407018371@qq.com, dakr@kernel.org,
-	miguel.ojeda.sandonis@gmail.com, neilb@ownmail.net,
-	wsa+renesas@sang-engineering.com, dave.hansen@intel.com,
-	geert@linux-m68k.org, ojeda@kernel.org, alex.gaynor@gmail.com,
-	gary@garyguo.net, bjorn3_gh@protonmail.com, lossin@kernel.org,
-	a.hindborg@kernel.org, aliceryhl@google.com, tmgross@umich.edu,
-	rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH v18 25/42] dept: add documents for dept
-Message-ID: <aTN38kJjBftxnjm9@archie.me>
-References: <20251205071855.72743-1-byungchul@sk.com>
- <20251205071855.72743-26-byungchul@sk.com>
+        d=1e100.net; s=20230601; t=1765003765; x=1765608565;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=53jhX6ZkfDtbSr/7nsfdTJHuLIu8j7dR1m9t5B2vy/M=;
+        b=Py5zNng4/45W9FI9+yG1D9KZlxG5wMhyJMbQOtslygzzJoWFTeWzPJW9BLLTOBGsbf
+         q3gClqnNo/36j3zheLOyV9arQW56ntIdHFZquFPjNQbT7YueO4ksCX3nfemP+nW8llpW
+         PTI0Hqfa4+sDS2jAkpRhVZLK6Ybeo6DuyRZwNMuCilhUGLvEmA4M0mvINrkBxL+65IKq
+         INcAGgKIW7V0tgSIY/1NHFHqRtAdev8WtpLmzyiq9SclUHv5hR92uyjRrx+I0aWxJTou
+         ssIFzG65g10lgueVuqVB01jm5vhv6LbqjGPQ1bgEEBrI02zLfEka+wZgPAodK4LNhUk3
+         TltA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2i2eDz29+ZD1iN6tpDA7kpw0A512bDrtSf/bmwewEKYoPKorK3NIoJbYsa1EkwlU+fo7txybbZde9@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOt8rijUPjNFmqbzhMic/wTTZzBO+oNFgw23M5aZNTWzqj+UCD
+	pbwSaV3hwULgaTC5a+W4XpKcvMFYVdhrlD+X2hM+FJRAm2YyR1yy3hldtMJPnKUmwsVuK2Ivxpa
+	7HoM+C4SpLbMPLv8+/mWNAy47W/udnuyPFLquL8276r2nn0801K+VJjsDYts=
+X-Google-Smtp-Source: AGHT+IHK2ZzO983I4dQNyVYMjfr7Al7eSNO8+6rayFow2cLRe5QbhFak9Yc0MuWjS1KmKTB/ngYfw/rZiRDmcKSGASi2WvaijVtk
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tsFx90K4YzyOMDd5"
-Content-Disposition: inline
-In-Reply-To: <20251205071855.72743-26-byungchul@sk.com>
+X-Received: by 2002:a05:6820:6607:b0:659:9a49:8e2c with SMTP id
+ 006d021491bc7-6599a49c3d7mr682160eaf.30.1765003765128; Fri, 05 Dec 2025
+ 22:49:25 -0800 (PST)
+Date: Fri, 05 Dec 2025 22:49:25 -0800
+In-Reply-To: <68c8fd75.050a0220.2ff435.03bd.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6933d1f5.a70a0220.38f243.0016.GAE@google.com>
+Subject: Re: [syzbot] [ext4?] possible deadlock in do_writepages (2)
+From: syzbot <syzbot+756f498a88797cda9299@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    d1d36025a617 Merge tag 'probes-v6.19' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c5821a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96b1065fc3079f82
+dashboard link: https://syzkaller.appspot.com/bug?extid=756f498a88797cda9299
+compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10133c1a580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16178992580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/01358f3e734d/disk-d1d36025.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8c72ac5de2c8/vmlinux-d1d36025.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/44b0ffcb520c/bzImage-d1d36025.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8c26f8a66fe2/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=12bc02c2580000)
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+756f498a88797cda9299@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 512
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Not tainted
+------------------------------------------------------
+syz.0.17/6041 is trying to acquire lock:
+ffff88803394eb98 (&sbi->s_writepages_rwsem){++++}-{0:0}, at: do_writepages+0x27a/0x600 mm/page-writeback.c:2598
+
+but task is already holding lock:
+ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:164 [inline]
+ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:6389 [inline]
+ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: __ext4_mark_inode_dirty+0x4ba/0x840 fs/ext4/inode.c:6470
+
+which lock already depends on the new lock.
 
 
---tsFx90K4YzyOMDd5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+the existing dependency chain (in reverse order) is:
 
-On Fri, Dec 05, 2025 at 04:18:38PM +0900, Byungchul Park wrote:
-> Add documents describing the concept and APIs of dept.
->=20
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  Documentation/dev-tools/dept.rst     | 778 +++++++++++++++++++++++++++
->  Documentation/dev-tools/dept_api.rst | 125 +++++
+-> #2 (&ei->xattr_sem){++++}-{4:4}:
+       down_read+0x9b/0x460 kernel/locking/rwsem.c:1537
+       ext4_setattr+0x869/0x28d0 fs/ext4/inode.c:5865
+       notify_change+0x6d2/0x1290 fs/attr.c:546
+       chown_common+0x549/0x680 fs/open.c:788
+       do_fchownat+0x1a7/0x200 fs/open.c:819
+       __do_sys_chown fs/open.c:839 [inline]
+       __se_sys_chown fs/open.c:837 [inline]
+       __x64_sys_chown+0x7b/0xc0 fs/open.c:837
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xcd/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-You forget to add toctree entries:
+-> #1 (jbd2_handle){++++}-{0:0}:
+       wait_transaction_locked+0x191/0x230 fs/jbd2/transaction.c:151
+       add_transaction_credits+0x110/0xe60 fs/jbd2/transaction.c:222
+       start_this_handle+0x3e7/0x1410 fs/jbd2/transaction.c:403
+       jbd2__journal_start+0x394/0x6a0 fs/jbd2/transaction.c:501
+       __ext4_journal_start_sb+0x195/0x640 fs/ext4/ext4_jbd2.c:114
+       __ext4_journal_start fs/ext4/ext4_jbd2.h:242 [inline]
+       ext4_do_writepages+0xc23/0x3c70 fs/ext4/inode.c:2914
+       ext4_writepages+0x37a/0x7d0 fs/ext4/inode.c:3026
+       do_writepages+0x27a/0x600 mm/page-writeback.c:2598
+       __writeback_single_inode+0x168/0x14a0 fs/fs-writeback.c:1737
+       writeback_sb_inodes+0x795/0x1de0 fs/fs-writeback.c:2030
+       __writeback_inodes_wb+0xf8/0x2d0 fs/fs-writeback.c:2107
+       wb_writeback+0x799/0xae0 fs/fs-writeback.c:2218
+       wb_check_old_data_flush fs/fs-writeback.c:2322 [inline]
+       wb_do_writeback fs/fs-writeback.c:2375 [inline]
+       wb_workfn+0x8a0/0xbb0 fs/fs-writeback.c:2403
+       process_one_work+0x9ba/0x1b20 kernel/workqueue.c:3257
+       process_scheduled_works kernel/workqueue.c:3340 [inline]
+       worker_thread+0x6c8/0xf10 kernel/workqueue.c:3421
+       kthread+0x3c5/0x780 kernel/kthread.c:463
+       ret_from_fork+0x983/0xb10 arch/x86/kernel/process.c:158
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
 
----- >8 ----
-diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/in=
-dex.rst
-index 4b8425e348abd1..02c858f5ed1fa2 100644
---- a/Documentation/dev-tools/index.rst
-+++ b/Documentation/dev-tools/index.rst
-@@ -22,6 +22,8 @@ Documentation/process/debugging/index.rst
-    clang-format
-    coccinelle
-    sparse
-+   dept
-+   dept_api
-    kcov
-    gcov
-    kasan
+-> #0 (&sbi->s_writepages_rwsem){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3165 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+       validate_chain kernel/locking/lockdep.c:3908 [inline]
+       __lock_acquire+0x1542/0x22f0 kernel/locking/lockdep.c:5237
+       lock_acquire kernel/locking/lockdep.c:5868 [inline]
+       lock_acquire+0x179/0x330 kernel/locking/lockdep.c:5825
+       percpu_down_read_internal include/linux/percpu-rwsem.h:53 [inline]
+       percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
+       ext4_writepages_down_read fs/ext4/ext4.h:1820 [inline]
+       ext4_writepages+0x224/0x7d0 fs/ext4/inode.c:3025
+       do_writepages+0x27a/0x600 mm/page-writeback.c:2598
+       __writeback_single_inode+0x168/0x14a0 fs/fs-writeback.c:1737
+       writeback_single_inode+0x5ea/0x11f0 fs/fs-writeback.c:1858
+       write_inode_now+0x170/0x1e0 fs/fs-writeback.c:2924
+       iput_final fs/inode.c:1941 [inline]
+       iput.part.0+0x815/0x1190 fs/inode.c:2003
+       iput+0x35/0x40 fs/inode.c:1966
+       ext4_xattr_block_set+0x67c/0x3640 fs/ext4/xattr.c:2203
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2668 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
+       ext4_expand_extra_isize_ea+0x1442/0x1ab0 fs/ext4/xattr.c:2831
+       __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:6349
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:6392 [inline]
+       __ext4_mark_inode_dirty+0x544/0x840 fs/ext4/inode.c:6470
+       ext4_evict_inode+0x713/0x1730 fs/ext4/inode.c:253
+       evict+0x3c2/0xad0 fs/inode.c:837
+       iput_final fs/inode.c:1951 [inline]
+       iput.part.0+0x621/0x1190 fs/inode.c:2003
+       iput+0x35/0x40 fs/inode.c:1966
+       ext4_orphan_cleanup+0x731/0x11e0 fs/ext4/orphan.c:472
+       __ext4_fill_super fs/ext4/super.c:5658 [inline]
+       ext4_fill_super+0x7ec1/0xb570 fs/ext4/super.c:5777
+       get_tree_bdev_flags+0x38c/0x620 fs/super.c:1699
+       vfs_get_tree+0x8e/0x330 fs/super.c:1759
+       fc_mount fs/namespace.c:1199 [inline]
+       do_new_mount_fc fs/namespace.c:3636 [inline]
+       do_new_mount fs/namespace.c:3712 [inline]
+       path_mount+0x7bf/0x23a0 fs/namespace.c:4022
+       do_mount fs/namespace.c:4035 [inline]
+       __do_sys_mount fs/namespace.c:4224 [inline]
+       __se_sys_mount fs/namespace.c:4201 [inline]
+       __x64_sys_mount+0x293/0x310 fs/namespace.c:4201
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xcd/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-> +Lockdep detects a deadlock by checking lock acquisition order.  For
-> +example, a graph to track acquisition order built by lockdep might look
-> +like:
-> +
-> +.. literal::
-> +
-> +   A -> B -
-> +           \
-> +            -> E
-> +           /
-> +   C -> D -
-> +
-> +   where 'A -> B' means that acquisition A is prior to acquisition B
-> +   with A still held.
+other info that might help us debug this:
 
-Use code-block directive for literal code blocks:
+Chain exists of:
+  &sbi->s_writepages_rwsem --> jbd2_handle --> &ei->xattr_sem
 
----- >8 ----
-diff --git a/Documentation/dev-tools/dept.rst b/Documentation/dev-tools/dep=
-t.rst
-index 333166464543d7..8394c4ea81bc2a 100644
---- a/Documentation/dev-tools/dept.rst
-+++ b/Documentation/dev-tools/dept.rst
-@@ -10,7 +10,7 @@ Lockdep detects a deadlock by checking lock acquisition o=
-rder.  For
- example, a graph to track acquisition order built by lockdep might look
- like:
-=20
--.. literal::
-+.. code-block::
-=20
-    A -> B -
-            \
-@@ -25,7 +25,7 @@ Lockdep keeps adding each new acquisition order into the =
-graph at
- runtime.  For example, 'E -> C' will be added when the two locks have
- been acquired in the order, E and then C.  The graph will look like:
-=20
--.. literal::
-+.. code-block::
-=20
-        A -> B -
-                \
-@@ -41,7 +41,7 @@ been acquired in the order, E and then C.  The graph will=
- look like:
-=20
- This graph contains a subgraph that demonstrates a loop like:
-=20
--.. literal::
-+.. code-block::
-=20
-                 -> E -
-                /      \
-@@ -76,7 +76,7 @@ e.g. irq context, normal process context, wq worker conte=
-xt, or so on.
-=20
- Can lockdep detect the following deadlock?
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -91,7 +91,7 @@ Can lockdep detect the following deadlock?
-=20
- No.  What about the following?
-=20
--.. literal::
-+.. code-block::
-=20
-    context X		   context Y
-=20
-@@ -116,7 +116,7 @@ What leads a deadlock
- A deadlock occurs when one or multi contexts are waiting for events that
- will never happen.  For example:
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -148,7 +148,7 @@ In terms of dependency:
-=20
- Dependency graph reflecting this example will look like:
-=20
--.. literal::
-+.. code-block::
-=20
-     -> C -> A -> B -
-    /                \
-@@ -171,7 +171,7 @@ Introduce DEPT
- DEPT(DEPendency Tracker) tracks wait and event instead of lock
- acquisition order so as to recognize the following situation:
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -186,7 +186,7 @@ acquisition order so as to recognize the following situ=
-ation:
- and builds up a dependency graph at runtime that is similar to lockdep.
- The graph might look like:
-=20
--.. literal::
-+.. code-block::
-=20
-     -> C -> A -> B -
-    /                \
-@@ -199,7 +199,7 @@ DEPT keeps adding each new dependency into the graph at=
- runtime.  For
- example, 'B -> D' will be added when event D occurrence is a
- prerequisite to reaching event B like:
-=20
--.. literal::
-+.. code-block::
-=20
-    context W
-=20
-@@ -211,7 +211,7 @@ prerequisite to reaching event B like:
-=20
- After the addition, the graph will look like:
-=20
--.. literal::
-+.. code-block::
-=20
-                      -> D
-                     /
-@@ -236,7 +236,7 @@ How DEPT works
- Let's take a look how DEPT works with the 1st example in the section
- 'Limitation of lockdep'.
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -256,7 +256,7 @@ event.
-=20
- Adding comments to describe DEPT's view in detail:
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -293,7 +293,7 @@ Adding comments to describe DEPT's view in detail:
-=20
- Let's build up dependency graph with this example.  Firstly, context X:
-=20
--.. literal::
-+.. code-block::
-=20
-    context X
-=20
-@@ -304,7 +304,7 @@ Let's build up dependency graph with this example.  Fir=
-stly, context X:
-=20
- There are no events to create dependency.  Next, context Y:
-=20
--.. literal::
-+.. code-block::
-=20
-    context Y
-=20
-@@ -332,7 +332,7 @@ event A cannot be triggered if wait B cannot be awakene=
-d by event B.
- Therefore, we can say event A depends on event B, say, 'A -> B'.  The
- graph will look like after adding the dependency:
-=20
--.. literal::
-+.. code-block::
-=20
-    A -> B
-=20
-@@ -340,7 +340,7 @@ graph will look like after adding the dependency:
-=20
- Lastly, context Z:
-=20
--.. literal::
-+.. code-block::
-=20
-    context Z
-=20
-@@ -362,7 +362,7 @@ triggered if wait A cannot be awakened by event A.  The=
-refore, we can
- say event B depends on event A, say, 'B -> A'.  The graph will look like
- after adding the dependency:
-=20
--.. literal::
-+.. code-block::
-=20
-     -> A -> B -
-    /           \
-@@ -386,7 +386,7 @@ Interpret DEPT report
-=20
- The following is the same example in the section 'How DEPT works'.
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -425,7 +425,7 @@ We can simplify this by labeling each waiting point wit=
-h [W], each
- point where its event's context starts with [S] and each event with [E].
- This example will look like after the labeling:
-=20
--.. literal::
-+.. code-block::
-=20
-    context X	   context Y	   context Z
-=20
-@@ -443,7 +443,7 @@ DEPT uses the symbols [W], [S] and [E] in its report as=
- described above.
- The following is an example reported by DEPT for a real problem in
- practice.
-=20
--.. literal::
-+.. code-block::
-=20
-    Link: https://lore.kernel.org/lkml/6383cde5-cf4b-facf-6e07-1378a485657d=
-@I-love.SAKURA.ne.jp/#t
-    Link: https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-by=
-ungchul.park@lge.com/
-@@ -646,7 +646,7 @@ practice.
-=20
- Let's take a look at the summary that is the most important part.
-=20
--.. literal::
-+.. code-block::
-=20
-    ---------------------------------------------------
-    summary
-@@ -669,7 +669,7 @@ Let's take a look at the summary that is the most impor=
-tant part.
-=20
- The summary shows the following scenario:
-=20
--.. literal::
-+.. code-block::
-=20
-    context A	   context B	   context ?(unknown)
-=20
-@@ -684,7 +684,7 @@ The summary shows the following scenario:
-=20
- Adding comments to describe DEPT's view in detail:
-=20
--.. literal::
-+.. code-block::
-=20
-    context A	   context B	   context ?(unknown)
-=20
-@@ -711,7 +711,7 @@ Adding comments to describe DEPT's view in detail:
-=20
- Let's build up dependency graph with this report. Firstly, context A:
-=20
--.. literal::
-+.. code-block::
-=20
-    context A
-=20
-@@ -735,7 +735,7 @@ unlock(&ni->ni_lock:0) depends on folio_unlock(&f1), sa=
-y,
-=20
- The graph will look like after adding the dependency:
-=20
--.. literal::
-+.. code-block::
-=20
-    unlock(&ni->ni_lock:0) -> folio_unlock(&f1)
-=20
-@@ -743,7 +743,7 @@ The graph will look like after adding the dependency:
-=20
- Secondly, context B:
-=20
--.. literal::
-+.. code-block::
-=20
-    context B
-=20
-@@ -762,7 +762,7 @@ folio_unlock(&f1) depends on unlock(&ni->ni_lock:0), sa=
-y,
-=20
- The graph will look like after adding the dependency:
-=20
--.. literal::
-+.. code-block::
-=20
-     -> unlock(&ni->ni_lock:0) -> folio_unlock(&f1) -
-    /                                                \
+ Possible unsafe locking scenario:
 
-> +Limitation of lockdep
-> +---------------------
-> +
-> +Lockdep deals with a deadlock by typical lock e.g. spinlock and mutex,
-> +that are supposed to be released within the acquisition context.
-> +However, when it comes to a deadlock by folio lock that is not supposed
-> +to be released within the acquisition context or other general
-> +synchronization mechanisms, lockdep doesn't work.
-> +
-> +NOTE:  In this document, 'context' refers to any type of unique context
-> +e.g. irq context, normal process context, wq worker context, or so on.
-> +
-> +Can lockdep detect the following deadlock?
-> +
-> +.. literal::
-> +
-> +   context X	   context Y	   context Z
-> +
-> +		   mutex_lock A
-> +   folio_lock B
-> +		   folio_lock B <- DEADLOCK
-> +				   mutex_lock A <- DEADLOCK
-> +				   folio_unlock B
-> +		   folio_unlock B
-> +		   mutex_unlock A
-> +				   mutex_unlock A
-> +
-> +No.  What about the following?
-> +
-> +.. literal::
-> +
-> +   context X		   context Y
-> +
-> +			   mutex_lock A
-> +   mutex_lock A <- DEADLOCK
-> +			   wait_for_complete B <- DEADLOCK
-> +   complete B
-> +			   mutex_unlock A
-> +   mutex_unlock A
-> +
-> +No.
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem);
+  rlock(&sbi->s_writepages_rwsem);
 
-One unanswered question from my v17 review [1]: You explain in "How DEPT wo=
-rks"
-section how DEPT detects deadlock in the first example (the former with thr=
-ee
-contexts). Can you do the same on the second example (the latter with two
-contexts)?
+ *** DEADLOCK ***
 
-Thanks.
+3 locks held by syz.0.17/6041:
+ #0: ffff88803394c0e0 (&type->s_umount_key#27/1){+.+.}-{4:4}, at: alloc_super+0x244/0xd00 fs/super.c:344
+ #1: ffff88803394c610 (sb_internal){.+.+}-{0:0}, at: evict+0x3c2/0xad0 fs/inode.c:837
+ #2: ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:164 [inline]
+ #2: ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:6389 [inline]
+ #2: ffff888059c16aa8 (&ei->xattr_sem){++++}-{4:4}, at: __ext4_mark_inode_dirty+0x4ba/0x840 fs/ext4/inode.c:6470
 
-[1]: https://lore.kernel.org/linux-doc/aN84jKyrE1BumpLj@archie.me/
+stack backtrace:
+CPU: 1 UID: 0 PID: 6041 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
+ print_circular_bug+0x2db/0x410 kernel/locking/lockdep.c:2043
+ check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3165 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+ validate_chain kernel/locking/lockdep.c:3908 [inline]
+ __lock_acquire+0x1542/0x22f0 kernel/locking/lockdep.c:5237
+ lock_acquire kernel/locking/lockdep.c:5868 [inline]
+ lock_acquire+0x179/0x330 kernel/locking/lockdep.c:5825
+ percpu_down_read_internal include/linux/percpu-rwsem.h:53 [inline]
+ percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
+ ext4_writepages_down_read fs/ext4/ext4.h:1820 [inline]
+ ext4_writepages+0x224/0x7d0 fs/ext4/inode.c:3025
+ do_writepages+0x27a/0x600 mm/page-writeback.c:2598
+ __writeback_single_inode+0x168/0x14a0 fs/fs-writeback.c:1737
+ writeback_single_inode+0x5ea/0x11f0 fs/fs-writeback.c:1858
+ write_inode_now+0x170/0x1e0 fs/fs-writeback.c:2924
+ iput_final fs/inode.c:1941 [inline]
+ iput.part.0+0x815/0x1190 fs/inode.c:2003
+ iput+0x35/0x40 fs/inode.c:1966
+ ext4_xattr_block_set+0x67c/0x3640 fs/ext4/xattr.c:2203
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2668 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
+ ext4_expand_extra_isize_ea+0x1442/0x1ab0 fs/ext4/xattr.c:2831
+ __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:6349
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:6392 [inline]
+ __ext4_mark_inode_dirty+0x544/0x840 fs/ext4/inode.c:6470
+ ext4_evict_inode+0x713/0x1730 fs/ext4/inode.c:253
+ evict+0x3c2/0xad0 fs/inode.c:837
+ iput_final fs/inode.c:1951 [inline]
+ iput.part.0+0x621/0x1190 fs/inode.c:2003
+ iput+0x35/0x40 fs/inode.c:1966
+ ext4_orphan_cleanup+0x731/0x11e0 fs/ext4/orphan.c:472
+ __ext4_fill_super fs/ext4/super.c:5658 [inline]
+ ext4_fill_super+0x7ec1/0xb570 fs/ext4/super.c:5777
+ get_tree_bdev_flags+0x38c/0x620 fs/super.c:1699
+ vfs_get_tree+0x8e/0x330 fs/super.c:1759
+ fc_mount fs/namespace.c:1199 [inline]
+ do_new_mount_fc fs/namespace.c:3636 [inline]
+ do_new_mount fs/namespace.c:3712 [inline]
+ path_mount+0x7bf/0x23a0 fs/namespace.c:4022
+ do_mount fs/namespace.c:4035 [inline]
+ __do_sys_mount fs/namespace.c:4224 [inline]
+ __se_sys_mount fs/namespace.c:4201 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:4201
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f24b8790eea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe9c113938 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe9c1139c0 RCX: 00007f24b8790eea
+RDX: 0000200000000180 RSI: 00002000000001c0 RDI: 00007ffe9c113980
+RBP: 0000200000000180 R08: 00007ffe9c1139c0 R09: 0000000000800700
+R10: 0000000000800700 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007ffe9c113980 R14: 000000000000046f R15: 000000000000002c
+ </TASK>
+------------[ cut here ]------------
+EA inode 11 i_nlink=2
+WARNING: fs/ext4/xattr.c:1056 at 0x0, CPU#0: syz.0.17/6041
+Modules linked in:
+CPU: 0 UID: 0 PID: 6041 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+RIP: 0010:ext4_xattr_inode_update_ref+0x4be/0x5b0 fs/ext4/xattr.c:1056
+Code: 40 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 f1 00 00 00 48 8d 3d 09 d6 fb 0d 48 8b 73 40 44 89 e2 <67> 48 0f b9 3a e9 06 ff ff ff e8 23 c7 2c ff 48 8d 7b 40 48 b8 00
+RSP: 0018:ffffc900033c7178 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff888059d59f78 RCX: ffffffff82915db4
+RDX: 0000000000000002 RSI: 000000000000000b RDI: ffffffff908d34b0
+RBP: ffffc900033c7240 R08: 0000000000000005 R09: 0000000000000001
+R10: 0000000000000002 R11: 0000000000000001 R12: 0000000000000002
+R13: ffffffffffffffff R14: 1ffff92000678e32 R15: ffff888059d5a168
+FS:  00005555694d6500(0000) GS:ffff88812495e000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005641e7f0f078 CR3: 00000000744a9000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ext4_xattr_inode_dec_ref fs/ext4/xattr.c:1081 [inline]
+ ext4_xattr_set_entry+0x158f/0x1f00 fs/ext4/xattr.c:1723
+ ext4_xattr_ibody_set+0x3d6/0x5d0 fs/ext4/xattr.c:2272
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2675 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
+ ext4_expand_extra_isize_ea+0x148c/0x1ab0 fs/ext4/xattr.c:2831
+ __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:6349
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:6392 [inline]
+ __ext4_mark_inode_dirty+0x544/0x840 fs/ext4/inode.c:6470
+ ext4_evict_inode+0x713/0x1730 fs/ext4/inode.c:253
+ evict+0x3c2/0xad0 fs/inode.c:837
+ iput_final fs/inode.c:1951 [inline]
+ iput.part.0+0x621/0x1190 fs/inode.c:2003
+ iput+0x35/0x40 fs/inode.c:1966
+ ext4_orphan_cleanup+0x731/0x11e0 fs/ext4/orphan.c:472
+ __ext4_fill_super fs/ext4/super.c:5658 [inline]
+ ext4_fill_super+0x7ec1/0xb570 fs/ext4/super.c:5777
+ get_tree_bdev_flags+0x38c/0x620 fs/super.c:1699
+ vfs_get_tree+0x8e/0x330 fs/super.c:1759
+ fc_mount fs/namespace.c:1199 [inline]
+ do_new_mount_fc fs/namespace.c:3636 [inline]
+ do_new_mount fs/namespace.c:3712 [inline]
+ path_mount+0x7bf/0x23a0 fs/namespace.c:4022
+ do_mount fs/namespace.c:4035 [inline]
+ __do_sys_mount fs/namespace.c:4224 [inline]
+ __se_sys_mount fs/namespace.c:4201 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:4201
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f24b8790eea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe9c113938 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe9c1139c0 RCX: 00007f24b8790eea
+RDX: 0000200000000180 RSI: 00002000000001c0 RDI: 00007ffe9c113980
+RBP: 0000200000000180 R08: 00007ffe9c1139c0 R09: 0000000000800700
+R10: 0000000000800700 R11: 0000000000000246 R12: 00002000000001c0
+R13: 00007ffe9c113980 R14: 000000000000046f R15: 000000000000002c
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	40                   	rex
+   1:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+   8:	fc ff df
+   b:	48 89 fa             	mov    %rdi,%rdx
+   e:	48 c1 ea 03          	shr    $0x3,%rdx
+  12:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  16:	0f 85 f1 00 00 00    	jne    0x10d
+  1c:	48 8d 3d 09 d6 fb 0d 	lea    0xdfbd609(%rip),%rdi        # 0xdfbd62c
+  23:	48 8b 73 40          	mov    0x40(%rbx),%rsi
+  27:	44 89 e2             	mov    %r12d,%edx
+* 2a:	67 48 0f b9 3a       	ud1    (%edx),%rdi <-- trapping instruction
+  2f:	e9 06 ff ff ff       	jmp    0xffffff3a
+  34:	e8 23 c7 2c ff       	call   0xff2cc75c
+  39:	48 8d 7b 40          	lea    0x40(%rbx),%rdi
+  3d:	48                   	rex.W
+  3e:	b8                   	.byte 0xb8
 
---=20
-An old man doll... just what I always wanted! - Clara
 
---tsFx90K4YzyOMDd5
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaTN37QAKCRD2uYlJVVFO
-o40gAP9yWQe507aOQ9xG+y3WznUbz9K0gxVdcJgmBzyPkuLdOAD/SjStuxrT6yQi
-Wd1X9MlzPBf7sPwdNC1xXihj1C/n6go=
-=b9ga
------END PGP SIGNATURE-----
-
---tsFx90K4YzyOMDd5--
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
