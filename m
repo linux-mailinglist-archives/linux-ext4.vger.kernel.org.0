@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-12217-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12218-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A85E6CAAEAC
-	for <lists+linux-ext4@lfdr.de>; Sat, 06 Dec 2025 23:01:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05464CAB3CB
+	for <lists+linux-ext4@lfdr.de>; Sun, 07 Dec 2025 12:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3323030074A9
-	for <lists+linux-ext4@lfdr.de>; Sat,  6 Dec 2025 22:01:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9C70C305059E
+	for <lists+linux-ext4@lfdr.de>; Sun,  7 Dec 2025 11:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204301DFE26;
-	Sat,  6 Dec 2025 22:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B727A273805;
+	Sun,  7 Dec 2025 11:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TnjkWXO1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cHrZNJxG"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DBC13790B
-	for <linux-ext4@vger.kernel.org>; Sat,  6 Dec 2025 22:01:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5752C24A076
+	for <linux-ext4@vger.kernel.org>; Sun,  7 Dec 2025 11:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765058473; cv=none; b=Sj62QdyjBIj9XIjr2Alj3bX7EKFshxmNXTV0i5Tw8gu6+BGS6OsUyitW/H2vLeRiWDRwIZKYDj9Gyqdk/ucaaHJ9O2i1amyOxa3T6aXfbrlCcziQ5V9+6ZnwjjJi50OrA5kJ+Swz9jZmTytGDi3e+yzce3FBJOOPiMAjmhObaQM=
+	t=1765106025; cv=none; b=Vjge7gwO2e7dlK+xwHXuTydzyTVXjlbRoiZYKsSGDOKc33LIfAFBiUS+OmyGTe1L/BXN2G9ShlGoUe62cbkZurhY10vb8hAvGtsjcIFIhqbBbHibZtF8vCkADvWiRwfEM0Ns5HCWNF604FCE+vsU63siOEr+h9D40wHd6d6IA6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765058473; c=relaxed/simple;
-	bh=a9A12qCz5aWsXK1Hsgf18DgDNaoVbmLW1ahjZ1oTLCQ=;
+	s=arc-20240116; t=1765106025; c=relaxed/simple;
+	bh=c9Cm8Ph3jUia32YkR6bjlvtHis3HpiD/orJ19vuyVmo=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UA6SgURdqjoytw8a4JOUxI6bm2U8LiYHLBIYWwrwHYKOFkq7wVnT2GN0XN6hNNPJAycuSi+taBRi9hSo/089NV8sAeTlN4Hpp6CVcaokvIIYGz9NmKABgrEeF9ok0rVH5LxtXGkeo8qf50g/9p0anhoNVQTREwkM72a639yq33g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TnjkWXO1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 48116C116D0
-	for <linux-ext4@vger.kernel.org>; Sat,  6 Dec 2025 22:01:13 +0000 (UTC)
+	 Content-Type:MIME-Version; b=OE5J8jkILpiIP0OAlFFVgwPh1JzRE5HefBR/Hvrn1cRrNCPkkQRkFL7kuubNjtkIOdtXRmbBnbzqjJFIQp0qmvl+hh0JtEcoCyEnpCnyG27N49R15PzWumSXB+fh6OPi8DdJ7uAPBPgUHFxxmGopSlvgM6uUfX8Z4JrherV2Vds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cHrZNJxG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D1031C19421
+	for <linux-ext4@vger.kernel.org>; Sun,  7 Dec 2025 11:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765058473;
-	bh=a9A12qCz5aWsXK1Hsgf18DgDNaoVbmLW1ahjZ1oTLCQ=;
+	s=k20201202; t=1765106024;
+	bh=c9Cm8Ph3jUia32YkR6bjlvtHis3HpiD/orJ19vuyVmo=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=TnjkWXO1ZrLBMFkP95ZwG+Iu5O33P+n+7wysXawI2B9yD5cBvGRMF2htugqOZZ0Bh
-	 fJMItNjXEVQzTaJiumGMLpanJrF0N8EOZDJUHAAU72E8WqZUpV+ECjcWeCDuhcMPaw
-	 YStp7HJnKW94e7QpxaUH36fFKT+pgPr/yzJmRpc0z4up2VDMsCCi4pYbFGeW0beu4G
-	 x7yMAZdNdP9W6pOweHLUJz8omjg6Jhc23ZC+Qq9YdCjG68PWpjA6ZCoz9A9uZOHcOK
-	 bWfM07VRkh53k5mNECIn7SRb1KKhXlWZioizMWu3PdUJ+ZI/b2VYxjx4620UXpkPaW
-	 SLhxznv3gxioA==
+	b=cHrZNJxGqP6Jk5vllVNXi8Hmq1cflWhzxfRZjXh6l6Q/5hW0xoenJVUVK/eNaxalE
+	 65UK0s20fSnE85v1Gb1auIXYJKPKslQGykDzMrQfUCXZ1LxxC1v7qd3AzawgofBl7D
+	 1NZyGHpWM9IlF3tXRRDGO7dj7hdHKRYQZOUu7TXreDHMrz90Xt1divzKpDKz24jENI
+	 vikXVbi+mtDhoBCk2LyIvlP7BgrpmR6Emr/a57bm3507ELRWNdSG1V5Z9nEpMiJE6M
+	 YgE50VdlEqMhrsydhfCbcLM9mEbFY/vjUez9s2HOhw9oSKVTqdw4CAZTbvTscC5lEM
+	 dFwdxGyleX4eQ==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 3934DC3279F; Sat,  6 Dec 2025 22:01:13 +0000 (UTC)
+	id C37DFC41612; Sun,  7 Dec 2025 11:13:44 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 220842] dmesg flooded with ext4 backtraces when underlying USB
  device chokes
-Date: Sat, 06 Dec 2025 22:01:13 +0000
+Date: Sun, 07 Dec 2025 11:13:44 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -54,14 +54,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Who: deweloper@wp.pl
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-220842-13602-sIgBngjars@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-220842-13602-ElDC2TcU2t@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-220842-13602@https.bugzilla.kernel.org/>
 References: <bug-220842-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -77,19 +77,19 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D220842
 
-Theodore Tso (tytso@mit.edu) changed:
+--- Comment #3 from Deweloper (deweloper@wp.pl) ---
+This message and tons of call traces overflowing dmesg buffer make me think
+there is some software bug in ext4 fs driver:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+<2>[ 5451.308209] EXT4-fs (sdb1): This should not happen!! Data will be lost
 
---- Comment #2 from Theodore Tso (tytso@mit.edu) ---
-If the USB block device disappears out from under the file system, there's =
-not
-much ext4 can do, in terms of "coping".   We can ratelimit some the debuggi=
-ng
-messages printed by ext4_destroy_inode(), but no magic that will allow us to
-recover from a failed storage device.
+What should not happen?
+Some invalid internal state?
+Or an external event out of control of the software, like disappearing block
+device, what is normal/expected?
+In other words, is all of this noise just a way to say that a mounted devic=
+e is
+lost?
 
 --=20
 You may reply to this email to add a comment.
