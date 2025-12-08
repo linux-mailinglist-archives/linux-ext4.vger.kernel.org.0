@@ -1,99 +1,52 @@
-Return-Path: <linux-ext4+bounces-12230-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12231-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F49CAD786
-	for <lists+linux-ext4@lfdr.de>; Mon, 08 Dec 2025 15:43:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3036ACADEDF
+	for <lists+linux-ext4@lfdr.de>; Mon, 08 Dec 2025 18:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D5467305968F
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Dec 2025 14:42:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0871030840DC
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Dec 2025 17:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBFC2DC78C;
-	Mon,  8 Dec 2025 14:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21796221F24;
+	Mon,  8 Dec 2025 17:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKJ6u8yx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4dGgSZMy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKJ6u8yx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4dGgSZMy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pL2vTawS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879232BE657
-	for <linux-ext4@vger.kernel.org>; Mon,  8 Dec 2025 14:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9BA199230;
+	Mon,  8 Dec 2025 17:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765204423; cv=none; b=bYHP4+qZz/28B2M74jpgRQInX4RMOuBztDnKCqEoOcqHgMfX1qXa7QdBswtUrtSEdDcGbaLTc5lBr5S8x/S8PrJwrw3XwaZy1qxssZCuhzQgpFc8EavAUSFMq5ZK3GPvo3zaYxkUkXKA8TXZyMstFrzI2qsvblgS7a7Cpf0gzGs=
+	t=1765215298; cv=none; b=jBJmQH7+xSUQ5Gi7+spBq+TsidaYranXm8hV5IJCJxB9PmCgQX5x9+7OfFS/D66RgCVQKF66PainK7ckNkKmOwheg6JTPufiHfLuAwt5tIYyKXRVdbGDgI8m38JkNT3aWgRhfXJxY4aN7kwOuAlqabwmKbPvQDl48yS+Q4axgwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765204423; c=relaxed/simple;
-	bh=1e3fKwKqOavKZGWmT5m+Mib71Rb4q99G7h77yXjY9V0=;
+	s=arc-20240116; t=1765215298; c=relaxed/simple;
+	bh=nSV9WPDb5UtOwVi/S/3KhRv+j/yGjhBj3v8LR+2z7FM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KENizNIU0nl+m4CF8xiGStl9Yt9wg5DMPpVGw+YVskkYjB07TbJ1CNE/eqcEhZYi2yqXbLnH7GuatdMcZ37lk4tjkkO3HjPXnEhhN5F293+Kd7BhsQPObTith45Ltpzs0VKqkCJsHuOul2WgHImezJvhmaWgVVAZ63/S/kGozXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKJ6u8yx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4dGgSZMy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKJ6u8yx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4dGgSZMy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 80B495BCC9;
-	Mon,  8 Dec 2025 14:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765204418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPmLEi5X19s/mvBvrx/EjSfP54GjiTUNNJXG1uiHiiY=;
-	b=iKJ6u8yx0OaMI+7nJAYdt1J58YMfphc9i/n5nr74YLj2eYKHBos8enCVjdRpzL1vmgCEiz
-	/YgrWGwpM0e0JKWMOJBY2v9kkcV9N8sPmDmQ3TUhdCjWS55N3uMX/7e35XeOANx6ns3Xd2
-	W6amA8nq+/owbla1Pw3V4kb3/3hJZ8s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765204418;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPmLEi5X19s/mvBvrx/EjSfP54GjiTUNNJXG1uiHiiY=;
-	b=4dGgSZMyWMA8aKoE5kJJz2a7Lwo33xTzzHkCfXNREU2wbqMEuj4yuaeoIdntbUE/Hctv6l
-	cBWV6BSHRQXeJHAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iKJ6u8yx;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4dGgSZMy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765204418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPmLEi5X19s/mvBvrx/EjSfP54GjiTUNNJXG1uiHiiY=;
-	b=iKJ6u8yx0OaMI+7nJAYdt1J58YMfphc9i/n5nr74YLj2eYKHBos8enCVjdRpzL1vmgCEiz
-	/YgrWGwpM0e0JKWMOJBY2v9kkcV9N8sPmDmQ3TUhdCjWS55N3uMX/7e35XeOANx6ns3Xd2
-	W6amA8nq+/owbla1Pw3V4kb3/3hJZ8s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765204418;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPmLEi5X19s/mvBvrx/EjSfP54GjiTUNNJXG1uiHiiY=;
-	b=4dGgSZMyWMA8aKoE5kJJz2a7Lwo33xTzzHkCfXNREU2wbqMEuj4yuaeoIdntbUE/Hctv6l
-	cBWV6BSHRQXeJHAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74D8D3EA65;
-	Mon,  8 Dec 2025 14:33:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ckd/HMLhNmkxOwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 08 Dec 2025 14:33:38 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 207AEA09E4; Mon,  8 Dec 2025 15:33:34 +0100 (CET)
-Date: Mon, 8 Dec 2025 15:33:34 +0100
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao@bytedance.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, yi.zhang@huawei.com, 
-	jack@suse.cz
-Subject: Re: [PATCH] ext4: add missing down_write_data_sem in
- mext_move_extent().
-Message-ID: <zdy5jew73giogj2nm6m6nbl2jculzc6vdy5dqb7mir4fi566x3@oucwvxvajcok>
-References: <20251208123713.1971068-1-sunjunchao@bytedance.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DGpd8SQGp9LKCNGK3hVW25B8HaHZ6NDGhDoPHuh4Sh+/i1CXcki+PCZmnJFwHTeY3qx+jE9ltwmmyXpKaY/EM1b+H/nI/OJPfPqJUUSq+GJSN0+f1rfq6sEfURfXZvmmGTdWNaAp+R6sj4cU68FyuDIHs8qvuVp5tWyiYNzxfmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pL2vTawS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E863C4CEF1;
+	Mon,  8 Dec 2025 17:34:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765215298;
+	bh=nSV9WPDb5UtOwVi/S/3KhRv+j/yGjhBj3v8LR+2z7FM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pL2vTawSgxCZusiciHH+TQyh7QxomFau7qh9b7Z7xEzTAZA30L5mA2UKQtjZJkRz4
+	 g9dUwJ/JLGbkt/FUrXOIq+K96vFmehWZ3lbxHxrLrFiIWJuZwmkDh0iWO3HkyYnYT+
+	 7wj60OgyooKBR1ndodDilfoi+r3T0eeObTFgXqFdKXCZafZvXtTD0+KRMipWXnFNGb
+	 zBHtxj8ljMcMDMVhSG2Oq8Cxcftbi+K5t0hsJcJBhTzZIAIdid+H87hnh9FwMLe4Zk
+	 8YHDm8iOdxrFlBK+vqyGykd+rxpLK+xwunNM9do+aRjCF5DiPTp3L6DyIEYECnfU2e
+	 BeI57GIUj9gjQ==
+Date: Mon, 8 Dec 2025 09:34:57 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Su Yue <glass.su@suse.com>
+Cc: fstests@vger.kernel.org, l@damenly.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, zlang@redhat.com
+Subject: Re: [PATCH v2] generic: use _qmount_option and _qmount
+Message-ID: <20251208173457.GH89454@frogsfrogsfrogs>
+References: <20251208065829.35613-1-glass.su@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -102,84 +55,102 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251208123713.1971068-1-sunjunchao@bytedance.com>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 80B495BCC9
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:dkim,suse.cz:email,bytedance.com:email,appspotmail.com:email];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+In-Reply-To: <20251208065829.35613-1-glass.su@suse.com>
 
-On Mon 08-12-25 20:37:13, Julian Sun wrote:
-> Commit 962e8a01eab9 ("ext4: introduce mext_move_extent()") attempts to
-> call ext4_swap_extents() on the failure path to recover the swapped
-> extents, but fails to acquire locks for the two inode->i_data_sem,
-> triggering the BUG_ON statement in ext4_swap_extents().
+On Mon, Dec 08, 2025 at 02:58:29PM +0800, Su Yue wrote:
+> This commit touches generic tests call `_scratch_mount -o usrquota`
+> then chmod 777, quotacheck and quotaon. They can be simpilfied
+> to _qmount_option and _qmount. _qmount already calls quotacheck,
+> quota and chmod ugo+rwx. The conversions can save a few lines.
 > 
-> This issue can be fixed by calling ext4_double_down_write_data_sem()
-> before ext4_swap_extents().
-> 
-> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
-> Reported-by: syzbot+4ea6bd8737669b423aae@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/69368649.a70a0220.38f243.0093.GAE@google.com/
-> Fixes: 962e8a01eab9 ("ext4: introduce mext_move_extent()")
+> Signed-off-by: Su Yue <glass.su@suse.com>
+> ---
+> Changelog:
+> v2:
+>   Only convert the tests calling chmod 777.
 
-Indeed. Feel free to add:
+LGTM
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
+--D
 
 > ---
->  fs/ext4/move_extent.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  tests/generic/231 | 6 ++----
+>  tests/generic/232 | 6 ++----
+>  tests/generic/233 | 6 ++----
+>  tests/generic/270 | 6 ++----
+>  4 files changed, 8 insertions(+), 16 deletions(-)
 > 
-> diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> index 0550fd30fd10..635fb8a52e0c 100644
-> --- a/fs/ext4/move_extent.c
-> +++ b/fs/ext4/move_extent.c
-> @@ -393,9 +393,11 @@ static int mext_move_extent(struct mext_data *mext, u64 *m_len)
+> diff --git a/tests/generic/231 b/tests/generic/231
+> index ce7e62ea1886..02910523d0b5 100755
+> --- a/tests/generic/231
+> +++ b/tests/generic/231
+> @@ -47,10 +47,8 @@ _require_quota
+>  _require_user
 >  
->  repair_branches:
->  	ret2 = 0;
-> +	ext4_double_down_write_data_sem(orig_inode, donor_inode);
->  	r_len = ext4_swap_extents(handle, donor_inode, orig_inode,
->  				  mext->donor_lblk, orig_map->m_lblk,
->  				  *m_len, 0, &ret2);
-> +	ext4_double_up_write_data_sem(orig_inode, donor_inode);
->  	if (ret2 || r_len != *m_len) {
->  		ext4_error_inode_block(orig_inode, (sector_t)(orig_map->m_lblk),
->  				       EIO, "Unable to copy data block, data will be lost!");
+>  _scratch_mkfs >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  if ! _fsx 1; then
+>  	_scratch_unmount 2>/dev/null
+> diff --git a/tests/generic/232 b/tests/generic/232
+> index c903a5619045..21375809d299 100755
+> --- a/tests/generic/232
+> +++ b/tests/generic/232
+> @@ -44,10 +44,8 @@ _require_scratch
+>  _require_quota
+>  
+>  _scratch_mkfs > $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  _fsstress
+>  _check_quota_usage
+> diff --git a/tests/generic/233 b/tests/generic/233
+> index 3fc1b63abb24..4606f3bde2ab 100755
+> --- a/tests/generic/233
+> +++ b/tests/generic/233
+> @@ -59,10 +59,8 @@ _require_quota
+>  _require_user
+>  
+>  _scratch_mkfs > $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  setquota -u $qa_user 32000 32000 1000 1000 $SCRATCH_MNT 2>/dev/null
+>  
+>  _fsstress
+> diff --git a/tests/generic/270 b/tests/generic/270
+> index c3d5127a0b51..9ac829a7379f 100755
+> --- a/tests/generic/270
+> +++ b/tests/generic/270
+> @@ -62,10 +62,8 @@ _require_command "$SETCAP_PROG" setcap
+>  _require_attrs security
+>  
+>  _scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
+> -_scratch_mount "-o usrquota,grpquota"
+> -chmod 777 $SCRATCH_MNT
+> -quotacheck -u -g $SCRATCH_MNT 2>/dev/null
+> -quotaon -u -g $SCRATCH_MNT 2>/dev/null
+> +_qmount_option "usrquota,grpquota"
+> +_qmount
+>  
+>  if ! _workout; then
+>  	_scratch_unmount 2>/dev/null
 > -- 
-> 2.39.5
+> 2.50.1 (Apple Git-155)
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
 
