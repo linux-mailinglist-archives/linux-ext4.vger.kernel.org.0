@@ -1,95 +1,198 @@
-Return-Path: <linux-ext4+bounces-12243-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12244-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1BB3CB0020
-	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 14:04:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54D08CB01E5
+	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 14:57:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C56293015ADC
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 13:04:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 198D730FBB58
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 13:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667AF3314CD;
-	Tue,  9 Dec 2025 13:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=stu.pku.edu.cn header.i=@stu.pku.edu.cn header.b="HE7qemT+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BFD33123E;
+	Tue,  9 Dec 2025 13:41:55 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-m1973198.qiye.163.com (mail-m1973198.qiye.163.com [220.197.31.98])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB6E3314D3
-	for <linux-ext4@vger.kernel.org>; Tue,  9 Dec 2025 13:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6561A33120D;
+	Tue,  9 Dec 2025 13:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765285490; cv=none; b=B814gBpRsjLdoJnpiUqBELItlnmB3aOxeLO6gMSl8K8VtaH7oxWz7f+PI3j6lBT+v3z3fw5pik66kVawjIvAAzOVEIdkC5hocFefkBnKK+XeYdPYPNz4MtHw7zKcB4mG6opNzCU4bKyb8m/3pCLPQAub481P4Gu2Lu9xbbxSrxo=
+	t=1765287715; cv=none; b=RIgE9G8WRoxGjnuJOwEHta+ooUyt16gtnI3Z6fMMFSXTjLCADK+iZFYKkkRKOId4ySViQFq1BWq1fUM787pE60Sj4PEsHGTT9LFLWJFXMW5ErsWBuMuJvlPeWZF0BISjtFjd4iD+sxPuQM4mf5TFYDuhoRecyv6xfAWWiNreaGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765285490; c=relaxed/simple;
-	bh=wnvcdag5I9SwFXjcvGsF/w50l4lrzgTQAUJ8HsbsaoQ=;
-	h=Content-Type:Message-ID:To:Cc:Subject:MIME-Version:From:Date; b=tSmIzHVT4a+zEKED7Ttj1zNHgaMyHE5DHv+kzmg1KecCY1f5jd4X83krv51OuIGW1VYD+6FJewciBx/ORrkCU7usSjA82qvMYKraaQa+MkofhKGoZrVakwgsu7PMRXEjCJ9oAmI04m86wo+OLiBTzoKgzRDwLIV1m/9L8m1gSoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stu.pku.edu.cn; spf=pass smtp.mailfrom=stu.pku.edu.cn; dkim=pass (1024-bit key) header.d=stu.pku.edu.cn header.i=@stu.pku.edu.cn header.b=HE7qemT+; arc=none smtp.client-ip=220.197.31.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stu.pku.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.pku.edu.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AAQA6gDeJ9AKoitjlGagc4q*.1.1765285478995.Hmail.2200013188@stu.pku.edu.cn>
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: tytso <tytso@mit.edu>, "adilger.kernel" <adilger.kernel@dilger.ca>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: =?UTF-8?B?W0JVR10gc3RybGVuIG92ZXJmbG93IGluIGV4dDQgcGFyc2VfYXBwbHlfc2JfbW91bnRfb3B0aW9ucw==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com Sirius_WEB_MAC_1.56.0
+	s=arc-20240116; t=1765287715; c=relaxed/simple;
+	bh=1zdXNva9dOJxzxwXhR1hoz5GU41IyGN6TKYJz1amZ/Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cFLHn+RWDmeInMOI7a1yn8f6hdkaXZWAgDJqXigvN9AgOFB7Q6zVJsMoHwhACCWRBKwcOgyUgexQ6OyRXPtlY8/DGlsWYKWSZgMW+tYqxhpJUOEONIv8Cox9Pa0F8CeJ67vOPtMbd9nxeboVTAAgWhBNcj6m31DYjA2S4BZ18Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dQg3P2kQvzKHLyR;
+	Tue,  9 Dec 2025 21:40:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id EEB801A175D;
+	Tue,  9 Dec 2025 21:41:47 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.87.129])
+	by APP2 (Coremail) with SMTP id Syh0CgC3lU8aJzhpjT2aBA--.58217S4;
+	Tue, 09 Dec 2025 21:41:47 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun1@huawei.com,
+	libaokun@huaweicloud.com
+Subject: [PATCH] ext4: move ext4_percpu_param_init() before ext4_mb_init()
+Date: Tue,  9 Dec 2025 21:31:16 +0800
+Message-Id: <20251209133116.731350-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Received: from 2200013188@stu.pku.edu.cn( [210.73.43.101] ) by ajax-webmail ( [127.0.0.1] ) ; Tue, 9 Dec 2025 21:04:38 +0800 (GMT+08:00)
-From: Tianyu Li <lty218@stu.pku.edu.cn>
-Date: Tue, 9 Dec 2025 21:04:38 +0800 (GMT+08:00)
-X-HM-Tid: 0a9b0322a7ba09b6kunm1dabd808198
-X-HM-MType: 1
-X-HM-NTES-SC: AL0_4z5B86Wr4Tz9jdMF+bhXMTv2670zqzAM+7RIKOqUHUUyjnjpPRHs8I0th+
-	pfToBLAHHPQiSvzTUYtFIRevI3hx+6N3X75Pug8kABQIlOzly17YVBpfH3PQTNVlxbHsqqHX3XR6
-	WnL9ICBIecC31wvUCS9M/WlSTIoFhR/orCVVY=
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGUsdVh1JQhoeGUoeTUkdSlYVFAkWGhdVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlJSktVTEhVT0hVSktKWVdZFhoPEhUdFFlBWU9LSFVKS0hKTkpNVUpLS1
-	VKQlkG
-DKIM-Signature: a=rsa-sha256;
-	b=HE7qemT+sZq9zN/Trks6jOB1XDsf+BAtWS6rebON+SnF9fpgQVHG7a+iHZswK+5Q3+Lfi/xpa47cGiTY49Eoi6W3dmOGFQio/E//xRJKLeXzNzpLmdMJ2URIExk/xz8pkPfEGSaooQdwyb4u2UqGEf85A86MeCeDEmYeSUM1tPU=; c=relaxed/relaxed; s=default; d=stu.pku.edu.cn; v=1;
-	bh=wnvcdag5I9SwFXjcvGsF/w50l4lrzgTQAUJ8HsbsaoQ=;
-	h=date:mime-version:subject:message-id:from;
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgC3lU8aJzhpjT2aBA--.58217S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFWkCrW5Jr4UKFWrWry7trb_yoWrXr1rpr
+	1DAa4xKry8C34DCa13JFyYqF18X3W8Cay8W34fur15A3sFq3WkZF97tF15AFWj9rs5A3ZY
+	qF1rGry7Gr17uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
+	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0
+	F24lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+	17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+	73UjIFyTuYvjfUoPEfDUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgARBWk4EuMIOwAAsF
 
-SGksCgpJIGRpc2NvdmVyZWQgYW4gaXNzdWUgb24ga2VybmVsIDYuMTggd2hlcmUgZXh0NCdzIHBh
-cnNlX2FwcGx5X3NiX21vdW50X29wdGlvbnMgY2FsbHMgc3RybmxlbiBvbiBhIDY0LWJ5dGUga2Vy
-bmVsIGJ1ZmZlciBhbmQgcmVhZHMgNjUgYnl0ZXMsIHRyaWdnZXJpbmcgX19mb3J0aWZ5X3JlcG9y
-dDoKInN0cm5sZW46IGRldGVjdGVkIGJ1ZmZlciBvdmVyZmxvdzogNjUgYnl0ZSByZWFkIG9mIGJ1
-ZmZlciBzaXplIDY0Ii4gVGhpcyBpc3N1ZSBpcyBmaXJzdCBmb3VuZCB2aWEgYSBmdXp6aW5nIGZy
-YW1ld29yayBvbiBsaW51eDYuMTgtcmM2LCB0aGVuIGl0IGlzIGNvbmZpcm1lZCByZXByb2R1Y2li
-bGUgb24gbGludXg2LjE4LiBPbiB0aGUgdGVzdCBlbnZpcm9ubWVudCBXQVJOIGlzIHByb21vdGVk
-IHRvIHBhbmljIChwYW5pY19vbl93YXJuKSwgc28gdGhlIHdhcm5pbmcgY2F1c2VzIGEga2VybmVs
-IHBhbmljIGFuZCByZWJvb3QuCgpwYXJzZV9hcHBseV9zYl9tb3VudF9vcHRpb25zIGFwcGVhcnMg
-dG8gY2FsbCBzdHJpbmcgaGVscGVycyBvbiBhIGJ1ZmZlciB0aGF0IG1heSBub3QgYmUgTlVMLXRl
-cm1pbmF0ZWQgb3IgcHJvcGVybHkgbGVuZ3RoLWJvdW5kZWQgZm9yIHVzZXItc3VwcGxpZWQgbW91
-bnQgb3B0aW9ucywgYWxsb3dpbmcgc3RybmxlbiB0byByZWFkIHBhc3QgdGhlIDY0LWJ5dGUgYnVm
-ZmVyLCBjYXVzaW5nIHRoZSBjb2RlIHRvIHJ1biBpbnRvIGEgV0FSTiB6b25lLgoKUmVsZXZhbnQg
-bWF0ZXJpYWxzIGFyZSBsaXN0ZWQgYmVsb3c6CgogICAgS2VybmVsIHNvdXJjZTogaHR0cHM6Ly9j
-ZG4ua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Y2LngvbGludXgtNi4xOC50YXIueHoKICAg
-IEtlcm5lbCBjb25maWd1cmF0aW9uOiBodHRwczovL2dpdGh1Yi5jb20vajFha2FpL0tDb25maWdG
-dXp6X2J1Zy9yYXcvcmVmcy9oZWFkcy9tYWluL3g4Ni9tYWlubGluZS1jb25maWcKICAgIEtlcm5l
-bCBsb2coZnV6emluZyk6IGh0dHBzOi8vZ2l0aHViLmNvbS9XeG0tMjMzL0tDb25maWdGdXp6X2Ny
-YXNoZXMvcmF3L3JlZnMvaGVhZHMvbWFpbi9iNDg3YjY0YWQ1MDA1MTFiMjlhMzY4MDA3ZGMzZDc0
-NTZlNzY3OTI5L3JlcG9ydDAKICAgIEtlcm5lbCBsb2cocmVwcm8pOiBodHRwczovL2dpdGh1Yi5j
-b20vV3htLTIzMy9LQ29uZmlnRnV6el9jcmFzaGVzL3Jhdy9yZWZzL2hlYWRzL21haW4vYjQ4N2I2
-NGFkNTAwNTExYjI5YTM2ODAwN2RjM2Q3NDU2ZTc2NzkyOS9yZXByb19yZXBvcnQwCiAgICBSZXBy
-b2R1Y3Rpb24gQyBjb2RlOiBodHRwczovL2dpdGh1Yi5jb20vV3htLTIzMy9LQ29uZmlnRnV6el9j
-cmFzaGVzL3Jhdy9yZWZzL2hlYWRzL21haW4vYjQ4N2I2NGFkNTAwNTExYjI5YTM2ODAwN2RjM2Q3
-NDU2ZTc2NzkyOS9yZXByby5jcHJvZwogICAgU3lzY2FsbCBzZXF1ZW5jZSBmb3IgcmVwcm9kdWN0
-aW9uIChtb3JlIHByZWNpc2UpOiBodHRwczovL2dpdGh1Yi5jb20vV3htLTIzMy9LQ29uZmlnRnV6
-el9jcmFzaGVzL3Jhdy9yZWZzL2hlYWRzL21haW4vYjQ4N2I2NGFkNTAwNTExYjI5YTM2ODAwN2Rj
-M2Q3NDU2ZTc2NzkyOS9yZXByby5wcm9nCiAgICBHQ0MgSW5mbzogaHR0cHM6Ly9naXRodWIuY29t
-L1d4bS0yMzMvS0NvbmZpZ0Z1enpfY3Jhc2hlcy9yYXcvcmVmcy9oZWFkcy9tYWluL2I0MmE1N2E5
-ODBhYzk5ZGJhNzY0MThmOGRhYWE4MGUyYTkwODMxYTEvZ2NjaW5mbwoKSSBob3BlIHRoaXMgcmVw
-b3J0IGhlbHBzIGluIGlkZW50aWZ5aW5nIGFuZCByZXNvbHZpbmcgdGhlIGlzc3VlLiBUaGFua3Mg
-Zm9yIHlvdXIgdGltZSBhbmQgYXR0ZW50aW9uLgoKQmVzdCByZWdhcmRzLg==
+From: Baokun Li <libaokun1@huawei.com>
+
+When running `kvm-xfstests -c ext4/1k -C 1 generic/383` with the
+`DOUBLE_CHECK` macro defined, the following panic is triggered:
+
+==================================================================
+EXT4-fs error (device vdc): ext4_validate_block_bitmap:423:
+                        comm mount: bg 0: bad block bitmap checksum
+BUG: unable to handle page fault for address: ff110000fa2cc000
+PGD 3e01067 P4D 3e02067 PUD 0
+Oops: Oops: 0000 [#1] SMP NOPTI
+CPU: 0 UID: 0 PID: 2386 Comm: mount Tainted: G W
+                        6.18.0-gba65a4e7120a-dirty #1152 PREEMPT(none)
+RIP: 0010:percpu_counter_add_batch+0x13/0xa0
+Call Trace:
+ <TASK>
+ ext4_mark_group_bitmap_corrupted+0xcb/0xe0
+ ext4_validate_block_bitmap+0x2a1/0x2f0
+ ext4_read_block_bitmap+0x33/0x50
+ mb_group_bb_bitmap_alloc+0x33/0x80
+ ext4_mb_add_groupinfo+0x190/0x250
+ ext4_mb_init_backend+0x87/0x290
+ ext4_mb_init+0x456/0x640
+ __ext4_fill_super+0x1072/0x1680
+ ext4_fill_super+0xd3/0x280
+ get_tree_bdev_flags+0x132/0x1d0
+ vfs_get_tree+0x29/0xd0
+ vfs_cmd_create+0x59/0xe0
+ __do_sys_fsconfig+0x4f6/0x6b0
+ do_syscall_64+0x50/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+==================================================================
+
+This issue can be reproduced using the following commands:
+        mkfs.ext4 -F -q -b 1024 /dev/sda 5G
+        tune2fs -O quota,project /dev/sda
+        mount /dev/sda /tmp/test
+
+With DOUBLE_CHECK defined, mb_group_bb_bitmap_alloc() reads
+and validates the block bitmap. When the validation fails,
+ext4_mark_group_bitmap_corrupted() attempts to update
+sbi->s_freeclusters_counter. However, this percpu_counter has not been
+initialized yet at this point, which leads to the panic described above.
+
+Fix this by moving the execution of ext4_percpu_param_init() to occur
+before ext4_mb_init(), ensuring the per-CPU counters are initialized
+before they are used.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/ext4/super.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 87205660c5d0..5c2e931d8a53 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5599,35 +5599,35 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 */
+ 	if (!(ctx->spec & EXT4_SPEC_mb_optimize_scan)) {
+ 		if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD)
+ 			set_opt2(sb, MB_OPTIMIZE_SCAN);
+ 		else
+ 			clear_opt2(sb, MB_OPTIMIZE_SCAN);
+ 	}
+ 
++	err = ext4_percpu_param_init(sbi);
++	if (err)
++		goto failed_mount5;
++
+ 	err = ext4_mb_init(sb);
+ 	if (err) {
+ 		ext4_msg(sb, KERN_ERR, "failed to initialize mballoc (%d)",
+ 			 err);
+ 		goto failed_mount5;
+ 	}
+ 
+ 	/*
+ 	 * We can only set up the journal commit callback once
+ 	 * mballoc is initialized
+ 	 */
+ 	if (sbi->s_journal)
+ 		sbi->s_journal->j_commit_callback =
+ 			ext4_journal_commit_callback;
+ 
+-	err = ext4_percpu_param_init(sbi);
+-	if (err)
+-		goto failed_mount6;
+-
+ 	if (ext4_has_feature_flex_bg(sb))
+ 		if (!ext4_fill_flex_info(sb)) {
+ 			ext4_msg(sb, KERN_ERR,
+ 			       "unable to initialize "
+ 			       "flex_bg meta info!");
+ 			err = -ENOMEM;
+ 			goto failed_mount6;
+ 		}
+@@ -5699,18 +5699,18 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
+ failed_mount8: __maybe_unused
+ 	ext4_release_orphan_info(sb);
+ failed_mount7:
+ 	ext4_unregister_li_request(sb);
+ failed_mount6:
+ 	ext4_mb_release(sb);
+ 	ext4_flex_groups_free(sbi);
+-	ext4_percpu_param_destroy(sbi);
+ failed_mount5:
++	ext4_percpu_param_destroy(sbi);
+ 	ext4_ext_release(sb);
+ 	ext4_release_system_zone(sb);
+ failed_mount4a:
+ 	dput(sb->s_root);
+ 	sb->s_root = NULL;
+ failed_mount4:
+ 	ext4_msg(sb, KERN_ERR, "mount failed");
+ 	if (EXT4_SB(sb)->rsv_conversion_wq)
+-- 
+2.39.2
+
 
