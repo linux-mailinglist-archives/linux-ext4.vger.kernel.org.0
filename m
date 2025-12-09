@@ -1,303 +1,187 @@
-Return-Path: <linux-ext4+bounces-12240-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12241-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49C5CAF991
-	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 11:18:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6C7CAFB7A
+	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 12:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 986CD3081D49
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 10:14:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B4FF0301C97B
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 11:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C46301474;
-	Tue,  9 Dec 2025 10:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="qL+cRQrU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE3D2F747D;
+	Tue,  9 Dec 2025 11:08:19 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEAC62D662D;
-	Tue,  9 Dec 2025 10:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C483A26738C
+	for <linux-ext4@vger.kernel.org>; Tue,  9 Dec 2025 11:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765275259; cv=none; b=ewLiE5zEEFvaOe3sgGwRfWckzhmenMtNXTdWpeahhwoefusIVJitLoqcxuKhY9Lh8GyNMK6+8GuQdM1hqTwJqnUQMD9PkLYVmxuAbgke/D9H18SeLuAYNoQrpPOmNMJJ1cZVW51ak3Zsk4YaBk/6hdjy+frNupKbaK/rOeFwO6I=
+	t=1765278499; cv=none; b=ms/lfViGeyIu9O7Rwu2TgDe3AOsIxIUtJSd1BtsShSaXm+0VXgLXV8AlHkdvwmIo0Ag7gG9bFkddmOETklqaJWCIjCYiqo8foLeualN4RoAmMTg1ZfcDUjzT4L6PNbHk/AJF7A/Vw2coupJJQ2OOElPDxMChog0rrnNDYxi/kLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765275259; c=relaxed/simple;
-	bh=9MViNjxv+xJuzPDg0eDsyixCXZOYgs3iTH27X2mbjVs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s1a+42PPSaUNWz9CKLRKjO9LvfoE45RF2al0cjumExHMDKzF3mBjGkEvQAOpCwsXx8KXvibSK15fA1C5rl/pFz1ht+z87D2GIlRpR4U1w8I+TE/Kma3ftfTiym3voPNAI8Sd98ZZ0fNW+EFy6a46LTBLHhI1vQwI8iPHBrsomG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=qL+cRQrU; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:To:From:
-	Content-Type; bh=Ngnr8gfSFX9684SuULcIgp19g6NevHWia+sjrje6x1Q=;
-	b=qL+cRQrUgjMxYe1pgr/luK1mSZwocglgy0HhKu4BJVH/EI0vJ2vWxbPyuXerBs
-	NmU7S4mSy7XJRyq8IDGTFoNermRv/8TG07ra6MzuoltkRKdXUgoIXfjOUJ6lJrSg
-	EuktDkok8PxJ3UIolf5752GfeZv3t1hLorbv4uam5qj6Y=
-Received: from [192.168.18.185] (unknown [])
-	by gzsmtp4 (Coremail) with SMTP id PygvCgAHH51i9jdp2WM4Gw--.133S2;
-	Tue, 09 Dec 2025 18:13:59 +0800 (CST)
-Message-ID: <315cf6c2-cc00-4496-8eed-9429f918a96f@163.com>
-Date: Tue, 9 Dec 2025 18:13:54 +0800
+	s=arc-20240116; t=1765278499; c=relaxed/simple;
+	bh=shT9tBjI8TIw5ux+mXWY7mqDfAQyY5tU76iB6CNoC1o=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=cvhn+DQ9NRTodW83yj/Qx/IsVb6qr+xjg86bkDcZE38BdLwXrGA/lQR83Juqohxh3OVaDhJ1r2DqLugl6tBUbXhTEMPvD7n8Jr3kI7gXVAD47+RSjl8vK7W/AhaeKs/E0e5p0sXLiqXH7RIn8nupYbCbYXzv6AdvVJJMBB7+xQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-65742f8c565so8559166eaf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Dec 2025 03:08:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765278497; x=1765883297;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Xw/E3Vy0/7x6YxsDXNwWvkMieu2C5D/ay1KNYrFPxM=;
+        b=Nquab+IpNIUa22VEtXxExWXMCCncTOsn/UNkxGvXoiXu6O3DAdiqdH/wY7A2D/REX6
+         o3tTbZI9oL2aHZpuhO/lwvrjPdm31Mh7c0kJZlEPh5xSZpAqxpLp9AE3j1yiFpuBjMZh
+         KTAhLZi9Ftgur8Kc9NrQRyzM8Ce/J39edvBA87m1XAdrvA0FI41CxgrX/kO58mzrKzpZ
+         92J7dRujf+lkYpizjaKVERO1pxEiD71yyJMNhfiQIJgVnWy+dAH5i8M/2Zks5FmsASkt
+         W5k/JbWnUf90NbSUIcnm8xzCUpHBdVGPGQKXQpoltQG7jrtwauujxmoDyy378O8YmWlI
+         5Xkw==
+X-Forwarded-Encrypted: i=1; AJvYcCUxCncNsl8qMZ1sfuxwSoEzMxdve0JKkZKng45Pt33rxYtlcqnBv0JdYc0gCoiIVyzNEMezkTQsUuIg@vger.kernel.org
+X-Gm-Message-State: AOJu0YyI4f/gHZCxQweXU0mUZl4JG2ILXmjNhfrTjTXa2ZxgZG5sPf7k
+	v0e4Z1DEexsrC1QoXcDpRD++lh+T4WS9VhzmoR55glHvLtZamYWnJs5ye/g1IIxN/gM3mXRy7Ue
+	172kWemvcIqzuTEVmb6tyAGScPIae01F/BSGCpYX/518fHGlcZp2NH2lQUUk=
+X-Google-Smtp-Source: AGHT+IG4WyPj9QFKCe40E58n+5dRuWKZAw89JrJTWJ6KuTr2vVvl3fO8VBeUHSBc4VUe7YhqveZVwlBUZGtZuYjryAm7S+lni48s
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ext4: add sysfs attribute err_report_sec to control
- s_err_report timer
-To: tytso@mit.edu, adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- Baolin Liu <liubaolin@kylinos.cn>
-References: <20251209095254.11569-1-liubaolin12138@163.com>
- <21af8d64.9c77.19b0296bb66.Coremail.liubaolin12138@163.com>
-From: liubaolin <liubaolin12138@163.com>
-In-Reply-To: <21af8d64.9c77.19b0296bb66.Coremail.liubaolin12138@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PygvCgAHH51i9jdp2WM4Gw--.133S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Ww1fKrW8Xr45JrW5XryxXwb_yoWfuw4fpa
-	98Ja9rGrWjqa4Uuw43Ar4Fg3ZYvw1IkFyagr1fC3W3ZasFyr1xJFy2qF109F4rZrW8G34I
-	qF1vgrnrCrWUGaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U2D7-UUUUU=
-X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbCwgf+yWk39me54AAA3k
+X-Received: by 2002:a05:6820:1388:b0:659:9a49:8f9c with SMTP id
+ 006d021491bc7-6599a8cd164mr4480509eaf.21.1765278497044; Tue, 09 Dec 2025
+ 03:08:17 -0800 (PST)
+Date: Tue, 09 Dec 2025 03:08:17 -0800
+In-Reply-To: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69380321.050a0220.1ff09b.0000.GAE@google.com>
+Subject: Re: [syzbot] [ext4] [fscrypt] KMSAN: uninit-value in fscrypt_crypt_data_unit
+From: syzbot <syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com>
+To: davem@davemloft.net, ebiggers@kernel.org, herbert@gondor.apana.org.au, 
+	jaegeuk@kernel.org, linux-crypto@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-> Dear maintainers,	
-> Several customers have requested the ability to disable or adjust the frequency of the print_daily_error_info messages. 
-> The fields s_error_count, s_first_error_time, and s_last_error_time being non-zero only indicate that the filesystem has experienced errors in the past.
-> They do not mean an error is currently happening or has just occurred. 
-> However, the presence of the word “error” in logs can confuse customers and trigger false alerts in their log monitoring systems.
-> 
-> To address this, customers asked for a way to disable or tune the reporting interval. 
-> Based on this requirement, I implemented this patch and verified its behavior. 
-> Initially, the timer for s_err_report was set to five minutes during fill_super, and then adjusted to a default of one day.
-> The new sysfs attribute err_report_sec allows users to disable the timer, enable it, or set a custom timeout value.
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    a110f942672c Merge tag 'pinctrl-v6.19-1' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17495992580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10d58c94af5f9772
+dashboard link: https://syzkaller.appspot.com/bug?extid=7add5c56bc2a14145d20
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1122aec2580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14012a1a580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/905b868d0b1d/disk-a110f942.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/aa7281cd9720/vmlinux-a110f942.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1420de8a7da2/bzImage-a110f942.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/1e40f788aa89/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=1622aec2580000)
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:150 [inline]
+BUG: KMSAN: uninit-value in aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:283
+ subshift lib/crypto/aes.c:150 [inline]
+ aes_encrypt+0x1239/0x1960 lib/crypto/aes.c:283
+ aesti_encrypt+0x7d/0xf0 crypto/aes_ti.c:31
+ crypto_ecb_crypt crypto/ecb.c:23 [inline]
+ crypto_ecb_encrypt2+0x142/0x300 crypto/ecb.c:40
+ crypto_lskcipher_crypt_sg+0x3ac/0x930 crypto/lskcipher.c:188
+ crypto_lskcipher_encrypt_sg+0x8b/0xc0 crypto/lskcipher.c:207
+ crypto_skcipher_encrypt+0x111/0x1e0 crypto/skcipher.c:443
+ xts_encrypt+0x2e1/0x570 crypto/xts.c:269
+ crypto_skcipher_encrypt+0x18a/0x1e0 crypto/skcipher.c:444
+ fscrypt_crypt_data_unit+0x38e/0x590 fs/crypto/crypto.c:139
+ fscrypt_encrypt_pagecache_blocks+0x430/0x900 fs/crypto/crypto.c:197
+ ext4_bio_write_folio+0x1383/0x30d0 fs/ext4/page-io.c:552
+ mpage_submit_folio+0x399/0x3d0 fs/ext4/inode.c:2087
+ mpage_process_page_bufs+0xaef/0xf50 fs/ext4/inode.c:2198
+ mpage_prepare_extent_to_map+0x175d/0x2660 fs/ext4/inode.c:2737
+ ext4_do_writepages+0x1aa1/0x77a0 fs/ext4/inode.c:2930
+ ext4_writepages+0x338/0x870 fs/ext4/inode.c:3026
+ do_writepages+0x3f2/0x860 mm/page-writeback.c:2598
+ __writeback_single_inode+0x101/0x1190 fs/fs-writeback.c:1737
+ writeback_sb_inodes+0xb2d/0x1f10 fs/fs-writeback.c:2030
+ wb_writeback+0x4ce/0xc00 fs/fs-writeback.c:2216
+ wb_do_writeback fs/fs-writeback.c:2363 [inline]
+ wb_workfn+0x397/0x1910 fs/fs-writeback.c:2403
+ process_one_work kernel/workqueue.c:3257 [inline]
+ process_scheduled_works+0xb91/0x1d80 kernel/workqueue.c:3340
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3421
+ kthread+0xd5c/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x208/0x710 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+
+Uninit was stored to memory at:
+ le128_xor include/crypto/b128ops.h:69 [inline]
+ xts_xor_tweak+0x566/0xbd0 crypto/xts.c:123
+ xts_xor_tweak_pre crypto/xts.c:135 [inline]
+ xts_encrypt+0x278/0x570 crypto/xts.c:268
+ crypto_skcipher_encrypt+0x18a/0x1e0 crypto/skcipher.c:444
+ fscrypt_crypt_data_unit+0x38e/0x590 fs/crypto/crypto.c:139
+ fscrypt_encrypt_pagecache_blocks+0x430/0x900 fs/crypto/crypto.c:197
+ ext4_bio_write_folio+0x1383/0x30d0 fs/ext4/page-io.c:552
+ mpage_submit_folio+0x399/0x3d0 fs/ext4/inode.c:2087
+ mpage_process_page_bufs+0xaef/0xf50 fs/ext4/inode.c:2198
+ mpage_prepare_extent_to_map+0x175d/0x2660 fs/ext4/inode.c:2737
+ ext4_do_writepages+0x1aa1/0x77a0 fs/ext4/inode.c:2930
+ ext4_writepages+0x338/0x870 fs/ext4/inode.c:3026
+ do_writepages+0x3f2/0x860 mm/page-writeback.c:2598
+ __writeback_single_inode+0x101/0x1190 fs/fs-writeback.c:1737
+ writeback_sb_inodes+0xb2d/0x1f10 fs/fs-writeback.c:2030
+ wb_writeback+0x4ce/0xc00 fs/fs-writeback.c:2216
+ wb_do_writeback fs/fs-writeback.c:2363 [inline]
+ wb_workfn+0x397/0x1910 fs/fs-writeback.c:2403
+ process_one_work kernel/workqueue.c:3257 [inline]
+ process_scheduled_works+0xb91/0x1d80 kernel/workqueue.c:3340
+ worker_thread+0xedf/0x1590 kernel/workqueue.c:3421
+ kthread+0xd5c/0xf00 kernel/kthread.c:463
+ ret_from_fork+0x208/0x710 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+
+Uninit was created at:
+ __alloc_frozen_pages_noprof+0x421/0xab0 mm/page_alloc.c:5233
+ alloc_pages_mpol+0x328/0x860 mm/mempolicy.c:2486
+ alloc_frozen_pages_noprof mm/mempolicy.c:2557 [inline]
+ alloc_pages_noprof mm/mempolicy.c:2577 [inline]
+ folio_alloc_noprof+0x109/0x360 mm/mempolicy.c:2587
+ filemap_alloc_folio_noprof+0xda/0x480 mm/filemap.c:1013
+ __filemap_get_folio_mpol+0xb4f/0x1960 mm/filemap.c:2006
+ __filemap_get_folio include/linux/pagemap.h:763 [inline]
+ write_begin_get_folio include/linux/pagemap.h:789 [inline]
+ ext4_write_begin+0x6d3/0x2d70 fs/ext4/inode.c:1323
+ generic_perform_write+0x365/0x1050 mm/filemap.c:4314
+ ext4_buffered_write_iter+0x61a/0xce0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x2a2/0x3d90 fs/ext4/file.c:-1
+ aio_write+0x704/0xa10 fs/aio.c:1634
+ __io_submit_one fs/aio.c:-1 [inline]
+ io_submit_one+0x260e/0x3450 fs/aio.c:2053
+ __do_sys_io_submit fs/aio.c:2112 [inline]
+ __se_sys_io_submit+0x27c/0x6a0 fs/aio.c:2082
+ __x64_sys_io_submit+0x97/0xe0 fs/aio.c:2082
+ x64_sys_call+0x3b5f/0x3e70 arch/x86/include/generated/asm/syscalls_64.h:210
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xd9/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 1 UID: 0 PID: 1143 Comm: kworker/u8:8 Not tainted syzkaller #0 PREEMPT(none) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Workqueue: writeback wb_workfn (flush-7:0)
+=====================================================
 
 
-
-在 2025/12/9 18:09, Baolin Liu 写道:
-> Add .
-> 
-> 
-> 
-> 
-> 
-> 
-> At 2025-12-09 17:52:54, "Baolin Liu" <liubaolin12138@163.com> wrote:
->>From: Baolin Liu <liubaolin@kylinos.cn>
->>
->>Add a new sysfs attribute "err_report_sec" to control the s_err_report
->>timer in ext4_sb_info. Writing '0' disables the timer, while writing
->>a non-zero value enables the timer and sets the timeout in seconds.
->>
->>Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
->>---
->> fs/ext4/ext4.h  |  4 +++-
->> fs/ext4/super.c | 31 ++++++++++++++++++++-----------
->> fs/ext4/sysfs.c | 36 ++++++++++++++++++++++++++++++++++++
->> 3 files changed, 59 insertions(+), 12 deletions(-)
->>
->>diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>index 57087da6c7be..9eb5bf2a237a 100644
->>--- a/fs/ext4/ext4.h
->>+++ b/fs/ext4/ext4.h
->>@@ -1673,6 +1673,8 @@ struct ext4_sb_info {
->> 
->> 	/* timer for periodic error stats printing */
->> 	struct timer_list s_err_report;
->>+	/* timeout in seconds for s_err_report; 0 disables the timer. */
->>+	unsigned long s_err_report_sec;
->> 
->> 	/* Lazy inode table initialization info */
->> 	struct ext4_li_request *s_li_request;
->>@@ -2349,7 +2351,6 @@ static inline int ext4_emergency_state(struct super_block *sb)
->> #define EXT4_DEF_SB_UPDATE_INTERVAL_SEC (3600) /* seconds (1 hour) */
->> #define EXT4_DEF_SB_UPDATE_INTERVAL_KB (16384) /* kilobytes (16MB) */
->> 
->>-
->> /*
->>  * Minimum number of groups in a flexgroup before we separate out
->>  * directories into the first block group of a flexgroup
->>@@ -3187,6 +3188,7 @@ extern void ext4_mark_group_bitmap_corrupted(struct super_block *sb,
->> 					     unsigned int flags);
->> extern unsigned int ext4_num_base_meta_blocks(struct super_block *sb,
->> 					      ext4_group_t block_group);
->>+extern void print_daily_error_info(struct timer_list *t);
->> 
->> extern __printf(7, 8)
->> void __ext4_error(struct super_block *, const char *, unsigned int, bool,
->>diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>index 33e7c08c9529..a692fe2be1de 100644
->>--- a/fs/ext4/super.c
->>+++ b/fs/ext4/super.c
->>@@ -3635,10 +3635,12 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
->> }
->> 
->> /*
->>- * This function is called once a day if we have errors logged
->>- * on the file system
->>+ * This function is called once a day by default if we have errors logged
->>+ * on the file system.
->>+ * Use the err_report_sec sysfs attribute to disable or adjust its call
->>+ * freequency.
->>  */
->>-static void print_daily_error_info(struct timer_list *t)
->>+void print_daily_error_info(struct timer_list *t)
->> {
->> 	struct ext4_sb_info *sbi = timer_container_of(sbi, t, s_err_report);
->> 	struct super_block *sb = sbi->s_sb;
->>@@ -3678,7 +3680,9 @@ static void print_daily_error_info(struct timer_list *t)
->> 			       le64_to_cpu(es->s_last_error_block));
->> 		printk(KERN_CONT "\n");
->> 	}
->>-	mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);  /* Once a day */
->>+
->>+	if (sbi->s_err_report_sec)
->>+		mod_timer(&sbi->s_err_report, jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->> }
->> 
->> /* Find next suitable group and run ext4_init_inode_table */
->>@@ -5350,7 +5354,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->> 	if (err)
->> 		goto failed_mount;
->> 
->>-	timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->> 	spin_lock_init(&sbi->s_error_lock);
->> 	INIT_WORK(&sbi->s_sb_upd_work, update_super_work);
->> 
->>@@ -5637,8 +5640,13 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->> 		clear_opt(sb, DISCARD);
->> 	}
->> 
->>-	if (es->s_error_count)
->>-		mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
->>+	timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->>+	if (es->s_error_count) {
->>+		sbi->s_err_report_sec = 5*60;	/* first time  5 minutes */
->>+		mod_timer(&sbi->s_err_report,
->>+				  jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>+	}
->>+	sbi->s_err_report_sec = 24*60*60; /* Once a day */
->> 
->> 	/* Enable message ratelimiting. Default is 10 messages per 5 secs. */
->> 	ratelimit_state_init(&sbi->s_err_ratelimit_state, 5 * HZ, 10);
->>@@ -5656,6 +5664,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->> 
->> failed_mount9:
->> 	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
->>+	timer_delete_sync(&sbi->s_err_report);
->> failed_mount8: __maybe_unused
->> 	ext4_release_orphan_info(sb);
->> failed_mount7:
->>@@ -5690,7 +5699,6 @@ failed_mount8: __maybe_unused
->> 	/* flush s_sb_upd_work before sbi destroy */
->> 	flush_work(&sbi->s_sb_upd_work);
->> 	ext4_stop_mmpd(sbi);
->>-	timer_delete_sync(&sbi->s_err_report);
->> 	ext4_group_desc_free(sbi);
->> failed_mount:
->> #if IS_ENABLED(CONFIG_UNICODE)
->>@@ -6184,10 +6192,11 @@ static void ext4_update_super(struct super_block *sb)
->> 				ext4_errno_to_code(sbi->s_last_error_code);
->> 		/*
->> 		 * Start the daily error reporting function if it hasn't been
->>-		 * started already
->>+		 * started already and sbi->s_err_report_sec is not zero
->> 		 */
->>-		if (!es->s_error_count)
->>-			mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);
->>+		if (!es->s_error_count && !sbi->s_err_report_sec)
->>+			mod_timer(&sbi->s_err_report,
->>+					  jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->> 		le32_add_cpu(&es->s_error_count, sbi->s_add_error_count);
->> 		sbi->s_add_error_count = 0;
->> 	}
->>diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
->>index 987bd00f916a..ce9c18f6ba26 100644
->>--- a/fs/ext4/sysfs.c
->>+++ b/fs/ext4/sysfs.c
->>@@ -40,6 +40,7 @@ typedef enum {
->> 	attr_pointer_string,
->> 	attr_pointer_atomic,
->> 	attr_journal_task,
->>+	attr_err_report_sec,
->> } attr_id_t;
->> 
->> typedef enum {
->>@@ -130,6 +131,36 @@ static ssize_t trigger_test_error(struct ext4_sb_info *sbi,
->> 	return count;
->> }
->> 
->>+static ssize_t err_report_sec_store(struct ext4_sb_info *sbi,
->>+				    const char *buf, size_t count)
->>+{
->>+	unsigned long t;
->>+	int ret;
->>+
->>+	ret = kstrtoul(skip_spaces(buf), 0, &t);
->>+	if (ret)
->>+		return ret;
->>+
->>+	/*the maximum time interval must not exceed one year.*/
->>+	if (t > (365*24*60*60))
->>+		return -EINVAL;
->>+
->>+	if (sbi->s_err_report_sec == t)		/*nothing to do*/
->>+		goto out;
->>+	else if (!sbi->s_err_report_sec && t) {
->>+		timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->>+	} else if (sbi->s_err_report_sec && !t) {
->>+		timer_delete_sync(&sbi->s_err_report);
->>+		goto out;
->>+	}
->>+
->>+	sbi->s_err_report_sec = t;
->>+	mod_timer(&sbi->s_err_report, jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>+
->>+out:
->>+	return count;
->>+}
->>+
->> static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
->> {
->> 	if (!sbi->s_journal)
->>@@ -217,6 +248,7 @@ EXT4_ATTR_OFFSET(mb_group_prealloc, 0644, clusters_in_group,
->> 		 ext4_sb_info, s_mb_group_prealloc);
->> EXT4_ATTR_OFFSET(mb_best_avail_max_trim_order, 0644, mb_order,
->> 		 ext4_sb_info, s_mb_best_avail_max_trim_order);
->>+EXT4_ATTR_OFFSET(err_report_sec, 0644, err_report_sec, ext4_sb_info, s_err_report_sec);
->> EXT4_RW_ATTR_SBI_UI(inode_goal, s_inode_goal);
->> EXT4_RW_ATTR_SBI_UI(mb_stats, s_mb_stats);
->> EXT4_RW_ATTR_SBI_UI(mb_max_to_scan, s_mb_max_to_scan);
->>@@ -309,6 +341,7 @@ static struct attribute *ext4_attrs[] = {
->> 	ATTR_LIST(last_trim_minblks),
->> 	ATTR_LIST(sb_update_sec),
->> 	ATTR_LIST(sb_update_kb),
->>+	ATTR_LIST(err_report_sec),
->> 	NULL,
->> };
->> ATTRIBUTE_GROUPS(ext4);
->>@@ -396,6 +429,7 @@ static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
->> 			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
->> 		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
->> 	case attr_pointer_ul:
->>+	case attr_err_report_sec:
->> 		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
->> 	case attr_pointer_u8:
->> 		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
->>@@ -519,6 +553,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
->> 		return inode_readahead_blks_store(sbi, buf, len);
->> 	case attr_trigger_test_error:
->> 		return trigger_test_error(sbi, buf, len);
->>+	case attr_err_report_sec:
->>+		return err_report_sec_store(sbi, buf, len);
->> 	default:
->> 		return ext4_generic_attr_store(a, sbi, buf, len);
->> 	}
->>-- 
->>2.39.2
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
