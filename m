@@ -1,126 +1,209 @@
-Return-Path: <linux-ext4+bounces-12236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F077BCAF500
-	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 09:40:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C6BCAF59F
+	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 09:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E7F96302A394
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 08:40:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5C4D3302CF63
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 08:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FD1287510;
-	Tue,  9 Dec 2025 08:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96AC2D8362;
+	Tue,  9 Dec 2025 08:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LpnatfEJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vUAFLXed";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gXcm/H6s";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vUAFLXed";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gXcm/H6s"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8669C2773DE
-	for <linux-ext4@vger.kernel.org>; Tue,  9 Dec 2025 08:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F4928CF7C
+	for <linux-ext4@vger.kernel.org>; Tue,  9 Dec 2025 08:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765269653; cv=none; b=uiP2C0ucKDPYciXG2pZ0ftLBekyMjUsOGctMmTMxFEZgS++XfVE8+7RcXsKObFYoU9Ck+8l6O9UcKPSvNPRJfS8HwDm6VQqxtaHVcmexgCHzpGR2T0gAeIkqGrwP9o0b0gmrJlraFjXqd4LxR5Nw0KxNP1A1depvHZX0mqdsbbI=
+	t=1765270590; cv=none; b=Jg2sti5LdsGD9UcZVr/S34zDuXFCsP4i/XS63OoZ/HRhCySfh72XMpaMLV/ta4xhx9X0j1xVmaQVnmziT33ClvSHLSGFnGQ0w39CSZS9i//dhXtdX/I4fPoFZ/DRd+TUEg5BJNdgYa7xMmlfztj4AHkkTod2gAt2O8lvNGJslZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765269653; c=relaxed/simple;
-	bh=QGdJ7xOj0VhIFJxyvxFFwrbE1T+Ookj54PhAEdx+8HU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Vf19gofDDA3b0ve1Hv7gKcraLi1mg+CLMf20a4tzi28jzuWDQpYvGIJICcEUTuqxtp2zra9NfeI11EWR2YbFWxkehnuhAMKDIrggtPONl4NLilIxyAba+lKcxsQms7ofubRHeBWLprS/LM5tWU8cf0MphtrZNnfNMZAodPHi/ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LpnatfEJ; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3434700be69so7600813a91.1
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Dec 2025 00:40:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1765269651; x=1765874451; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FvpnPesPd7ddPwM9RQGFvv6eTS6ofSBZTx6aar6UV4k=;
-        b=LpnatfEJ3iaK1vo+yWBui+Sk/viUH6TnlKOKruR5NjNDet0jjvNapi+HK/QEVbHOjm
-         T3C0QZocDRVzKX2i+CPqtdeH7W7aLdudSre/oon+Pf4KE3gQsQPy/d9m1q0qAoatY2d9
-         Nd/Fxxow7oMlQKiNAr7ovwpFXaUEa9GN1CWcPDgH0n6Fjcx3UBCOlbUri4mmYOIEQ9uX
-         ApIQKTmaH3u/WZx5YsBTe/UVYW6bIxOhZnjnJ84VTLwZXljj/18X03X9suKXh/kR1OW/
-         qdndjj5sUM4xxUzoXYzYe5TrKpPwc/IQJgUQc+rQSkGT21f6xN1pbL+86IZH8ViwV6Mq
-         RdZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765269651; x=1765874451;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FvpnPesPd7ddPwM9RQGFvv6eTS6ofSBZTx6aar6UV4k=;
-        b=FljGNp9PArGguIuYhWXgsLLccCCXwn6YjXEGuR4hI0IhCx+/jmqWvi+E0sAfBhksPm
-         FyOf0+7j6WTghP2PzRD8IYsdr6xHMW1o+FSI4a092WbxjHYL6zxoymPyWRANfa9SKd9+
-         pX/ZDOTC94hhXTE8E4UAWllkcqo02d/IbX9LtafZN1tNpAlwf7tidhHwbxrwDRV+pG0V
-         vgtNe2y6gMg4v8vzytJ+K2ge4Cn1+2tiASJYKQXQ8sjPO0eej6oRJl9/FL5+0jK0f7zZ
-         CxXMPUzkp/PxE+wenWik41WVY0q8Hk0xWLIU26sh1JvfpwOeslke50o8YwI1YGGAgRZn
-         WFRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWmuz5fz456NVoIldOLN2DaDmUsp2jwXqnt3r3o7G7CFCoMX3GUh206rYAwGbyrfef8nuXhU4FXsKbL@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6bHoiWmhc7hXQXZbOb37zZ1jsN824/ev8kb71vF1BnVUCgQgz
-	m4NnzNO8sWR9VGnkP50cadAqtutX16MoKLmmAkdCwneTu5sYqrIO8OOjsjQ31p4WlYU1bMK1w3F
-	hLYl3aEs=
-X-Gm-Gg: ASbGncvfTffH6MlGRKavyqMEvMOMqGuwcFqMQF93bSbW4K/jvIYa1xNJzQFD47SEtOK
-	1ltN/5HMVJOyHsX8dDbM18sNDy6kKEY6gKcVEEQCLsWICjzGZczu8IHF8CL5PZU+yo6vio2F1Q5
-	BdcdMekc0kaVIaI+Jg72N3qXWjqQrPY8n7TyQ1YhfncdSG/TIbps5GnWPjjkcF40r8gLK2562kp
-	x0B6oFcI0ReibZ23gqeHMQiVx5kM7MdaIpTJooAXVogoXfgfm8NmwHA2bWL+JozsqCk0yIUUYYq
-	EXNbLX3Y9ySQYiNV7nruL9BhBRewc5Vz8CLkCKqFzVqrSGXBC2OyK/0PdstsHdwzRVwclqAt6ps
-	iUXyhkh0MWk9FZtIPMi8PPETfpcLSphfW7Jj9I+XCMQzQ9hwjYEe4S+6BXwnm4pTscBFrpvQIhm
-	Q4rSaWUhqyZoj2L6D/a6Ll1e42YMPQUbcQZCwAZITF95zAhMmszL0TEHo=
-X-Google-Smtp-Source: AGHT+IEHh8Dm7TI/+iPns+dvjijXoOtTLyOsrnmtX2gfSR9rwQM0vonw1roDurASiQYRrZjxRqgg7g==
-X-Received: by 2002:a17:90b:5750:b0:330:84c8:92d0 with SMTP id 98e67ed59e1d1-349a261424emr8562956a91.24.1765269650766;
-        Tue, 09 Dec 2025 00:40:50 -0800 (PST)
-Received: from [10.88.210.107] ([61.213.176.59])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34a49b91000sm1560778a91.9.2025.12.09.00.40.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Dec 2025 00:40:49 -0800 (PST)
-Message-ID: <80f77860-2d5d-4ff9-9bb8-1e5bc46a4692@bytedance.com>
-Date: Tue, 9 Dec 2025 16:40:46 +0800
+	s=arc-20240116; t=1765270590; c=relaxed/simple;
+	bh=Mvr0y8wLxtgpbN0+HeKuuLMTQuZ5zTDxyqjMNL38iQU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KmDBfCX8AbVYScBwxyLbN44UCmylYHrlf+XMb3TT7Z4mTpwsC/UTeKrdKY7mNDq3P9QdNLvEWfcQunRRKCJfFZq3D6jiGA1aq1AsqSYRv16jBfKB402NVNjNVGUNarUVh7esvONME1Sct4hiphIvqSl6BDI/ShNFpRSBidYCEwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vUAFLXed; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gXcm/H6s; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vUAFLXed; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gXcm/H6s; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AF3BC5BDA4;
+	Tue,  9 Dec 2025 08:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765270585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F3///qzFxJCD9tlXRACR7G0C01dKSlkkvy1pOe5/b5M=;
+	b=vUAFLXedd3c+8M5b5SORvRRJxbZEgsAOQvA9TLgYMNrggRjX2Hju8qvGUjoVckl9G3Ikn7
+	v2sNnhN0t0DbhZXLWSQWlgnNh2FyvMgSBVUfzpHHoYV17yAZ4iE71yaXj/O6MGbOvHxJgR
+	XaXTAMUpjobwjTK0hzmTn17CV5WLfGo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765270585;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F3///qzFxJCD9tlXRACR7G0C01dKSlkkvy1pOe5/b5M=;
+	b=gXcm/H6sWValdtbfKJyacH6WVhFx+CcO+/0C4JJOs0SVlHkfccAktelUbAN9PBZihra1dj
+	tKw3U6OkoNhiMBDg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vUAFLXed;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="gXcm/H6s"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765270585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F3///qzFxJCD9tlXRACR7G0C01dKSlkkvy1pOe5/b5M=;
+	b=vUAFLXedd3c+8M5b5SORvRRJxbZEgsAOQvA9TLgYMNrggRjX2Hju8qvGUjoVckl9G3Ikn7
+	v2sNnhN0t0DbhZXLWSQWlgnNh2FyvMgSBVUfzpHHoYV17yAZ4iE71yaXj/O6MGbOvHxJgR
+	XaXTAMUpjobwjTK0hzmTn17CV5WLfGo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765270585;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F3///qzFxJCD9tlXRACR7G0C01dKSlkkvy1pOe5/b5M=;
+	b=gXcm/H6sWValdtbfKJyacH6WVhFx+CcO+/0C4JJOs0SVlHkfccAktelUbAN9PBZihra1dj
+	tKw3U6OkoNhiMBDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A477C3EA63;
+	Tue,  9 Dec 2025 08:56:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZukbKDnkN2l2GgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 09 Dec 2025 08:56:25 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 621CEA0A1B; Tue,  9 Dec 2025 09:56:25 +0100 (CET)
+Date: Tue, 9 Dec 2025 09:56:25 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>, 
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] ext4: fix ext4_tune_sb_params padding
+Message-ID: <3d5u34hrtdiyiyqporwsyfde5a5msyodnjw5oulhdib3givjek@aakrdecmyiou>
+References: <20251205111906.1247452-1-arnd@kernel.org>
+ <20251208180310.GH89492@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ext4/004 hangs with -o inlinecrypt,test_dummy_encryption
-To: Christoph Hellwig <hch@infradead.org>, linux-ext4@vger.kernel.org
-References: <aTZ3ahPop7q8O5cE@infradead.org>
-From: Julian Sun <sunjunchao@bytedance.com>
-In-Reply-To: <aTZ3ahPop7q8O5cE@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251208180310.GH89492@frogsfrogsfrogs>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,suse.com:email,arndb.de:email];
+	MISSING_XM_UA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	URIBL_BLOCKED(0.00)[suse.com:email];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: AF3BC5BDA4
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
 
-On 12/8/25 2:59 PM, Christoph Hellwig wrote:
-> Hi all,
+On Mon 08-12-25 10:03:10, Darrick J. Wong wrote:
+> On Fri, Dec 05, 2025 at 12:19:00PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > The padding at the end of struct ext4_tune_sb_params is architecture
+> > specific and in particular is different between x86-32 and x86-64,
+> > since the __u64 member only enforces struct alignment on the latter.
+> > 
+> > This shows up as a new warning when test-building the headers with
+> > -Wpadded:
+> > 
+> > include/linux/ext4.h:144:1: error: padding struct size to alignment boundary with 4 bytes [-Werror=padded]
+> > 
+> > All members inside the structure are naturally aligned, so the only
+> > difference here is the amount of padding at the end.
+> > 
+> > Add explicit padding to mount_opts[] to keep the struct members compatible
+> > with the original version and also keep the pad[64] member 8-byte
+> > aligned for future extensions.  This gives a consistent sizeof(struct
+> > ext4_tune_sb_params) of 232 on all architectures and avoids adding compat
+> > ioctl handling for EXT4_IOC_GET_TUNE_SB_PARAM/EXT4_IOC_SET_TUNE_SB_PARAM.
+> > 
+> > This is an ABI break on x86-32 but hopefully this can go into 6.18.y
+> > early enough as a fixup so no actual users will be affected.
+> > 
+> > Fixes: 04a91570ac67 ("ext4: implemet new ioctls to set and get superblock parameters")
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > v2: extend mount_opts[] instead of pad[], as suggested by Andreas Dilger
+> > ---
+> >  include/uapi/linux/ext4.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/uapi/linux/ext4.h b/include/uapi/linux/ext4.h
+> > index 6829d6f1497d..1c7cdcdb7dca 100644
+> > --- a/include/uapi/linux/ext4.h
+> > +++ b/include/uapi/linux/ext4.h
+> > @@ -139,7 +139,7 @@ struct ext4_tune_sb_params {
+> >  	__u32 clear_feature_compat_mask;
+> >  	__u32 clear_feature_incompat_mask;
+> >  	__u32 clear_feature_ro_compat_mask;
+> > -	__u8  mount_opts[64];
+> > +	__u8  mount_opts[68];
 > 
-> I've just been wanting to test my changes to the inline encruption
-> fallback code, and it seems like ext/004 (the only ext4 dump test)
-> hangs when using the following options:
-> 
-> export MKFS_OPTIONS='-O encrypt'
-> export MOUNT_OPTIONS="-o inlinecrypt,test_dummy_encryption"
-> 
-> I thought I did not see this before, but it reproduces back to at least
-> Linux 6.17.  This is in an uptodate Debian trixie VM.  The dump/restore
-> process look like in weird states:
-> 
->     4727 ttyS0    T      0:00 /usr/sbin/dump -0 -f - /mnt/scratch/dump_restore_dir
->     4728 ttyS0    T      0:00 /usr/sbin/restore -urvf -
->     4729 ttyS0    T      0:00 /usr/sbin/dump -0 -f - /mnt/scratch/dump_restore_dir
->     4730 ttyS0    T      0:00 /usr/sbin/dump -0 -f - /mnt/scratch/dump_restore_dir
->     4731 ttyS0    T      0:00 /usr/sbin/dump -0 -f - /mnt/scratch/dump_restore_dir
->     4732 ttyS0    T      0:00 /usr/sbin/dump -0 -f - /mnt/scratch/dump_restore_dir
-> 
+> Hmm... given that the ondisk super field is a __u8[64], it feels weird
+> to expose a __u8[68] field in the ioctl ABI and silently truncate the
+> user's input if they try to use that many bytes.  I'd have enlarged the
+> padding field but as Ted was both author and maintainer I'm ok with
+> letting him have the final say.
 
-I can reproduce this issue locally with both v6.18 and v6.0. The problem 
-disappears after removing test_dummy_encryption, and it still reproduces 
-when test_dummy_encryption is set alone in MOUNT_OPTIONS. Therefore, I 
-believe the issue lies in test_dummy_encryption — it is an 
-implementation of fscrypt.
+The point about silent truncation is a good one. I thought
+ext4_sb_setparams() checks the return value of strscpy_pad() but it doesn't
+so IMO that needs fixing.
 
-CC: linux-fscrypt
+								Honza
 
-Thanks,
+> 
+> --D
+> 
+> >  	__u8  pad[64];
+> >  };
+> >  
+> > -- 
+> > 2.39.5
+> > 
 -- 
-Julian Sun <sunjunchao@bytedance.com>
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
