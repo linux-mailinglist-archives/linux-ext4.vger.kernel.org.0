@@ -1,198 +1,181 @@
-Return-Path: <linux-ext4+bounces-12244-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12245-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54D08CB01E5
-	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 14:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B094CB04B0
+	for <lists+linux-ext4@lfdr.de>; Tue, 09 Dec 2025 15:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 198D730FBB58
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 13:51:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9FD00305934C
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Dec 2025 14:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BFD33123E;
-	Tue,  9 Dec 2025 13:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01132FD7A3;
+	Tue,  9 Dec 2025 14:31:21 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6561A33120D;
-	Tue,  9 Dec 2025 13:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B00228DF13
+	for <linux-ext4@vger.kernel.org>; Tue,  9 Dec 2025 14:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765287715; cv=none; b=RIgE9G8WRoxGjnuJOwEHta+ooUyt16gtnI3Z6fMMFSXTjLCADK+iZFYKkkRKOId4ySViQFq1BWq1fUM787pE60Sj4PEsHGTT9LFLWJFXMW5ErsWBuMuJvlPeWZF0BISjtFjd4iD+sxPuQM4mf5TFYDuhoRecyv6xfAWWiNreaGs=
+	t=1765290681; cv=none; b=S80h4MfcZ5dZesaGWBxD8rLjlPRiLGLr6CU9t1l6U1d4slKHiBHe4NQq3WnWCq9pU1s1kvJYRuUGamlDVgDsuy4O3kuRWoCVzTX55Ux5P9+TtnF7/dVyOXaJ4MyOB3pERPzfhXvTC4T7FpLIR/NeoDGIiHYjUJfsHtmw8q8Pr/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765287715; c=relaxed/simple;
-	bh=1zdXNva9dOJxzxwXhR1hoz5GU41IyGN6TKYJz1amZ/Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cFLHn+RWDmeInMOI7a1yn8f6hdkaXZWAgDJqXigvN9AgOFB7Q6zVJsMoHwhACCWRBKwcOgyUgexQ6OyRXPtlY8/DGlsWYKWSZgMW+tYqxhpJUOEONIv8Cox9Pa0F8CeJ67vOPtMbd9nxeboVTAAgWhBNcj6m31DYjA2S4BZ18Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dQg3P2kQvzKHLyR;
-	Tue,  9 Dec 2025 21:40:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EEB801A175D;
-	Tue,  9 Dec 2025 21:41:47 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.87.129])
-	by APP2 (Coremail) with SMTP id Syh0CgC3lU8aJzhpjT2aBA--.58217S4;
-	Tue, 09 Dec 2025 21:41:47 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	libaokun1@huawei.com,
-	libaokun@huaweicloud.com
-Subject: [PATCH] ext4: move ext4_percpu_param_init() before ext4_mb_init()
-Date: Tue,  9 Dec 2025 21:31:16 +0800
-Message-Id: <20251209133116.731350-1-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1765290681; c=relaxed/simple;
+	bh=zk5UWkDm9qA4ZO7niI8PTxj5WYOTMftcWM9sTXUdYpI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=lzm7U9iiIwJvLl1mzgXYqcVlqrStBAHKiMLRX/NJEfrcTMokm6B52MmY4XbCeLD8dIZpVWZBD4mk49RogBW2YcoaTeh8U0LOUt/07En3QZt6LJQyv0S3STJmc/t58MLxtIaeaCGoUO5FvH8uzdUMqES9F+GB0FiQdzQaCEm16eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-6574408621fso4385337eaf.2
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Dec 2025 06:31:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765290679; x=1765895479;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u4XGpZnkUwPtuggr2PMR5oNIRRU/9Eo8wCh5nMV+Y+0=;
+        b=AlqAdgrBcUQvx6rDG37se7wF2+JJmlVSuBBE9KNQNeqHOi1YuE+Nixjm//rPnC4975
+         QdiS5gRFoz/XKBNWRPms03zZ8CulWjh7SBiRJdXT//PmWX1GeUmq51FFik7pu4A407HG
+         ExgVv6jDNumZayYhxeyuumC3HOQgwLNr6WWDZq8WsgxCJtoOuY/yUck+OcIIH8aIbcQw
+         Ba7w+c0VMfHCFGVWj59fLUQ5SQ6B5nX74kjwLis0m9spKw36psSgARBwFabbR21z1okx
+         lxskBfhexW0Akmy4YkrVNfTZSob1cyjYJ2XMI8AB+d6+1crrW2q59IECXOm8j2kM29aC
+         UW8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXTgCZGHW1Wx/9VwVSP3bmr8cWkNE3lr4rZpO3Ym0FM5OH85hGe+2LZt9x3+xzKz+0iDIhF2MFf1Swa@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyrd/7NTcJByoG261Ltak0WHEyLkSzUb4Woi/KoM9rHwQ6iPhy3
+	K87NVH9YQm6Xtcki+559Rw4NohPWmMtD9G0wuEf7Y7KM+sdimtccYKgsBneBPFU5bRmkrSiKMMu
+	JNyjk8aIIbuDrS6UfjfyO7725/B5hNH2jCuGTSgEUg3GPetiNVlDzUa7CLME=
+X-Google-Smtp-Source: AGHT+IF5aucUcY8zrWLehkK+QusiAiUI7Lp78/5X5AAconNdHhHzxrgr2ddr50IfFpaeBM1bFqzTUMJbtiby2kDNYSdf5H9J3ZyD
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgC3lU8aJzhpjT2aBA--.58217S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFWkCrW5Jr4UKFWrWry7trb_yoWrXr1rpr
-	1DAa4xKry8C34DCa13JFyYqF18X3W8Cay8W34fur15A3sFq3WkZF97tF15AFWj9rs5A3ZY
-	qF1rGry7Gr17uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
-	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0
-	F24lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-	17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjfUoPEfDUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgARBWk4EuMIOwAAsF
+X-Received: by 2002:a05:6820:4a8c:b0:65b:25e8:13f1 with SMTP id
+ 006d021491bc7-65b25e817a5mr351207eaf.73.1765290679320; Tue, 09 Dec 2025
+ 06:31:19 -0800 (PST)
+Date: Tue, 09 Dec 2025 06:31:19 -0800
+In-Reply-To: <20251209095254.11569-1-liubaolin12138@163.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <693832b7.050a0220.4004e.002b.GAE@google.com>
+Subject: [syzbot ci] Re: ext4: add sysfs attribute err_report_sec to control
+ s_err_report timer
+From: syzbot ci <syzbot+ci5ba1b27c8540e946@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, liubaolin12138@163.com, liubaolin@kylinos.cn, 
+	tytso@mit.edu
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Baokun Li <libaokun1@huawei.com>
+syzbot ci has tested the following series
 
-When running `kvm-xfstests -c ext4/1k -C 1 generic/383` with the
-`DOUBLE_CHECK` macro defined, the following panic is triggered:
+[v1] ext4: add sysfs attribute err_report_sec to control s_err_report timer
+https://lore.kernel.org/all/20251209095254.11569-1-liubaolin12138@163.com
+* [PATCH v1] ext4: add sysfs attribute err_report_sec to control s_err_report timer
 
-==================================================================
-EXT4-fs error (device vdc): ext4_validate_block_bitmap:423:
-                        comm mount: bg 0: bad block bitmap checksum
-BUG: unable to handle page fault for address: ff110000fa2cc000
-PGD 3e01067 P4D 3e02067 PUD 0
-Oops: Oops: 0000 [#1] SMP NOPTI
-CPU: 0 UID: 0 PID: 2386 Comm: mount Tainted: G W
-                        6.18.0-gba65a4e7120a-dirty #1152 PREEMPT(none)
-RIP: 0010:percpu_counter_add_batch+0x13/0xa0
+and found the following issue:
+WARNING: ODEBUG bug in ext4_update_super
+
+Full report is available here:
+https://ci.syzbot.org/series/0516238c-3b72-42ec-95e0-a3a1100dfe97
+
+***
+
+WARNING: ODEBUG bug in ext4_update_super
+
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      67a454e6b1c604555c04501c77b7fedc5d98a779
+arch:      amd64
+compiler:  Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+config:    https://ci.syzbot.org/builds/d05c5a00-1dcc-4a73-9a08-de39905551e0/config
+C repro:   https://ci.syzbot.org/findings/f5e1c416-0890-43de-a395-f7444bcf3202/c_repro
+syz repro: https://ci.syzbot.org/findings/f5e1c416-0890-43de-a395-f7444bcf3202/syz_repro
+
+EXT4-fs error (device loop0): ext4_orphan_get:1391: inode #15: comm syz.0.17: iget: bad i_size value: 360287970189639680
+------------[ cut here ]------------
+ODEBUG: assert_init not available (active state 0) object: ffff88816a5866c8 object type: timer_list hint: 0x0
+WARNING: lib/debugobjects.c:615 at 0x0, CPU#1: syz.0.17/5984
+Modules linked in:
+CPU: 1 UID: 0 PID: 5984 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:debug_print_object+0x170/0x1e0 lib/debugobjects.c:612
+Code: f8 48 c1 e8 03 80 3c 18 00 74 08 4c 89 ff e8 b7 e0 8f fd 4d 8b 0f 4c 89 ef 48 8b 74 24 08 48 89 ea 44 89 e1 4d 89 f0 ff 34 24 <67> 48 0f b9 3a 48 83 c4 08 ff 05 8d 86 e9 0a 48 83 c4 10 5b 41 5c
+RSP: 0018:ffffc90004927210 EFLAGS: 00010246
+RAX: 1ffffffff16da490 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffffffff8bc02f80 RSI: ffffffff8bc02a40 RDI: ffffffff8f8bd1a0
+RBP: ffffffff8bc02f80 R08: ffff88816a5866c8 R09: ffffffff8b6d35e0
+R10: dffffc0000000000 R11: ffffffff81aeb6f0 R12: 0000000000000000
+R13: ffffffff8f8bd1a0 R14: ffff88816a5866c8 R15: ffffffff8b6d2480
+FS:  0000555563b84500(0000) GS:ffff8882a9e44000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3e58d73ea0 CR3: 0000000114724000 CR4: 00000000000006f0
 Call Trace:
  <TASK>
- ext4_mark_group_bitmap_corrupted+0xcb/0xe0
- ext4_validate_block_bitmap+0x2a1/0x2f0
- ext4_read_block_bitmap+0x33/0x50
- mb_group_bb_bitmap_alloc+0x33/0x80
- ext4_mb_add_groupinfo+0x190/0x250
- ext4_mb_init_backend+0x87/0x290
- ext4_mb_init+0x456/0x640
- __ext4_fill_super+0x1072/0x1680
- ext4_fill_super+0xd3/0x280
- get_tree_bdev_flags+0x132/0x1d0
- vfs_get_tree+0x29/0xd0
- vfs_cmd_create+0x59/0xe0
- __do_sys_fsconfig+0x4f6/0x6b0
- do_syscall_64+0x50/0x1f0
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
-==================================================================
+ debug_object_assert_init+0x2db/0x380 lib/debugobjects.c:1020
+ debug_timer_assert_init kernel/time/timer.c:803 [inline]
+ debug_assert_init kernel/time/timer.c:848 [inline]
+ __mod_timer+0x4a/0xf30 kernel/time/timer.c:1025
+ ext4_update_super+0xc23/0x12f0 fs/ext4/super.c:6239
+ ext4_commit_super+0x67/0x430 fs/ext4/super.c:6257
+ ext4_handle_error+0x65e/0x950 fs/ext4/super.c:718
+ __ext4_error_inode+0x328/0x4f0 fs/ext4/super.c:861
+ __ext4_iget+0x187b/0x4280 fs/ext4/inode.c:-1
+ ext4_orphan_get+0x1e3/0x630 fs/ext4/ialloc.c:1391
+ ext4_orphan_cleanup+0xad2/0x1460 fs/ext4/orphan.c:465
+ __ext4_fill_super fs/ext4/super.c:5661 [inline]
+ ext4_fill_super+0x58e5/0x6240 fs/ext4/super.c:5785
+ get_tree_bdev_flags+0x40e/0x4d0 fs/super.c:1691
+ vfs_get_tree+0x92/0x2a0 fs/super.c:1751
+ fc_mount fs/namespace.c:1199 [inline]
+ do_new_mount_fc fs/namespace.c:3636 [inline]
+ do_new_mount+0x302/0xa10 fs/namespace.c:3712
+ do_mount fs/namespace.c:4035 [inline]
+ __do_sys_mount fs/namespace.c:4224 [inline]
+ __se_sys_mount+0x313/0x410 fs/namespace.c:4201
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3e58d90f6a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffde744ab68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffde744abf0 RCX: 00007f3e58d90f6a
+RDX: 0000200000000880 RSI: 0000200000000500 RDI: 00007ffde744abb0
+RBP: 0000200000000880 R08: 00007ffde744abf0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000200000000500
+R13: 00007ffde744abb0 R14: 0000000000000524 R15: 00002000000003c0
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	f8                   	clc
+   1:	48 c1 e8 03          	shr    $0x3,%rax
+   5:	80 3c 18 00          	cmpb   $0x0,(%rax,%rbx,1)
+   9:	74 08                	je     0x13
+   b:	4c 89 ff             	mov    %r15,%rdi
+   e:	e8 b7 e0 8f fd       	call   0xfd8fe0ca
+  13:	4d 8b 0f             	mov    (%r15),%r9
+  16:	4c 89 ef             	mov    %r13,%rdi
+  19:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
+  1e:	48 89 ea             	mov    %rbp,%rdx
+  21:	44 89 e1             	mov    %r12d,%ecx
+  24:	4d 89 f0             	mov    %r14,%r8
+  27:	ff 34 24             	push   (%rsp)
+* 2a:	67 48 0f b9 3a       	ud1    (%edx),%rdi <-- trapping instruction
+  2f:	48 83 c4 08          	add    $0x8,%rsp
+  33:	ff 05 8d 86 e9 0a    	incl   0xae9868d(%rip)        # 0xae986c6
+  39:	48 83 c4 10          	add    $0x10,%rsp
+  3d:	5b                   	pop    %rbx
+  3e:	41 5c                	pop    %r12
 
-This issue can be reproduced using the following commands:
-        mkfs.ext4 -F -q -b 1024 /dev/sda 5G
-        tune2fs -O quota,project /dev/sda
-        mount /dev/sda /tmp/test
 
-With DOUBLE_CHECK defined, mb_group_bb_bitmap_alloc() reads
-and validates the block bitmap. When the validation fails,
-ext4_mark_group_bitmap_corrupted() attempts to update
-sbi->s_freeclusters_counter. However, this percpu_counter has not been
-initialized yet at this point, which leads to the panic described above.
+***
 
-Fix this by moving the execution of ext4_percpu_param_init() to occur
-before ext4_mb_init(), ensuring the per-CPU counters are initialized
-before they are used.
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/super.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 87205660c5d0..5c2e931d8a53 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5599,35 +5599,35 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	 */
- 	if (!(ctx->spec & EXT4_SPEC_mb_optimize_scan)) {
- 		if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD)
- 			set_opt2(sb, MB_OPTIMIZE_SCAN);
- 		else
- 			clear_opt2(sb, MB_OPTIMIZE_SCAN);
- 	}
- 
-+	err = ext4_percpu_param_init(sbi);
-+	if (err)
-+		goto failed_mount5;
-+
- 	err = ext4_mb_init(sb);
- 	if (err) {
- 		ext4_msg(sb, KERN_ERR, "failed to initialize mballoc (%d)",
- 			 err);
- 		goto failed_mount5;
- 	}
- 
- 	/*
- 	 * We can only set up the journal commit callback once
- 	 * mballoc is initialized
- 	 */
- 	if (sbi->s_journal)
- 		sbi->s_journal->j_commit_callback =
- 			ext4_journal_commit_callback;
- 
--	err = ext4_percpu_param_init(sbi);
--	if (err)
--		goto failed_mount6;
--
- 	if (ext4_has_feature_flex_bg(sb))
- 		if (!ext4_fill_flex_info(sb)) {
- 			ext4_msg(sb, KERN_ERR,
- 			       "unable to initialize "
- 			       "flex_bg meta info!");
- 			err = -ENOMEM;
- 			goto failed_mount6;
- 		}
-@@ -5699,18 +5699,18 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
- failed_mount8: __maybe_unused
- 	ext4_release_orphan_info(sb);
- failed_mount7:
- 	ext4_unregister_li_request(sb);
- failed_mount6:
- 	ext4_mb_release(sb);
- 	ext4_flex_groups_free(sbi);
--	ext4_percpu_param_destroy(sbi);
- failed_mount5:
-+	ext4_percpu_param_destroy(sbi);
- 	ext4_ext_release(sb);
- 	ext4_release_system_zone(sb);
- failed_mount4a:
- 	dput(sb->s_root);
- 	sb->s_root = NULL;
- failed_mount4:
- 	ext4_msg(sb, KERN_ERR, "mount failed");
- 	if (EXT4_SB(sb)->rsv_conversion_wq)
--- 
-2.39.2
-
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
