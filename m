@@ -1,98 +1,74 @@
-Return-Path: <linux-ext4+bounces-12266-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12267-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E454CB2A53
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 11:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AE00CB35F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 16:52:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D8729301E182
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 10:14:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EE1FE3016707
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 15:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C114F309DA5;
-	Wed, 10 Dec 2025 10:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591D225392C;
+	Wed, 10 Dec 2025 15:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pUuXrJUc";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CyxMKuk9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eSOD/m9F";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dMlNJiVm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nlVE4Pcu"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C254C3090E4
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 10:14:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482C624469E;
+	Wed, 10 Dec 2025 15:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765361677; cv=none; b=VygilVtCIm0onfYlKEpbqsCwVmm3OhoNMXrkRfdc4OFDj6reKpFTEkzUM7XZh42kbsft6vcfOBU4LW9lH9/iuN0XvmmE25iQAzYydnxdWHzl4w4sVrQa1kDDS9PZQYuBrVEL1xqOk/z8VFay1jOJu8lgEb/na18/LvmJJcq6J3A=
+	t=1765381827; cv=none; b=OuplqyrRRs5HD2PkbzTeiI9/F1gto0FwHsGBjCZg1A2iUMc0Pd2cR9E4oG+/We5yAg4J6guabl7dhFMRyRl0ULEZjXUu7a+ppq3Kzx2oJuKzRwCmtWNICav/WZgMKtqG/xseuqgmQZx7JBb9llMVV3grXCUUHl5uagHpdylhJUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765361677; c=relaxed/simple;
-	bh=DaPHLaC2xPG3YMzxq0DuSD0BGPUTFneXfo2wgLBwI9I=;
+	s=arc-20240116; t=1765381827; c=relaxed/simple;
+	bh=hasZzzOaLmSc07adgtyvn0E8N2Cwm1aRTz9PRqpmc9g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F2oZ/4AhrVvSP/hcWBaHxLnnWKZ6d9/zTMdFIwTC9df1nevwofys309A3CKhQgpDMV58o8sWuCp9Mlb4o5VkbIDhgYAxY001qcB4hYW+DOStEgZW5wIWdVEtI6Q1F+fdD4QycGkQmB6Mn6UDLUr2OdnXasQufn1ixPqNUV7+e2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pUuXrJUc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CyxMKuk9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eSOD/m9F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dMlNJiVm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EAA035BD21;
-	Wed, 10 Dec 2025 10:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765361674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oNOQedbVZS1BH6Aar5zYmCdUF2lgOPZ5uHIt3kMKXS4=;
-	b=pUuXrJUceGCluuwh/QCltYLbOcLZujOzwPurd7OLyMQleey5u8mkD5ZAYpXc3QGtMgLEH0
-	7nIcaYL3F74cymRMetdHwbQTTwSOH42cYtphdgfL4O4O+MIhv3+mXB4l7Ehm1+soIV64CP
-	AtIqtGEz/P44zbF93UEDowExkXrg+MY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765361674;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oNOQedbVZS1BH6Aar5zYmCdUF2lgOPZ5uHIt3kMKXS4=;
-	b=CyxMKuk93iFS3Q1CN3PRT3fR11cJVKLcvnpNvSzxD6S8vdjJ7pPU4X2tLE3CRKvt8ySZMx
-	9SH4+o/3oBfvwZDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765361673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oNOQedbVZS1BH6Aar5zYmCdUF2lgOPZ5uHIt3kMKXS4=;
-	b=eSOD/m9FrVwzj39PR3E9aoURgn5Ev0/9HAcgc4RYWN1DnhSS7V4lCDtnDbCiNUs6TxLvc1
-	MGar4DsrFhM/ewbJxkJv69sfoHsoD1EaOmF3weZQD+REj0zLsYC1DEksIu/IAoSOLBXHab
-	DaEyLJGGswxhOZF79Iw0xH9+A0uOOL8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765361673;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oNOQedbVZS1BH6Aar5zYmCdUF2lgOPZ5uHIt3kMKXS4=;
-	b=dMlNJiVmElAm9+wEsw5FqHAY9jPa+DkhEz6mScZzvMkQKiIARDFeRfhbyUFkrE9kl2Ly7s
-	5mMTufK3qFTsB2CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DEE463EA63;
-	Wed, 10 Dec 2025 10:14:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iL1gNglIOWkDegAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 10 Dec 2025 10:14:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9025DA0A61; Wed, 10 Dec 2025 11:14:33 +0100 (CET)
-Date: Wed, 10 Dec 2025 11:14:33 +0100
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, libaokun1@huawei.com
-Subject: Re: [PATCH] ext4: move ext4_percpu_param_init() before ext4_mb_init()
-Message-ID: <odu3phjd54iv3zi7tft7ftmmn24hjgzszgd7456gh2cg2gbl4r@jgonvxf5ssfr>
-References: <20251209133116.731350-1-libaokun@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b2Qz6TRg9w/P+ZTiwf4kTs4MmSKRb4NUgLYB6h7T2qD3Q1Y8L/GIdPLx7BTLg9vteQa/2HgqzVu9xnyjIuyVqLI/ySMtPYgkoMf7InB5ILSkps+qptjc/LFAhMMCqRl1aHbkNYCgfO5acqFYPP9VsER52BfXhh/NFvmwtWkguOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nlVE4Pcu; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765381826; x=1796917826;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hasZzzOaLmSc07adgtyvn0E8N2Cwm1aRTz9PRqpmc9g=;
+  b=nlVE4PcuAwTWgO0B84cp2ds1juCoM/otJ5SmzEfzap68DvJ0P11gENKc
+   Tw9Uyp8dhcfQ1zetQvRhl473H5KN3uQ6fGOqQCvfwjx/KWWDjJLyTABd9
+   oIA+Os5+k2LhNVErc4rtLbrsdsmP1mY92E7Vlw35Unl/3x890ET/c1XkT
+   WA7bqbNCjUugs9qjAPqLzqP3nNnwdV5jhWOIkK0YOTtZhIVLeSOxW+wlo
+   pluTvsfA7I7nbOwrTK1WNaO+6s3yGpO1LoRWykZqTS2pJs24yOl0gDgVV
+   Ug6JPSLIQSzcBWWxYrHQCZKpEXjBBbb7DL9bqjj2df09SRIORIkxDKPuq
+   Q==;
+X-CSE-ConnectionGUID: hAmzzjzNQASx+6rG/Ns6LQ==
+X-CSE-MsgGUID: bTX+0oe+TqKd+8glfXY33Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11635"; a="67292948"
+X-IronPort-AV: E=Sophos;i="6.20,256,1758610800"; 
+   d="scan'208";a="67292948"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2025 07:50:26 -0800
+X-CSE-ConnectionGUID: hJQ52FewSE6ia09b0K4ShQ==
+X-CSE-MsgGUID: 6ohFTmlJS5mpslT9vJaFCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,264,1758610800"; 
+   d="scan'208";a="233954105"
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 10 Dec 2025 07:50:24 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vTMSL-000000003Kb-2LF8;
+	Wed, 10 Dec 2025 15:50:21 +0000
+Date: Wed, 10 Dec 2025 23:49:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yu Kuai <yukuai@fnnas.com>, tytso@mit.edu, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	yukuai@fnnas.com
+Subject: Re: [PATCH 2/2] ext4: align preallocation size to stripe width
+Message-ID: <202512102331.yweFnVTU-lkp@intel.com>
+References: <20251208083246.320965-3-yukuai@fnnas.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -101,160 +77,148 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251209133116.731350-1-libaokun@huaweicloud.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.983];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+In-Reply-To: <20251208083246.320965-3-yukuai@fnnas.com>
 
-On Tue 09-12-25 21:31:16, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> When running `kvm-xfstests -c ext4/1k -C 1 generic/383` with the
-> `DOUBLE_CHECK` macro defined, the following panic is triggered:
-> 
-> ==================================================================
-> EXT4-fs error (device vdc): ext4_validate_block_bitmap:423:
->                         comm mount: bg 0: bad block bitmap checksum
-> BUG: unable to handle page fault for address: ff110000fa2cc000
-> PGD 3e01067 P4D 3e02067 PUD 0
-> Oops: Oops: 0000 [#1] SMP NOPTI
-> CPU: 0 UID: 0 PID: 2386 Comm: mount Tainted: G W
->                         6.18.0-gba65a4e7120a-dirty #1152 PREEMPT(none)
-> RIP: 0010:percpu_counter_add_batch+0x13/0xa0
-> Call Trace:
->  <TASK>
->  ext4_mark_group_bitmap_corrupted+0xcb/0xe0
->  ext4_validate_block_bitmap+0x2a1/0x2f0
->  ext4_read_block_bitmap+0x33/0x50
->  mb_group_bb_bitmap_alloc+0x33/0x80
->  ext4_mb_add_groupinfo+0x190/0x250
->  ext4_mb_init_backend+0x87/0x290
->  ext4_mb_init+0x456/0x640
->  __ext4_fill_super+0x1072/0x1680
->  ext4_fill_super+0xd3/0x280
->  get_tree_bdev_flags+0x132/0x1d0
->  vfs_get_tree+0x29/0xd0
->  vfs_cmd_create+0x59/0xe0
->  __do_sys_fsconfig+0x4f6/0x6b0
->  do_syscall_64+0x50/0x1f0
->  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> ==================================================================
-> 
-> This issue can be reproduced using the following commands:
->         mkfs.ext4 -F -q -b 1024 /dev/sda 5G
->         tune2fs -O quota,project /dev/sda
->         mount /dev/sda /tmp/test
-> 
-> With DOUBLE_CHECK defined, mb_group_bb_bitmap_alloc() reads
-> and validates the block bitmap. When the validation fails,
-> ext4_mark_group_bitmap_corrupted() attempts to update
-> sbi->s_freeclusters_counter. However, this percpu_counter has not been
-> initialized yet at this point, which leads to the panic described above.
-> 
-> Fix this by moving the execution of ext4_percpu_param_init() to occur
-> before ext4_mb_init(), ensuring the per-CPU counters are initialized
-> before they are used.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Hi Yu,
 
-Looks good. Feel free to add:
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v6.18 next-20251210]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-								Honza
+url:    https://github.com/intel-lab-lkp/linux/commits/Yu-Kuai/ext4-refactor-size-prediction-into-helper-functions/20251208-163553
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20251208083246.320965-3-yukuai%40fnnas.com
+patch subject: [PATCH 2/2] ext4: align preallocation size to stripe width
+config: i386-randconfig-001-20251210 (https://download.01.org/0day-ci/archive/20251210/202512102331.yweFnVTU-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251210/202512102331.yweFnVTU-lkp@intel.com/reproduce)
 
-> ---
->  fs/ext4/super.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 87205660c5d0..5c2e931d8a53 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5599,35 +5599,35 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	 */
->  	if (!(ctx->spec & EXT4_SPEC_mb_optimize_scan)) {
->  		if (sbi->s_groups_count >= MB_DEFAULT_LINEAR_SCAN_THRESHOLD)
->  			set_opt2(sb, MB_OPTIMIZE_SCAN);
->  		else
->  			clear_opt2(sb, MB_OPTIMIZE_SCAN);
->  	}
->  
-> +	err = ext4_percpu_param_init(sbi);
-> +	if (err)
-> +		goto failed_mount5;
-> +
->  	err = ext4_mb_init(sb);
->  	if (err) {
->  		ext4_msg(sb, KERN_ERR, "failed to initialize mballoc (%d)",
->  			 err);
->  		goto failed_mount5;
->  	}
->  
->  	/*
->  	 * We can only set up the journal commit callback once
->  	 * mballoc is initialized
->  	 */
->  	if (sbi->s_journal)
->  		sbi->s_journal->j_commit_callback =
->  			ext4_journal_commit_callback;
->  
-> -	err = ext4_percpu_param_init(sbi);
-> -	if (err)
-> -		goto failed_mount6;
-> -
->  	if (ext4_has_feature_flex_bg(sb))
->  		if (!ext4_fill_flex_info(sb)) {
->  			ext4_msg(sb, KERN_ERR,
->  			       "unable to initialize "
->  			       "flex_bg meta info!");
->  			err = -ENOMEM;
->  			goto failed_mount6;
->  		}
-> @@ -5699,18 +5699,18 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->  	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
->  failed_mount8: __maybe_unused
->  	ext4_release_orphan_info(sb);
->  failed_mount7:
->  	ext4_unregister_li_request(sb);
->  failed_mount6:
->  	ext4_mb_release(sb);
->  	ext4_flex_groups_free(sbi);
-> -	ext4_percpu_param_destroy(sbi);
->  failed_mount5:
-> +	ext4_percpu_param_destroy(sbi);
->  	ext4_ext_release(sb);
->  	ext4_release_system_zone(sb);
->  failed_mount4a:
->  	dput(sb->s_root);
->  	sb->s_root = NULL;
->  failed_mount4:
->  	ext4_msg(sb, KERN_ERR, "mount failed");
->  	if (EXT4_SB(sb)->rsv_conversion_wq)
-> -- 
-> 2.39.2
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512102331.yweFnVTU-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: fs/ext4/mballoc.o: in function `ext4_mb_predict_file_size':
+>> fs/ext4/mballoc.c:4570:(.text+0xc37): undefined reference to `__moddi3'
+>> ld: fs/ext4/mballoc.c:4578:(.text+0xc7c): undefined reference to `__moddi3'
+   ld: fs/ext4/mballoc.c:4584:(.text+0xcf2): undefined reference to `__moddi3'
+
+
+vim +4570 fs/ext4/mballoc.c
+
+  4522	
+  4523	/*
+  4524	 * Predict file size for preallocation. Returns the predicted size
+  4525	 * in bytes. When stripe width (io_opt) is configured, returns sizes
+  4526	 * that are multiples of stripe for optimal RAID performance.
+  4527	 *
+  4528	 * Sets start_off if alignment is needed for large files.
+  4529	 */
+  4530	static loff_t ext4_mb_predict_file_size(struct ext4_sb_info *sbi,
+  4531						struct ext4_allocation_context *ac,
+  4532						loff_t size, loff_t *start_off)
+  4533	{
+  4534		int bsbits = ac->ac_sb->s_blocksize_bits;
+  4535		int max = 2 << bsbits;
+  4536	
+  4537		*start_off = 0;
+  4538	
+  4539		/*
+  4540		 * For RAID/striped devices, align preallocation size to stripe
+  4541		 * width (io_opt) for optimal I/O performance. Use power-of-2
+  4542		 * multiples of stripe size for size prediction.
+  4543		 */
+  4544		if (sbi->s_stripe) {
+  4545			loff_t stripe_bytes = (loff_t)sbi->s_stripe << bsbits;
+  4546			loff_t max_size = (loff_t)max << bsbits;
+  4547	
+  4548			/*
+  4549			 * TODO: If stripe is larger than max chunk size, we can't
+  4550			 * do stripe-aligned allocation. Fall back to traditional
+  4551			 * size prediction. This can happen with very large stripe
+  4552			 * configurations on small block sizes.
+  4553			 */
+  4554			if (stripe_bytes > max_size)
+  4555				goto no_stripe;
+  4556	
+  4557			if (size <= stripe_bytes) {
+  4558				size = stripe_bytes;
+  4559			} else if (size <= stripe_bytes * 2) {
+  4560				size = stripe_bytes * 2;
+  4561			} else if (size <= stripe_bytes * 4) {
+  4562				size = stripe_bytes * 4;
+  4563			} else if (size <= stripe_bytes * 8) {
+  4564				size = stripe_bytes * 8;
+  4565			} else if (size <= stripe_bytes * 16) {
+  4566				size = stripe_bytes * 16;
+  4567			} else if (size <= stripe_bytes * 32) {
+  4568				size = stripe_bytes * 32;
+  4569			} else {
+> 4570				size = roundup(size, stripe_bytes);
+  4571			}
+  4572	
+  4573			/*
+  4574			 * Limit size to max free chunk size, rounded down to
+  4575			 * stripe alignment.
+  4576			 */
+  4577			if (size > max_size)
+> 4578				size = rounddown(max_size, stripe_bytes);
+  4579	
+  4580			/*
+  4581			 * Align start offset to stripe boundary for large allocations
+  4582			 * to ensure both start and size are stripe-aligned.
+  4583			 */
+  4584			*start_off = rounddown((loff_t)ac->ac_o_ex.fe_logical << bsbits,
+  4585					       stripe_bytes);
+  4586	
+  4587			return size;
+  4588		}
+  4589	
+  4590	no_stripe:
+  4591		/* No stripe: use traditional hardcoded size prediction */
+  4592		if (size <= 16 * 1024) {
+  4593			size = 16 * 1024;
+  4594		} else if (size <= 32 * 1024) {
+  4595			size = 32 * 1024;
+  4596		} else if (size <= 64 * 1024) {
+  4597			size = 64 * 1024;
+  4598		} else if (size <= 128 * 1024) {
+  4599			size = 128 * 1024;
+  4600		} else if (size <= 256 * 1024) {
+  4601			size = 256 * 1024;
+  4602		} else if (size <= 512 * 1024) {
+  4603			size = 512 * 1024;
+  4604		} else if (size <= 1024 * 1024) {
+  4605			size = 1024 * 1024;
+  4606		} else if (ext4_mb_check_size(size, 4 * 1024 * 1024, max, 2 * 1024)) {
+  4607			*start_off = ((loff_t)ac->ac_o_ex.fe_logical >>
+  4608							(21 - bsbits)) << 21;
+  4609			size = 2 * 1024 * 1024;
+  4610		} else if (ext4_mb_check_size(size, 8 * 1024 * 1024, max, 4 * 1024)) {
+  4611			*start_off = ((loff_t)ac->ac_o_ex.fe_logical >>
+  4612								(22 - bsbits)) << 22;
+  4613			size = 4 * 1024 * 1024;
+  4614		} else if (ext4_mb_check_size(EXT4_C2B(sbi, ac->ac_o_ex.fe_len),
+  4615						(8<<20)>>bsbits, max, 8 * 1024)) {
+  4616			*start_off = ((loff_t)ac->ac_o_ex.fe_logical >>
+  4617								(23 - bsbits)) << 23;
+  4618			size = 8 * 1024 * 1024;
+  4619		} else {
+  4620			*start_off = (loff_t)ac->ac_o_ex.fe_logical << bsbits;
+  4621			size = (loff_t)EXT4_C2B(sbi, ac->ac_o_ex.fe_len) << bsbits;
+  4622		}
+  4623	
+  4624		return size;
+  4625	}
+  4626	
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
