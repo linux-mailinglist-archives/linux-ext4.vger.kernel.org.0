@@ -1,151 +1,244 @@
-Return-Path: <linux-ext4+bounces-12264-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12265-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B18E1CB292E
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 10:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD75CB298E
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 10:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5FED830CEF82
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 09:32:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 02A9230213DB
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 09:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD76C23E356;
-	Wed, 10 Dec 2025 09:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CFB2D7DFB;
+	Wed, 10 Dec 2025 09:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="Zgj6f0Re"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AGnghbYC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FR3are1U";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rcVeF6HX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OpjNzGm6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CE3239E8B
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 09:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1A928C87C
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 09:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765359148; cv=none; b=pReiEeoUblNatNhQuFcOE1K4ppwnf957Y6T0xSiyTH85dxwdHfcb6ZnXibNaK9Tl8uJhxrT4UbCp1QlVQmecEY3XGjtHQQCl2PFc0Po9SeeqfuG7FCCD62RGOUj07ayOt+wachg/3qqDUqZJEaJfAQyVq9KPDFKZgyhsjjaCZFI=
+	t=1765360048; cv=none; b=qZ/LxZb8C+FCFEJO334C9+ocdEXDZbMSllwj/KDkpyNYRrODB2xnUj8IiTZ+4yut7wqNlMXwU1vYZ/pKlVe9dDukuhtWBz5Ehf+LTHqR4LONHF3Slx2omA41eAtpW4gsdP/lkq/HzuamcORlQ+LpdcYu6Pq9mOyLN3c9ctTKi9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765359148; c=relaxed/simple;
-	bh=8Y8sAlmnlZeVT1aU469lNxFo6NohRlod6a8PP40LnmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rc2a7hZojBPVcVFAlSZoiTPER67yBF6yc5zmRTbccJHS0HOxmgV/YV2EviZr5BF/Pe13QICrM4tKYRLV20KBSdbo63EdqM7puQyKbMWJPutIBdwDmrjD4C30r8+XBmxFlOqPVpbA9qQjXILSVLNLQhwrW8UQCP47ekz9yShP+I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=Zgj6f0Re; arc=none smtp.client-ip=54.204.34.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1765359129;
-	bh=YtrgHRKGNLgHp5v47dMZu1Aq3gpaZvcPPEJ8q9A4LAA=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version;
-	b=Zgj6f0RekLSJ8h+vTx6Ib3KblNPJ3orBPZZhDDVl8Nk/o5hinxFYmzSVi+esgF3Ak
-	 zl2diUEFvlS8pYKZh6w8LOVWTBloTB5Goj+ODJG8IKdKUumW1BfPuKtKZ/UECa8Te8
-	 K4ogtiWCAoywKFLI1QSx0iQjagGjcBncwW/HvT00=
-X-QQ-mid: zesmtpip4t1765359124t8cf0db81
-X-QQ-Originating-IP: WU4nPxF9jI8TcHXgEC66MzzrmnfI7fJKc+rPH+uTkKo=
-Received: from winn-pc ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 10 Dec 2025 17:32:03 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 4409227807048412940
-Date: Wed, 10 Dec 2025 17:32:02 +0800
-From: Winston Wen <wentao@uniontech.com>
-To: "Theodore Tso" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: Inquiry: Possible built-in support for longer filenames in ext4
- (beyond 256 bytes)
-Message-ID: <2EB6F335572BB77B+20251210173202.58c83465@winn-pc>
-In-Reply-To: <20251210090536.GB42106@macsyma.local>
-References: <63C71AFEB9EEBDC8+20251210145935.72a6f028@winn-pc>
-	<20251210090536.GB42106@macsyma.local>
-Organization: Uniontech
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1765360048; c=relaxed/simple;
+	bh=GIW68pyKx6QQ7XkM3eQqeicv8Ohxi43Mf/j8QDDE+so=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OvvqEX+SaF8ZiW9BwsiNKo4CPkQ0Hq98MAleFrvOts5r2XhAKa0tdsQ3ML3YpRzuisK9IM6NNWHMQ7RYhc3Ny0t9Iqpcy9w2rCq4l3BYeZGT66iPi4Id0hOeKwkbV5Dazt7XZnyQIwq9Xk231sBxDq1/4sNdVL9YmF8OTEOKsgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AGnghbYC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FR3are1U; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rcVeF6HX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OpjNzGm6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E6C3E5BDB9;
+	Wed, 10 Dec 2025 09:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765360044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5cJReymf4S/ndWgWNOJiIQlGYfJWbM/Cj0U0zV5njsI=;
+	b=AGnghbYCCGdY4zxwgd9B7x4apOR73/YnW8GxdykrpzpRDp0qSpSdUYzq1mjsi1JpsrtNc8
+	lmrDGEt9QBaXMyjvZrpiMmEZQcLYX7Bhd5Y4cjlLl3jdQs2ZL+QwDiWRCoSFF7dPnhf580
+	ad3/bfAZ/kvvPWJZyVmoW2Q247TloQI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765360044;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5cJReymf4S/ndWgWNOJiIQlGYfJWbM/Cj0U0zV5njsI=;
+	b=FR3are1UCcnQcbwg2xMi3jnEmgPQMPqXMw5lqNxOmz8CIqPdyaaRGMyuTkKc1Damf2ixsv
+	L8Fp2Kh8N0KviICw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765360042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5cJReymf4S/ndWgWNOJiIQlGYfJWbM/Cj0U0zV5njsI=;
+	b=rcVeF6HXLW0e+AlKb1H9AsnB+uqdLNKSvWSMwbTvFnbf+gwrtzcnMm/cUPLYSfd5YsTtcx
+	a+wblCtmwnr5NeNRZGYqvhHVkW59iaj2PY3y/SSvzB6PZB7GS0WBqjg7jq1Lujkox3mEG9
+	SFvT95lI6uufosp/jWbxOGCUPLzLWSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765360042;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5cJReymf4S/ndWgWNOJiIQlGYfJWbM/Cj0U0zV5njsI=;
+	b=OpjNzGm6uiQDLCSAB91K8gOqBiHr8X7n8rRI53jerF0a/ti2rxjok7ibPXs3Y4kB3HhcnA
+	xwbN++KUecRH88BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC3D43EA63;
+	Wed, 10 Dec 2025 09:47:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id rSvBNapBOWlzYQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 10 Dec 2025 09:47:22 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 8C806A0A61; Wed, 10 Dec 2025 10:47:18 +0100 (CET)
+Date: Wed, 10 Dec 2025 10:47:18 +0100
+From: Jan Kara <jack@suse.cz>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	jack@suse.cz, yangerkun@huawei.com, libaokun1@huawei.com
+Subject: Re: [PATCH e2fsprogs] lib/quota: fix checksum mismatch on
+ uninitialized PRJQUOTA inode
+Message-ID: <25z7f7wug2hsciq7iriagtnhoajoanx2h6z6jg6pwcmih4e6ee@kbfsk42u5h6g>
+References: <20251210081558.2714709-1-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz5b-0
-X-QQ-XMAILINFO: Np5KA/LEweiuq8Y849NXeViTQ8TEQRUchd6+R2e1KViFdPiN3vlrxvzx
-	z4FDDdRlyXbFUTbhSDqq6F+1FVUqfN78layDCK9F59EvgimOvXqEjJHvRGYYs0ksnzl9Our
-	wmX2feUqVQfNIDei9wUc4Cj7J8C55Faw+EEYGluG1L0vMb7Cqh1We4mA3McNVz4nf6KjVO8
-	E5e4fPRSZpkSDzuOabFGjHat6Di8MUj/N1iOolNIuN1CaVigAIajvyehx3pGAI4GJxXlVHE
-	eumg2vIbcu1NIFxK9KaWRInvDl5Smzx+nsWMxdwxR4v6Qr3SW/0sijS8Tp7kn8uBWfWIeM4
-	JNN/vRGQglX+TD4FRG/7o6x2TFaSybEalNCOG1KLkalY9YZgNpbmWdVuJLTSOd+lA46PKVb
-	wkMopDl6z+rJ5UCVC6wF60DYPL15Fdup8OYj4jVlDJJMX36mL22FklWjCUlCIdDzJd8Mz3g
-	n2IaWM9XQQs/dueVCRo7gztlZgcA1ji2C4Plp7de7YecoF1PmQEVQDYyWX8+dSj4VIWNZ+b
-	CDdUReg64r7KLu8gxuQiwpQCRrWLgMKaIYd57r/XR+JtWuZvwz5tde3mAD39oOlGWu1ipXX
-	rpFsjgWdl+IKwlqFsqqm2fCEhUWtDUWiD44exNCQoqtd6piDva2FoyuLfkJAdX+oK9uvyCs
-	rOnRvCvH5Gp9N6MqrENDJHZuWtnoAtAE8hIJAPuRx2RzhUgQMQfuw1Wk97D8e/rIEnqa6bk
-	MYfB9gk35LJySJw8ExUWAuD2SdKcHtoyenFsszM+DoeNx7mVls+iE//3XZsj7LsyDN+OICK
-	QuHDxlIdpmeGVb07Va37sDLuoCoaMXpUqvfGAe1aM0uV3rcmoEX2ChUPDVBTZ7mfmhT+U+W
-	ugHx73kMWrxJLfrv598KsQ3KTy8nFLjhEJhzPvEkQvkq1VmJbAzxus/nlEF9ykJdpIv9tBs
-	Mau4bAH9VfYXxK3D1g5nXgxFv+023qhPCAv0G/xSLAlOSlu4xHTLiPdkdqhuy/u+T9uVr1Y
-	0DxWDBW1H1GkYfgkHNreAash6BlHc=
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-QQ-RECHKSPAM: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251210081558.2714709-1-libaokun@huaweicloud.com>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.993];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,huawei.com:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Wed, 10 Dec 2025 18:05:36 +0900
-"Theodore Tso" <tytso@mit.edu> wrote:
+On Wed 10-12-25 16:15:58, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> In quota_inode_init_new(), we attempt to read and truncate an existing
+> quota inode before proceeding with its initialization.
+> 
+> This read operation verifies the inode's checksum. This works fine for
+> USRQUOTA and GRPQUOTA inodes because write_reserved_inodes() is always
+> called during ext4 image creation to set appropriate checksums for these
+> reserved inodes.
+> 
+> However, the PRJQUOTA inode is not reserved, and its corresponding inode
+> table block may not have been zeroed, potentially containing stale data.
+> Consequently, reading this inode can fail due to a checksum mismatch.
+> 
+> This can be reproduced by running the following sequence:
+> 
+>   dd if=/dev/random of=$DISK bs=1M count=128
+>   mkfs.ext4 -F -q -b 1024 $DISK 5G
+>   tune2fs -O quota,project $DISK
+> 
+> Which results in the following error output:
+> 
+>  tune2fs 1.47.3 (8-Jul-2025)
+>  [ERROR] quotaio.c:279:quota_inode_init_new: ex2fs_read_inode failed
+>  [ERROR] quotaio.c:341:quota_file_create: init_new_quota_inode failed
+>  tune2fs: Inode checksum does not match inode while writing quota file (2)
+> 
+> While running `kvm-xfstests -c ext4/1k -C 1 generic/383`, the test itself
+> does not fail, but checksum verification failures are reported even
+> without fault injection, which led to discovering this issue.
+> 
+> To fix this, we stop attempting to read the quota inode that is about
+> to be initialized inside quota_inode_init_new(). Instead, the logic
+> to attempt truncation of an existing quota inode is moved to be handled
+> inside quota_file_create().
+> 
+> Fixes: 080e09b4 ("Add project quota support")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-> On Wed, Dec 10, 2025 at 03:02:11PM +0800, Winston Wen wrote:
-> > We are aware that workarounds like wrapfs can be used to support
-> > longer filenames, but in practice, this approach is not ideal for
-> > seamless user experience. We are therefore curious whether it would
-> > be feasible to implement built-in support for longer filenames in
-> > ext4 itself. =20
->=20
-> I don't think wrapfs can be used to support logner file names, because
-> the limitation is quite fundamental.  For example, the glibc
-> definition of struct dirent (which is returned by the readdir() system
-> call) is as follows (from the man readdir page):
->=20
->            struct dirent {
->                ino_t          d_ino;       /* Inode number */
->                off_t          d_off;       /* Not an offset; see
-> below */ unsigned short d_reclen;    /* Length of this record */
->                unsigned char  d_type;      /* Type of file; not
-> supported by all filesystem types */
->                char           d_name[256]; /* Null-terminated
-> filename */ };
->=20
-> So how you might store the longer file name isn't really going to
-> help, the problem goes far beyond the question of where this might be
-> stored on the file system.
->=20
-> 					- Ted
->=20
+Looks good. Feel free to add:
 
-Hi Ted,
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Thank you for your quick and insightful reply.
+								Honza
 
-I apologize if I=E2=80=99ve misunderstood something, but based on our
-experience, we have actually implemented and deployed two different
-solutions using FUSE and wrapfs in our production environment, both of
-which successfully support filenames longer than 256 bytes. This leads
-us to believe that the glibc and VFS layers do not impose a hard limit
-at 256 bytes in practice.
-
-To better understand, I=E2=80=99ve reviewed the readdir/getdents man pages =
-and
-the glibc struct dirent definition. It appears that d_name is
-implemented as a flexible array member rather than a fixed-size array
-of 256 bytes.
-
-Going back to our original question: we were curious whether it might
-be possible to support longer filenames natively within ext4 itself
-(rather than through FUSE), perhaps via on-disk format extension or
-auxiliary storage like xattrs. If this is architecturally feasible, we
-would be very interested in exploring it further.
-
-Any further guidance or references you could share would be greatly
-appreciated.
-
-Thanks again for your time.
-
---=20
-Thanks,
-Winston
-
+> ---
+>  lib/support/quotaio.c | 30 +++++++++++++-----------------
+>  1 file changed, 13 insertions(+), 17 deletions(-)
+> 
+> diff --git a/lib/support/quotaio.c b/lib/support/quotaio.c
+> index f5f2c7f7..827df85b 100644
+> --- a/lib/support/quotaio.c
+> +++ b/lib/support/quotaio.c
+> @@ -274,18 +274,6 @@ static errcode_t quota_inode_init_new(ext2_filsys fs, ext2_ino_t ino)
+>  	errcode_t err = 0;
+>  	time_t now;
+>  
+> -	err = ext2fs_read_inode(fs, ino, &inode);
+> -	if (err) {
+> -		log_err("ex2fs_read_inode failed");
+> -		return err;
+> -	}
+> -
+> -	if (EXT2_I_SIZE(&inode)) {
+> -		err = quota_inode_truncate(fs, ino);
+> -		if (err)
+> -			return err;
+> -	}
+> -
+>  	memset(&inode, 0, sizeof(struct ext2_inode));
+>  	ext2fs_iblk_set(fs, &inode, 0);
+>  	now = fs->now ? fs->now : time(0);
+> @@ -319,6 +307,10 @@ errcode_t quota_file_create(struct quota_handle *h, ext2_filsys fs,
+>  	if (fmt == -1)
+>  		fmt = QFMT_VFS_V1;
+>  
+> +	err = ext2fs_read_bitmaps(fs);
+> +	if (err)
+> +		goto out_err;
+> +
+>  	h->qh_qf.fs = fs;
+>  	qf_inum = quota_type2inum(qtype, fs->super);
+>  	if (qf_inum == 0 && qtype == PRJQUOTA) {
+> @@ -330,15 +322,19 @@ errcode_t quota_file_create(struct quota_handle *h, ext2_filsys fs,
+>  		ext2fs_mark_ib_dirty(fs);
+>  	} else if (qf_inum == 0) {
+>  		return EXT2_ET_BAD_INODE_NUM;
+> +	} else {
+> +		err = quota_inode_truncate(fs, qf_inum);
+> +		if (err) {
+> +			log_err("quota_inode_truncate failed, ino=%u, type=%d",
+> +				qf_inum, qtype);
+> +			return err;
+> +		}
+>  	}
+>  
+> -	err = ext2fs_read_bitmaps(fs);
+> -	if (err)
+> -		goto out_err;
+> -
+>  	err = quota_inode_init_new(fs, qf_inum);
+>  	if (err) {
+> -		log_err("init_new_quota_inode failed");
+> +		log_err("init_new_quota_inode failed, ino=%u, type=%d",
+> +			qf_inum, qtype);
+>  		goto out_err;
+>  	}
+>  	h->qh_qf.ino = qf_inum;
+> -- 
+> 2.46.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
