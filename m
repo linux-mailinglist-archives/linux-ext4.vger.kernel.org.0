@@ -1,54 +1,55 @@
-Return-Path: <linux-ext4+bounces-12275-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12276-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1AB6CB3E9E
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 21:05:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0791CB42C5
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 23:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 63C98300D332
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 20:05:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 682A230124E2
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 22:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AFB329E54;
-	Wed, 10 Dec 2025 20:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EED32DC767;
+	Wed, 10 Dec 2025 22:50:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEJIoN15"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeY66NyB"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB4B322B97;
-	Wed, 10 Dec 2025 20:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E8F2C236B;
+	Wed, 10 Dec 2025 22:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765397151; cv=none; b=jgrzKNFCKdMI8QHiv2hl9El/rERmIYK9001NEbAc43XAcVRdLzH5XsBgu0BFauakIkTncOGx7epD3vviT35d38stuaXVY8U+Wiw8YXEEhBEyXTJtDf4k5I4jqhCixYGOfryr2hjTqoIvGSixgdeGEASEvhQaU21e8immbWgWyL4=
+	t=1765407045; cv=none; b=aPKZ4aiEHIFAkD5dqPXplcHr5agociYPdO3FcO6xk6oxEtO4V2NjmeZ194DF/v0TmboDeBXpMunp+E8SVBqJweJeJUd2p6hctmUDMRqUnK193/XVD1bvMyUEtG031b7AbfkhmSpVUvimGxFBRGqM+uxc+NFHIaTlyMJne2xs0VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765397151; c=relaxed/simple;
-	bh=lv3NbKgBTkAl4Qv4ffmY0I7beJoLO2jboYBY/LfTyOU=;
+	s=arc-20240116; t=1765407045; c=relaxed/simple;
+	bh=/vJAD7coR7PBGj/1dOV7wwbutqvm1ihVpTuS65fVEBU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M1Vf2udU2OVdRJa3cn5SgMYytvB09zjff45GUHxgC5p5KNh40CED3ip6EHfREXfjHmtdKS4Lt1tbr1TPHKS1GYD+9mhrM1XaPLJl5cMrNubep5qVrTJVu1M4Ld9zO7qqCKJHAKctF1nc5n43Nd5sRFH4cPPUzC/PzwxMsE1Vcbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEJIoN15; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77847C4CEF1;
-	Wed, 10 Dec 2025 20:05:51 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LlpUAEPs61uIoV2jdbsp5OmqTuh84KZQ4NvUDxHNXd87tx4S7OvjqnL4pevOFtC9J6m6FAFNUXIQ93EcoVgATvpa9xlZPnLy4gNT7TJZYcQIlwrM7jaAlnAzi9m3q+VHNzT1eM99kG8yB/SVntBBIZh7BK2TXZ9ZL53JO6NItL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeY66NyB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C04C4CEF1;
+	Wed, 10 Dec 2025 22:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765397151;
-	bh=lv3NbKgBTkAl4Qv4ffmY0I7beJoLO2jboYBY/LfTyOU=;
+	s=k20201202; t=1765407044;
+	bh=/vJAD7coR7PBGj/1dOV7wwbutqvm1ihVpTuS65fVEBU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YEJIoN15ixvnFKLOw308ToLTOeI3VptylolicQgRtQjKFMcXvOtJpwlCblBv2gIwS
-	 foLMlnxm7jk5KJTomom76lcw91IHZ6isgakik/cstkAmDlt9ok6JlxkfifdpV+68H8
-	 aBbokEGbSjcixFSvdu8cyVOfGdkGP4murxgZzmn0Zj2QmibBKrSjQkrV7XKK6pSSZB
-	 UmaX9WKf4zbmyUMwiLZ4w7XydLLg6P8o71c2XEU3F3c62082KNc10yOHV1KZJFSC3K
-	 4bMy21S7vmR4RP6egqX0xy7XWHElS1Ys3qU5WvJgOAunoCv06dIMkyyI+CXnkgBGTT
-	 YOEiYEM43/PBw==
-Date: Wed, 10 Dec 2025 12:05:50 -0800
+	b=UeY66NyBroC9uYk/FqQbp0jcT0gsBlxwIH91czZi4cdOOHqcaAElWaFV8Rpk/ebrJ
+	 4neDOTVD+JnMpEkIRN9aMJsZv96QWo6Q0BfwAx/fXYFTo8T85ypcH4HII9Afgb351m
+	 QDuC479W49JKGGR0QuXEQzqAEy7yYZ6syq9BlpDcoX2ZPq6H3kbfSzRtS+DJ+flH4h
+	 7Dq6j0W/XJXJDg7vElY4TJpxxA0IVnhYwJXYQr9/wzXuyaYFwCRM5L7eI3cJg7CgU/
+	 MlPifUa5Znn2CcgBS/dAE/TJpEjE7S19dJPPhqEtJH1qSc+2NRN7j+CkZpT7y5nGGj
+	 lVqIwLsXYqoig==
+Date: Wed, 10 Dec 2025 14:50:43 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Zorro Lang <zlang@kernel.org>, Anand Jain <anand.jain@oracle.com>,
 	Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 06/12] xfs/157: don't override SCRATCH_{,LOG,RT}DEV
-Message-ID: <20251210200550.GH94594@frogsfrogsfrogs>
+Subject: Re: [PATCH 12/12] xfs/650:  require a real SCRATCH_RTDEV
+Message-ID: <20251210225043.GI94594@frogsfrogsfrogs>
 References: <20251210054831.3469261-1-hch@lst.de>
- <20251210054831.3469261-7-hch@lst.de>
+ <20251210054831.3469261-13-hch@lst.de>
+ <20251210194549.GB94594@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,169 +58,129 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251210054831.3469261-7-hch@lst.de>
+In-Reply-To: <20251210194549.GB94594@frogsfrogsfrogs>
 
-On Wed, Dec 10, 2025 at 06:46:52AM +0100, Christoph Hellwig wrote:
-> This tests wants to test various difference device configurations,
-> and does so by overriding SCRATCH_{,LOG,RT}DEV.  This has two downside:
+On Wed, Dec 10, 2025 at 11:45:49AM -0800, Darrick J. Wong wrote:
+> On Wed, Dec 10, 2025 at 06:46:58AM +0100, Christoph Hellwig wrote:
+> > Require a real SCRATCH_RTDEV instead of faking one up using a loop
+> > device, as otherwise the options specified in MKFS_OPTIONS might
+> > not actually work the configuration.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  tests/xfs/650 | 63 +++++----------------------------------------------
 > 
->  1) the actual SCRATCH_{,LOG,RT}DEV configuration is still injected by
->     default, thus making the test dependent on that configuration
->  2) the MKFS_OPTIONS might not actually be compatible with the
->     configuration created
-> 
-> Fix this by open coding the mkfs, db, admin and repair calls and always
-> run them on the specific configuration.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Er... what test is xfs/650?  There isn't one in for-next.
 
-Interesting solution to that...
+Aha, I missed that an earlier patch created it. :(
+
+The one downside to not injecting a rt device here is that now the only
+testing for the actual bug is if you happen to have rt enabled.  That
+used to be a concern of mine, but maybe between you, me, Meta, and the
+kdevops folks there's enough now.
+
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
-> ---
->  tests/xfs/157 | 104 +++++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 78 insertions(+), 26 deletions(-)
 > 
-> diff --git a/tests/xfs/157 b/tests/xfs/157
-> index e102a5a10abe..31f05db25724 100755
-> --- a/tests/xfs/157
-> +++ b/tests/xfs/157
-> @@ -50,53 +50,105 @@ fake_rtfile=$TEST_DIR/$seq.scratch.rt
->  rm -f $fake_rtfile
->  truncate -s $fs_size $fake_rtfile
->  
-> -# Save the original variables
-> -orig_ddev=$SCRATCH_DEV
-> -orig_external=$USE_EXTERNAL
-> -orig_logdev=$SCRATCH_LOGDEV
-> -orig_rtdev=$SCRATCH_RTDEV
-> -
->  scenario() {
->  	echo "$@" | tee -a $seqres.full
->  
-> -	SCRATCH_DEV=$orig_ddev
-> -	USE_EXTERNAL=$orig_external
-> -	SCRATCH_LOGDEV=$orig_logdev
-> -	SCRATCH_RTDEV=$orig_rtdev
-> +	dev=$SCRATCH_DEV
-> +	logdev=
-> +	rtdev=
-> +}
-> +
-> +_fake_mkfs()
-> +{
-> +	OPTIONS="$*"
-> +	if [ -n "$logdev" ]; then
-> +		OPTIONS="$OPTIONS -l logdev=$logdev"
-> +	fi
-> +	if [ -n "$rtdev" ]; then
-> +		OPTIONS="$OPTIONS -r rtdev=$rtdev"
-> +	fi
-> +	$MKFS_XFS_PROG -f $OPTIONS $dev || _fail "mkfs failed"
-> +}
-> +
-> +_fake_xfs_db_options()
-> +{
-> +	OPTIONS=""
-> +	if [ ! -z "$logdev" ]; then
-> +		OPTIONS="-l $logdev"
-> +	fi
-> +	if [ ! -z "$rtdev" ]; then
-> +		if [ $XFS_DB_PROG --help 2>&1 | grep -q -- '-R rtdev']; then
-> +			OPTIONS="$OPTIONS -R $rtdev"
-> +		fi
-> +	fi
-> +	echo $OPTIONS $* $dev
-> +}
-> +
-> +_fake_xfs_db()
-> +{
-> +	$XFS_DB_PROG "$@" $(_fake_xfs_db_options)
-> +}
-> +
-> +_fake_xfs_admin()
-> +{
-> +	local options=("$dev")
-> +	local rt_opts=()
-> +	if [ -n "$logdev" ]; then
-> +		options+=("$logdev")
-> +	fi
-> +	if [ -n "$rtdev" ]; then
-> +		$XFS_ADMIN_PROG --help 2>&1 | grep -q 'rtdev' || \
-> +			_notrun 'xfs_admin does not support rt devices'
-> +		rt_opts+=(-r "$rtdev")
-> +	fi
-> +
-> +	# xfs_admin in xfsprogs 5.11 has a bug where an external log device
-> +	# forces xfs_db to be invoked, potentially with zero command arguments.
-> +	# When this happens, xfs_db will wait for input on stdin, which causes
-> +	# fstests to hang.  Since xfs_admin is not an interactive tool, we
-> +	# can redirect stdin from /dev/null to prevent this issue.
-> +	$XFS_ADMIN_PROG "${rt_opts[@]}" "$@" "${options[@]}" < /dev/null
-> +}
-> +
-> +
-> +_fake_xfs_repair()
-> +{
-> +	OPTIONS=""
-> +	if [ -n "$logdev" ]; then
-> +		OPTIONS="-l $logdev"
-> +	fi
-> +	if [ -n "$rtdev" ]; then
-> +		OPTIONS="$OPTIONS -r $rtdev"
-> +	fi
-> +	$XFS_REPAIR_PROG $OPTIONS $* $dev
->  }
->  
->  check_label() {
-> -	_scratch_mkfs_sized "$fs_size" "" -L oldlabel >> $seqres.full 2>&1
-> -	_scratch_xfs_db -c label
-> -	_scratch_xfs_admin -L newlabel "$@" >> $seqres.full
-> -	_scratch_xfs_db -c label
-> -	_scratch_xfs_repair -n &>> $seqres.full || echo "Check failed?"
-> +	_fake_mkfs -L oldlabel >> $seqres.full 2>&1
-> +	_fake_xfs_db -c label
-> +	_fake_xfs_admin -L newlabel "$@" >> $seqres.full
-> +	_fake_xfs_db -c label
-> +	_fake_xfs_repair -n &>> $seqres.full || echo "Check failed?"
->  }
->  
->  scenario "S1: Check that label setting with file image"
-> -SCRATCH_DEV=$fake_datafile
-> +dev=$fake_datafile
->  check_label -f
->  
->  scenario "S2: Check that setting with logdev works"
-> -USE_EXTERNAL=yes
-> -SCRATCH_LOGDEV=$fake_logfile
-> +logdev=$fake_logfile
->  check_label
->  
->  scenario "S3: Check that setting with rtdev works"
-> -USE_EXTERNAL=yes
-> -SCRATCH_RTDEV=$fake_rtfile
-> +rtdev=$fake_rtfile
->  check_label
->  
->  scenario "S4: Check that setting with rtdev + logdev works"
-> -USE_EXTERNAL=yes
-> -SCRATCH_LOGDEV=$fake_logfile
-> -SCRATCH_RTDEV=$fake_rtfile
-> +logdev=$fake_logfile
-> +rtdev=$fake_rtfile
->  check_label
->  
->  scenario "S5: Check that setting with nortdev + nologdev works"
-> -USE_EXTERNAL=
-> -SCRATCH_LOGDEV=
-> -SCRATCH_RTDEV=
->  check_label
->  
->  scenario "S6: Check that setting with bdev incorrectly flagged as file works"
-> -- 
-> 2.47.3
-> 
+> >  1 file changed, 6 insertions(+), 57 deletions(-)
+> > 
+> > diff --git a/tests/xfs/650 b/tests/xfs/650
+> > index d8f70539665f..418a1e7aae7c 100755
+> > --- a/tests/xfs/650
+> > +++ b/tests/xfs/650
+> > @@ -9,21 +9,11 @@
+> >  # bunmapi"). On XFS without the fixes, truncate will hang forever.
+> >  #
+> >  . ./common/preamble
+> > -_begin_fstest auto prealloc preallocrw
+> > -
+> > -# Override the default cleanup function.
+> > -_cleanup()
+> > -{
+> > -	_scratch_unmount &>/dev/null
+> > -	[ -n "$loop_dev" ] && _destroy_loop_device $loop_dev
+> > -	cd /
+> > -	rm -f $tmp.*
+> > -	rm -f "$TEST_DIR/$seq"
+> > -}
+> > +_begin_fstest auto prealloc preallocrw realtime
+> >  
+> >  . ./common/filter
+> >  
+> > -_require_scratch_nocheck
+> > +_require_realtime
+> >  _require_xfs_io_command "falloc"
+> >  
+> >  maxextlen=$((0x1fffff))
+> > @@ -31,51 +21,11 @@ bs=4096
+> >  rextsize=4
+> >  filesz=$(((maxextlen + 1) * bs))
+> >  
+> > -must_disable_feature() {
+> > -	local feat="$1"
+> > -
+> > -	# If mkfs doesn't know about the feature, we don't need to disable it
+> > -	$MKFS_XFS_PROG --help 2>&1 | grep -q "${feat}=0" || return 1
+> > -
+> > -	# If turning the feature on works, we don't need to disable it
+> > -	_scratch_mkfs_xfs_supported -m "${feat}=1" "${disabled_features[@]}" \
+> > -		> /dev/null 2>&1 && return 1
+> > -
+> > -	# Otherwise mkfs knows of the feature and formatting with it failed,
+> > -	# so we do need to mask it.
+> > -	return 0
+> > -}
+> > -
+> > -extra_options=""
+> > -# Set up the realtime device to reproduce the bug.
+> > +_scratch_mkfs \
+> > +	-d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1 \
+> > +	-r extsize=$((bs * rextsize)) \
+> > +	>>$seqres.full 2>&1
+> >  
+> > -# If we don't have a realtime device, set up a loop device on the test
+> > -# filesystem.
+> > -if [[ $USE_EXTERNAL != yes || -z $SCRATCH_RTDEV ]]; then
+> > -	_require_test
+> > -	loopsz="$((filesz + (1 << 26)))"
+> > -	_require_fs_space "$TEST_DIR" $((loopsz / 1024))
+> > -	$XFS_IO_PROG -c "truncate $loopsz" -f "$TEST_DIR/$seq"
+> > -	loop_dev="$(_create_loop_device "$TEST_DIR/$seq")"
+> > -	USE_EXTERNAL=yes
+> > -	SCRATCH_RTDEV="$loop_dev"
+> > -	disabled_features=()
+> > -
+> > -	# disable reflink if not supported by realtime devices
+> > -	must_disable_feature reflink &&
+> > -		disabled_features=(-m reflink=0)
+> > -
+> > -	# disable rmap if not supported by realtime devices
+> > -	must_disable_feature rmapbt &&
+> > -		disabled_features+=(-m rmapbt=0)
+> > -fi
+> > -extra_options="$extra_options -r extsize=$((bs * rextsize))"
+> > -extra_options="$extra_options -d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1"
+> > -
+> > -_scratch_mkfs $extra_options "${disabled_features[@]}" >>$seqres.full 2>&1
+> > -_try_scratch_mount >>$seqres.full 2>&1 || \
+> > -	_notrun "mount failed, kernel doesn't support realtime?"
+> > -_scratch_unmount
+> >  _scratch_mount
+> >  _require_fs_space "$SCRATCH_MNT" $((filesz / 1024))
+> >  
+> > @@ -108,7 +58,6 @@ $XFS_IO_PROG -c "pwrite -b 1M -W 0 $(((maxextlen + 2 - rextsize) * bs))" \
+> >  # Truncate the extents.
+> >  $XFS_IO_PROG -c "truncate 0" -c fsync "$SCRATCH_MNT/file"
+> >  
+> > -# We need to do this before the loop device gets torn down.
+> >  _scratch_unmount
+> >  _check_scratch_fs
+> >  
+> > -- 
+> > 2.47.3
+> > 
+> > 
 > 
 
