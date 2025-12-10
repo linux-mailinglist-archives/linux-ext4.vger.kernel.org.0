@@ -1,125 +1,180 @@
-Return-Path: <linux-ext4+bounces-12261-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12262-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91F9BCB222B
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 08:02:38 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E55FCB266B
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 09:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8F00A302530C
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 07:02:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6312C3022FEF
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 08:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17EC27EC80;
-	Wed, 10 Dec 2025 07:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="JO8NXj2K"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0482FD7A7;
+	Wed, 10 Dec 2025 08:26:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtpbg150.qq.com (smtpbg150.qq.com [18.132.163.193])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7E027380A
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 07:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.132.163.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EE32EE611
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 08:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765350155; cv=none; b=AMttfI565EWvwh4jCeMVOCuYx1N/Q+o6c/ez3Qm/KB30hTP/7zLI4AdRsClGRZzYqclkJkwrYW2am15aocnpAtSYyJNkwA3BHYtvBZxd3Uq+8A8Bsmd6L6BSa+STwvkc2uH0psfrcBN/RRjI2rFoTgBPMJObwFmAV+o8xSvcP2Y=
+	t=1765355196; cv=none; b=myuGq0CiQlgjv2zb0SxhV7UFDDDJyvjxUpuQK6ViOY2efUceM943paiorGhRoknkw/PIaxkiplVVldsvKpu0I6k0FsYQI2zSEXH6zsX0gFUWWA4EwgKi1WG5dCMRyQ2OmwWbUcaaX7bGLXsteG7MdGcFhJPAFmbKYO8hMhCo1vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765350155; c=relaxed/simple;
-	bh=BjRbEtin8yKUNt3HyTKMOknT5yl7nwuAIrIzdfFqXNE=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=dG/wiAKTfWKAhZz1IdbyRAGDY/7EoFwawbg5CK6XLYZlBAdNES4urZipcgFcH2uRIdjJLyiA/e6EgaE6sBRp0nXfd8XfKHqXdaE++rJhU5ofIXBdwwPT2uWRQQCHDtUUcWRtFzaMGefboECSFp7sPnZGA3SHwv5DkhRnfbTVozE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=JO8NXj2K; arc=none smtp.client-ip=18.132.163.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1765350139;
-	bh=eqpA1ThUR5vxi3Hii8Qu2slaPALl2FVT5naBxCYoXUE=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version;
-	b=JO8NXj2KWm8WTZQAmDBCraEo4JQH22NarA3Sz7PQ2N4LrUbhugnr8ZdOYFnjD+aOj
-	 47Vb9fPKhYMpde10SFjA4DhF72nQR8pcufHwjlpEINdcw1kLN/Y/rQHu+cWkqjtkAy
-	 bjYYtmhP3oFO1jHAeJ29vdidv0U120TuiFdlZgfI=
-X-QQ-mid: zesmtpip4t1765350133ta469c32d
-X-QQ-Originating-IP: NkcnqOy3G0oFtK4BXPZY4oyjlH6j6NnOn96dV5/QWaQ=
-Received: from winn-pc ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with SMTP id 0
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 15:02:12 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 11077546269076531751
-Date: Wed, 10 Dec 2025 15:02:11 +0800
-From: Winston Wen <wentao@uniontech.com>
+	s=arc-20240116; t=1765355196; c=relaxed/simple;
+	bh=dgQda72Oa06Dex9Csmekr/S8tpN4vjUHolTIYNKzj6A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZoqgBU+X1hh3uOm1KygV1+4xUmD7wxvgGh4XkQk6mZirx7cbJzqq1SHB0ilS6FhtDJPtUx0qoM+mQs5tbDgnkVNL/Tm+Sehc8rZAFMQJfL9Ai2A9K/OhvgEpzBulIMdJwJNhDtzjjWrw47WI4Vv+uTu40LiIKr42JtzjWjSpx34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dR8161S1zzKHMp9
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 16:25:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id F108C1A1C48
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Dec 2025 16:26:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.87.129])
+	by APP2 (Coremail) with SMTP id Syh0CgAnVE61LjlpW472BA--.57045S4;
+	Wed, 10 Dec 2025 16:26:29 +0800 (CST)
+From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
-Subject: Inquiry: Possible built-in support for longer filenames in ext4
- (beyond 256 bytes)
-Message-ID: <63C71AFEB9EEBDC8+20251210145935.72a6f028@winn-pc>
-Organization: Uniontech
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yangerkun@huawei.com,
+	libaokun1@huawei.com,
+	libaokun@huaweicloud.com
+Subject: [PATCH e2fsprogs] lib/quota: fix checksum mismatch on uninitialized PRJQUOTA inode
+Date: Wed, 10 Dec 2025 16:15:58 +0800
+Message-Id: <20251210081558.2714709-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz5b-0
-X-QQ-XMAILINFO: Ns4o82esMDegnQY56cenmJcuoRYw3wQtHZNnuiNrrxckEE+q5x+WtQI+
-	bGmSRC5grqy57iIEkV9zBbETGfAZ1aAoanGV0/EY12JtHOW65NIO/WmvP8AVbYrAZ57Ag8C
-	oGGIwu3n174I/7GPoUOrMwtwrXXTz7BUMKqeFdtNDmyWHssIFBX/+gBq9LjzReZcNR1wxa3
-	JLkMq5MryBE1WjTRISFkRMeTh1C5tdtqOUK992UBa46QX5GequJrlCQOEsnZpUnP0qpso2U
-	ag5/O4ucfbT/OgqcgiqiOg96cRhJBan0m1PB1b3EyoUvdpPdWfFWSxVVh+l97GYDiFegXiM
-	6AwksSSoe8OM5KXlGfIjDU24GpKiLrJ7Qfkkke8ajOQRKVJUFzd7pQ7R63ekVB6egjLXJGw
-	Y5SryAXDEbwebY0eT5Tqvh0DVLBPkb42KALArs854FqnUm/aHmcAy+WjCUZbw9Us2sdTnBQ
-	bILuqbDNMbAp8BSwqaMeCZqLZSMwyjd/35S6Y6hPyxLD/3tolOc9AteYN4F15NRd9iXeTEr
-	4vXvfj9ARZThepG+cz6qCUvO1QBS8fBjgDfd7QRcNxLMq6N1vQHBKuqxejNffHIo7UILWZ2
-	15b0d2EAWq1S4LboIDwyi8O7EOP3VnTSLtkHQ6ZJ03RtDzgZCGwD3VbsCUmnwCyX4H8G4H6
-	0s/U/sb8u97jOAd2T4upG7lHjBQqSefT2xCsoJ2TOVeEOaR0VpWn7UiGUFunc0eXXYDnFPv
-	gwFqmsOeYd6CGaTZDECESRNkolJp1jlg7W14B4ZDvE1ftIN4hU/IhZQSEWEYcNdCv4eSI8p
-	KDFjnm+xnml5h9kTPwZx6XDyqpYLMlifW2DdroO5btTFD3vy+nio+jtVTtM8UG/8hwUxG+3
-	uWhoNGrUwwINkCuXcbDachR/ehBJDuxWuADXVz2GUm0LPiOq9iXQEMQWXqgQtKWd0x6yNkw
-	LxTWfdb/NoinIkgAcTDDEihUGBX+hoBgj7TjFdCZCNRV2/g==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-QQ-RECHKSPAM: 0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAnVE61LjlpW472BA--.57045S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw48Kw1fZr1DXr15tw4fKrg_yoW5uFWkpF
+	Z2ga1Yqa45Gry2kF4vvr4rZr1fKFyIgr4UWr48Ga4Fyrn5Xrs5tF1rKa4FvF9xJrs5A34Y
+	vF18C3WDWw1UWrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4AY6r
+	1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0
+	F24lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+	17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+	DU0xZFpf9x0JUmD7-UUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQARBWk4EuUJDwABs0
 
-Hello ext4 maintainers and community,
+From: Baokun Li <libaokun1@huawei.com>
 
-I am writing to seek your advice on a potential enhancement regarding
-filename length support in ext4.
+In quota_inode_init_new(), we attempt to read and truncate an existing
+quota inode before proceeding with its initialization.
 
-Currently, ext4 supports filenames up to 255 bytes, which is sufficient
-for most use cases. However, in cross-platform scenarios, particularly
-when migrating directories from Windows to Linux, we encounter issues
-with filenames that exceed this limit. Windows allows filenames longer
-than 256 bytes (including multi-byte characters such as Chinese), which
-can lead to filename overflow when copying such files to ext4.
+This read operation verifies the inode's checksum. This works fine for
+USRQUOTA and GRPQUOTA inodes because write_reserved_inodes() is always
+called during ext4 image creation to set appropriate checksums for these
+reserved inodes.
 
-We are aware that workarounds like wrapfs can be used to support longer
-filenames, but in practice, this approach is not ideal for seamless
-user experience. We are therefore curious whether it would be feasible
-to implement built-in support for longer filenames in ext4 itself.
+However, the PRJQUOTA inode is not reserved, and its corresponding inode
+table block may not have been zeroed, potentially containing stale data.
+Consequently, reading this inode can fail due to a checksum mismatch.
 
-One idea we considered is using extended attributes (xattr) to map long
-filenames, or perhaps another mechanism that would allow storing and
-accessing filenames beyond the current limit without breaking existing
-compatibility. However, we are not experts in this area and would
-appreciate guidance from the community.
+This can be reproduced by running the following sequence:
 
-Could you share your thoughts on:
+  dd if=/dev/random of=$DISK bs=1M count=128
+  mkfs.ext4 -F -q -b 1024 $DISK 5G
+  tune2fs -O quota,project $DISK
 
-- Whether there is interest in supporting longer filenames in ext4
-natively.
-- Possible implementation approaches (e.g., xattr-based mapping,
-on-disk format extensions, etc.).
-- Any prior discussions or attempts in this direction that we might
-have missed.
+Which results in the following error output:
 
-If there is a feasible path forward, we are willing to research the
-issue in depth and attempt to implement an RFC patch for community
-review. We would greatly appreciate your guidance on where to start and
-what the key considerations would be.
+ tune2fs 1.47.3 (8-Jul-2025)
+ [ERROR] quotaio.c:279:quota_inode_init_new: ex2fs_read_inode failed
+ [ERROR] quotaio.c:341:quota_file_create: init_new_quota_inode failed
+ tune2fs: Inode checksum does not match inode while writing quota file (2)
 
-Thank you for your time and insights.
+While running `kvm-xfstests -c ext4/1k -C 1 generic/383`, the test itself
+does not fail, but checksum verification failures are reported even
+without fault injection, which led to discovering this issue.
 
+To fix this, we stop attempting to read the quota inode that is about
+to be initialized inside quota_inode_init_new(). Instead, the logic
+to attempt truncation of an existing quota inode is moved to be handled
+inside quota_file_create().
+
+Fixes: 080e09b4 ("Add project quota support")
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ lib/support/quotaio.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
+
+diff --git a/lib/support/quotaio.c b/lib/support/quotaio.c
+index f5f2c7f7..827df85b 100644
+--- a/lib/support/quotaio.c
++++ b/lib/support/quotaio.c
+@@ -274,18 +274,6 @@ static errcode_t quota_inode_init_new(ext2_filsys fs, ext2_ino_t ino)
+ 	errcode_t err = 0;
+ 	time_t now;
+ 
+-	err = ext2fs_read_inode(fs, ino, &inode);
+-	if (err) {
+-		log_err("ex2fs_read_inode failed");
+-		return err;
+-	}
+-
+-	if (EXT2_I_SIZE(&inode)) {
+-		err = quota_inode_truncate(fs, ino);
+-		if (err)
+-			return err;
+-	}
+-
+ 	memset(&inode, 0, sizeof(struct ext2_inode));
+ 	ext2fs_iblk_set(fs, &inode, 0);
+ 	now = fs->now ? fs->now : time(0);
+@@ -319,6 +307,10 @@ errcode_t quota_file_create(struct quota_handle *h, ext2_filsys fs,
+ 	if (fmt == -1)
+ 		fmt = QFMT_VFS_V1;
+ 
++	err = ext2fs_read_bitmaps(fs);
++	if (err)
++		goto out_err;
++
+ 	h->qh_qf.fs = fs;
+ 	qf_inum = quota_type2inum(qtype, fs->super);
+ 	if (qf_inum == 0 && qtype == PRJQUOTA) {
+@@ -330,15 +322,19 @@ errcode_t quota_file_create(struct quota_handle *h, ext2_filsys fs,
+ 		ext2fs_mark_ib_dirty(fs);
+ 	} else if (qf_inum == 0) {
+ 		return EXT2_ET_BAD_INODE_NUM;
++	} else {
++		err = quota_inode_truncate(fs, qf_inum);
++		if (err) {
++			log_err("quota_inode_truncate failed, ino=%u, type=%d",
++				qf_inum, qtype);
++			return err;
++		}
+ 	}
+ 
+-	err = ext2fs_read_bitmaps(fs);
+-	if (err)
+-		goto out_err;
+-
+ 	err = quota_inode_init_new(fs, qf_inum);
+ 	if (err) {
+-		log_err("init_new_quota_inode failed");
++		log_err("init_new_quota_inode failed, ino=%u, type=%d",
++			qf_inum, qtype);
+ 		goto out_err;
+ 	}
+ 	h->qh_qf.ino = qf_inum;
 -- 
-Thanks,
-Winston
+2.46.1
 
 
