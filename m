@@ -1,48 +1,48 @@
-Return-Path: <linux-ext4+bounces-12257-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12258-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D293BCB206D
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 06:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE89CB2076
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 06:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2E5D83103302
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 05:49:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EA95E30399A8
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 05:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0AB3101A7;
-	Wed, 10 Dec 2025 05:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B211E2F9C39;
+	Wed, 10 Dec 2025 05:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aCxFDUcg"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZoVlEOcx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0FF27E7F0;
-	Wed, 10 Dec 2025 05:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA612EC086;
+	Wed, 10 Dec 2025 05:49:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765345768; cv=none; b=ZHa5L/7tGoN09V7pNqPz9JY+ESjmNHbB3Yf4aWyLcPSkq/zkS3G8L7bCAlmI1ssKwLKeFIZ0p8WSxraXh7DqhRwgR+NN1vLYGbfyl5HD4v6l6StYCrNYubNZqeGYjahtbLjtZ7lGnuglApH/o3wnebZO/J+OL3KDhhPynJvt8gI=
+	t=1765345773; cv=none; b=ReLy3bqRFIAtFvoEtVkUU5bW67g03RZGVWmC44nhsJNXpNlG5YHuhohien9VjnOSX3TUFvkSyqYw6am0eDMos8T2+PRP8u/OFqUHvsBMQ+/fNIg4pVlHj3OixvhEuyQvZZ6Nx4wwi6aM/ckiZVsDY9TpI/znnakg+uYyxOmJt4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765345768; c=relaxed/simple;
-	bh=W6dPOCdOtfN9xGUjskKyS7nrb6ZkF+1vIFk3QXHEYkw=;
+	s=arc-20240116; t=1765345773; c=relaxed/simple;
+	bh=9tKdLopoyfy/PO/clGwBoDH13VkqokJP++2gC4FXaew=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Dok9WIJYn1miucMUcx7qJsMcQ+r27Plcg9hvTa7IkgPNklrVTUN1Bm28EzkXk/E8f+znUJDNFPHxBGp+MsWUMk+cZmCKyJA3k1xMF/rJUj/pv+kNej7GSHYDG6DhJ7OrOqTWzls/F8OJWwovLHxJUeZ/rlMyc7THlbTrTjO+Ay8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aCxFDUcg; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=I2Qv4qwhEUmA8sa/tuepKVfo3QtSv+LchgdRFoGD7aqMv1z86dEq08J93HnYN8UVOkBBvIbGXJNS2HjFAseSwCUOsff7mKBARY2/y0oE+ijBibCrks6/MdUa2KC+ByCkCbTlqXif3uFJZFu+KRb2fCQyt1IKNpXiwr3TbkfnsMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZoVlEOcx; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=632Y3B9QBoDjojknQBDnbOSS4/hDsY9Ozk5omgKnl24=; b=aCxFDUcgNfWjHRSlgWl+BsVhcc
-	CE9O1pC3Pt1S91m/78FfYcQpX3ZNM0Hx8BdiLYqWSn6FJy32xOYIFjG12JWwY9HI84gSRxWlhRGpo
-	65a4ErUw/meJjF0bR5swQZtSlfISwoa/tlGYV+Pcd+iHTKW5yJD9Mqd2H8aZEBdgTm6NUKwTJesfh
-	XgvnRBX1CYB3DmitJzSGWT0D/cRAUa90pqdCp/mpAoSRQ4VNIuBloz41KkrtCBnm7uUVnLGYncBD1
-	Jt/FXSEXZfGdmO6bO/Pc7K716ZCJ30KiP28OOlMeN9jXM7Ykh6JMFDKrusLXdZlEZuF8BEit3yP9o
-	+QCHK0xA==;
+	bh=tyGgUtroOwXhF+aET11BhqxMJJqDNZT9HUYnvcslv64=; b=ZoVlEOcxCvrakidAc1sA+Lm49l
+	gx7Tgm3sx4ahd/yyaIVPsRDyTt7OqkA7zXwlZnKDjFopqGxlKqCsaBFCZ11AsbkGCcU73dpYqib/Z
+	rqk12QSflLKNQK5y4r+gNDEgeSd1THbupMJcd5UnJhv7okrzF1AsXkpJVhmxuYVNB2tmk8MLm2KOa
+	QL+2z+aKmD3zu7bEOfHGhVyDEoDNnaj/BDZzwLtEfP5WsjLSJvoLfceePqms756OP0/Ahq1Ma6KXv
+	wGWR/Jn5YmoFpgENlqCMv/mHwKURwXFtmMdD8xMyhj/mUQpZC0unhU9SjDvUEI9CF4wcdR8GsrwuQ
+	1SGIzpgw==;
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vTD4o-0000000F98Y-0ses;
-	Wed, 10 Dec 2025 05:49:26 +0000
+	id 1vTD4s-0000000F99V-2ilS;
+	Wed, 10 Dec 2025 05:49:31 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Zorro Lang <zlang@kernel.org>
 Cc: Anand Jain <anand.jain@oracle.com>,
@@ -51,9 +51,9 @@ Cc: Anand Jain <anand.jain@oracle.com>,
 	fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
-Subject: [PATCH 09/12] xfs/521: require a real SCRATCH_RTDEV
-Date: Wed, 10 Dec 2025 06:46:55 +0100
-Message-ID: <20251210054831.3469261-10-hch@lst.de>
+Subject: [PATCH 10/12] xfs/528: require a real SCRATCH_RTDEV
+Date: Wed, 10 Dec 2025 06:46:56 +0100
+Message-ID: <20251210054831.3469261-11-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251210054831.3469261-1-hch@lst.de>
 References: <20251210054831.3469261-1-hch@lst.de>
@@ -72,17 +72,17 @@ not actually work the configuration.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- tests/xfs/521     | 33 ++++++++-------------------------
- tests/xfs/521.out |  1 -
- 2 files changed, 8 insertions(+), 26 deletions(-)
+ tests/xfs/528     | 34 ++++------------------------------
+ tests/xfs/528.out |  2 --
+ 2 files changed, 4 insertions(+), 32 deletions(-)
 
-diff --git a/tests/xfs/521 b/tests/xfs/521
-index 0da05a55a276..5cd6649c50c7 100755
---- a/tests/xfs/521
-+++ b/tests/xfs/521
-@@ -16,34 +16,16 @@
+diff --git a/tests/xfs/528 b/tests/xfs/528
+index a1efbbd27b96..c83545e959dc 100755
+--- a/tests/xfs/528
++++ b/tests/xfs/528
+@@ -10,27 +10,16 @@
  . ./common/preamble
- _begin_fstest auto quick realtime growfs
+ _begin_fstest auto quick insert zero collapse punch rw realtime
  
 -# Override the default cleanup function.
 -_cleanup()
@@ -96,60 +96,72 @@ index 0da05a55a276..5cd6649c50c7 100755
 -# Import common functions.
  . ./common/filter
  
+-_require_loop
+ _require_command "$FILEFRAG_PROG" filefrag
+ _require_xfs_io_command "fpunch"
+ _require_xfs_io_command "fzero"
+ _require_xfs_io_command "fcollapse"
+ _require_xfs_io_command "finsert"
 -# Note that we don't _require_realtime because we synthesize a rt volume
--# below.
+-# below.  This also means we cannot run the post-test check.
 -_require_scratch_nocheck
--_require_no_large_scratch_dev
--
--echo "Create fake rt volume"
--truncate -s 400m $TEST_DIR/$seq.rtvol
--rt_loop_dev=$(_create_loop_device $TEST_DIR/$seq.rtvol)
++
 +_require_realtime
 +_require_scratch
  
- echo "Format and mount 100m rt volume"
+ log() {
+ 	echo "$@" | tee -a $seqres.full
+@@ -63,7 +52,6 @@ test_ops() {
+ 	local lunaligned_off=$unaligned_sz
+ 
+ 	log "Format rtextsize=$rextsize"
+-	_scratch_unmount
+ 	_scratch_mkfs -r extsize=$rextsize >> $seqres.full
+ 	_try_scratch_mount || \
+ 		_notrun "Could not mount rextsize=$rextsize with synthetic rt volume"
+@@ -150,30 +138,16 @@ test_ops() {
+ 	check_file $SCRATCH_MNT/lpunch
+ 
+ 	log "Check everything, rextsize=$rextsize"
++	_scratch_unmount
+ 	_check_scratch_fs
+ }
+ 
+-echo "Create fake rt volume"
+-$XFS_IO_PROG -f -c "truncate 400m" $TEST_DIR/$seq.rtvol
+-rt_loop_dev=$(_create_loop_device $TEST_DIR/$seq.rtvol)
+-
+-echo "Make sure synth rt volume works"
 -export USE_EXTERNAL=yes
--export SCRATCH_RTDEV=$rtdev
- _scratch_mkfs -r size=100m > $seqres.full
--_try_scratch_mount || _notrun "Could not mount scratch with synthetic rt volume"
-+_scratch_mount
+-export SCRATCH_RTDEV=$rt_loop_dev
+-_scratch_mkfs > $seqres.full
+-_try_scratch_mount || \
+-	_notrun "Could not mount with synthetic rt volume"
+-
+ # power of two
+ test_ops 262144
  
--# zoned file systems only support zoned size-rounded RT device sizes
-+# zoned file systems only support zone-size aligned RT device sizes
- _require_xfs_scratch_non_zoned
+ # not a power of two
+ test_ops 327680
  
- testdir=$SCRATCH_MNT/test-$seq
-@@ -58,7 +40,10 @@ echo "Create some files"
- _pwrite_byte 0x61 0 1m $testdir/original >> $seqres.full
- 
- echo "Grow fs"
--$XFS_GROWFS_PROG $SCRATCH_MNT 2>&1 |  _filter_growfs >> $seqres.full
-+# growfs expects sizes in FSB units
-+fsbsize=$(_get_block_size $SCRATCH_MNT)
-+$XFS_GROWFS_PROG -R $((400 * 1024 * 1024 / fsbsize)) $SCRATCH_MNT 2>&1 | \
-+	  _filter_growfs >> $seqres.full
- _scratch_cycle_mount
- 
- echo "Recheck 400m rt volume stats"
-@@ -73,8 +58,6 @@ echo "Check filesystem"
- _check_scratch_fs
- 
- _scratch_unmount
+-_scratch_unmount
 -_destroy_loop_device $rt_loop_dev
 -unset rt_loop_dev
- 
+-
  # success, all done
  status=0
-diff --git a/tests/xfs/521.out b/tests/xfs/521.out
-index 007ab92c6db2..afd18bb0dc99 100644
---- a/tests/xfs/521.out
-+++ b/tests/xfs/521.out
-@@ -1,5 +1,4 @@
- QA output created by 521
+ exit
+diff --git a/tests/xfs/528.out b/tests/xfs/528.out
+index 0e081706618c..08de4c28b16c 100644
+--- a/tests/xfs/528.out
++++ b/tests/xfs/528.out
+@@ -1,6 +1,4 @@
+ QA output created by 528
 -Create fake rt volume
- Format and mount 100m rt volume
- Check rt volume stats
- Create some files
+-Make sure synth rt volume works
+ Format rtextsize=262144
+ Test regular write, rextsize=262144
+ 2dce060217cb2293dde96f7fdb3b9232  SCRATCH_MNT/write
 -- 
 2.47.3
 
