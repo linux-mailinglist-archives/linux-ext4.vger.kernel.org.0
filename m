@@ -1,54 +1,54 @@
-Return-Path: <linux-ext4+bounces-12273-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12274-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E22CB3E77
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 20:56:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6BFECB3E8F
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 21:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2A2A1300D4D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 19:55:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 94F3730557B3
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Dec 2025 20:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5DD32A3FE;
-	Wed, 10 Dec 2025 19:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5605B329E54;
+	Wed, 10 Dec 2025 20:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEMhqLWA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDySE8UZ"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5F3329E61;
-	Wed, 10 Dec 2025 19:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC721E7C2E;
+	Wed, 10 Dec 2025 20:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765396556; cv=none; b=LdGlGh/yEgHNtm7D3ak9Uv4XKoEEuuh6o6uagwWY/O9FDLhVa6Xbvq7pdsJtdA6V8FuuSLBOXQ0TwETFAGqJYFfA+nU/yi3/x8dWlFQfcR1bJQIi3xNDI12tXMupGv/SdXeDJuc7fdr0SJVHdTjQkm9V0EKvwlcniUCeddfK3n8=
+	t=1765396970; cv=none; b=SYusbt0y2HqPg6Cswn/u69s30BxQHRTzqyPuswYcgVynjNU78o34X3ABpsxa/vetSv07IlGZwlz3GlRjVgi8BCNGanhq8oA9QEnRMK1n6Es2iLcEtIVv4WL3rqKfC0wHMHRbI/GuLnuOMSdnPgGraw0bvUK57TuQZOhOxHFpSSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765396556; c=relaxed/simple;
-	bh=YLMeftSJnCtaaz5zcK9ebyCGVXBr3jQkKEvUZ6cdTYQ=;
+	s=arc-20240116; t=1765396970; c=relaxed/simple;
+	bh=SY6pxtUiM6zwGV0ynZWRuq1yFtYpDpwBFhlaEWZGaEA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AQiRgOEJ15lrmCUMnoleJ+Yo/nEfxbrgdRFgURwdGKoXfykJzUjR9wOMJUc4n/BS1VgZIzWLA03IfrXEd0eXKfEjs3PzIonTW6x34t/v0cRc9oRgsg0VkafWrV9Wu8QQ3S6h8vbMYdrxUsim8zSBjuU9LInbcDjvEZGAL5iM+68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eEMhqLWA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5784C4CEF1;
-	Wed, 10 Dec 2025 19:55:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=m1yN7ElfT/kVmTh3mJlaLI9+2ESRDDsmuQ4b6DJLnJzyQUTVgPUHQ1LlII0ONn7EnX3JWzHO/yBlZ+G/brpIWcV5G7IKOJVE4xG9VvOGBDDteMuyvkdnFMCp3DOjG+w1cnnYSXRghPHe56+MkS31avSBP7VtoyoEI+iu5we4AOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDySE8UZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 603E6C4CEF1;
+	Wed, 10 Dec 2025 20:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765396555;
-	bh=YLMeftSJnCtaaz5zcK9ebyCGVXBr3jQkKEvUZ6cdTYQ=;
+	s=k20201202; t=1765396969;
+	bh=SY6pxtUiM6zwGV0ynZWRuq1yFtYpDpwBFhlaEWZGaEA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eEMhqLWA0jQ5PNQX7fWLrnTeQuqnWIOirA1jhpeYPp9PP0TOOwzTomiojfd3nPhjZ
-	 t1XHDM9Tw4eTqKLuTzBPuhcoQKiHZtLkC5+pVn+HtePjUVRAfiRVV6l+Cu8LjfrnDO
-	 hZBpq9ApAHpfNLjTy6ZFMyJPyv5ZEh4TAAkQWmg57f2CETbqviPu3D7J9qAMUIV+om
-	 sJ71AuytSt3FEHIf6TN58gl2gUqVJpyMnVhvTM9M7UF4cT1/AW44woJxYhBfzwckHN
-	 CgZhtod/DNnW85Es/i+V7kNfd9GlNpP2T+9LmBQmuxke7YFOSN3dZBChCT4KfGHOGD
-	 ZPav5WX+dhZrg==
-Date: Wed, 10 Dec 2025 11:55:55 -0800
+	b=oDySE8UZhmYv7/pkV6Ngzs9LLxDUvlk0WKhGM7K+zmHSIHeProVO5grsu5B+Und3B
+	 M2a/5haNzMj1yGy39acqPODT1/oBmv2DQREg1g64dyDauxMZf8bQdZ/bGlPhSlcXo9
+	 Wr+S5FfOPtOM2wTKFJFLK2Rm0XEHfegzLF6XzfhHeTxdS22wfUquI8D62AGyXctwVs
+	 sLxdtxrwOiL2cTT0YJp3N0b3eXc53TXq5hPKOMzaZrvGzPxb1gJIs3lN1VlLvmZbQn
+	 TjxljZYqlZl7P6bKuOLpE8Rf/UQKIjRt2b6jEiwDpNEsWaUs56zsZ3XUrsOJQx+bjR
+	 GxJLIjm8oh9oA==
+Date: Wed, 10 Dec 2025 12:02:48 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Zorro Lang <zlang@kernel.org>, Anand Jain <anand.jain@oracle.com>,
 	Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 08/12] xfs/424: don't use SCRATCH_DEV helpers
-Message-ID: <20251210195555.GF94594@frogsfrogsfrogs>
+Subject: Re: [PATCH 07/12] xfs/185: don't use SCRATCH_{,RT}DEV helpers
+Message-ID: <20251210200248.GG94594@frogsfrogsfrogs>
 References: <20251210054831.3469261-1-hch@lst.de>
- <20251210054831.3469261-9-hch@lst.de>
+ <20251210054831.3469261-8-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,96 +57,52 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251210054831.3469261-9-hch@lst.de>
+In-Reply-To: <20251210054831.3469261-8-hch@lst.de>
 
-On Wed, Dec 10, 2025 at 06:46:54AM +0100, Christoph Hellwig wrote:
-> This tests forces external devices to be disabled by calling mkfs.xfs
-> directly and overriding SCRATCH_{LOG,RT}DEV, but the options specified in
-> MKFS_OPTIONS might not work for this configuration.  Instead hard code
-> the calls to xfs_db and don't modify the scratch device configuration.
+On Wed, Dec 10, 2025 at 06:46:53AM +0100, Christoph Hellwig wrote:
+> This tests creates loop-based data and rt devices for testing.  Don't
+> override SCRATCH_{,RT}DEV and don't use the helpers based on it because
+> the options specified in MKFS_OPTIONS might not work for this
+> configuration.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  tests/xfs/185 | 15 +++------------
+>  1 file changed, 3 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tests/xfs/185 b/tests/xfs/185
+> index 7aceb383ce46..84139be8e66e 100755
+> --- a/tests/xfs/185
+> +++ b/tests/xfs/185
+<snip>
+> @@ -64,16 +63,8 @@ rtminor=$(stat -c '%T' "$rtloop")
+>  test $ddmajor -le $rtmajor || \
+>  	_notrun "Data loopdev minor $ddminor larger than rt minor $rtminor"
+>  
+> -# Inject our custom-built devices as an rt-capable scratch device.
+> -# We avoid touching "require_scratch" so that post-test fsck will not try to
+> -# run on our synthesized scratch device.
+> -old_use_external="$USE_EXTERNAL"
+> -USE_EXTERNAL=yes
+> -SCRATCH_RTDEV="$rtloop"
+> -SCRATCH_DEV="$ddloop"
+> -
+> -_scratch_mkfs >> $seqres.full
+> -_try_scratch_mount >> $seqres.full || \
+> +$MKFS_XFS_PROG -r rtdev=$rtloop $ddloop  >> $seqres.full
+> +mount -o rtdev=$rtloop $ddloop $SCRATCH_MNT >> $seqres.full || \
+>  	_notrun "mount with injected rt device failed"
 
-Oh yikes.  Yeah, this is more straightforward...
+What happens if SCRATCH_LOGDEV is set?  I guess we ignore it, and
+everything is good?  I suppose the logdev configuration isn't really
+relevant here anyway.
+
+If the answers are 'nothing' and 'yes' then
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
-> ---
->  tests/xfs/424 | 41 ++++++++++++++++++-----------------------
->  1 file changed, 18 insertions(+), 23 deletions(-)
-> 
-> diff --git a/tests/xfs/424 b/tests/xfs/424
-> index 6078d34897e7..61e9de375383 100755
-> --- a/tests/xfs/424
-> +++ b/tests/xfs/424
-> @@ -25,17 +25,11 @@ filter_dbval()
->  	awk '{ print $4 }'
->  }
->  
-> -# Import common functions.
->  . ./common/filter
->  
-> -# Modify as appropriate
-> -
-> -# Since we have an open-coded mkfs call, disable the external devices and
-> -# don't let the post-check fsck actually run since it'll trip over us not
-> -# using the external devices.
-> +# Since we have an open-coded mkfs call, don't let the post-check fsck run since
-> +# it would trip over us not using the external devices.
->  _require_scratch_nocheck
-> -export SCRATCH_LOGDEV=
-> -export SCRATCH_RTDEV=
->  
->  echo "Silence is golden."
->  
-> @@ -62,30 +56,31 @@ for SECTOR_SIZE in $sector_sizes; do
->  		grep -q 'finobt=1' && finobt_enabled=1
->  
->  	for TYPE in agf agi agfl sb; do
-> -		DADDR=`_scratch_xfs_db -c "$TYPE" -c "daddr" | filter_dbval`
-> -		_scratch_xfs_db -c "daddr $DADDR" -c "type $TYPE"
-> +		DADDR=`$XFS_DB_PROG -c "$TYPE" -c "daddr" $SCRATCH_DEV |
-> +			filter_dbval`
-> +		$XFS_DB_PROG -c "daddr $DADDR" -c "type $TYPE" $SCRATCH_DEV
->  	done
->  
-> -	DADDR=`_scratch_xfs_db -c "sb" -c "addr rootino" -c "daddr" |
-> +	DADDR=`$XFS_DB_PROG -c "sb" -c "addr rootino" -c "daddr" $SCRATCH_DEV |
->  		filter_dbval`
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type inode"
-> -	DADDR=`_scratch_xfs_db -c "agf" -c "addr bnoroot" -c "daddr" |
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type inode" $SCRATCH_DEV
-> +	DADDR=`$XFS_DB_PROG -c "agf" -c "addr bnoroot" -c "daddr" $SCRATCH_DEV |
->  		filter_dbval`
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type bnobt"
-> -	DADDR=`_scratch_xfs_db -c "agf" -c "addr cntroot" -c "daddr" |
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type bnobt" $SCRATCH_DEV
-> +	DADDR=`$XFS_DB_PROG -c "agf" -c "addr cntroot" -c "daddr" $SCRATCH_DEV |
->  		filter_dbval`
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type cntbt"
-> -	DADDR=`_scratch_xfs_db -c "agi" -c "addr root" -c "daddr" |
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type cntbt" $SCRATCH_DEV
-> +	DADDR=`$XFS_DB_PROG -c "agi" -c "addr root" -c "daddr" $SCRATCH_DEV |
->  		filter_dbval`
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type inobt"
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type inobt" $SCRATCH_DEV
->  	if [ $finobt_enabled -eq 1 ]; then
-> -		DADDR=`_scratch_xfs_db -c "agi" -c "addr free_root" -c "daddr" |
-> -			filter_dbval`
-> -		_scratch_xfs_db -c "daddr $DADDR" -c "type finobt"
-> +		DADDR=`$XFS_DB_PROG -c "agi" -c "addr free_root" -c "daddr" $SCRATCH_DEV |
-> +			 filter_dbval`
-> +		$XFS_DB_PROG -c "daddr $DADDR" -c "type finobt" $SCRATCH_DEV
->  	fi
->  
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type text"
-> -	_scratch_xfs_db -c "daddr $DADDR" -c "type data"
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type text" $SCRATCH_DEV
-> +	$XFS_DB_PROG -c "daddr $DADDR" -c "type data" $SCRATCH_DEV
->  done
->  
->  # success, all done
+>  # Create a file that we'll use to seed fsmap entries for the rt device,
 > -- 
 > 2.47.3
 > 
