@@ -1,79 +1,102 @@
-Return-Path: <linux-ext4+bounces-12289-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12290-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E2FDCB549F
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 10:03:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061FFCB5B59
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 12:52:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0CDE93026B07
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 09:00:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BEEBD3026B18
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 11:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15F927BF93;
-	Thu, 11 Dec 2025 09:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A8A30BB86;
+	Thu, 11 Dec 2025 11:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bizzio.pl header.i=@bizzio.pl header.b="LC+amPY7"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="iPV2LAqP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail.bizzio.pl (mail.bizzio.pl [149.202.41.226])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D31B23BD06
-	for <linux-ext4@vger.kernel.org>; Thu, 11 Dec 2025 09:00:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.202.41.226
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765443604; cv=none; b=HT6fe+d+T3ZGrZ7LBx7O/eMUmSaxSezbSGjWiONr8p6mWV6Z8LObCkzOS4Dce4fqGrn6czP0FspDFElRVTlSvr5BzPOalSbbwdperoTxNoNNL3J1VFSkKC2ETACMlqQ6wquo0rLGAnHjjiKVkA3xOQHbFbonwzxRrAcTCO8iTIQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765443604; c=relaxed/simple;
-	bh=emtNukB0ycq9ym2nAqltSyV6PRs1Wc7VUTOuKpVmMAw=;
-	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=t8Mk4Z/Sc6WJNgDYxr8fbh1yna0ZuGK1tcnOUZ6wkxkirrVGIQNHbKv8BUbg63LY4saJ3lXc2vwpsAIZJq6d6cK9LtvjFOMXF3xtzNwYqcrcVx7t7fGYHpRxseHP5D1fNsrI3SsI7I4iAVzLY8NjjQBTCcMQJf4StnWt6J0B+Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bizzio.pl; spf=pass smtp.mailfrom=bizzio.pl; dkim=pass (2048-bit key) header.d=bizzio.pl header.i=@bizzio.pl header.b=LC+amPY7; arc=none smtp.client-ip=149.202.41.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bizzio.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bizzio.pl
-Received: by mail.bizzio.pl (Postfix, from userid 1002)
-	id 84EC62581C; Thu, 11 Dec 2025 08:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizzio.pl; s=mail;
-	t=1765443450; bh=emtNukB0ycq9ym2nAqltSyV6PRs1Wc7VUTOuKpVmMAw=;
-	h=Date:From:To:Subject:From;
-	b=LC+amPY7Zgat/p/2+vktPjo2V0hVc0tUWh607yVh/iEToCIYmCvSFweQfEIK+AqH4
-	 XmPaloZJE1dfaBkUTuuGqwWw2zpOL/nsffkFOziMwmdUn6uG0gf5cwxR6OZDXngytW
-	 0oNsF34hyzmI8ToTlhlSHtCNJqxXSupPStxvNQUOfT8hOae+CJWd9yiB4YdSvANYVd
-	 qZ7qiWEQxG0zRGVkwBx5ANaD23NbHyLRBRCGx/vU+xvhyGLnEDpe6feO40Lj/ZbOv0
-	 y1xLNJSUJen37RRD86JA6igzkVXPyKlDEqsP+0Z1dZZEGdkTOPUjslIJWigLN+yCX5
-	 2q2lkS0Ug4aWQ==
-Received: by mail.bizzio.pl for <linux-ext4@vger.kernel.org>; Thu, 11 Dec 2025 08:55:50 GMT
-Message-ID: <20251211074500-0.1.4h.193i3.0.y3am2g4ket@bizzio.pl>
-Date: Thu, 11 Dec 2025 08:55:50 GMT
-From: "Justyna Prokop" <justyna.prokop@bizzio.pl>
-To: <linux-ext4@vger.kernel.org>
-Subject: =?UTF-8?Q?Ulga_na_sk=C5=82adki_ZUS?=
-X-Mailer: mail.bizzio.pl
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47B130B53B;
+	Thu, 11 Dec 2025 11:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765453933; cv=pass; b=jOKEGbUR/ZY370NKJLwmRixdF73DFfoXbOW3skyBRqIVtZhVfa7Cch21xhg8346dvzhnXbH5S7e6ek544RxQQEIbrdle6VTP341D5pZMp3QPWJ5nlaO17zA09nLiRhpGMer034YoyNSjDUEkBWbIkgnd9IojUPv2LXwZo4MH7Rg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765453933; c=relaxed/simple;
+	bh=2z2/KBe2FEYM46e2DTFJx1/PBFBvHTuqpVzdRl2D3Sg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rHj7l2J7vRnK0cO4gEo8oiERV7dHX9sFV2rwRcEbdnqArqeb1kQ+qjcjnOgWnAbDSCBhfjQj663YV62sy80Q2ss79gRscKBSnO/FEMGWyK4qxsZWDNdC0F+Ysc8nxdLyIy36PSqV9D/kTw4w5+GLFwluQaecBvtC2ztzST73KH8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=iPV2LAqP; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1765453917; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=kgHCiR8u/2CnpoEY1Fz0PyfSIq+VwAhbY3HRGinyVQWBE52iCS6vUT2aZQje67EphtmJmP7C8GSXHUwecjmgWBoV2dNGt8mlJiyo6ruzYTmo2ALFYnoVhB6u04mqWHteR5DyMPgcILsIoxyEqrLZjOBKfHMQPwQRwbfgfzbtPIw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1765453917; h=Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=7/id9n+MCW2Pd2a3ElegjPUV3sCfxbhj29uUVCs76pQ=; 
+	b=Kp7s6mqo0CMfWXV3BXfI3mc47UgYrIA/owuY4tQNQwTEnjpbDRJ392sQUdCKyDuMcpaJRCPk8z2nBvS+cTrjVRge9YH7IPn/v1fmZaRaY3QCFZnvnZ5axQRSEJd/dWg75aM77s0z8gns+Bu+vT0dYoc586ww3dh/g5VKA+z3thE=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1765453917;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=From:From:To:To:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+	bh=7/id9n+MCW2Pd2a3ElegjPUV3sCfxbhj29uUVCs76pQ=;
+	b=iPV2LAqPQf4j5ftNNFIRxie8ShaCga5UvwHdrMGQ7p9hYnrIG9nzgq60y3uwXLQ3
+	89/pWy/NPEz1aGiScl+knXAOuEiLOae0tePJSgEwPyQHl7zJHhov9knOmMHfSUIR2K6
+	KOCT20xQ1koKb9YpMYA/5IyhC/uXsj1GfjbsxRwg=
+Received: by mx.zohomail.com with SMTPS id 1765453915375487.01665194653924;
+	Thu, 11 Dec 2025 03:51:55 -0800 (PST)
+From: Li Chen <me@linux.beauty>
+To: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [RFC 0/5] ext4: mark more ops fast-commit ineligible
+Date: Thu, 11 Dec 2025 19:51:37 +0800
+Message-ID: <20251211115146.897420-1-me@linux.beauty>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-Dzie=C5=84 dobry,=20
+ext4 fast commit only logs operations with replay support. This series
+marks a few more operations as fast-commit ineligible and accounts
+them via fc_info so behaviour under fast commit is easier to reason
+about.
 
-chcia=C5=82abym wskaza=C4=87 Pa=C5=84stwu mo=C5=BCliwo=C5=9B=C4=87 zarz=C4=
-=85dzania benefitami w =C5=82atwy spos=C3=B3b, poprzez nasze intuicyjne n=
-arz=C4=99dzie, jakim jest karta lunchowa.=20
+Testing was done in a QEMU guest on loopback ext4 filesystems created
+with -O fast_commit[/,verity] by exercising each operation and checking
+/proc/fs/ext4/*/fc_info for the corresponding ineligible reason and
+ineligible commit counters. Detailed steps are in each commit's message.
 
-Nasze karty oferuj=C4=85 wygod=C4=99, oszcz=C4=99dno=C5=9Bci i zdrowe wyb=
-ory =C5=BCywieniowe. Dofinansowanie posi=C5=82k=C3=B3w jest korzystne dla=
- obu stron. Karty lunch to dla pracodawcy realne oszcz=C4=99dno=C5=9Bci w=
- postaci zwolnienia z ZUS do 450 z=C5=82 miesi=C4=99cznie na pracownika.=20
+Li Chen (5):
+  ext4: mark inode format migration fast-commit ineligible
+  ext4: mark fs-verity enable fast-commit ineligible
+  ext4: mark move extents fast-commit ineligible
+  ext4: mark group add fast-commit ineligible
+  ext4: mark group extend fast-commit ineligible
 
-Kart=C4=99 mo=C5=BCna do=C5=82adowa=C4=87 dowoln=C4=85 kwot=C4=85, a niew=
-ykorzystane =C5=9Brodki nie przepadaj=C4=85, lecz przechodz=C4=85 na kole=
-jny miesi=C4=85c.=20
+ fs/ext4/fast_commit.c       |  3 +++
+ fs/ext4/fast_commit.h       |  3 +++
+ fs/ext4/ioctl.c             |  3 +++
+ fs/ext4/migrate.c           | 12 ++++++++++++
+ fs/ext4/move_extent.c       |  1 +
+ fs/ext4/verity.c            |  2 ++
+ include/trace/events/ext4.h |  8 +++++++-
+ 7 files changed, 31 insertions(+), 1 deletion(-)
 
-Mog=C4=99 przedstawi=C4=87 ofert=C4=99, kt=C3=B3ra pozwoli zoptymalizowa=C4=
-=87 koszty i zapewni=C4=87 pracownikom po=C5=BC=C4=85dany benefit?
+-- 
+2.51.0
 
-
-Pozdrawiam serdecznie
-Justyna Prokop
 
