@@ -1,61 +1,74 @@
-Return-Path: <linux-ext4+bounces-12307-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12308-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBD2CB74A8
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 23:21:11 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F214CB7555
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 00:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4E5F63026AB4
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 22:19:46 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 51F7930021CF
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 23:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D102E03F2;
-	Thu, 11 Dec 2025 22:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F009F289374;
+	Thu, 11 Dec 2025 23:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTnbx4FL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aZblhp9V"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DCC2BEC5F;
-	Thu, 11 Dec 2025 22:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B5221CFF6;
+	Thu, 11 Dec 2025 23:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765491583; cv=none; b=npVk4TQttjQT3UUW3kSkS3VeS9yhfx2qdjmCgZDA61IsXM4ujZv3TGMLJoziyebB2+HIzgLFp8qXOmBKJ5wpp6zTaxQptKV37+eLHRO/2XJfIUiNVHxwGjxGLCxBhXct68VeapN2vCD5cQfx/yML0bbMIhkmJnFnw86srMYNfI4=
+	t=1765494536; cv=none; b=M098zzJUZ5fivGGlReAkBrAwZn0rxXek17wMbc+PMEbTW+CziMC+PbrMvoQ0nQf+52nbnjQxdzTtbWSjW0P/vkbTFRGhM70tuvGF47/rhp1/p3rcbhjm6tHRrUvPXIyiz7w5qmFcqb2/IZ9X0oAopEcZBPEjUJfAtBiRvX2Y2PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765491583; c=relaxed/simple;
-	bh=UpmmJcVrARm3X1M3qpVksYhL/7KC8iP9jqjV1Qjfvgw=;
+	s=arc-20240116; t=1765494536; c=relaxed/simple;
+	bh=BGQm+n+FMLhDHGRmbCeAtzrHObckM+jPKyyD6jsQfLA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AIIfpGxEUD0XY4h7o4xHWbAz3NQgvo/VzzpRSqq7wNkALEH3jfwVtz5yczAC7Tf+OvdtL2C4gnCCuX5CXsWEJiYgeYBvrOs47+JDSNDdjbijKjxB/JvL/9E/JuBNlt4o2JlLx4It44uisbjHqr6S5ZH6BzZsIiAvpq126xGWoeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTnbx4FL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C787C4CEF7;
-	Thu, 11 Dec 2025 22:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765491583;
-	bh=UpmmJcVrARm3X1M3qpVksYhL/7KC8iP9jqjV1Qjfvgw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LTnbx4FL7nx0qo0Z2OZwr5rYVFDjJl217GcKUpqun6LdFgL1vwOOCGYD4zG4oCbOh
-	 r1HGn+4IYVqc73OGD152ExD8TfQcqhWtCM4D3XEAn7wtBfGpXpfsZ8AdmAj+roBZBI
-	 pD1cmYh9ME9pEmLaELQDefcl4RI3YoIwP8B5MwdjswLF2GJytgr62r/DDi6LdBcJzY
-	 4CGwMEa3oAnVukfzT8/Y1kGByONBxWAIfWENHPP+OSnpM7ARiaGG7mVkpRfONfmtO0
-	 qbOJGgSaKAkHGYhRKKnJfEKSmvja+s5EGMAIFNUckbb3udpL9FLc/TDheE8RQKZRT+
-	 y2hAQfcqqBwDA==
-Date: Thu, 11 Dec 2025 14:19:43 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: syzbot <syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com>,
-	davem@davemloft.net, herbert@gondor.apana.org.au,
-	jaegeuk@kernel.org, linux-crypto@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu, Neal Gompa <neal@gompa.dev>
-Subject: Re: [syzbot] [ext4] [fscrypt] KMSAN: uninit-value in
- fscrypt_crypt_data_unit
-Message-ID: <20251211221943.GN94594@frogsfrogsfrogs>
-References: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
- <69380321.050a0220.1ff09b.0000.GAE@google.com>
- <20251210022202.GB4128@sol>
- <20251211185215.GM94594@frogsfrogsfrogs>
- <20251211194502.GA1742838@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=R6AICEp9eIJbODqwyVFM+vwpW6UUmihS0QL4zPcwKmpjmRu5HKqMgzgcuYm5I1MLd13/D9KrnU66l/XiteCg2PvbQ1HIOPLA/W0WM2WWkIQ+N55MOc7W6IYIMBsTfTwXnkKTFD9QEyP7RCY3uShCYmQkJvtEMEvT/+qbfSmRRUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aZblhp9V; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765494534; x=1797030534;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BGQm+n+FMLhDHGRmbCeAtzrHObckM+jPKyyD6jsQfLA=;
+  b=aZblhp9Vw47ZRClBPTdvdte1nhwU1RHxBiCgdkKpaFOBiir/0OlydWvG
+   9OiXXvsal4AS/33IY7DwSpXJDoC3f0HQQ6XlOp9CbPurpymBnb1QbISNR
+   +GAQQRFEMKo0ekKOMNyflJfTjlL+g1w9QRrLHgkCIM56lvOsb8AjI5GbB
+   vx75QpTrn41AYUg8qk4BewDAFnKmhyuZN5VFMgI9e4x9jMOI1KvoB0Kdy
+   XcdK8COCrylPMrMrxmBIUUHuCfePDX1fQPlmy91D1MF85iUVDdiOVQveh
+   JM0t+banaxTozfXCzM7pOUdTxyodaAUEhaHfoPEILg9h0wgO/Z71VGAKO
+   Q==;
+X-CSE-ConnectionGUID: 0H3/n9xSSS6Z9+dq+fSB3A==
+X-CSE-MsgGUID: zOp0Vb20SaGw9dOu3el2tg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11639"; a="85094793"
+X-IronPort-AV: E=Sophos;i="6.21,141,1763452800"; 
+   d="scan'208";a="85094793"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2025 15:08:54 -0800
+X-CSE-ConnectionGUID: xEVyJpDTQaONNOcce/BWYQ==
+X-CSE-MsgGUID: XyfKaWeuQ8mZ3F/Qwg2RjQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,141,1763452800"; 
+   d="scan'208";a="196008851"
+Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 11 Dec 2025 15:08:53 -0800
+Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vTpmE-000000005B3-1F1e;
+	Thu, 11 Dec 2025 23:08:50 +0000
+Date: Fri, 12 Dec 2025 07:08:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yu Kuai <yukuai@fnnas.com>, tytso@mit.edu, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	yukuai@fnnas.com
+Subject: Re: [PATCH 2/2] ext4: align preallocation size to stripe width
+Message-ID: <202512120613.mM5COVWV-lkp@intel.com>
+References: <20251208083246.320965-3-yukuai@fnnas.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,107 +77,45 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251211194502.GA1742838@google.com>
+In-Reply-To: <20251208083246.320965-3-yukuai@fnnas.com>
 
-On Thu, Dec 11, 2025 at 07:45:02PM +0000, Eric Biggers wrote:
-> On Thu, Dec 11, 2025 at 10:52:15AM -0800, Darrick J. Wong wrote:
-> > On Tue, Dec 09, 2025 at 06:22:02PM -0800, Eric Biggers wrote:
-> > > On Tue, Dec 09, 2025 at 03:08:17AM -0800, syzbot wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > > > 
-> > > > HEAD commit:    a110f942672c Merge tag 'pinctrl-v6.19-1' of git://git.kern..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17495992580000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=10d58c94af5f9772
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7add5c56bc2a14145d20
-> > > > compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1122aec2580000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14012a1a580000
-> > > 
-> > > Simplified reproducer:
-> > > 
-> > >     rm -f image
-> > >     mkdir -p mnt
-> > >     mkfs.ext4 -O encrypt -b 1024 image 1M
-> > >     mount image mnt -o test_dummy_encryption
-> > >     dd if=/dev/urandom of=mnt/file bs=1 seek=1024 count=1
-> > >     sync
-> > > 
-> > > It causes ext4 to encrypt uninitialized memory:
-> > > 
-> > >     BUG: KMSAN: uninit-value in crypto_aes_encrypt+0x511b/0x5260
-> > >     [...]
-> > >     fscrypt_encrypt_pagecache_blocks+0x309/0x6c0
-> > >     ext4_bio_write_folio+0xd2f/0x2210
-> > >     [...]
-> > > 
-> > > ext4_bio_write_folio() has:
-> > > 
-> > > 	/*
-> > > 	 * If any blocks are being written to an encrypted file, encrypt them
-> > > 	 * into a bounce page.  For simplicity, just encrypt until the last
-> > > 	 * block which might be needed.  This may cause some unneeded blocks
-> > > 	 * (e.g. holes) to be unnecessarily encrypted, but this is rare and
-> > > 	 * can't happen in the common case of blocksize == PAGE_SIZE.
-> > > 	 */
-> > > 	if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
-> > > 		gfp_t gfp_flags = GFP_NOFS;
-> > > 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
-> > > 
-> > > So I think that if a non-first block in a page is being written to disk
-> > > and all preceding blocks in the page are holes, the (uninitialized)
-> > > sections of the page corresponding to the holes are being encrypted too.
-> > > 
-> > > This is probably "benign", as ext4 doesn't do anything with the
-> > > encrypted uninitialized data.  (Also note that this issue can occur only
-> > > when block_size < PAGE_SIZE.)
-> > > 
-> > > I'm not yet sure how to proceed here.  We could make ext4 be more
-> > > selective about encrypting the exact set of blocks in the page that are
-> > > being written.  That would require support in fs/crypto/ for that.  We
-> > > could use kmsan_unpoison_memory() to just suppress the warning.
-> > > 
-> > > Or, we could go forward with removing support for the "fs-layer crypto"
-> > > from ext4 and only support blk-crypto (relying on blk-crypto-fallback
-> > > for the software fallback).  The blk-crypto code path doesn't have this
-> > > problem since it more closely ties the encryption to the actual write.
-> > > It also works better with folios.
-> > 
-> > Hey waitaminute, are you planning to withdraw fscrypt from ext4?
-> > 
-> > (I might just not know enough about what blk-crypto is)
-> > 
-> 
-> ext4 (and also f2fs) has two different implementations of file contents
-> en/decryption: one where the filesystem directly calls the crypto
-> functions to en/decrypt file contents, and one where the filesystem
-> instead adds a bio_crypt_ctx to the bios it submits, causing the block
-> layer to handle the en/decryption (via either inline crypto hardware or
-> blk-crypto-fallback).  See the "Inline encryption support" section of
-> Documentation/filesystems/fscrypt.rst.
-> 
-> These correspond to fscrypt_inode_uses_fs_layer_crypto() and
-> fscrypt_inode_uses_inline_crypto() in the code.  The "fs-layer"
-> implementation is used by default, while the inline crypto
-> implementation is used when the 'inlinecrypt' mount option is used.
-> 
-> It's just an implementation detail and doesn't affect the end result.
-> 
-> Note that "fscrypt" is the name for the overall ext4/f2fs/etc encryption
-> feature, which both these implementations are part of.
-> 
-> I'm talking about possibly removing the first of these file contents
-> encryption implementations, which again are just implementation details,
-> so that we standardize on just the blk-crypto one.
+Hi Yu,
 
-Ooh, I bet that will integrate better with iomap, whenever someone gets
-around to attempting the first port. :)
+kernel test robot noticed the following build errors:
 
---D
+[auto build test ERROR on tytso-ext4/dev]
+[also build test ERROR on linus/master v6.18 next-20251211]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Again, this KMSAN warning is specific to the first implementation.  I.e.
-> it doesn't appear when the inlinecrypt mount option is used.
-> 
-> - Eric
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Yu-Kuai/ext4-refactor-size-prediction-into-helper-functions/20251208-163553
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20251208083246.320965-3-yukuai%40fnnas.com
+patch subject: [PATCH 2/2] ext4: align preallocation size to stripe width
+config: arm-randconfig-r072-20251210 (https://download.01.org/0day-ci/archive/20251212/202512120613.mM5COVWV-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251212/202512120613.mM5COVWV-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512120613.mM5COVWV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: fs/ext4/mballoc.o: in function `ext4_mb_predict_file_size':
+>> mballoc.c:(.text+0x242): undefined reference to `__aeabi_ldivmod'
+   arm-linux-gnueabi-ld: (__aeabi_ldivmod): Unknown destination type (ARM/Thumb) in fs/ext4/mballoc.o
+>> mballoc.c:(.text+0x242): dangerous relocation: unsupported relocation
+>> arm-linux-gnueabi-ld: mballoc.c:(.text+0x268): undefined reference to `__aeabi_ldivmod'
+   arm-linux-gnueabi-ld: (__aeabi_ldivmod): Unknown destination type (ARM/Thumb) in fs/ext4/mballoc.o
+   mballoc.c:(.text+0x268): dangerous relocation: unsupported relocation
+   arm-linux-gnueabi-ld: mballoc.c:(.text+0x29c): undefined reference to `__aeabi_ldivmod'
+   arm-linux-gnueabi-ld: (__aeabi_ldivmod): Unknown destination type (ARM/Thumb) in fs/ext4/mballoc.o
+   mballoc.c:(.text+0x29c): dangerous relocation: unsupported relocation
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
