@@ -1,156 +1,137 @@
-Return-Path: <linux-ext4+bounces-12304-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12305-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B977CB6510
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 16:23:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BEBCCB6F53
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 19:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5D30A300B167
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 15:22:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CD5A1302EF4C
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 18:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7133148D3;
-	Thu, 11 Dec 2025 15:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5DE2DCC08;
+	Thu, 11 Dec 2025 18:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4AH/VHT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lD8Ay6CM"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9093148A0;
-	Thu, 11 Dec 2025 15:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE0B219E8;
+	Thu, 11 Dec 2025 18:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765466518; cv=none; b=KGK/Ls7os49h81zwsD/x1q3GaqNnUsy03R5dZ2TlDeV5fecdJG0rHD5fq0EiSxEY5MWkYseanrm5+Gv24WSNKZa+VG8zWd3i+eUrYwUWmyFl1E2tEWiS2mk0D5vS6I5t+Eb0J4PUIByfuCxOXqHoHtjiLAyrxMi9LXj/XBJhsl0=
+	t=1765479137; cv=none; b=MabSrJbu8+C27mpUEF9A2LtaWX5Zfi1OkfspGI2BDItEvG4nDbSilkSO6px2Vk2+D+t76T6KPkEuzxhSWBzObAoeSuj5yruLyPCEMohP+v176dV5leirldMEi39y0oCBtHAxAVn7JxQVQc6t2bNvSYCEJ2v64vFG+1CEs9mRz2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765466518; c=relaxed/simple;
-	bh=cBQ7OwxCQJmyRnBB78Msff46NnL6E68T38nm8NO24nE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gXfwGuKHwXAe/RQFDnJeKd5zSQibNXwddvJMk0fVc32Iu2SB0I+kznuGb3VmbFERw431mY1x568x3Dux1m+wEX2y8X2sdAcDvvRD+j7LcGt3ioMaEutUAESSmQDMcAv7IyPDOqjSJgPggh4xVN1iw+beUcN4Y0uAiRZRkvfGSh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4AH/VHT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61525C16AAE;
-	Thu, 11 Dec 2025 15:21:57 +0000 (UTC)
+	s=arc-20240116; t=1765479137; c=relaxed/simple;
+	bh=3B2pYeSknCcH/qVrOhc07l3Yj5jufNXm8jjHx+ZCGgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=et6P3B7uhhEcWkOg147B9QX5ok6DDMq5V6zwdGu+RD4WJoKXUPDxza1SjYN3G2Nlbac+vAV0xZp5KesnKj5A8PkYrx9rmmPVPZ03qiwJ5ZxTN2cJXLR4jaUHxVJDzguppU2ZPiq0ZQxe0tKuacY0pOtkzqpePoGJaD07VThsAUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lD8Ay6CM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 909FFC4CEFB;
+	Thu, 11 Dec 2025 18:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765466518;
-	bh=cBQ7OwxCQJmyRnBB78Msff46NnL6E68T38nm8NO24nE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n4AH/VHTRJQ2E11//4xXPtHcDqYx6hvHuGFjclBd+irtPAI7C1nNdhc1dyWMjnW00
-	 OXeCbztIERWLDCzlxhb6txxL6UGHnCczW9FC7FhdR0rkdAGd2EhKGP9ZT2oT6RGaid
-	 N6DgberopwgdLk/w4u4ynLdtTbSzKgN3HTJTjSZ1owilOgEFYoP1nRqnXXFohTwl9k
-	 t5z7PRFM8rzq0JH0KeXjs5rlmXSXqSmpS6IitF1bHPLakO2vnOCf/covPTLFNMmNKY
-	 JXqTgX4lLENYAB9XUcXHjer+nD5SrJ6V5d0xhFO1dyKayhUOWz1mJfoSLy2hXWAZqX
-	 sM8HmWJH6cTUw==
-From: Chuck Lever <cel@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Cc: <linux-fsdevel@vger.kernel.org>,
-	linux-ext4@vger.kernel.org,
-	<linux-nfs@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	hirofumi@mail.parknet.co.jp,
-	almaz.alexandrovich@paragon-software.com,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	Volker.Lendecke@sernet.de,
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH v2 6/6] nfsd: Implement NFSv4 FATTR4_CASE_INSENSITIVE and FATTR4_CASE_PRESERVING
-Date: Thu, 11 Dec 2025 10:21:16 -0500
-Message-ID: <20251211152116.480799-7-cel@kernel.org>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251211152116.480799-1-cel@kernel.org>
-References: <20251211152116.480799-1-cel@kernel.org>
+	s=k20201202; t=1765479136;
+	bh=3B2pYeSknCcH/qVrOhc07l3Yj5jufNXm8jjHx+ZCGgc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lD8Ay6CMWUKkmTuMG1DQJEva3yejQtNO53s3WXh8E7GIGIKdoBOaAbT9o6K1PnFA5
+	 jdN5gVQJsWoVf0WFpwyrLqYqC2Dw5HnzQXlfFa440KZNFH3zEANTom9Iy1MEyrXze1
+	 Ig1LrOmYRJyAGHQWYqnvsUhehGJqFODBqK0rFoMU5CgMenlCM/k8uF2RZg3DxHT0WB
+	 gN9DqVqxaSJnr4eyvcgT9DxVLEEQ14mQh64gBYSne1XHiKjnxhMWxBgt9nptHvfCUc
+	 F3jXJ7e6Thevn0Cw0K95r30Vx3fRAe6YmTqRVz2tYXPLu+VJYYf+Mg4XRIw7DyQyDe
+	 4+Fg064FPnyxA==
+Date: Thu, 11 Dec 2025 10:52:15 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: syzbot <syzbot+7add5c56bc2a14145d20@syzkaller.appspotmail.com>,
+	davem@davemloft.net, herbert@gondor.apana.org.au,
+	jaegeuk@kernel.org, linux-crypto@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu, Neal Gompa <neal@gompa.dev>
+Subject: Re: [syzbot] [ext4] [fscrypt] KMSAN: uninit-value in
+ fscrypt_crypt_data_unit
+Message-ID: <20251211185215.GM94594@frogsfrogsfrogs>
+References: <68ee633c.050a0220.1186a4.002a.GAE@google.com>
+ <69380321.050a0220.1ff09b.0000.GAE@google.com>
+ <20251210022202.GB4128@sol>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251210022202.GB4128@sol>
 
-From: Chuck Lever <chuck.lever@oracle.com>
+On Tue, Dec 09, 2025 at 06:22:02PM -0800, Eric Biggers wrote:
+> On Tue, Dec 09, 2025 at 03:08:17AM -0800, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> > 
+> > HEAD commit:    a110f942672c Merge tag 'pinctrl-v6.19-1' of git://git.kern..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17495992580000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=10d58c94af5f9772
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=7add5c56bc2a14145d20
+> > compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1122aec2580000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14012a1a580000
+> 
+> Simplified reproducer:
+> 
+>     rm -f image
+>     mkdir -p mnt
+>     mkfs.ext4 -O encrypt -b 1024 image 1M
+>     mount image mnt -o test_dummy_encryption
+>     dd if=/dev/urandom of=mnt/file bs=1 seek=1024 count=1
+>     sync
+> 
+> It causes ext4 to encrypt uninitialized memory:
+> 
+>     BUG: KMSAN: uninit-value in crypto_aes_encrypt+0x511b/0x5260
+>     [...]
+>     fscrypt_encrypt_pagecache_blocks+0x309/0x6c0
+>     ext4_bio_write_folio+0xd2f/0x2210
+>     [...]
+> 
+> ext4_bio_write_folio() has:
+> 
+> 	/*
+> 	 * If any blocks are being written to an encrypted file, encrypt them
+> 	 * into a bounce page.  For simplicity, just encrypt until the last
+> 	 * block which might be needed.  This may cause some unneeded blocks
+> 	 * (e.g. holes) to be unnecessarily encrypted, but this is rare and
+> 	 * can't happen in the common case of blocksize == PAGE_SIZE.
+> 	 */
+> 	if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+> 		gfp_t gfp_flags = GFP_NOFS;
+> 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
+> 
+> So I think that if a non-first block in a page is being written to disk
+> and all preceding blocks in the page are holes, the (uninitialized)
+> sections of the page corresponding to the holes are being encrypted too.
+> 
+> This is probably "benign", as ext4 doesn't do anything with the
+> encrypted uninitialized data.  (Also note that this issue can occur only
+> when block_size < PAGE_SIZE.)
+> 
+> I'm not yet sure how to proceed here.  We could make ext4 be more
+> selective about encrypting the exact set of blocks in the page that are
+> being written.  That would require support in fs/crypto/ for that.  We
+> could use kmsan_unpoison_memory() to just suppress the warning.
+> 
+> Or, we could go forward with removing support for the "fs-layer crypto"
+> from ext4 and only support blk-crypto (relying on blk-crypto-fallback
+> for the software fallback).  The blk-crypto code path doesn't have this
+> problem since it more closely ties the encryption to the actual write.
+> It also works better with folios.
 
-Replace the hard-coded values for the NFSv4 case_insensitive and
-case_preserving attributes with dynamic values retrieved from the
-underlying filesystem via vfs_get_case_info().
+Hey waitaminute, are you planning to withdraw fscrypt from ext4?
 
-This allows NFSv4 clients to discover the actual case sensitivity
-behavior of exported filesystems, including per-directory settings
-for filesystems like ext4 with casefold support.
+(I might just not know enough about what blk-crypto is)
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- fs/nfsd/nfs4xdr.c | 30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
+--D
 
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index 67bb9c0b9fcb..0c51d390d995 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -2933,6 +2933,8 @@ struct nfsd4_fattr_args {
- 	u32			rdattr_err;
- 	bool			contextsupport;
- 	bool			ignore_crossmnt;
-+	bool			case_insensitive;
-+	bool			case_preserving;
- };
- 
- typedef __be32(*nfsd4_enc_attr)(struct xdr_stream *xdr,
-@@ -3131,6 +3133,18 @@ static __be32 nfsd4_encode_fattr4_acl(struct xdr_stream *xdr,
- 	return nfs_ok;
- }
- 
-+static __be32 nfsd4_encode_fattr4_case_insensitive(struct xdr_stream *xdr,
-+					const struct nfsd4_fattr_args *args)
-+{
-+	return nfsd4_encode_bool(xdr, args->case_insensitive);
-+}
-+
-+static __be32 nfsd4_encode_fattr4_case_preserving(struct xdr_stream *xdr,
-+					const struct nfsd4_fattr_args *args)
-+{
-+	return nfsd4_encode_bool(xdr, args->case_preserving);
-+}
-+
- static __be32 nfsd4_encode_fattr4_filehandle(struct xdr_stream *xdr,
- 					     const struct nfsd4_fattr_args *args)
- {
-@@ -3482,8 +3496,8 @@ static const nfsd4_enc_attr nfsd4_enc_fattr4_encode_ops[] = {
- 	[FATTR4_ACLSUPPORT]		= nfsd4_encode_fattr4_aclsupport,
- 	[FATTR4_ARCHIVE]		= nfsd4_encode_fattr4__noop,
- 	[FATTR4_CANSETTIME]		= nfsd4_encode_fattr4__true,
--	[FATTR4_CASE_INSENSITIVE]	= nfsd4_encode_fattr4__false,
--	[FATTR4_CASE_PRESERVING]	= nfsd4_encode_fattr4__true,
-+	[FATTR4_CASE_INSENSITIVE]	= nfsd4_encode_fattr4_case_insensitive,
-+	[FATTR4_CASE_PRESERVING]	= nfsd4_encode_fattr4_case_preserving,
- 	[FATTR4_CHOWN_RESTRICTED]	= nfsd4_encode_fattr4__true,
- 	[FATTR4_FILEHANDLE]		= nfsd4_encode_fattr4_filehandle,
- 	[FATTR4_FILEID]			= nfsd4_encode_fattr4_fileid,
-@@ -3669,8 +3683,9 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 		if (err)
- 			goto out_nfserr;
- 	}
--	if ((attrmask[0] & (FATTR4_WORD0_FILEHANDLE | FATTR4_WORD0_FSID)) &&
--	    !fhp) {
-+	if ((attrmask[0] & (FATTR4_WORD0_FILEHANDLE | FATTR4_WORD0_FSID |
-+			    FATTR4_WORD0_CASE_INSENSITIVE |
-+			    FATTR4_WORD0_CASE_PRESERVING)) && !fhp) {
- 		tempfh = kmalloc(sizeof(struct svc_fh), GFP_KERNEL);
- 		status = nfserr_jukebox;
- 		if (!tempfh)
-@@ -3682,6 +3697,13 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 		args.fhp = tempfh;
- 	} else
- 		args.fhp = fhp;
-+	if (attrmask[0] & (FATTR4_WORD0_CASE_INSENSITIVE |
-+			   FATTR4_WORD0_CASE_PRESERVING)) {
-+		status = nfsd_get_case_info(args.fhp, &args.case_insensitive,
-+					    &args.case_preserving);
-+		if (status != nfs_ok)
-+			goto out;
-+	}
- 
- 	if (attrmask[0] & FATTR4_WORD0_ACL) {
- 		err = nfsd4_get_nfs4_acl(rqstp, dentry, &args.acl);
--- 
-2.52.0
-
+> - Eric
+> 
 
