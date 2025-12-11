@@ -1,70 +1,85 @@
-Return-Path: <linux-ext4+bounces-12295-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12296-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC063CB5BB3
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 13:03:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E94CB5E5D
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 13:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 243C4304744B
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 12:01:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 920E93013EED
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Dec 2025 12:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4F530C342;
-	Thu, 11 Dec 2025 11:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83A73101A2;
+	Thu, 11 Dec 2025 12:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="YVjCLbge"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQjRylQy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BFAA3019C7;
-	Thu, 11 Dec 2025 11:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765453988; cv=pass; b=GcjzLAvyxAfVpqHD8rHUF/ACiQxLE3Fl2vrJOMgyp+D9CFpUsk9pI8KPFLUF4jlcPWCocM6saYteVl+R6SSvrgRyw0aBedivnJI8co9bPMPGZhLSke25mKVK69HYEIRBcCtHrIlv/3sFHx78e3ia3scAKLIM0dAHppJbm8cHiH4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765453988; c=relaxed/simple;
-	bh=+HUSdOr8NWWRkdYoDBZEOdwvEx8lxuLm9f5q4yRmgvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OMDPHzBMrOVrsPV8xoeGJwoEvpHQrlSRsRVEqzm4K9mqK15kJfNgozVuHKL6JHUsiNyfRk7mY/q+O8+rJs1H9lBPrR23k4wzRKBSQWgALPpiLhFwovydorJA3Sf+nVE17abNSE4p9niJ/UxHjXzcCpYgsqc7Fd63rziPIYFfT/k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=unknown smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=YVjCLbge; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=tempfail smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1765453935; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=ORxm8/LZA6Ek4RFD0Yk/xyVxl8p4PMR+rQA1C8MrAH302PYnKfJwl4fxKXd1X39q6SJjA+FRRBwvf7wP+HjeUnpLiQGef0/WLdOvM356cHgI9DygEXGbLBmCTpLKOpOKCvWO4tD990NEut73vUGKXbv8Eluv3/31laJTXHXo2wE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1765453935; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=UHHv0+HlKFGfny4sGBUCRmGh7ywqTRASV5X/HQmso7w=; 
-	b=e0aKXh2NtwYWsN4uCjBCWMlXmBOgHamIAX5+2ZousBsb/YhzqTMRDP8Al5f7zv9gyaaurHi1mSbMvWkRfg++raXNMhZSKXlZ7n0mMbb7TgpJDAf45jpZKE7Na4lAhtz8Cu+zwsN5iXjoJJGA+f0ydfQBh8Ay1eXpKgGQLCs+8ro=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1765453935;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=UHHv0+HlKFGfny4sGBUCRmGh7ywqTRASV5X/HQmso7w=;
-	b=YVjCLbgex6qnLs4AunHhPZOJAPmWiN+LAjG1yBY3ZfRfxSeVY40RH+ChOHc2Qvfi
-	JIReWJN2YWsKaSxOpbX2rPJG/r4kXMJXfgV/uXNzCO/Akjft32/MCEMhqWHPEGjuj/G
-	u56OkGZztE1kTNVBCX+gm/rc2//1HSjsN0B89pTQ=
-Received: by mx.zohomail.com with SMTPS id 176545393326719.79287948199783;
-	Thu, 11 Dec 2025 03:52:13 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C7C30FF36
+	for <linux-ext4@vger.kernel.org>; Thu, 11 Dec 2025 12:38:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765456717; cv=none; b=WIBeN6pc9gmlH9dbFaWA/jF4+UzUbzFl/AACUFMHdaMqNfV5E3hOuvUplwctJQLW0ebsu+GApxPEAGdfsLe7RoNWjAjPa+4jISJBTzYHSH0PDf0MwDYbEfmyvVygaVh8OATFX/vkXbbz1FAt4BdNFM/tY3QA2M0sSchBriYDA3A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765456717; c=relaxed/simple;
+	bh=Wpd9VOFcp+Oh+2WjvJ0XXHzWot3Qw+9oiHL62xVXths=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lNS2ssTsv3q/KLFI6NRbF0qDJ1x2wOtw9R9n3QG4NFPDLrj5waeZ6EVKDOXukdqVhTUYtzyENNZofaGDJ2dsjNAxRuJP8JjdeBufXWtpTrJNskkgaRggj56r80Hr97+k/D7RczTDTAZYrM1YZJndRqWF4h7ClUs8gasvw0or6JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQjRylQy; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7b6dd81e2d4so29778b3a.0
+        for <linux-ext4@vger.kernel.org>; Thu, 11 Dec 2025 04:38:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765456715; x=1766061515; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jVklOrcJrjalf24Y9OhqgAs5pwV8d1t2PYYq/cy3dKs=;
+        b=iQjRylQylOj5Z12VNaeANV6p74NyqD4vjG2Z3IKtN2VaHAuIC5ghm2dIXNW+7kZarE
+         cW88ROTXWXi67OLOUemdKNb0k1zZzJ/XBaY7g1WfYbdca53bfIYppuMOpMuS5WE9EaHg
+         L+dJnq22oG5xPBKDSHi6diSwRpoMAHegmLNrmIESZk2DkkhLW4cm7TnEZBcBdW7L9dL4
+         LekaQLOVDXb+LnZ+00WcHCRAWavpYGryaUrhQS6rtjgxY5j2gAlkcosxGMQDuYhJoToy
+         Steq41jW6ihf/Vq8DLNnzcvklEBoXeBdQ5wb6WwKpg7Oow+FRNZLUHHVLy9Q0sCyX5iV
+         taSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765456715; x=1766061515;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jVklOrcJrjalf24Y9OhqgAs5pwV8d1t2PYYq/cy3dKs=;
+        b=Hty3gOSDGUdLUz/+EP3yiqz7/Hz7MqJ8TLW1B7rweaj14CA53LQLFg3/ZR5QbVWRm7
+         7IMVfuz7SCacBKaRvaWyTAi0xUjNHtbo8gKr24xl3iAutu+ZnTNmCXDB7PvxG/uRqFHu
+         pBDWkr9+9ZZWoPSnIkih6xQiZyqmxHb6K2f2zO0Y8wEQdh6ZN1/wdVRQLlYQ1h5e5qSe
+         tXZqUAjyfSziNYlJGW4oBxOHjHiGA+E03LAM6g5A2m9loXcGvf5LAX7ajBiECAme7oMO
+         Pw7VeNto5GM0uqEaXzHIEw5eLFyFw15VcIUs3/D8agCz5+AWp62DzGrj8mLJH7oPPqp9
+         Gz1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVoukrnt8mXeTwd1axqJLSToKO4ILBsjw50hHrz67wYWB55bSvJv0hTo4NmvMRxK4WYi+5t8n91BfOf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2N9X98QfpCHcIHEMWDYc5H+PdNEz19HrE+EqwMebfjvGezcJF
+	PyV+tC9BelaPAX7pg/SZvlnA9OVZjLmXlrocg8jV5tnRfONmNNFee79a
+X-Gm-Gg: AY/fxX7kIWcLWGpyJvSf9ogOI+WIl9fOORDQlB/rzzzGnjSKavPN0VEu1uF+p0mckuU
+	Cr3Atk9Fkii38MJl/+8sePKibsa8j2JK/RUhijaYk3Xz0oObwyAfQFZVPv6NMtVcP6GF5B9t7C1
+	SO1Cyvg3zhsq5dvjWNpnfgpJUXpLMtRgb+m/IdpplAHPyUrOqCLOptCtkNdGpUhUKPiBukS+j26
+	etbFlnAKe5mamKzoIqqBXcKJfPuQjjBtxqbL5oIaU3nCpE1d+5yBJLa+2MQEiV7KaAhUVED6ers
+	8poRyULNnw4CGZGsPRMLjrnaT6gHR5XqSpelF1N8vZuvXq0RZwcemk2ZU4LCiyiQWdYq5KO7Qbu
+	udwVg6CFf1vFkCWTVIyEVfhMjJsG0FffcESf6Tm0y+/cGHCf7Ne+h1eMpsduY3BwN3H0eeSlck8
+	C8HYls5LMcFhPzpL+gX7dmAtc/N74=
+X-Google-Smtp-Source: AGHT+IGa4YrlHupLsUEDSZr2VbkEFBQsGIuaDh0xGvggSgayjCcp2g6iU98/S7OR8r+4KF5/Gp3wiA==
+X-Received: by 2002:a05:6a21:e082:b0:364:33f7:6099 with SMTP id adf61e73a8af0-366e2994d53mr6431757637.55.1765456715203;
+        Thu, 11 Dec 2025 04:38:35 -0800 (PST)
+Received: from pengdl-pc.mioffice.cn ([43.224.245.249])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29eea06dec7sm23944625ad.101.2025.12.11.04.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Dec 2025 04:38:34 -0800 (PST)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>
-Subject: [RFC 5/5] ext4: mark group extend fast-commit ineligible
-Date: Thu, 11 Dec 2025 19:51:42 +0800
-Message-ID: <20251211115146.897420-6-me@linux.beauty>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251211115146.897420-1-me@linux.beauty>
-References: <20251211115146.897420-1-me@linux.beauty>
+	pengdonglin <pengdonglin@xiaomi.com>
+Subject: [PATCH] fs/ext4: Remove unnecessary zero-initialization via memset
+Date: Thu, 11 Dec 2025 20:38:29 +0800
+Message-Id: <20251211123829.2777009-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -72,63 +87,30 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
 
-Fast commits only log operations that have dedicated replay support.
-EXT4_IOC_GROUP_EXTEND grows the filesystem to the end of the last
-block group and updates the same on-disk metadata without going
-through the fast commit tracking paths.
-In practice these operations are rare and usually followed by further
-updates, but mixing them into a fast commit makes the overall
-semantics harder to reason about and risks replay gaps if new call
-sites appear.
+From: pengdonglin <pengdonglin@xiaomi.com>
 
-Teach ext4 to mark the filesystem fast-commit ineligible when
-EXT4_IOC_GROUP_EXTEND grows the filesystem.
-This forces those transactions to fall back to a full commit,
-ensuring that the group extension changes are captured by the normal
-journal rather than partially encoded in fast commit TLVs.
-This change should not affect common workloads but makes online
-resize via GROUP_EXTEND safer and easier to reason about under fast
-commit.
+The d_path function does not require the caller to pre-zero the
+buffer.
 
-Testing:
-1. prepare:
-    dd if=/dev/zero of=/root/fc_resize.img bs=1M count=0 seek=256
-    mkfs.ext4 -O fast_commit -F /root/fc_resize.img
-    mkdir -p /mnt/fc_resize && mount -t ext4 -o loop /root/fc_resize.img /mnt/fc_resize
-2. Extended the filesystem to the end of the last block group using a
-   helper that calls EXT4_IOC_GROUP_EXTEND on the mounted filesystem
-   and checked fc_info:
-    ./group_extend_helper /mnt/fc_resize
-    cat /proc/fs/ext4/loop0/fc_info
-   shows the "Resize" ineligible reason increased.
-3. Fsynced a file on the resized filesystem and confirmed that the fast
-   commit ineligible counter incremented for the resize transaction:
-    touch /mnt/fc_resize/file
-    /root/fsync_file /mnt/fc_resize/file
-    sync
-    cat /proc/fs/ext4/loop0/fc_info
-
-Signed-off-by: Li Chen <me@linux.beauty>
+Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
 ---
- fs/ext4/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ext4/file.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 57b47b9843f3..ce92652f8332 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1608,6 +1608,8 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- 		err = ext4_group_extend(sb, EXT4_SB(sb)->s_es, n_blocks_count);
- 		if (EXT4_SB(sb)->s_journal) {
-+			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE,
-+						NULL);
- 			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
- 			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, 0);
- 			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 7a8b30932189..484cb7388802 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -858,7 +858,6 @@ static int ext4_sample_last_mounted(struct super_block *sb,
+ 	 * when trying to sort through large numbers of block
+ 	 * devices or filesystem images.
+ 	 */
+-	memset(buf, 0, sizeof(buf));
+ 	path.mnt = mnt;
+ 	path.dentry = mnt->mnt_root;
+ 	cp = d_path(&path, buf, sizeof(buf));
 -- 
-2.51.0
+2.34.1
 
 
