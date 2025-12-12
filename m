@@ -1,48 +1,48 @@
-Return-Path: <linux-ext4+bounces-12319-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12320-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C4ACB83F1
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 09:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73F50CB83F9
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 09:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 60ECF307F8CC
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 08:22:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8D805308182F
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 08:22:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A59D30FC15;
-	Fri, 12 Dec 2025 08:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EFE930FC21;
+	Fri, 12 Dec 2025 08:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R/2PS8RC"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0cORuJdp"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBD0AD24;
-	Fri, 12 Dec 2025 08:22:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E4030F7E3;
+	Fri, 12 Dec 2025 08:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765527750; cv=none; b=kK2lJLy3KKKuvg8iW+DlBsx6uoSldlEY2BaulmULIfI8I462V/HXcmarE2wXe+j+irS0SefzfpT3HIvzsRXjL/edzYvzPKEjC0Q0ZV975LYvV8DOZUg2ODdOHRb04T95A5PUk3Vcisvw4kAr/QBXoS6HzqATtGlSoL95edOc3bU=
+	t=1765527758; cv=none; b=u2E4MV+ZXG38vpnBgij4OuKQz2WoRRrtajw7OfSh6ZrtMqsekawxkclEpiLlp2lmJq8n3FDQZyPnF4WMPSCuYdVxBpNgx8wOX3BSCZ3Xou773lA/APoFsM+5WBeA6YaJVO8qUnPNcEWg7VxNdHOgr1fx6c4TvpeUZqXRMR7op3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765527750; c=relaxed/simple;
-	bh=/3Z9TFejzq5Lnp89M4rxa0npH5NZdpqdYfflfdReIno=;
+	s=arc-20240116; t=1765527758; c=relaxed/simple;
+	bh=hz6DsYmmKw5qooqxEJZD7kxXlSky4cpXQDk93h9BRIQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mX8d+3y91OfgSwybuXXTkT8jBPDaWp44u/N0V5sBlf33yohba84CxKhkXIZFWU1ld9rFL7kkLNA/KKHHiexWHG2qF9kVC4oZHe2TBjwNs4o0PRhXKYQiiLTKNVpvoKA5+La7O6+RMxacY/TQ6jEmDVI5lqKnriJiKFiiHr17Ois=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R/2PS8RC; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=udAg0Sw9EMDNqeCCo9BJ/TCRcIXwrueNgKpJrOwZm999GMXABky8z6XElz389iqpVlC/ci875dUuxq3KRonQfAZpsAIGM9XHjHqlMzuLI6fy+N9Z/mxmCedPvOS8MfVccjNwNNV/uOIFVLZgVkj6KP1CgA883lMQ2ayOqaSxTaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0cORuJdp; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=gDKW8UBoj9tr9mBHLJWygzUa5hsN+lg7viuXexEepH8=; b=R/2PS8RC7GdZKwD2BYOzP7i8UN
-	USYz4YKAklW/JuOIGseVdiPNMDKAzzs6f77oVhS9HZ5tJBlPUyQmncT6X94Nd7nQgbBK7zJ28aJB8
-	UrCVdbNKRwdWvnqodnlpKDgl7WpCxrFu6NI39PYh/bB81wqN/dqUm03bDK0nfFoe28XkjcdxnJnR6
-	VNN2e0XDzN5kb0albdVLW2uo/zflv9E+Rg5RffbDcymIbjwWZ5k0A5HPZ5u9KAn6TFWrWPvDHpl9A
-	B7pvtztOUvN1wxuGDLt9t3upUuL6Z5sqB+z+0FOOT9DbdbafZWatxPs7o2mGeVZ1AdpcmYCfsgDoG
-	JHflb+Rw==;
+	bh=H+yofAzEycGDLtWvX0SATI5Kno5s69wRu3yKRKrkdhs=; b=0cORuJdpKOMlO/vppb+vdTZQ0x
+	oVbz60XEGPF6MsqJSmuvydvz3fuxs9FbvzME1ka4rp/ldHP4w4KiUQKGcFckxUBPmZKAI4YA1/btF
+	zt7dRw9oILvadGHwXpqSe1yJBQNFOPu+MNrF1ZDUTHgJmRxscZpFFO9N1SiwitGR/RUj9puQBObOm
+	XuRsle0knU5qv7h12DYith/EAukTTJIpGQBGbJsstVXo8hospNuCrHHlqbzTfws9DgSDjkICKMgfC
+	Nl/xKoEsdWHzKKoEEEgHLCLP4YHpTW0krSpyQ/unbTpzYwDqMqpe0V2DGgQILjV426eodq0bLzEKh
+	ZfaVw6kw==;
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vTyQ0-00000000G5t-1FmB;
-	Fri, 12 Dec 2025 08:22:28 +0000
+	id 1vTyQ6-00000000G7a-18nh;
+	Fri, 12 Dec 2025 08:22:34 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Zorro Lang <zlang@kernel.org>
 Cc: Anand Jain <asj@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Anand Jain <asj@kernel.org>,
 	fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
-Subject: [PATCH 03/13] common: add a _check_dev_fs helper
-Date: Fri, 12 Dec 2025 09:21:51 +0100
-Message-ID: <20251212082210.23401-4-hch@lst.de>
+Subject: [PATCH 04/13] ext4/032: use _check_dev_fs
+Date: Fri, 12 Dec 2025 09:21:52 +0100
+Message-ID: <20251212082210.23401-5-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251212082210.23401-1-hch@lst.de>
 References: <20251212082210.23401-1-hch@lst.de>
@@ -66,128 +66,29 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Add a helper to run the file system checker for a given device, and stop
-overloading _check_scratch_fs with the optional device argument that
-creates complication around scratch RT and log devices.
+_check_dev_fs is the new designated helper to check file systems on
+arbitrary devices, use that instead of _check_generic_filesystem, which
+is just an implementation detail.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- common/dmthin     |  6 +++++-
- common/rc         | 21 +++++++++++++++++----
- tests/btrfs/176   |  4 ++--
- tests/generic/648 |  2 +-
- tests/xfs/601     |  2 +-
- 5 files changed, 26 insertions(+), 9 deletions(-)
+ tests/ext4/032 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/common/dmthin b/common/dmthin
-index a1e1fb8763c0..3bea828d0375 100644
---- a/common/dmthin
-+++ b/common/dmthin
-@@ -33,7 +33,11 @@ _dmthin_cleanup()
- _dmthin_check_fs()
- {
- 	_unmount $SCRATCH_MNT > /dev/null 2>&1
--	_check_scratch_fs $DMTHIN_VOL_DEV
-+	OLD_SCRATCH_DEV=$SCRATCH_DEV
-+	SCRATCH_DEV=$DMTHIN_VOL_DEV
-+	_check_scratch_fs
-+	SCRATCH_DEV=$OLD_SCRATCH_DEV
-+	unset OLD_SCRATCH_DEV
+diff --git a/tests/ext4/032 b/tests/ext4/032
+index 690fcf066c11..043ae4f53505 100755
+--- a/tests/ext4/032
++++ b/tests/ext4/032
+@@ -66,7 +66,7 @@ ext4_online_resize()
+ 	$UMOUNT_PROG ${IMG_MNT}
+ 
+ 	echo "+++ check fs" | tee -a $seqres.full
+-	_check_generic_filesystem $LOOP_DEVICE >> $seqres.full 2>&1 || \
++	_check_dev_fs $LOOP_DEVICE >> $seqres.full 2>&1 || \
+ 		_fail "fsck should not fail"
+ 	_destroy_loop_device $LOOP_DEVICE && LOOP_DEVICE=
  }
- 
- # Set up a dm-thin device on $SCRATCH_DEV
-diff --git a/common/rc b/common/rc
-index c3cdc220a29b..8618f77a00b5 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3692,14 +3692,14 @@ _check_test_fs()
-     esac
- }
- 
--_check_scratch_fs()
-+# check the file system passed in as $1
-+_check_dev_fs()
- {
--    local device=$SCRATCH_DEV
--    [ $# -eq 1 ] && device=$1
-+    local device=$1
- 
-     case $FSTYP in
-     xfs)
--	_check_xfs_scratch_fs $device
-+	_check_xfs_filesystem $device "none" "none"
- 	;;
-     udf)
- 	_check_udf_filesystem $device $udf_fsize
-@@ -3751,6 +3751,19 @@ _check_scratch_fs()
-     esac
- }
- 
-+# check the scratch file system
-+_check_scratch_fs()
-+{
-+	case $FSTYP in
-+	xfs)
-+		_check_xfs_scratch_fs $SCRATCH_DEV
-+		;;
-+	*)
-+		_check_dev_fs $SCRATCH_DEV
-+		;;
-+	esac
-+}
-+
- _full_fstyp_details()
- {
-      [ -z "$FSTYP" ] && FSTYP=xfs
-diff --git a/tests/btrfs/176 b/tests/btrfs/176
-index 86796c8814a0..f2619bdd8e44 100755
---- a/tests/btrfs/176
-+++ b/tests/btrfs/176
-@@ -37,7 +37,7 @@ swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
- # Deleting device 1 should work again after swapoff.
- $BTRFS_UTIL_PROG device delete "$scratch_dev1" "$SCRATCH_MNT"
- _scratch_unmount
--_check_scratch_fs "$scratch_dev2"
-+_check_dev_fs "$scratch_dev2"
- 
- echo "Replace device"
- _scratch_mkfs >> $seqres.full 2>&1
-@@ -55,7 +55,7 @@ swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
- $BTRFS_UTIL_PROG replace start -fB "$scratch_dev1" "$scratch_dev2" "$SCRATCH_MNT" \
- 	>> $seqres.full
- _scratch_unmount
--_check_scratch_fs "$scratch_dev2"
-+_check_dev_fs "$scratch_dev2"
- 
- # success, all done
- status=0
-diff --git a/tests/generic/648 b/tests/generic/648
-index 7473c9d33746..1bba78f062cf 100755
---- a/tests/generic/648
-+++ b/tests/generic/648
-@@ -133,7 +133,7 @@ if [ -f "$loopimg" ]; then
- 		_metadump_dev $DMERROR_DEV $seqres.scratch.final.md
- 		echo "final scratch mount failed"
- 	fi
--	SCRATCH_RTDEV= SCRATCH_LOGDEV= _check_scratch_fs $loopimg
-+	_check_dev_fs $loopimg
- fi
- 
- # success, all done; let the test harness check the scratch fs
-diff --git a/tests/xfs/601 b/tests/xfs/601
-index df382402b958..44911ea389a7 100755
---- a/tests/xfs/601
-+++ b/tests/xfs/601
-@@ -39,7 +39,7 @@ copy_file=$testdir/copy.img
- 
- echo copy
- $XFS_COPY_PROG $SCRATCH_DEV $copy_file >> $seqres.full
--_check_scratch_fs $copy_file
-+_check_dev_fs $copy_file
- 
- echo recopy
- $XFS_COPY_PROG $copy_file $SCRATCH_DEV >> $seqres.full
 -- 
 2.47.3
 
