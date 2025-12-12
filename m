@@ -1,179 +1,136 @@
-Return-Path: <linux-ext4+bounces-12330-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12331-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B031CB9158
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 16:18:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FD48CB9340
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 16:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7B63C30BE692
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 15:16:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B792306220A
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 15:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A293246EB;
-	Fri, 12 Dec 2025 15:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1D2299927;
+	Fri, 12 Dec 2025 15:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AFlc2zw2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RXyJ1oCB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6582F3242B4;
-	Fri, 12 Dec 2025 15:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07A7E29ACD7
+	for <linux-ext4@vger.kernel.org>; Fri, 12 Dec 2025 15:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765552195; cv=none; b=NDrr1TcqW+YgWBF+mZZabGb5zVKtdxCv+vi6qc77r+yIUe9LdcjDoudG5Re+TRhAx+wwVdibzx1U/a/PEdbSNaAupoCJS3OrvKBFQx+EkcCF4zMM07VPK27jdxk4BRptPoqH4qwLhCi3AAnk1nfxxl4UjO1bATETifuglotyF6w=
+	t=1765554461; cv=none; b=SlDA4weisnoNEhUGNHzxj/duQWhpL8grZzCtd/RyJk5w0O7mYIVlYOyHrrlZl4+dG/MqFho0agCDwrcg4STaivhqiksDcE/sHay3D60/8eBd5rDGZM+2uIXueQZVD1AKv173ijKBqOZ7duYNFXx3Roj7+e3IZLLl73/xKWawC6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765552195; c=relaxed/simple;
-	bh=I+qP5oa35NoOJF+73V6wWh4dwUAPHcAldfi38uS5WuI=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=p/cgn9p7vyAx4QRS3J8owd0OFesNVbkPkFZT6zV6znm9Znykl060L0fZFOKEvpw/zbtpUTQpJSiM2+VZlc4cwB2bURzTbzMJogNycOeOtZ/qJNqin7Orq5VDXcDWuT26ncw1BC2MlNJ2jPt07HcTegul4hriFcH6pDo4IA/ZkkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AFlc2zw2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC842C116B1;
-	Fri, 12 Dec 2025 15:09:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765552195;
-	bh=I+qP5oa35NoOJF+73V6wWh4dwUAPHcAldfi38uS5WuI=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=AFlc2zw2uucDYEetJfKb6XBj8TBwXASwMN9MPet0HvEcaanSlE7CFITn56A2NG0Ib
-	 LoFG8vndRYLcbM6ivj35ZyuHl7Dl54SPU/dPhAUv42Ksl60fVNzCJWVkYgGoy11s5a
-	 BNeo17SWZ+umGGp+2ixepMykt5a7BX77QjWbvy1e+qdonW9nhvOUmgbXP+WJ2nVNcS
-	 EOVSjJ0g6UgRwf9qWwNqdT6EQiQQLovDE/JAddbONBvYdNp8XhzC8/Odi5NNcm/NIs
-	 AT14mwe9DRWACSzFApxhaVxE0ZtWoeXsR7GlK6bQqbCiNqPlp0oafNMs4Mr8HXvwZg
-	 9rLYAhv6iKaig==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id BADCEF40072;
-	Fri, 12 Dec 2025 10:09:53 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Fri, 12 Dec 2025 10:09:53 -0500
-X-ME-Sender: <xms:QTA8aUytefFxC2oGXmrPtewnnJ6B8_Or61aOCnsFzrIgWOZaKeHBOA>
-    <xme:QTA8aTHlH6idpJ3_pm2MM2vNdMOk7tsA_MDPy9qIC5yQ5j62W55fqoGHxwv3x5hF7
-    K-_fJsB__U7SHGzU8Gpu7NAabDJ3UZXbAY8w1ID2m5cbN8YI2i41es>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeehtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhutghk
-    ucfnvghvvghrfdcuoegtvghlsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnh
-    epleehteekvefhhfeuvdekuefftdffvdeufeekleehheekvdekjedviefghedtieelnecu
-    ffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhuhgtkhhlvghvvghr
-    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieefgeelleelheelqdefvd
-    elkeeggedvfedqtggvlheppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrihhlrdgtohhm
-    pdhnsggprhgtphhtthhopedufedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprg
-    guihhlghgvrhdrkhgvrhhnvghlseguihhlghgvrhdrtggrpdhrtghpthhtohepsghrrghu
-    nhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvggsihhgghgvrhhssehkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehhihhrohhfuhhmihesmhgrihhlrdhprghrkhhnvght
-    rdgtohdrjhhppdhrtghpthhtohepthihthhsohesmhhithdrvgguuhdprhgtphhtthhope
-    gthhhutghkrdhlvghvvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopegrlhhmrgii
-    rdgrlhgvgigrnhgurhhovhhitghhsehprghrrghgohhnqdhsohhfthifrghrvgdrtghomh
-    dprhgtphhtthhopehvohhlkhgvrhdrlhgvnhguvggtkhgvsehsvghrnhgvthdruggvpdhr
-    tghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:QTA8aQsK8J2qgZIVIQpL0IU2tvEgcoBNSS-pcYB9aCNDNpVCS146Kw>
-    <xmx:QTA8ac5Mxc9sC45MtvaVibuxvWHI83VyDcjf9hRiQBsxg605Qok5Xw>
-    <xmx:QTA8ac3MFcDhqctl04FQyJ2MH7yxkLZd6RZUvPr3Cw8K79zESiXcMw>
-    <xmx:QTA8aXjU7iWTbB8X2lQ8yM-rKYJ_vdqfhAdyjfiHmkvXweptVtUpOw>
-    <xmx:QTA8aUq3Fwm0jIi3alstO43Q6A3IbUQhI-ALtJm_H-yLy2cjWJj3yYsN>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 9480578006C; Fri, 12 Dec 2025 10:09:53 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1765554461; c=relaxed/simple;
+	bh=Tl9fDwdSX1ZNx+zZYYWYdg9nuoRoEGevkfneyuk4gP4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O6galqWQv620O04AYMtSADTJk9Wo/kfdsfyquNcdfqiOj24KKasf4WRZYR3QlH/ObSbfgKJ74JcjW6QjyIdZg2G/+/mYoKPSCZ8kiuZxMT6y2b+cmp8HzVSmnIsj3+MONpZ0a21zkLpTzybFnjh4L6Bh8dhxt6lHJzCPVvg4g5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RXyJ1oCB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765554458;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=3JnStAS5paEDe1MeaZq8TQObzSFFfOMj1TNkfUzBZI4=;
+	b=RXyJ1oCBHHyWfnJDrifGrxuPVsxHu7cNa/u7vORbEYRYknGv8h0511YMXGhsvq/xuJNx8N
+	beMBx0Nfn25A56l36O4zQVvw9TZLRQyVYSgIhF4pA/jQbd171gNSgDeUpgtNMPxdvgj74K
+	+ALfEd0xPwHRUNuzvhdSxKumQOnFqQw=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-444-pXt4KS9PPtaoWq5tQzzkuA-1; Fri,
+ 12 Dec 2025 10:47:37 -0500
+X-MC-Unique: pXt4KS9PPtaoWq5tQzzkuA-1
+X-Mimecast-MFC-AGG-ID: pXt4KS9PPtaoWq5tQzzkuA_1765554456
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B1061195FCF0
+	for <linux-ext4@vger.kernel.org>; Fri, 12 Dec 2025 15:47:36 +0000 (UTC)
+Received: from bfoster.redhat.com (unknown [10.22.64.2])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 510B9195398A
+	for <linux-ext4@vger.kernel.org>; Fri, 12 Dec 2025 15:47:36 +0000 (UTC)
+From: Brian Foster <bfoster@redhat.com>
+To: linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: fix dirtyclusters double decrement on fs shutdown
+Date: Fri, 12 Dec 2025 10:47:35 -0500
+Message-ID: <20251212154735.512651-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AG4gnELdBCjJ
-Date: Fri, 12 Dec 2025 10:08:18 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Theodore Tso" <tytso@mit.edu>
-Cc: "Eric Biggers" <ebiggers@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, hirofumi@mail.parknet.co.jp,
- almaz.alexandrovich@paragon-software.com, adilger.kernel@dilger.ca,
- Volker.Lendecke@sernet.de, "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <ed9d790a-fea8-4f3e-8118-d3a59d31107b@app.fastmail.com>
-In-Reply-To: <20251212021834.GB65406@macsyma.local>
-References: <20251211152116.480799-1-cel@kernel.org>
- <20251211152116.480799-2-cel@kernel.org> <20251211234152.GA460739@google.com>
- <9f30d902-2407-4388-805b-b3f928193269@app.fastmail.com>
- <20251212021834.GB65406@macsyma.local>
-Subject: Re: [PATCH v2 1/6] fs: Add case sensitivity info to file_kattr
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
+fstests test generic/388 occasionally reproduces a warning in
+ext4_put_super() associated with the dirty clusters count:
 
+  WARNING: CPU: 7 PID: 76064 at fs/ext4/super.c:1324 ext4_put_super+0x48c/0x590 [ext4]
 
-On Thu, Dec 11, 2025, at 9:18 PM, Theodore Tso wrote:
-> On Thu, Dec 11, 2025 at 08:16:45PM -0500, Chuck Lever wrote:
->> 
->> > I see you're proposing that ext4, fat, and ntfs3 all set
->> > FILEATTR_CASEFOLD_UNICODE, at least in some cases.
->> >
->> > That seems odd, since they don't do the matching the same way.
->> 
->> The purpose of this series is to design the VFS infrastructure. Exactly what
->> it reports is up to folks who actually understand i18n.
->
-> Do we know who would be receiving this information and what their needs 
-> might be?
+Tracing the failure shows that the warning fires due to an
+s_dirtyclusters_counter value of -1. IOW, this appears to be a
+spurious decrement as opposed to some sort of leak. Further tracing
+of the dirty cluster count deltas and an LLM scan of the resulting
+output identified the cause as a double decrement in the error path
+between ext4_mb_mark_diskspace_used() and the caller
+ext4_mb_new_blocks().
 
-The unicode v. ascii case folding information was included just as
-an example. I don't have any use case for that, and as I told Eric,
-those specifics can be removed from the API.
+First, note that generic/388 is a shutdown vs. fsstress test and so
+produces a random set of operations and shutdown injections. In the
+problematic case, the shutdown triggers an error return from the
+ext4_handle_dirty_metadata() call(s) made from
+ext4_mb_mark_context(). The changed value is non-zero at this point,
+so ext4_mb_mark_diskspace_used() does not exit after the error
+bubbles up from ext4_mb_mark_context(). Instead, the former
+decrements both cluster counters and returns the error up to
+ext4_mb_new_blocks(). The latter falls into the !ar->len out path
+which decrements the dirty clusters counter a second time, creating
+the inconsistency.
 
-The case-insensitivity and case-preserving booleans can be consumed
-immediately by NFSD. These two booleans have been part of the NFSv3
-and NFSv4 protocols for decades, in order to support NFS clients on
-non-POSIX systems.
+AFAICT the solution here is to exit immediately from
+ext4_mb_mark_diskspace_used() on error, regardless of the changed
+value. This leaves the caller responsible for clearing the block
+reservation at the same level it is acquired. This also skips the
+free clusters update, but the caller also calls into
+ext4_discard_allocated_blocks() to free the blocks back into the
+group. This survives an overnight loop test of generic/388 on an
+otherwise reproducing system and survives a local regression run.
 
-I'm told that Samba has to detect and expose file system case folding
-behavior to its clients as well. Supporting Samba and other user
-space file servers is why this series exposes case folding information
-via a local user-space API. I don't know of any other category of
-user-space application that requires access to case folding info.
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
 
+Hi all,
 
-The Linux NFS community has a growing interest in supporting NFS
-clients on Windows and MacOS platforms, where file name behavior does
-not align with traditional POSIX semantics.
+I've thrown some testing at this and poked around the area enough that I
+_think_ it is reasonably sane, but the error paths are hairy and I could
+certainly be missing some details. I'm happy to try a different approach
+if there are any thoughts around that.. thanks.
 
-One example of a Windows-based NFS client is [1]. This client
-implementation explicitly requires servers to report
-FATTR4_WORD0_CASE_INSENSITIVE = TRUE for proper operation, a hard
-requirement for Windows client interoperability because Windows
-applications expect case-insensitive behavior. When an NFS client
-knows the server is case-insensitive, it can avoid issuing multiple
-LOOKUP/READDIR requests to search for case variants, and applications
-like Win32 programs work correctly without manual workarounds or
-code changes.
+Brian
 
-Even the Linux client can take advantage of this information. Trond
-merged patches 4 years ago [2] that introduce support for case
-insensitivity, in support of the Hammerspace NFS server. In
-particular, when a client detects a case-insensitive NFS share,
-negative dentry caching must be disabled (a lookup for "FILE.TXT"
-failing shouldn't cache a negative entry when "file.txt" exists)
-and directory change invalidation must clear all cached case-folded
-file name variants.
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hammerspace servers and several other NFS server implementations
-operate in multi-protocol environments, where a single file service
-instance caters to both NFS and SMB clients. In those cases, things
-work more smoothly for everyone when the NFS client can see and adapt
-to the case folding behavior that SMB users rely on and expect. NFSD
-needs to support the case-insensitivity and case-preserving booleans
-properly in order to participate as a first-class citizen in such
-environments.
-
-As a side note: I assumed these details were already well-known in
-this community; otherwise I would have included it in the series
-cover letter. I can include it when posting subsequent revisions.
-
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 56d50fd3310b..224abfd6a42b 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4234,7 +4234,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+ 				   ac->ac_b_ex.fe_start, ac->ac_b_ex.fe_len,
+ 				   flags, &changed);
+ 
+-	if (err && changed == 0)
++	if (err)
+ 		return err;
+ 
+ #ifdef AGGRESSIVE_CHECK
 -- 
-Chuck Lever
+2.51.1
 
-[1] https://github.com/kofemann/ms-nfs41-client
-
-[2] https://patchwork.kernel.org/project/linux-nfs/cover/20211217203658.439352-1-trondmy@kernel.org/
 
