@@ -1,174 +1,179 @@
-Return-Path: <linux-ext4+bounces-12329-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12330-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAB2CB842F
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 09:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B031CB9158
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 16:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47B7030974B9
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 08:23:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7B63C30BE692
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 15:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A421130FC15;
-	Fri, 12 Dec 2025 08:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A293246EB;
+	Fri, 12 Dec 2025 15:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VFdkGOqW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AFlc2zw2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057DD30F7E3;
-	Fri, 12 Dec 2025 08:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6582F3242B4;
+	Fri, 12 Dec 2025 15:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765527805; cv=none; b=oOVHPv8UkS4kK03xMO5t8I5LoQY7Ay7AsLcX0Rs6pyU4oz8X6IpKb/iMCQkl9MEjErCU7JauC+oTNv2DVEC87unVTQ/4IAeYYU6iOQOrLk9u8833Wg9h/R1OEW0SZ3UcBi6unL37a718fsRCLEZMZflXJHXl2ZWsvkSOuvuy8aY=
+	t=1765552195; cv=none; b=NDrr1TcqW+YgWBF+mZZabGb5zVKtdxCv+vi6qc77r+yIUe9LdcjDoudG5Re+TRhAx+wwVdibzx1U/a/PEdbSNaAupoCJS3OrvKBFQx+EkcCF4zMM07VPK27jdxk4BRptPoqH4qwLhCi3AAnk1nfxxl4UjO1bATETifuglotyF6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765527805; c=relaxed/simple;
-	bh=aGiamXkn1VF0z2lGTZ3ubs0hl83g4dJpt6xBwhMGWW4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rt8t4YVH0TzcySKhy5gy5v6ao7Kqr2YOrqxiWOeav4jKNZow6Q+Nsu5FtdDTG3tcFzxwW7kCukV4bDwYZurkYnZ01PDGtlkWMny+mANn0R9PbpmY/liY8IMKFP12lVUTzFplY+Rblt9KXeP+btLmAu9PNb+33V441SX4DC6gzJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VFdkGOqW; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=elD0+ujFEGaCtAGB28tzo6uCe9uXllSkts/kMeVnkX0=; b=VFdkGOqWCQZ2itXGtmhsgJaQrg
-	GUBahu7wmxG/XrAyRkhRoB/Gkim1WsWPsxOSmwPWEa7EOe8+RfNhKkFk69wi+SHrcA+0uyza1HYUN
-	1ob0sfjsxaTVcwqfxBTf58y7fEFsHzT3o+2AFhXGAC3DXBO3jYFoNxgcd9DYKh8mB0ohrZWsFM2sw
-	hoYCyXxqX1KYDC337YO7y73bM7IQb/jpAuI1By/FOhdl9hEEDwambwOWXWcUw9wDIVmEh5+pCDgWj
-	zf7Q6XN/8FTHonW2w8SNDGJnn5neQQKiR4vo/CYDydJ5Y8X+/kpJdRJT94N2jHgQm9pCoEPA0FPdb
-	49a4MD2w==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vTyQs-00000000GGL-46NW;
-	Fri, 12 Dec 2025 08:23:23 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Zorro Lang <zlang@kernel.org>
-Cc: Anand Jain <asj@kernel.org>,
-	Filipe Manana <fdmanana@suse.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org
-Subject: [PATCH 13/13] xfs/650: require a real SCRATCH_RTDEV
-Date: Fri, 12 Dec 2025 09:22:01 +0100
-Message-ID: <20251212082210.23401-14-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251212082210.23401-1-hch@lst.de>
-References: <20251212082210.23401-1-hch@lst.de>
+	s=arc-20240116; t=1765552195; c=relaxed/simple;
+	bh=I+qP5oa35NoOJF+73V6wWh4dwUAPHcAldfi38uS5WuI=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=p/cgn9p7vyAx4QRS3J8owd0OFesNVbkPkFZT6zV6znm9Znykl060L0fZFOKEvpw/zbtpUTQpJSiM2+VZlc4cwB2bURzTbzMJogNycOeOtZ/qJNqin7Orq5VDXcDWuT26ncw1BC2MlNJ2jPt07HcTegul4hriFcH6pDo4IA/ZkkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AFlc2zw2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC842C116B1;
+	Fri, 12 Dec 2025 15:09:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765552195;
+	bh=I+qP5oa35NoOJF+73V6wWh4dwUAPHcAldfi38uS5WuI=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=AFlc2zw2uucDYEetJfKb6XBj8TBwXASwMN9MPet0HvEcaanSlE7CFITn56A2NG0Ib
+	 LoFG8vndRYLcbM6ivj35ZyuHl7Dl54SPU/dPhAUv42Ksl60fVNzCJWVkYgGoy11s5a
+	 BNeo17SWZ+umGGp+2ixepMykt5a7BX77QjWbvy1e+qdonW9nhvOUmgbXP+WJ2nVNcS
+	 EOVSjJ0g6UgRwf9qWwNqdT6EQiQQLovDE/JAddbONBvYdNp8XhzC8/Odi5NNcm/NIs
+	 AT14mwe9DRWACSzFApxhaVxE0ZtWoeXsR7GlK6bQqbCiNqPlp0oafNMs4Mr8HXvwZg
+	 9rLYAhv6iKaig==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id BADCEF40072;
+	Fri, 12 Dec 2025 10:09:53 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Fri, 12 Dec 2025 10:09:53 -0500
+X-ME-Sender: <xms:QTA8aUytefFxC2oGXmrPtewnnJ6B8_Or61aOCnsFzrIgWOZaKeHBOA>
+    <xme:QTA8aTHlH6idpJ3_pm2MM2vNdMOk7tsA_MDPy9qIC5yQ5j62W55fqoGHxwv3x5hF7
+    K-_fJsB__U7SHGzU8Gpu7NAabDJ3UZXbAY8w1ID2m5cbN8YI2i41es>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvkeehtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhutghk
+    ucfnvghvvghrfdcuoegtvghlsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnh
+    epleehteekvefhhfeuvdekuefftdffvdeufeekleehheekvdekjedviefghedtieelnecu
+    ffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhuhgtkhhlvghvvghr
+    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieefgeelleelheelqdefvd
+    elkeeggedvfedqtggvlheppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrihhlrdgtohhm
+    pdhnsggprhgtphhtthhopedufedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprg
+    guihhlghgvrhdrkhgvrhhnvghlseguihhlghgvrhdrtggrpdhrtghpthhtohepsghrrghu
+    nhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvggsihhgghgvrhhssehkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopehhihhrohhfuhhmihesmhgrihhlrdhprghrkhhnvght
+    rdgtohdrjhhppdhrtghpthhtohepthihthhsohesmhhithdrvgguuhdprhgtphhtthhope
+    gthhhutghkrdhlvghvvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopegrlhhmrgii
+    rdgrlhgvgigrnhgurhhovhhitghhsehprghrrghgohhnqdhsohhfthifrghrvgdrtghomh
+    dprhgtphhtthhopehvohhlkhgvrhdrlhgvnhguvggtkhgvsehsvghrnhgvthdruggvpdhr
+    tghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:QTA8aQsK8J2qgZIVIQpL0IU2tvEgcoBNSS-pcYB9aCNDNpVCS146Kw>
+    <xmx:QTA8ac5Mxc9sC45MtvaVibuxvWHI83VyDcjf9hRiQBsxg605Qok5Xw>
+    <xmx:QTA8ac3MFcDhqctl04FQyJ2MH7yxkLZd6RZUvPr3Cw8K79zESiXcMw>
+    <xmx:QTA8aXjU7iWTbB8X2lQ8yM-rKYJ_vdqfhAdyjfiHmkvXweptVtUpOw>
+    <xmx:QTA8aUq3Fwm0jIi3alstO43Q6A3IbUQhI-ALtJm_H-yLy2cjWJj3yYsN>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 9480578006C; Fri, 12 Dec 2025 10:09:53 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-ThreadId: AG4gnELdBCjJ
+Date: Fri, 12 Dec 2025 10:08:18 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Theodore Tso" <tytso@mit.edu>
+Cc: "Eric Biggers" <ebiggers@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hirofumi@mail.parknet.co.jp,
+ almaz.alexandrovich@paragon-software.com, adilger.kernel@dilger.ca,
+ Volker.Lendecke@sernet.de, "Chuck Lever" <chuck.lever@oracle.com>
+Message-Id: <ed9d790a-fea8-4f3e-8118-d3a59d31107b@app.fastmail.com>
+In-Reply-To: <20251212021834.GB65406@macsyma.local>
+References: <20251211152116.480799-1-cel@kernel.org>
+ <20251211152116.480799-2-cel@kernel.org> <20251211234152.GA460739@google.com>
+ <9f30d902-2407-4388-805b-b3f928193269@app.fastmail.com>
+ <20251212021834.GB65406@macsyma.local>
+Subject: Re: [PATCH v2 1/6] fs: Add case sensitivity info to file_kattr
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Require a real SCRATCH_RTDEV instead of faking one up using a loop
-device, as otherwise the options specified in MKFS_OPTIONS might
-not actually work the configuration.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
----
- tests/xfs/650 | 63 +++++----------------------------------------------
- 1 file changed, 6 insertions(+), 57 deletions(-)
 
-diff --git a/tests/xfs/650 b/tests/xfs/650
-index d8f70539665f..418a1e7aae7c 100755
---- a/tests/xfs/650
-+++ b/tests/xfs/650
-@@ -9,21 +9,11 @@
- # bunmapi"). On XFS without the fixes, truncate will hang forever.
- #
- . ./common/preamble
--_begin_fstest auto prealloc preallocrw
--
--# Override the default cleanup function.
--_cleanup()
--{
--	_scratch_unmount &>/dev/null
--	[ -n "$loop_dev" ] && _destroy_loop_device $loop_dev
--	cd /
--	rm -f $tmp.*
--	rm -f "$TEST_DIR/$seq"
--}
-+_begin_fstest auto prealloc preallocrw realtime
- 
- . ./common/filter
- 
--_require_scratch_nocheck
-+_require_realtime
- _require_xfs_io_command "falloc"
- 
- maxextlen=$((0x1fffff))
-@@ -31,51 +21,11 @@ bs=4096
- rextsize=4
- filesz=$(((maxextlen + 1) * bs))
- 
--must_disable_feature() {
--	local feat="$1"
--
--	# If mkfs doesn't know about the feature, we don't need to disable it
--	$MKFS_XFS_PROG --help 2>&1 | grep -q "${feat}=0" || return 1
--
--	# If turning the feature on works, we don't need to disable it
--	_scratch_mkfs_xfs_supported -m "${feat}=1" "${disabled_features[@]}" \
--		> /dev/null 2>&1 && return 1
--
--	# Otherwise mkfs knows of the feature and formatting with it failed,
--	# so we do need to mask it.
--	return 0
--}
--
--extra_options=""
--# Set up the realtime device to reproduce the bug.
-+_scratch_mkfs \
-+	-d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1 \
-+	-r extsize=$((bs * rextsize)) \
-+	>>$seqres.full 2>&1
- 
--# If we don't have a realtime device, set up a loop device on the test
--# filesystem.
--if [[ $USE_EXTERNAL != yes || -z $SCRATCH_RTDEV ]]; then
--	_require_test
--	loopsz="$((filesz + (1 << 26)))"
--	_require_fs_space "$TEST_DIR" $((loopsz / 1024))
--	$XFS_IO_PROG -c "truncate $loopsz" -f "$TEST_DIR/$seq"
--	loop_dev="$(_create_loop_device "$TEST_DIR/$seq")"
--	USE_EXTERNAL=yes
--	SCRATCH_RTDEV="$loop_dev"
--	disabled_features=()
--
--	# disable reflink if not supported by realtime devices
--	must_disable_feature reflink &&
--		disabled_features=(-m reflink=0)
--
--	# disable rmap if not supported by realtime devices
--	must_disable_feature rmapbt &&
--		disabled_features+=(-m rmapbt=0)
--fi
--extra_options="$extra_options -r extsize=$((bs * rextsize))"
--extra_options="$extra_options -d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1"
--
--_scratch_mkfs $extra_options "${disabled_features[@]}" >>$seqres.full 2>&1
--_try_scratch_mount >>$seqres.full 2>&1 || \
--	_notrun "mount failed, kernel doesn't support realtime?"
--_scratch_unmount
- _scratch_mount
- _require_fs_space "$SCRATCH_MNT" $((filesz / 1024))
- 
-@@ -108,7 +58,6 @@ $XFS_IO_PROG -c "pwrite -b 1M -W 0 $(((maxextlen + 2 - rextsize) * bs))" \
- # Truncate the extents.
- $XFS_IO_PROG -c "truncate 0" -c fsync "$SCRATCH_MNT/file"
- 
--# We need to do this before the loop device gets torn down.
- _scratch_unmount
- _check_scratch_fs
- 
+On Thu, Dec 11, 2025, at 9:18 PM, Theodore Tso wrote:
+> On Thu, Dec 11, 2025 at 08:16:45PM -0500, Chuck Lever wrote:
+>> 
+>> > I see you're proposing that ext4, fat, and ntfs3 all set
+>> > FILEATTR_CASEFOLD_UNICODE, at least in some cases.
+>> >
+>> > That seems odd, since they don't do the matching the same way.
+>> 
+>> The purpose of this series is to design the VFS infrastructure. Exactly what
+>> it reports is up to folks who actually understand i18n.
+>
+> Do we know who would be receiving this information and what their needs 
+> might be?
+
+The unicode v. ascii case folding information was included just as
+an example. I don't have any use case for that, and as I told Eric,
+those specifics can be removed from the API.
+
+The case-insensitivity and case-preserving booleans can be consumed
+immediately by NFSD. These two booleans have been part of the NFSv3
+and NFSv4 protocols for decades, in order to support NFS clients on
+non-POSIX systems.
+
+I'm told that Samba has to detect and expose file system case folding
+behavior to its clients as well. Supporting Samba and other user
+space file servers is why this series exposes case folding information
+via a local user-space API. I don't know of any other category of
+user-space application that requires access to case folding info.
+
+
+The Linux NFS community has a growing interest in supporting NFS
+clients on Windows and MacOS platforms, where file name behavior does
+not align with traditional POSIX semantics.
+
+One example of a Windows-based NFS client is [1]. This client
+implementation explicitly requires servers to report
+FATTR4_WORD0_CASE_INSENSITIVE = TRUE for proper operation, a hard
+requirement for Windows client interoperability because Windows
+applications expect case-insensitive behavior. When an NFS client
+knows the server is case-insensitive, it can avoid issuing multiple
+LOOKUP/READDIR requests to search for case variants, and applications
+like Win32 programs work correctly without manual workarounds or
+code changes.
+
+Even the Linux client can take advantage of this information. Trond
+merged patches 4 years ago [2] that introduce support for case
+insensitivity, in support of the Hammerspace NFS server. In
+particular, when a client detects a case-insensitive NFS share,
+negative dentry caching must be disabled (a lookup for "FILE.TXT"
+failing shouldn't cache a negative entry when "file.txt" exists)
+and directory change invalidation must clear all cached case-folded
+file name variants.
+
+Hammerspace servers and several other NFS server implementations
+operate in multi-protocol environments, where a single file service
+instance caters to both NFS and SMB clients. In those cases, things
+work more smoothly for everyone when the NFS client can see and adapt
+to the case folding behavior that SMB users rely on and expect. NFSD
+needs to support the case-insensitivity and case-preserving booleans
+properly in order to participate as a first-class citizen in such
+environments.
+
+As a side note: I assumed these details were already well-known in
+this community; otherwise I would have included it in the series
+cover letter. I can include it when posting subsequent revisions.
+
 -- 
-2.47.3
+Chuck Lever
 
+[1] https://github.com/kofemann/ms-nfs41-client
+
+[2] https://patchwork.kernel.org/project/linux-nfs/cover/20211217203658.439352-1-trondmy@kernel.org/
 
