@@ -1,54 +1,69 @@
-Return-Path: <linux-ext4+bounces-12338-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12339-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 820DBCB9BBD
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 21:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1065CB9E1B
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 22:24:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1FD7304A8C5
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 20:11:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D07D130607EC
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Dec 2025 21:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C44309F1C;
-	Fri, 12 Dec 2025 20:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCD82BEC43;
+	Fri, 12 Dec 2025 21:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwVIIMy8"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="CYOfenLP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC074265CA6;
-	Fri, 12 Dec 2025 20:11:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B3B27056D
+	for <linux-ext4@vger.kernel.org>; Fri, 12 Dec 2025 21:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765570303; cv=none; b=k4R+wlqbOHlgSWP2L8lgMZU/rhutzKcj+Ebtq4AGkRtU3gbWWXtJKx1NlWNBMe2Yvv0FQXmIiwHcsuHIb0IvD8/r7QS6QNHQZOHJ8wfaQn4PVUK40o3oFTQ/Zbvl5JAC3EibLKbbYYVyrU0AXDz5LMk7il9ohBsKYD2fG3ZWUoE=
+	t=1765574674; cv=none; b=VJeZ3VGmb38VOnJoSdYxZct439AfB/7g8RVOFveb7Bqy9ySGJ015PkI9QgbgqhNbi1xZ5YZ3QEEeyfp49/loADIu/OvaM3z2gcBzXhqDjONt5oETzFiaX8rHgjC3GCHqqjt8I5tFo6m2qYF+uHYoZqr04QmEZl9L3suLXmDQmMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765570303; c=relaxed/simple;
-	bh=+JT48ozqF9ScLI1VbymQxnIPRD2JGzx1/CpA8qAJI0A=;
+	s=arc-20240116; t=1765574674; c=relaxed/simple;
+	bh=X/4Z7SrDuVXWWE62ndZmLPG3EeTgZBdcPp/qNqK+1RY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g1tQgWNKWOYE85OuKlKbUnCvimKxgBVACBgBFqJXMxEw33gxkjla/oaxwHtoDCU5aGPBwu0+gbYiiZAd419DFH5xYCnFmr5T9QWJX4E8Svba4BQ0OsObOJlIk13EdVX5eXjAP9G/me0ht/rtvMF85+Hk3NAj2eAJTcmawyEi1/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwVIIMy8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51136C4CEF1;
-	Fri, 12 Dec 2025 20:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765570303;
-	bh=+JT48ozqF9ScLI1VbymQxnIPRD2JGzx1/CpA8qAJI0A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mwVIIMy87PsdU5v3I0uztKEU5kuPf/b56TJoH5yDQevpPHzi7qbWet4SwIZXzg6Xz
-	 FxH0bg2XQ7bwhaxosevHVri0iCQNAchdgf8ZGgEHhLHiibUXlQUvSHnGiwWgOjor7R
-	 dN/AEARpzZIhLr95A/i0hm8Y8WD23G5VVfdMFHA28n3yRbZFkELmWX6m3YSgnjU2HY
-	 PC8swRNN5OJQbbMlmoCjqTBRAlWPXK76rnlIiUqDyC0dqZ078I+u9ujI7XZZb28Qmc
-	 13puJVL6yfifSwdx9oqGR638YxuUGJ3GHS17Poi3C+wfLXrCmCE/p7ZcLH5zY9ZE/9
-	 iceiwbBdCWU4w==
-Date: Fri, 12 Dec 2025 12:11:42 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Zorro Lang <zlang@kernel.org>, Anand Jain <asj@kernel.org>,
-	Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 01/13] dmflakey: override SCRATCH_DEV in _init_flakey
-Message-ID: <20251212201142.GF7716@frogsfrogsfrogs>
-References: <20251212082210.23401-1-hch@lst.de>
- <20251212082210.23401-2-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iUFTZYuNNXCMsXE2SBP+iRADUT/r+YLdUByHeM8YoGr/9fgnEwgkNQrHG4eFAdFnIGW5uwMBa2P0hXrCgxej18ZxmgiPxTxrrmTbaRiaDWjbF6XCvKptzyyrMG1sBoUwCuCApeGl72i1CvIjOqyiz6+tcHrF4lkxslLYu4baaS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=CYOfenLP; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (fs96f9c61d.tkyc509.ap.nuro.jp [150.249.198.29])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5BCLNuWR014791
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Dec 2025 16:23:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1765574641; bh=qHLet6Tl+yPkw/ylxl3cL1yEvDFcpp5ou1YH4RSNVm8=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=CYOfenLPVkZm2rBcGLhUDM1NJUZvmOGO1Vx6gG1fkCpSmD40VRP4qK7RXVy5M2Im9
+	 Y1BO2zlsRf6PcSft6qPt6wumrWlg637b+ZMT5epch/H3YyaPfHVczFTl+rt10EeqcV
+	 IUY8u8uN8fxKj7pj2dqVhk5UHt1evm5cSzF3vceqEExy3TyH5ynWc6kYn0iDnvcqeC
+	 4C7sOD4lwFuf5+8S4Ppi4CQcvBwHoj7fvqE4CAMqyz7pOYVuHli4OBK6gvMlD1kE5Y
+	 23uyKBfEwHnkvhNCiZJLVtlAzjVrFOA8Pty5/3+mWVt47WQr+FkEuPP+1kcjpBWSbL
+	 LwgE0hQiuUg4Q==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 0C0314FCD4B2; Sat, 13 Dec 2025 06:23:55 +0900 (JST)
+Date: Sat, 13 Dec 2025 06:23:54 +0900
+From: "Theodore Tso" <tytso@mit.edu>
+To: Chuck Lever <cel@kernel.org>
+Cc: Eric Biggers <ebiggers@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hirofumi@mail.parknet.co.jp,
+        almaz.alexandrovich@paragon-software.com, adilger.kernel@dilger.ca,
+        Volker.Lendecke@sernet.de, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v2 1/6] fs: Add case sensitivity info to file_kattr
+Message-ID: <20251212212354.GA88311@macsyma.local>
+References: <20251211152116.480799-1-cel@kernel.org>
+ <20251211152116.480799-2-cel@kernel.org>
+ <20251211234152.GA460739@google.com>
+ <9f30d902-2407-4388-805b-b3f928193269@app.fastmail.com>
+ <20251212021834.GB65406@macsyma.local>
+ <ed9d790a-fea8-4f3e-8118-d3a59d31107b@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,109 +72,33 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251212082210.23401-2-hch@lst.de>
+In-Reply-To: <ed9d790a-fea8-4f3e-8118-d3a59d31107b@app.fastmail.com>
 
-On Fri, Dec 12, 2025 at 09:21:49AM +0100, Christoph Hellwig wrote:
-> _init_flakey already overrides SCRATCH_LOGDEV and SCRATCH_RTDEV so that
-> the XFS-specific helpers work fine with external devices.  Do the same
-> for SCRATCH_DEV itself, so that _scratch_mount and _scratch_unmount just
-> work, and so that _check_scratch_fs does not need to override the main
-> device.
+On Fri, Dec 12, 2025 at 10:08:18AM -0500, Chuck Lever wrote:
+> The unicode v. ascii case folding information was included just as
+> an example. I don't have any use case for that, and as I told Eric,
+> those specifics can be removed from the API.
 > 
-> This requires some small adjustments in how generic/741 checks that
-> mounting the underlying device fails, but the new version actually is
-> simpler than the old one, and in xfs/438 where we need to be careful
-> where to create the custome dm table.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-<snip>
-> diff --git a/common/dmflakey b/common/dmflakey
-> index 7368a3e5b324..cb0359901c16 100644
-> --- a/common/dmflakey
-> +++ b/common/dmflakey
-> @@ -15,11 +15,19 @@ export FLAKEY_LOGNAME="flakey-logtest.$seq"
->  _init_flakey()
->  {
->  	# Scratch device
-> -	local BLK_DEV_SIZE=`blockdev --getsz $SCRATCH_DEV`
-> -	export FLAKEY_DEV="/dev/mapper/$FLAKEY_NAME"
-> -	FLAKEY_TABLE="0 $BLK_DEV_SIZE flakey $SCRATCH_DEV 0 180 0"
-> -	FLAKEY_TABLE_DROP="0 $BLK_DEV_SIZE flakey $SCRATCH_DEV 0 0 180 1 drop_writes"
-> -	FLAKEY_TABLE_ERROR="0 $BLK_DEV_SIZE flakey $SCRATCH_DEV 0 0 180 1 error_writes"
-> +	if [ -z "$NON_FLAKEY_DEV" ]; then
-> +		# Set up the device switch
-> +		local backing_dev="$SCRATCH_DEV"
-> +		export NON_FLAKEY_DEV="$SCRATCH_DEV"
-> +		SCRATCH_DEV=/dev/mapper/$FLAKEY_NAME
-> +	else
-> +		# Already set up; recreate tables
-> +		local backing_dev="$NON_FLAKEY_DEV"
-> +	fi
-> +	local BLK_DEV_SIZE=`blockdev --getsz $backing_dev`
-> +	FLAKEY_TABLE="0 $BLK_DEV_SIZE flakey $backing_dev 0 180 0"
-> +	FLAKEY_TABLE_DROP="0 $BLK_DEV_SIZE flakey $backing_dev 0 0 180 1 drop_writes"
-> +	FLAKEY_TABLE_ERROR="0 $BLK_DEV_SIZE flakey $backing_dev 0 0 180 1 error_writes"
+> The case-insensitivity and case-preserving booleans can be consumed
+> immediately by NFSD. These two booleans have been part of the NFSv3
+> and NFSv4 protocols for decades, in order to support NFS clients on
+> non-POSIX systems.
 
-Ok, so _init_flakey still sets FLAKEY_TABLE_ERROR...
+I was worried that some clients might be using this information so
+they could do informed caching --- i,e., if they have "makefile"
+cached locally because the user typed "more < makefile" into their
+Windows Command.exe window, and then later on some program tries to
+access "Makefile" the client OS might decide that they "know" that
+"makefile" and "Makefile" are the same file.  But if that's the case,
+then it needs to have more details about whether it's ASCII versus
+Unicode 1.0 vs Unicode 17.0 case folding that be in use, or there
+might be "interesting" corner cases.
 
->  	_dmsetup_create $FLAKEY_NAME --table "$FLAKEY_TABLE" || \
->  		_fatal "failed to create flakey device"
->  
-<snip>
-> diff --git a/tests/xfs/438 b/tests/xfs/438
-> index 6d1988c8b9b8..4ff249df6967 100755
-> --- a/tests/xfs/438
-> +++ b/tests/xfs/438
-> @@ -32,7 +32,7 @@ _cleanup()
->  		sysctl -w fs.xfs.xfssyncd_centisecs=${interval} >/dev/null 2>&1
->  	cd /
->  	rm -f $tmp.*
-> -	_unmount_flakey >/dev/null 2>&1
-> +	_scratch_unmount >/dev/null 2>&1
->  	_cleanup_flakey > /dev/null 2>&1
->  }
->  
-> @@ -100,6 +100,9 @@ echo "Silence is golden"
->  
->  _scratch_mkfs > $seqres.full 2>&1
->  
-> +# this needs to happen after mkfs, but before _init_flakey overrides SCRATCH_DEV
-> +FLAKEY_TABLE_ERROR=$(make_xfs_scratch_flakey_table)
-> +
->  # no error will be injected
->  _init_flakey
+Which is why I've gotten increasingly more sympathetic to Linus's
+position that case folding is Hot Trash.  If it weren't for the fact
+that I really wanted to get Android out of using wrapfs (which is an
+even greater trash fire), I'd be regretting the fact that I helped to
+add insensitive file name support to Linux...
 
-...but won't _init_flakey clobber the value of FLAKEY_TABLE_ERROR set
-by make_xfs_scratch_flakey_table?
-
---D
-
->  $DMSETUP_PROG info >> $seqres.full
-> @@ -111,7 +114,7 @@ interval=$(sysctl -n fs.xfs.xfssyncd_centisecs 2>/dev/null)
->  sysctl -w fs.xfs.xfssyncd_centisecs=100 >> $seqres.full 2>&1
->  
->  _qmount_option "usrquota"
-> -_mount_flakey
-> +_scratch_mount
->  
->  # We need to set the quota limitation twice, and inject the write error
->  # after the second setting. If we try to inject the write error after
-> @@ -127,7 +130,6 @@ xfs_freeze -f $SCRATCH_MNT
->  xfs_freeze -u $SCRATCH_MNT
->  
->  # inject write IO error
-> -FLAKEY_TABLE_ERROR=$(make_xfs_scratch_flakey_table)
->  _load_flakey_table ${FLAKEY_ERROR_WRITES}
->  $DMSETUP_PROG info >> $seqres.full
->  $DMSETUP_PROG table >> $seqres.full
-> @@ -142,7 +144,7 @@ _scratch_sync
->  # the completion of the retried write of dquota buffer
->  sleep 2
->  
-> -_unmount_flakey
-> +_scratch_unmount
->  
->  _cleanup_flakey
->  
+						- Ted
 
