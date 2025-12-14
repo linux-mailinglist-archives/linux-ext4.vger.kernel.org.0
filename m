@@ -1,149 +1,112 @@
-Return-Path: <linux-ext4+bounces-12353-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12354-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5893BCBB186
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Dec 2025 17:44:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBF6CBB655
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Dec 2025 04:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D36C4300A36A
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Dec 2025 16:44:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 36176300B2B1
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Dec 2025 03:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2122E2DEA7A;
-	Sat, 13 Dec 2025 16:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040B81C3F0C;
+	Sun, 14 Dec 2025 03:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqoBCyuc"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="V+XbLfnm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FBE2DE702;
-	Sat, 13 Dec 2025 16:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB65E15E97
+	for <linux-ext4@vger.kernel.org>; Sun, 14 Dec 2025 03:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765644263; cv=none; b=hiihhFjLhIvoo9WUj6j5/Is2hIewfjrCRlI0Mk1cpUNDJvDMLEvxTPSnb2U0VPWd/YfPt+/c0nUwFt0gcUoDhC85mRSL4yHVCisx/lQDImil4ajPegJ3iyjFxQqGHgF1kKOvkRpY2eHF+Z2U25MIZ/qIbEd3muuDCNdRx6Z3YZM=
+	t=1765682271; cv=none; b=T2HuH6PzjFzD7CkWIM5bKp3YNwvNMe5wfGJl+N5TCjQvri22ZGep84xgy3/vRX3Rz+FREz65O4CCbxnAXHF4BFGJwa6hPARZFRHwuKtMeHkOcBfeyYv3sLvgcZ5vddlR50IkN4FbXHOnfPBdDnkBmkg1f8Pg9em8oa+ig9ugLKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765644263; c=relaxed/simple;
-	bh=b8J5h6HSg83nN/DGs1yVUaowCJ6zEDpbJ6pePYqiUW0=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=SjQnW0wXObhTnEcb4QbBw7wCtJCZ14IAJs0tGknE6LKkRhgCGuhbY8C8xEvsNt8gtvrMFddKO+ZY/JMwJPtU8+XAYcZgyzW755kYt5rnObf58mD4Ee/WEEBLJHLVGifTKMsZA+EgNyXR/0WBato9eyf0t4S99isB6Rd+Tfm5k40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RqoBCyuc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3280C4AF0B;
-	Sat, 13 Dec 2025 16:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765644262;
-	bh=b8J5h6HSg83nN/DGs1yVUaowCJ6zEDpbJ6pePYqiUW0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=RqoBCyuchWDMfGilc82XVw6C7ENgLvZ+nMjruIykWCz7orySDvOgRSHb+TddUlRDm
-	 bmSES7tZ8fBQjQWB5K7qG98HZNgQoE/lsEd2HNumHnHAx9DSVxHdMSUE2wlvhVlJv0
-	 Pd8OsVP1NQv6F9lsuy/OWQi8feLxV+oQrwZclG8jW2UUOLqa2K5jV9tCAjxVWph1z8
-	 1usCy+LJrESiwZwQ8wg4/qSxbe59Fxr2yuYhpfzARrQ+kLPAjhAZ+9IRCZyZ2gfZUS
-	 gwmglQ2y0nf7xJR8awS1SpwbwAVm8fahZAZ1pXUznWMPLUHReFFAT+w9sVK8x7+Lhv
-	 uIpKyLGtKMrXw==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id C93EDF4007E;
-	Sat, 13 Dec 2025 11:44:20 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Sat, 13 Dec 2025 11:44:20 -0500
-X-ME-Sender: <xms:5Jc9aQ9s3WSjqscs3b_GhuvpWTDBFPLeomV7JnLZpq183V0MIzsWbQ>
-    <xme:5Jc9aThQv1wDtIqAKug0YBIZG4QbQWcDzycWHW1LaKOL4dKMTsUeQt0RjfU4unSKS
-    Lndgs_exSbRlNJ6yQNN6UKL1pDSRaGnqviFtefZL0xAJjac1Mkx918>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefudehjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhutghk
-    ucfnvghvvghrfdcuoegtvghlsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnh
-    ephfffkefffedtgfehieevkeduuefhvdejvdefvdeuuddvgeelkeegtefgudfhfeelnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhuhgtkh
-    hlvghvvghrodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieefgeelleel
-    heelqdefvdelkeeggedvfedqtggvlheppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrih
-    hlrdgtohhmpdhnsggprhgtphhtthhopedufedpmhhouggvpehsmhhtphhouhhtpdhrtghp
-    thhtoheprgguihhlghgvrhdrkhgvrhhnvghlseguihhlghgvrhdrtggrpdhrtghpthhtoh
-    epsghrrghunhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvggsihhgghgvrhhs
-    sehkvghrnhgvlhdrohhrghdprhgtphhtthhopehhihhrohhfuhhmihesmhgrihhlrdhprg
-    hrkhhnvghtrdgtohdrjhhppdhrtghpthhtohepthihthhsohesmhhithdrvgguuhdprhgt
-    phhtthhopegthhhutghkrdhlvghvvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhope
-    grlhhmrgiirdgrlhgvgigrnhgurhhovhhitghhsehprghrrghgohhnqdhsohhfthifrghr
-    vgdrtghomhdprhgtphhtthhopehvohhlkhgvrhdrlhgvnhguvggtkhgvsehsvghrnhgvth
-    druggvpdhrtghpthhtoheplhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdho
-    rhhg
-X-ME-Proxy: <xmx:5Jc9aU7hctJEOAiUsVsqH58WprXxxFxXlnzVvvd8oYaNtgXHpE7pIw>
-    <xmx:5Jc9aVUmpUTFVTn1YP8Hh-ORmlsctH_7BuzzeZ-7x_Zs9Cqcxe9bmA>
-    <xmx:5Jc9aUi1SDuShbeHsVKgeQV7WyIIoqpgQLTEXv0GfFPTj8goA0CCsw>
-    <xmx:5Jc9addS3lK73W93uxBjqOJyQZgysb8qFzaihfZcGhRAkJFxwZDpjQ>
-    <xmx:5Jc9ab3fLThx8ZV10Sib7FVzybJXCsErzmVc1wK8aHEioKui-0-gxvJ_>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id A5355780054; Sat, 13 Dec 2025 11:44:20 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1765682271; c=relaxed/simple;
+	bh=2TZHxjByFKqZclGOmzTvh9sNLIJRwicf76xglXULxLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhYHxBDskzYpDft9YJ6XniON5NdMqVPKnewEcd1Z6LNAo+x5WQDDdfV/HiOmzdiBBtWNIQwzTP6wP/8TucaqsF7D1LOTDpbTikKPZ3MzqdXO9+ijRxg5Mfkix7oNiYIhJms4N9a8HNR6gzXyd2NooV3TxyYC6TUxHt/vv6TMvvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=V+XbLfnm; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([151.240.205.109])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5BE3HWiV001670
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Dec 2025 22:17:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1765682258; bh=aKKqIAKMF158ToIe4p5lyJbMeEsI16gyrpbd2aWnevQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=V+XbLfnmUwh1Dxcuh2ouCSTdeVAevLHohgPG06yRhwRv3zV4aTPRKHCMkNaImHrzG
+	 Yb1fFVQPgDa+fGb4SnxKVxQv3fNYBZtXaBWu47LPs+PLDRyegOCijlApWom1+5D7Af
+	 jJtYI3O8vxRgH05ATwc252T17+uuvowxtrvchXFwvGabEfQYzV+CPb6D0+EtFT6tqM
+	 npXXIUBtZIHHRDvVq9FGL7SADud4N/ekhmKw/ZFV9lp3PgsJKqbOBpAdf+t+YpN5Y1
+	 ytEcrIkgkkFIkvkzT9lUB3mnaYwJAgg6mfC3sOUKorynTR/ni/HlxDiWY8MrmCJHjv
+	 G4adPL0z3EKxg==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id EE18C5008BB3; Sun, 14 Dec 2025 12:17:30 +0900 (JST)
+Date: Sun, 14 Dec 2025 12:17:30 +0900
+From: "Theodore Tso" <tytso@mit.edu>
+To: =?utf-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
+Cc: security@kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
+Message-ID: <20251214031730.GA50322@macsyma.local>
+References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AG4gnELdBCjJ
-Date: Sat, 13 Dec 2025 11:43:48 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Theodore Tso" <tytso@mit.edu>
-Cc: "Eric Biggers" <ebiggers@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- almaz.alexandrovich@paragon-software.com, adilger.kernel@dilger.ca,
- "Volker Lendecke" <Volker.Lendecke@sernet.de>,
- "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <c727e128-8778-4dec-8750-6c93bd0dda02@app.fastmail.com>
-In-Reply-To: <20251212212354.GA88311@macsyma.local>
-References: <20251211152116.480799-1-cel@kernel.org>
- <20251211152116.480799-2-cel@kernel.org> <20251211234152.GA460739@google.com>
- <9f30d902-2407-4388-805b-b3f928193269@app.fastmail.com>
- <20251212021834.GB65406@macsyma.local>
- <ed9d790a-fea8-4f3e-8118-d3a59d31107b@app.fastmail.com>
- <20251212212354.GA88311@macsyma.local>
-Subject: Re: [PATCH v2 1/6] fs: Add case sensitivity info to file_kattr
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
 
+Thank you for your report.
 
+However, I am not sure we fully understand the true root cause of the
+problem.  The inode's root extent tree header is checked when the
+inode is first read from disk, in __ext4_iget():
 
-On Fri, Dec 12, 2025, at 4:23 PM, Theodore Tso wrote:
-> On Fri, Dec 12, 2025 at 10:08:18AM -0500, Chuck Lever wrote:
->> The unicode v. ascii case folding information was included just as
->> an example. I don't have any use case for that, and as I told Eric,
->> those specifics can be removed from the API.
->> 
->> The case-insensitivity and case-preserving booleans can be consumed
->> immediately by NFSD. These two booleans have been part of the NFSv3
->> and NFSv4 protocols for decades, in order to support NFS clients on
->> non-POSIX systems.
->
-> I was worried that some clients might be using this information so
-> they could do informed caching --- i,e., if they have "makefile"
-> cached locally because the user typed "more < makefile" into their
-> Windows Command.exe window, and then later on some program tries to
-> access "Makefile" the client OS might decide that they "know" that
-> "makefile" and "Makefile" are the same file.  But if that's the case,
-> then it needs to have more details about whether it's ASCII versus
-> Unicode 1.0 vs Unicode 17.0 case folding that be in use, or there
-> might be "interesting" corner cases.
+			if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+				ret = ext4_ext_check_inode(inode);
+			else
+				ret = ext4_ind_check_inode(inode);
 
-No current version of the NFS protocol can communicate any more than
-whether or not filenames are case sensitive and case preserving. Thus
-the unicode label idea is nothing NFSD can possibly take advantage of.
+And ext4_ext_check_inode() does basically what your patch adds:
 
+int ext4_ext_check_inode(struct inode *inode)
+{
+	return ext4_ext_check(inode, ext_inode_hdr(inode), ext_depth(inode), 0);
+}
 
-> Which is why I've gotten increasingly more sympathetic to Linus's
-> position that case folding is Hot Trash.  If it weren't for the fact
-> that I really wanted to get Android out of using wrapfs (which is an
-> even greater trash fire), I'd be regretting the fact that I helped to
-> add insensitive file name support to Linux...
+So it looks like when the inode is originally read from the file
+system, it is not corruptd.  This is consistent with your finding that
+the crafted file system had no corruptions reported by fsck.
 
-Well I think "Hot Trash" is the general consensus. I'm not thinking
-of adding more than the NFS protocol can support. I'm only suggesting
-that more /could/ be done if someone has a use case for it.
+What this implies is that somehow the root node of the extent tree is
+getting corrupted by the kernel code --- and that's very concerning,
+and we should fix _that_, since (a) constantly checking the root
+extent tree node every single time we do an extent tree lookup is
+extra overhead, and (b) if something is corrupting the extent tree,
+_not_ corrupting the file system as opposed to noticing that the file
+system has gotten corrupted and then declaring the file system is
+corrupted requiring that the file system needs to be fixed by fsck.ext4.
 
+If you have time to do that further investigation, I would really
+appreiciate it.  Otherwise, I'll schedule time to do that deeper
+investigation in the next few weeks.
 
--- 
-Chuck Lever
+By the way, the patch that you included was white-space corrupted,
+probably by your mail client (presumably, gmail?).  One way to avoid
+this is to attach the patch as a file, or send it separately using git
+send-email.  See the [1] for more details.
+
+[1] https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+Thanks,
+
+						- Ted
 
