@@ -1,164 +1,92 @@
-Return-Path: <linux-ext4+bounces-12355-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12356-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C3BCBB8DC
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Dec 2025 10:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8178CCBC36A
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 02:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C90AC300B814
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Dec 2025 09:01:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 71B13300C6D6
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 01:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47C92D7394;
-	Sun, 14 Dec 2025 08:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0073126B8;
+	Mon, 15 Dec 2025 01:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Xb8moBEz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net (zg8tmja5ljk3lje4mi4ymjia.icoremail.net [209.97.182.222])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93992D5408;
-	Sun, 14 Dec 2025 08:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.97.182.222
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A962E8DFE;
+	Mon, 15 Dec 2025 01:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765702398; cv=none; b=A4rlSgxipD75jcogmKkRtU8dSfko7fHbaqtU63cxoa1QO1+ZIThtA0/RrPhHZ9Jxc6DBU9NqjDXEe0q56ugANs6a3ZZO4faE00wwla+EUuwIp7QqoNOVzzXl6F9hICtAk8fMRunHtD61vhmlAx/wroTwTrLP0AM99Na4oI9rQGA=
+	t=1765763683; cv=none; b=jUwd6wQpC3fLUoXuOIWv94t/yIAtNpMSxonY9oxn4u6bbrFqgbAj0vn26jgoyN7pjZi509slGJysQZNTgxRTaz/cimWZXj0LoAJ1xF+uUjzzGFphyDPKdgcHwMtp4rfIXu62EC2m/ahJkCrAWuCPw/+ybQ5KWW1xpb5i6hbAIss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765702398; c=relaxed/simple;
-	bh=1Gl382IIgOmiUqjjt8/I1YYlmQltrlwj/wL/112vHmI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=Khd54sIZ8h67OypclRnaOgmhx2Hq4EmF3GMm3w2aqN8KBVn74YqrsQrNf2FFCuDvhXTIdHMGIvduvgajaDfGiwhSmyxSFT/d5zOeO0GKoyjF1Vmu+E4KxuWf/YWaBcin/Ji9SobqYEv1yzFj1v/KBy3K5iygNtwT7WcccFVX01s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=209.97.182.222
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [10.162.137.244])
-	by mtasvr (Coremail) with SMTP id _____wCHIpTqej5pBurtAA--.2790S3;
-	Sun, 14 Dec 2025 16:52:59 +0800 (CST)
-Received: from 3230100410$zju.edu.cn ( [10.162.137.244] ) by
- ajax-webmail-mail-app3 (Coremail) ; Sun, 14 Dec 2025 16:52:58 +0800
- (GMT+08:00)
-Date: Sun, 14 Dec 2025 16:52:58 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
-To: "Theodore Tso" <tytso@mit.edu>
-Cc: security@kernel.org, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.3-cmXT6 build
- 20250620(94335109) Copyright (c) 2002-2025 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20251214031730.GA50322@macsyma.local>
-References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
- <20251214031730.GA50322@macsyma.local>
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_960607_1211823836.1765702378067"
+	s=arc-20240116; t=1765763683; c=relaxed/simple;
+	bh=YSVkXZUT/VY0EskR9QQgzFeKqVXPmTZaJxIMYGr33VA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
+	 In-Reply-To:Content-Type; b=s0+Grlx6kVsSCZwb8+WpWkCP5hKi5/LJLFn+Qr0GAlucaPhv/l1gEjTsI6yUeEwQuvnyfAfR8r0SC2dB+ZGeOJOpz0mIudCnAV8euErGxV2CAS1TOesl+ulkY+Rx43K8DEQv+Nj8Il7/BIaUKzdQIM61ko+07P1YldVfHoM/mCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Xb8moBEz; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=YSVkXZUT/VY0EskR9QQgzFeKqVXPmTZaJxIMYGr33VA=;
+	b=Xb8moBEzOP/qzbXXlvVy2Y+031sdoSgJYeiu4wT9y8xjQPQM2BUOOT0dIh8O6Ah7VdL5JK3oi
+	0Oi5BoaWvXvJfyPVIUH2WUqm3a9aUtsBekkJyYNSvSFzLk0Qk9q1WaEcaPkQVqNOW2NIwNssSR2
+	qYwYlSabptIDaDbgwmrWF6A=
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4dV3383SCgz1T4Hj;
+	Mon, 15 Dec 2025 09:52:20 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 61505140133;
+	Mon, 15 Dec 2025 09:54:29 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 15 Dec
+ 2025 09:54:28 +0800
+Message-ID: <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
+Date: Mon, 15 Dec 2025 09:54:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <7b332aba.423bc.19b1c102253.Coremail.3230100410@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:zS_KCgA3N2rqej5pvKbcBA--.27716W
-X-CM-SenderInfo: qtstiiiqquiio62m3hxhgxhubq/1tbiAgQADmk9wYIL3wABsK
-X-CM-DELIVERINFO: =?B?UdwcAQXKKxbFmtjJiESix3B1w3vLmOfvthuvpruYXH4olOsxqjvNQxnsdAQdqspSym
-	ePmmb/vVBlIHicm6wcHN3+I9SWdkWI3yxbFZwxRKMJ7XqKuJ7SEuMO0lOL0jP6obxZblw9
-	XjYesYUbpUylq+yhnuawGpx2Qhlb2BKYxqcMQ/FtMVSNXDYaJGewJeUPSocoAg==
-X-Coremail-Antispam: 1Uk129KBj93XoW7tw48uFWrAF1xZw17Jw13trc_yoW8Kw13pr
-	4jk3Z0kw4vgFyIg392vF48ZFyF93W8Ca1UXw1rGw15A3W5WFyxKFySkFWjvF1Uuws5uw12
-	vr4rK3sruay7KagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUmKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21le4C267
-	I2x7xF54xIwI1l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xf
-	McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-	v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7xvr2IYc2Ij64vIr40E4x8a64kEw24lFcxC0VAY
-	jxAxZF0Ew4CEw7xC0wACY4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026x
-	CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-	JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-	1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
-	Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8Jb
-	IYCTnIWIevJa73UjIFyTuYvjxUco7KDUUUU
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
+Content-Language: en-GB
+To: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
+References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
+CC: <security@kernel.org>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-------=_Part_960607_1211823836.1765702378067
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Hi,
 
-VGhhbmsgeW91IGZvciB5b3VyIGRldGFpbGVkIGZlZWRiYWNrIGFuZCBpbnNpZ2h0cy4KCkkgd2ls
-bCBjb250aW51ZSB3aXRoIHRoZSBmdXJ0aGVyIGludmVzdGlnYXRpb24gb2YgdGhpcyBidWcuIEhv
-d2V2ZXIsIEkgbXVzdCBhZG1pdCB0aGF0IEkndmUgZW5jb3VudGVyZWQgZ3JlYXQgZGlmZmljdWx0
-eSBoZXJlLiBHaXZlbiB0aGlzIGNoYWxsZW5nZSwgSSB3b3VsZCBncmVhdGx5IGFwcHJlY2lhdGUg
-aXQgaWYgeW91IGNvdWxkIGFsc28gc2NoZWR1bGUgc29tZSB0aW1lIGZvciB0aGlzIGludmVzdGln
-YXRpb24uIEkgYmVsaWV2ZSB5b3VyIGd1aWRhbmNlIGNvdWxkIGhlbHAgdXMgZmluZCB0aGUgdHJ1
-ZSByb290IGNhdXNlIG11Y2ggbW9yZSBlZmZpY2llbnRseS4KClJlZ2FyZGluZyB0aGUgcGF0Y2gs
-IEkgYXBvbG9naXplIGZvciB0aGUgd2hpdGUtc3BhY2UgY29ycnVwdGlvbi4gVGhlIHBhdGNoIGlz
-IG5vdyBhdHRhY2hlZCBhcyBhIGZpbGUgaW4gdGhpcyBtYWlsLgoKVGhhbmtzIGFnYWluLApIYW9j
-aGVuZyBZdQoKCj4gVGhhbmsgeW91IGZvciB5b3VyIHJlcG9ydC4KPiAKPiBIb3dldmVyLCBJIGFt
-IG5vdCBzdXJlIHdlIGZ1bGx5IHVuZGVyc3RhbmQgdGhlIHRydWUgcm9vdCBjYXVzZSBvZiB0aGUK
-PiBwcm9ibGVtLiAgVGhlIGlub2RlJ3Mgcm9vdCBleHRlbnQgdHJlZSBoZWFkZXIgaXMgY2hlY2tl
-ZCB3aGVuIHRoZQo+IGlub2RlIGlzIGZpcnN0IHJlYWQgZnJvbSBkaXNrLCBpbiBfX2V4dDRfaWdl
-dCgpOgo+IAo+IAkJCWlmIChleHQ0X3Rlc3RfaW5vZGVfZmxhZyhpbm9kZSwgRVhUNF9JTk9ERV9F
-WFRFTlRTKSkKPiAJCQkJcmV0ID0gZXh0NF9leHRfY2hlY2tfaW5vZGUoaW5vZGUpOwo+IAkJCWVs
-c2UKPiAJCQkJcmV0ID0gZXh0NF9pbmRfY2hlY2tfaW5vZGUoaW5vZGUpOwo+IAo+IEFuZCBleHQ0
-X2V4dF9jaGVja19pbm9kZSgpIGRvZXMgYmFzaWNhbGx5IHdoYXQgeW91ciBwYXRjaCBhZGRzOgo+
-IAo+IGludCBleHQ0X2V4dF9jaGVja19pbm9kZShzdHJ1Y3QgaW5vZGUgKmlub2RlKQo+IHsKPiAJ
-cmV0dXJuIGV4dDRfZXh0X2NoZWNrKGlub2RlLCBleHRfaW5vZGVfaGRyKGlub2RlKSwgZXh0X2Rl
-cHRoKGlub2RlKSwgMCk7Cj4gfQo+IAo+IFNvIGl0IGxvb2tzIGxpa2Ugd2hlbiB0aGUgaW5vZGUg
-aXMgb3JpZ2luYWxseSByZWFkIGZyb20gdGhlIGZpbGUKPiBzeXN0ZW0sIGl0IGlzIG5vdCBjb3Jy
-dXB0ZC4gIFRoaXMgaXMgY29uc2lzdGVudCB3aXRoIHlvdXIgZmluZGluZyB0aGF0Cj4gdGhlIGNy
-YWZ0ZWQgZmlsZSBzeXN0ZW0gaGFkIG5vIGNvcnJ1cHRpb25zIHJlcG9ydGVkIGJ5IGZzY2suCj4g
-Cj4gV2hhdCB0aGlzIGltcGxpZXMgaXMgdGhhdCBzb21laG93IHRoZSByb290IG5vZGUgb2YgdGhl
-IGV4dGVudCB0cmVlIGlzCj4gZ2V0dGluZyBjb3JydXB0ZWQgYnkgdGhlIGtlcm5lbCBjb2RlIC0t
-LSBhbmQgdGhhdCdzIHZlcnkgY29uY2VybmluZywKPiBhbmQgd2Ugc2hvdWxkIGZpeCBfdGhhdF8s
-IHNpbmNlIChhKSBjb25zdGFudGx5IGNoZWNraW5nIHRoZSByb290Cj4gZXh0ZW50IHRyZWUgbm9k
-ZSBldmVyeSBzaW5nbGUgdGltZSB3ZSBkbyBhbiBleHRlbnQgdHJlZSBsb29rdXAgaXMKPiBleHRy
-YSBvdmVyaGVhZCwgYW5kIChiKSBpZiBzb21ldGhpbmcgaXMgY29ycnVwdGluZyB0aGUgZXh0ZW50
-IHRyZWUsCj4gX25vdF8gY29ycnVwdGluZyB0aGUgZmlsZSBzeXN0ZW0gYXMgb3Bwb3NlZCB0byBu
-b3RpY2luZyB0aGF0IHRoZSBmaWxlCj4gc3lzdGVtIGhhcyBnb3R0ZW4gY29ycnVwdGVkIGFuZCB0
-aGVuIGRlY2xhcmluZyB0aGUgZmlsZSBzeXN0ZW0gaXMKPiBjb3JydXB0ZWQgcmVxdWlyaW5nIHRo
-YXQgdGhlIGZpbGUgc3lzdGVtIG5lZWRzIHRvIGJlIGZpeGVkIGJ5IGZzY2suZXh0NC4KPiAKPiBJ
-ZiB5b3UgaGF2ZSB0aW1lIHRvIGRvIHRoYXQgZnVydGhlciBpbnZlc3RpZ2F0aW9uLCBJIHdvdWxk
-IHJlYWxseQo+IGFwcHJlaWNpYXRlIGl0LiAgT3RoZXJ3aXNlLCBJJ2xsIHNjaGVkdWxlIHRpbWUg
-dG8gZG8gdGhhdCBkZWVwZXIKPiBpbnZlc3RpZ2F0aW9uIGluIHRoZSBuZXh0IGZldyB3ZWVrcy4K
-PiAKPiBCeSB0aGUgd2F5LCB0aGUgcGF0Y2ggdGhhdCB5b3UgaW5jbHVkZWQgd2FzIHdoaXRlLXNw
-YWNlIGNvcnJ1cHRlZCwKPiBwcm9iYWJseSBieSB5b3VyIG1haWwgY2xpZW50IChwcmVzdW1hYmx5
-LCBnbWFpbD8pLiAgT25lIHdheSB0byBhdm9pZAo+IHRoaXMgaXMgdG8gYXR0YWNoIHRoZSBwYXRj
-aCBhcyBhIGZpbGUsIG9yIHNlbmQgaXQgc2VwYXJhdGVseSB1c2luZyBnaXQKPiBzZW5kLWVtYWls
-LiAgU2VlIHRoZSBbMV0gZm9yIG1vcmUgZGV0YWlscy4KPiAKPiBbMV0gaHR0cHM6Ly93d3cua2Vy
-bmVsLm9yZy9kb2MvaHRtbC9sYXRlc3QvcHJvY2Vzcy9zdWJtaXR0aW5nLXBhdGNoZXMuaHRtbAo+
-IAo+IFRoYW5rcywKPiAKPiAJCQkJCQktIFRlZAo=
-------=_Part_960607_1211823836.1765702378067
-Content-Type: application/octet-stream; name=ext4_find_extent.patch
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="ext4_find_extent.patch"
+On 2025-12-09 20:27, 余昊铖 wrote:
+> Hello,
+>
+>
+> I would like to report a potential security issue in the Linux kernel ext4 filesystem, which I found using a modified syzkaller-based kernel fuzzing tool that I developed.
+>
+I noticed that your configuration has CONFIG_BLK_DEV_WRITE_MOUNTED enabled.
 
-RnJvbSBkMDQ4ODYyY2VhYzliOWMxNjg0MjI3MGIwMjNkOTJmMzNiMTU5YWNlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiAwbmUxcjBzIDx5dWhhb2NoZW5nMDM1QGdtYWlsLmNvbT4KRGF0
-ZTogVHVlLCA5IERlYyAyMDI1IDE4OjQyOjEyICswODAwClN1YmplY3Q6IFtQQVRDSF0gVGhpcyBw
-YXRjaCBmaXhlcyBhIHNsYWItdXNlLWFmdGVyLWZyZWUgdnVsbmVyYWJpbGl0eSBpbgogYGV4dDRf
-ZmluZF9leHRlbnQoKWAgdGhhdCBvY2N1cnMgd2hlbiBwcm9jZXNzaW5nIGEgY29ycnVwdGVkIGZp
-bGVzeXN0ZW0KIGltYWdlLgoKV2hlbiB0cmF2ZXJzaW5nIHRoZSBleHRlbnQgdHJlZSwgdGhlIGtl
-cm5lbCBwcmV2aW91c2x5IGZhaWxlZCB0byB2YWxpZGF0ZSB0aGUgcm9vdCBleHRlbnQgaGVhZGVy
-IGJlZm9yZSB1c2luZyBpdC4gSWYgYGVoX2VudHJpZXNgIGV4Y2VlZHMgYGVoX21heGAgaW4gdGhl
-IHJvb3QgaGVhZGVyLCB0aGUgYmluYXJ5IHNlYXJjaCBtYWNyb3MgKGxpa2UgYEVYVF9MQVNUX0VY
-VEVOVGApIGNhbGN1bGF0ZSBwb2ludGVycyBiZXlvbmQgdGhlIGFsbG9jYXRlZCBleHRlbnQgYmxv
-Y2suIFRoaXMgbGVhZHMgdG8gb3V0LW9mLWJvdW5kcyBtZW1vcnkgYWNjZXNzIGFuZCBwb3B1bGF0
-ZXMgdGhlIGBwYXRoYCBhcnJheSB3aXRoIGludmFsaWQgZGF0YS4gU3Vic2VxdWVudGx5LCB3aGVu
-IGBleHQ0X2ZyZWVfZXh0X3BhdGgoKWAgY2xlYW5zIHVwIHRoaXMgY29ycnVwdGVkIHBhdGgsIGl0
-IGRlcmVmZXJlbmNlcyBpbnZhbGlkIHBvaW50ZXJzLCB0cmlnZ2VyaW5nIGEgVXNlLUFmdGVyLUZy
-ZWUuCgpUaGUgZml4IGFkZHMgYSBjb25zaXN0ZW5jeSBjaGVjayBpbiBgZXh0NF9maW5kX2V4dGVu
-dCgpYCB0byB2YWxpZGF0ZSB0aGUgcm9vdCBleHRlbnQgaGVhZGVyLiBJdCBlbnN1cmVzIHRoYXQg
-YGVoX2VudHJpZXNgIGRvZXMgbm90IGV4Y2VlZCBgZWhfbWF4YCBiZWZvcmUgcHJvY2VlZGluZyB3
-aXRoIHRoZSBiaW5hcnkgc2VhcmNoLiBJZiB0aGUgY2hlY2sgZmFpbHMsIHRoZSBmdW5jdGlvbiBy
-ZXBvcnRzIGFuIGVycm9yIHZpYSBgRVhUNF9FUlJPUl9JTk9ERWAgYW5kIHJldHVybnMgYC1FRlND
-T1JSVVBURURgLCBwcmV2ZW50aW5nIHRoZSB1bnNhZmUgbWVtb3J5IGFjY2Vzcy4KClNpZ25lZC1v
-ZmYtYnk6IDBuZTFyMHMgPHl1aGFvY2hlbmcwMzVAZ21haWwuY29tPgotLS0KIGZzL2V4dDQvZXh0
-ZW50cy5jIHwgMyArKysKIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykKCmRpZmYgLS1n
-aXQgYS9mcy9leHQ0L2V4dGVudHMuYyBiL2ZzL2V4dDQvZXh0ZW50cy5jCmluZGV4IDM0ZTI1ZWVl
-NjUyMS4uYjA5ZjY2NDY5NWYyIDEwMDY0NAotLS0gYS9mcy9leHQ0L2V4dGVudHMuYworKysgYi9m
-cy9leHQ0L2V4dGVudHMuYwpAQCAtOTA0LDYgKzkwNCw5IEBAIGV4dDRfZmluZF9leHRlbnQoc3Ry
-dWN0IGlub2RlICppbm9kZSwgZXh0NF9sYmxrX3QgYmxvY2ssCiAJCWdvdG8gZXJyOwogCX0KIAor
-ICAgIHJldCA9IGV4dDRfZXh0X2NoZWNrKGlub2RlLCBlaCwgZGVwdGgsIDApOworCWlmIChyZXQp
-IGdvdG8gZXJyOworCiAJaWYgKHBhdGgpIHsKIAkJZXh0NF9leHRfZHJvcF9yZWZzKHBhdGgpOwog
-CQlpZiAoZGVwdGggPiBwYXRoWzBdLnBfbWF4ZGVwdGgpIHsKLS0gCjIuNTEuMAoK
-------=_Part_960607_1211823836.1765702378067--
+This setting allows bare writes to an already mounted ext4 filesystem,
+meaning certain ext4 metadata (like extent tree blocks) can be modified
+without the filesystem being aware of the changes.
+
+Could you please try disabling CONFIG_BLK_DEV_WRITE_MOUNTED and see
+if the issue is still reproducible?
+
+
+Cheers,
+Baokun
 
 
