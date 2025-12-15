@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-12356-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12357-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8178CCBC36A
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 02:55:17 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C74ACBC388
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 03:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 71B13300C6D6
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 01:54:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AF4C93004D11
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 02:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0073126B8;
-	Mon, 15 Dec 2025 01:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7038419F464;
+	Mon, 15 Dec 2025 02:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Xb8moBEz"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="6nPOMgg0"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A962E8DFE;
-	Mon, 15 Dec 2025 01:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96051A254E
+	for <linux-ext4@vger.kernel.org>; Mon, 15 Dec 2025 02:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765763683; cv=none; b=jUwd6wQpC3fLUoXuOIWv94t/yIAtNpMSxonY9oxn4u6bbrFqgbAj0vn26jgoyN7pjZi509slGJysQZNTgxRTaz/cimWZXj0LoAJ1xF+uUjzzGFphyDPKdgcHwMtp4rfIXu62EC2m/ahJkCrAWuCPw/+ybQ5KWW1xpb5i6hbAIss=
+	t=1765764163; cv=none; b=U/gNGi0xdOPhQWTIswQl4WVck0Y+3gnPaVUjhDICVmxLFAFqP52fygKAau+xc40p/E1FnQmYsn7/bf1TlNeSou7R1Ihdiq+dKDRsqCPQLRECk8qzwKAd1wU5a4JbetCqyUi3MyMkQikEGynwy8FnRGMiqlVHS+bohjRmy0gSLpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765763683; c=relaxed/simple;
-	bh=YSVkXZUT/VY0EskR9QQgzFeKqVXPmTZaJxIMYGr33VA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
-	 In-Reply-To:Content-Type; b=s0+Grlx6kVsSCZwb8+WpWkCP5hKi5/LJLFn+Qr0GAlucaPhv/l1gEjTsI6yUeEwQuvnyfAfR8r0SC2dB+ZGeOJOpz0mIudCnAV8euErGxV2CAS1TOesl+ulkY+Rx43K8DEQv+Nj8Il7/BIaUKzdQIM61ko+07P1YldVfHoM/mCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Xb8moBEz; arc=none smtp.client-ip=113.46.200.216
+	s=arc-20240116; t=1765764163; c=relaxed/simple;
+	bh=Q2yrEDWWO7bVgKGw8xd6fs+XnJW/XLxyUeoy0I6aTJY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Ku3kLVxnCEysSVHITZNDpQB4fkBvBpwQwHwPfzCe85aFTogFQ6sFsof8QzZ1F9Ut97zyssXQjZIcnmm3ihwRFjLurV4LDnN62f5S5O8R4u8ROuEIpeN2ERXvILPtb8CrFX5KrC3Ixc/J1XV5kh5KSdBBsUrKnuNc68aD5kp0I6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=6nPOMgg0; arc=none smtp.client-ip=113.46.200.216
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=YSVkXZUT/VY0EskR9QQgzFeKqVXPmTZaJxIMYGr33VA=;
-	b=Xb8moBEzOP/qzbXXlvVy2Y+031sdoSgJYeiu4wT9y8xjQPQM2BUOOT0dIh8O6Ah7VdL5JK3oi
-	0Oi5BoaWvXvJfyPVIUH2WUqm3a9aUtsBekkJyYNSvSFzLk0Qk9q1WaEcaPkQVqNOW2NIwNssSR2
-	qYwYlSabptIDaDbgwmrWF6A=
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4dV3383SCgz1T4Hj;
-	Mon, 15 Dec 2025 09:52:20 +0800 (CST)
+	bh=c3y+wtDihnjqDOnGtfordNjEgryc+mGOGO+bKVHbmCI=;
+	b=6nPOMgg0tnmvqdYIndL6Bcn+ZuZNqT5G+zVYDnsd7uuzFRTu42Fs86vgc0vtC3Q6vzAwxAc/p
+	qW3KNVJRI5vHFF2Xl/dC9bRqFv2CLXgFApJaQjvhJqGC+jwj9fn6rZfPueqOzEs08R8i6yhi4Pi
+	E0MOlChDoANITFVF8YpDJvg=
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4dV3DY6HRkz1T4J5;
+	Mon, 15 Dec 2025 10:00:29 +0800 (CST)
 Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 61505140133;
-	Mon, 15 Dec 2025 09:54:29 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id C8BA8140203;
+	Mon, 15 Dec 2025 10:02:38 +0800 (CST)
 Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
  (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 15 Dec
- 2025 09:54:28 +0800
-Message-ID: <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
-Date: Mon, 15 Dec 2025 09:54:27 +0800
+ 2025 10:02:38 +0800
+Message-ID: <3631525a-1df6-47a4-b0b8-f20ab137264d@huawei.com>
+Date: Mon, 15 Dec 2025 10:02:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,38 +55,47 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
+Subject: Re: [PATCH] ext4: fix iloc.bh leak in ext4_xattr_inode_update_ref
 Content-Language: en-GB
-To: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
-References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
-CC: <security@kernel.org>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
+To: Yang Erkun <yangerkun@huawei.com>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <eraykrdg1@gmail.com>,
+	<albinbabuvarghese20@gmail.com>, <linux-ext4@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huaweicloud.com>
+References: <20251213055706.3417529-1-yangerkun@huawei.com>
 From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
+In-Reply-To: <20251213055706.3417529-1-yangerkun@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
  dggpemf500013.china.huawei.com (7.185.36.188)
 
-Hi,
-
-On 2025-12-09 20:27, 余昊铖 wrote:
-> Hello,
+On 2025-12-13 13:57, Yang Erkun wrote:
+> The error branch for ext4_xattr_inode_update_ref forget to release the
+> refcount for iloc.bh. Find this when review code.
 >
+> Fixes: 57295e835408 ("ext4: guard against EA inode refcount underflow in xattr update")
+> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+
+Nice catch! The patch looks good so feel free to add:
+
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+
+> ---
+>  fs/ext4/xattr.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> I would like to report a potential security issue in the Linux kernel ext4 filesystem, which I found using a modified syzkaller-based kernel fuzzing tool that I developed.
->
-I noticed that your configuration has CONFIG_BLK_DEV_WRITE_MOUNTED enabled.
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 2e02efbddaac..4ed8ddf2a60b 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1037,6 +1037,7 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
+>  		ext4_error_inode(ea_inode, __func__, __LINE__, 0,
+>  			"EA inode %lu ref wraparound: ref_count=%lld ref_change=%d",
+>  			ea_inode->i_ino, ref_count, ref_change);
+> +		brelse(iloc.bh);
+>  		ret = -EFSCORRUPTED;
+>  		goto out;
+>  	}
 
-This setting allows bare writes to an already mounted ext4 filesystem,
-meaning certain ext4 metadata (like extent tree blocks) can be modified
-without the filesystem being aware of the changes.
-
-Could you please try disabling CONFIG_BLK_DEV_WRITE_MOUNTED and see
-if the issue is still reproducible?
-
-
-Cheers,
-Baokun
 
 
