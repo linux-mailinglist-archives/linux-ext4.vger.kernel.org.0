@@ -1,98 +1,120 @@
-Return-Path: <linux-ext4+bounces-12363-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12364-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73669CBD75C
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 12:12:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4EFCBDEE0
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 14:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1C1433015944
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 11:11:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 30EC5307B9AF
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Dec 2025 12:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB2932FA3F;
-	Mon, 15 Dec 2025 11:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812232E1EF8;
+	Mon, 15 Dec 2025 12:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Izf1XZQq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (l-sdnproxy.icoremail.net [20.188.111.126])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D80286D5C;
-	Mon, 15 Dec 2025 11:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.188.111.126
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D901C3BF7;
+	Mon, 15 Dec 2025 12:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765797111; cv=none; b=pWKcymyjD5KcRjtm+bGj+5+mDJSNt/jKcKWrVSX4VGEqO/KvzF47jR+ncITTJRTjzD/s7mjxMj+QhsdpQDMdhi7BW+RnbxSBYIVUCJUOg9bH4i77GJp2bsgOqM+Qi3dUCj/6LPQ5VY4Rrn3F9SQXrsn4uOnaDtbeCU9Edn/h5jA=
+	t=1765802286; cv=none; b=IY3FgHSDGyZksgp9l+F++W1OHbi9YyHrVfQ22Vk4YzcsN5spDxtlRq27n/jtJOfPfWufT0tTF4P+KIhpL3fQZFdYPGZp8+gyA5uLyrv3hhA46gMD4PNZk5fxqLhNIGiAxY9FwxWoxPxb6gcg5iDmSgeU2Fv1DCwjlJXctsKXyHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765797111; c=relaxed/simple;
-	bh=I4Fz7YefZRdtaIbXbbJc5IRUvIsPd830PYMQ8xxNt2I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=H+UrwszJV8LaEKZpio582a6viJyf0Z9kJt6Ivv1dxPYKvp+y76ydGfQFxSbWITGbmFGNyEF7wYfrYtGSrEXG8giqLwsZnihCpe4w+PyJfWdFT+/s5EPKR8rfS8xz4MX4ssahfLyNQgq3LkFg50mS8R6TeT/TAtOns799pqwWweU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=20.188.111.126
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [183.157.161.216])
-	by mtasvr (Coremail) with SMTP id _____wAnJlPk7D9p4Gr2AA--.5992S3;
-	Mon, 15 Dec 2025 19:11:33 +0800 (CST)
-Received: from 3230100410$zju.edu.cn ( [183.157.161.216] ) by
- ajax-webmail-mail-app1 (Coremail) ; Mon, 15 Dec 2025 19:11:32 +0800
- (GMT+08:00)
-Date: Mon, 15 Dec 2025 19:11:32 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
-To: "Baokun Li" <libaokun1@huawei.com>
-Cc: security@kernel.org, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.3-cmXT6 build
- 20250620(94335109) Copyright (c) 2002-2025 www.mailtech.cn zju.edu.cn
-In-Reply-To: <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
-References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
- <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1765802286; c=relaxed/simple;
+	bh=Xiwt0F7uZg8asci0wopt7blyzkMs/Z1c1ZVQV24taE8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rdEfVlrs3T4jLhcAkrPTeaGLaGUvRp7OXYQSq5LvWIhUBF4uaI5r2C5TszHekdffnOk6pdXROsVCyFUTIzxCYftLTr04hOBRhuP191yPjZqwYTXMHb4GrAWdTADQJsTasjdbobNwGAKGmYMQHsCVpMth/foXeMZFqZbqdRK/VhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Izf1XZQq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D73C4CEF5;
+	Mon, 15 Dec 2025 12:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765802285;
+	bh=Xiwt0F7uZg8asci0wopt7blyzkMs/Z1c1ZVQV24taE8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Izf1XZQqUXGQ9m1uFJavHM7TYM/1TxOw5krNCVjWI9t+iQJTi0S6oO1B/rTpu/+H+
+	 jCj2NlwCflc8CyOzXYnniNnfSe0CiOhj/iKELmDDLcizX/T5+R9/Yov29Zwp0ogT8l
+	 BFirJqRbzj/7cC0t6W0dKNoRyIiMqI+TJwP7ZXrwnFh8+zpAJxbl7NeQ88Nys3xIEX
+	 5qfTv3MgxyGeidf6p/+1yrXiMXzWHf5LizG61DOH3LPAqiHcvo1eLfshpEQYghojue
+	 DwQv69rkeXleu9DaWw1KUHx/U8wsjtcvGshR113fPEvrQ1BKHad+dpVcE/8jPqV4Y1
+	 qG45VMXN6f3Ng==
+Date: Mon, 15 Dec 2025 13:37:59 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	hirofumi@mail.parknet.co.jp, almaz.alexandrovich@paragon-software.com, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, Volker.Lendecke@sernet.de, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v2 1/6] fs: Add case sensitivity info to file_kattr
+Message-ID: <20251215-genuss-neuer-1e3670000df7@brauner>
+References: <20251211152116.480799-1-cel@kernel.org>
+ <20251211152116.480799-2-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <3c54df5e.436a9.19b21b55d21.Coremail.3230100410@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:yy_KCgBn4Nnk7D9pOa3FBA--.23577W
-X-CM-SenderInfo: qtstiiiqquiio62m3hxhgxhubq/1tbiBhMBDmk-EwIh2gABsn
-X-CM-DELIVERINFO: =?B?gHsd4wXKKxbFmtjJiESix3B1w3vLmOfvthuvpruYXH4olOsxqjvNQxnsdAQdqspSym
-	ePmqBhvzZ47BPkVDji2p3Q2yRllDbvqbCvCVIhG5pluhnYtnEzEMpyEvXVjC5kw66yQi3X
-	Um6CGqpS6udobIzt6urK8aSFEm6CruvvRj4AiPR8d6SJyfm/Y0DO2Z2Oq5wh9A==
-X-Coremail-Antispam: 1Uk129KBj9xXoW7GFyUAFW7Jw1Dur4DAFWUGFX_yoWfCFbEvF
-	1fZwnrJw1kAr4vqa13Aw47urs8Xws7tFyrJw1rGr4Ut3sIqa4kJFZ3GFZxuw17GFW3K3s8
-	AFZ7XFn3X3WIvosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbBkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6x
-	kI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-	6r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-	Ij64vIr41lF7xvr2IYc2Ij64vIr40E4x8a64kEw24lFcxC0VAYjxAxZF0Ew4CEw7xC0wAC
-	Y4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-	8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-	xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-	8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280
-	aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JwCE64xvF2IEb7IF0Fy7Yx
-	BIdaVFxhVjvjDU0xZFpf9x07j5l19UUUUU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20251211152116.480799-2-cel@kernel.org>
 
-SGksCgpJIGhhdmUgZGlzYWJsZWQgQ09ORklHX0JMS19ERVZfV1JJVEVfTU9VTlRFRCBhbmQgc3Bl
-bnQgc29tZSB0aW1lIHRyeWluZyB0byB0cmlnZ2VyIHRoZSByZXBvcnRlZCBLQVNBTiBpc3N1ZXMu
-IEFuZCBJIGZvdW5kIG5laXRoZXIgb2YgdGhlIHR3byBidWdzIGhhcyBiZWVuIG9ic2VydmVkIHNp
-bmNlLiBJcyB0aGlzIGlzc3VlIHN0aWxsIHdvcnRoIGludmVzdGlnYXRpbmc/CgpUaGFua3MsCkhh
-b2NoZW5nIFl1CgoKPiBIaSwKPiAKPiBPbiAyMDI1LTEyLTA5IDIwOjI3LCDkvZnmmIrpk5Ygd3Jv
-dGU6Cj4gPiBIZWxsbywKPiA+Cj4gPgo+ID4gSSB3b3VsZCBsaWtlIHRvIHJlcG9ydCBhIHBvdGVu
-dGlhbCBzZWN1cml0eSBpc3N1ZSBpbiB0aGUgTGludXgga2VybmVsIGV4dDQgZmlsZXN5c3RlbSwg
-d2hpY2ggSSBmb3VuZCB1c2luZyBhIG1vZGlmaWVkIHN5emthbGxlci1iYXNlZCBrZXJuZWwgZnV6
-emluZyB0b29sIHRoYXQgSSBkZXZlbG9wZWQuCj4gPgo+IEkgbm90aWNlZCB0aGF0IHlvdXIgY29u
-ZmlndXJhdGlvbiBoYXMgQ09ORklHX0JMS19ERVZfV1JJVEVfTU9VTlRFRCBlbmFibGVkLgo+IAo+
-IFRoaXMgc2V0dGluZyBhbGxvd3MgYmFyZSB3cml0ZXMgdG8gYW4gYWxyZWFkeSBtb3VudGVkIGV4
-dDQgZmlsZXN5c3RlbSwKPiBtZWFuaW5nIGNlcnRhaW4gZXh0NCBtZXRhZGF0YSAobGlrZSBleHRl
-bnQgdHJlZSBibG9ja3MpIGNhbiBiZSBtb2RpZmllZAo+IHdpdGhvdXQgdGhlIGZpbGVzeXN0ZW0g
-YmVpbmcgYXdhcmUgb2YgdGhlIGNoYW5nZXMuCj4gCj4gQ291bGQgeW91IHBsZWFzZSB0cnkgZGlz
-YWJsaW5nIENPTkZJR19CTEtfREVWX1dSSVRFX01PVU5URUQgYW5kIHNlZQo+IGlmIHRoZSBpc3N1
-ZSBpcyBzdGlsbCByZXByb2R1Y2libGU/Cj4gCj4gCj4gQ2hlZXJzLAo+IEJhb2t1bgo=
+On Thu, Dec 11, 2025 at 10:21:11AM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> Enable upper layers such as NFSD to retrieve case sensitivity
+> information from file systems by adding a case_info field to struct
+> file_kattr.
+> 
+> Add vfs_get_case_info() as a convenience helper for kernel
+> consumers. If a filesystem does not provide a fileattr_get hook, it
+> returns the default POSIX behavior (case-sensitive,
+> case-preserving), which is correct for the majority of Linux
+> file systems implementations.
+> 
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
 
+Thanks for listening and plumbing this into file_attr() that seems a
+much better place than statx().
+
+>  fs/file_attr.c           | 31 +++++++++++++++++++++++++++++++
+>  include/linux/fileattr.h | 23 +++++++++++++++++++++++
+>  2 files changed, 54 insertions(+)
+> 
+> diff --git a/fs/file_attr.c b/fs/file_attr.c
+> index 1dcec88c0680..609e890b5101 100644
+> --- a/fs/file_attr.c
+> +++ b/fs/file_attr.c
+> @@ -94,6 +94,37 @@ int vfs_fileattr_get(struct dentry *dentry, struct file_kattr *fa)
+>  }
+>  EXPORT_SYMBOL(vfs_fileattr_get);
+>  
+> +/**
+> + * vfs_get_case_info - retrieve case sensitivity info for a filesystem
+> + * @dentry:	the object to retrieve from
+> + * @case_info:	pointer to store result
+> + *
+> + * Call i_op->fileattr_get() to retrieve case sensitivity information.
+> + * If the filesystem does not provide a fileattr_get hook, return
+> + * the default POSIX behavior (case-sensitive, case-preserving).
+> + *
+> + * Return: 0 on success, or a negative error on failure.
+> + */
+> +int vfs_get_case_info(struct dentry *dentry, u32 *case_info)
+
+Hm, I would much prefer if we followed the statx() model where we have
+vfs_getattr{_nosec}() that always returns a struct kstat. So we should
+only have vfs_fileattr_get() instead of the special-purpose
+vfs_get_case_info() thing.
+
+I guess the main reason you did this is so that you can set the default
+without having to touch each filesystem that doesn't do file_attr.
+
+So just move the default setup of case_info into vfs_fileattr_get()?
+This way it's also available to other callers of this function such as
+overlayfs and ecryptfs. And then just call that in nfsd.
+
+Otherwise I have no complaints about the VFS part.
 
