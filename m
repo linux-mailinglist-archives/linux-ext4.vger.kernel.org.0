@@ -1,242 +1,314 @@
-Return-Path: <linux-ext4+bounces-12377-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12378-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB815CC37C5
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Dec 2025 15:17:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33EFDCC420C
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Dec 2025 17:08:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1421E305FF3B
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Dec 2025 14:14:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4651530BAAEC
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Dec 2025 16:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F7F3469EE;
-	Tue, 16 Dec 2025 12:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FDF1CEAA3;
+	Tue, 16 Dec 2025 15:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CYvaUBPp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2043A345733
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Dec 2025 12:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705A93B28D
+	for <linux-ext4@vger.kernel.org>; Tue, 16 Dec 2025 15:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765887548; cv=none; b=e112nbrIgrGwl/dhIiyl0901Yvi4XjJtw6OBXYvVZYC0drqoKAY5DhVCTrkbGHbdvo+fSA5CKjbwLIuuMYQaGU00Gh2weREKr+32c0Qtb/QC8jKCh57LiGMDXeqp8sW3D8SkCZ6euY2WD+CffWJzy+4j0mX0bAb9hUgSplnG8mM=
+	t=1765900425; cv=none; b=lalDo3fbg6zFj4ri9qOJ+SwbGvxjozNk4HhmKnzb2vhbjPn6CJuINnLjBCq5j0EmfVdEKl/65UFoLhR1l/8SWd+okmdAuE1kNHWTkoZr0ixFUYSsVy82VCgUeNeYkr3roaFT4n4e0W+dtDMJhvDhIZ0+zx2pyzRm5+pCINFlliY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765887548; c=relaxed/simple;
-	bh=CnIM4O9Vrm/4MGS3WXBOGgfYldNU7UmYa7dRl8k1FzU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=buav08HNq2G6Hy4PeXabo5wrcBFnhsvmwQJg3xRN0YVV/PUlYbKNSN/CF1mQc+LDjvOXQgpRh3IDkA46SyMnqzZdUPoyis0FNnD30bU+/8AIdYt3oo5btcBuKHoPPltpacqcFlW4EAQ/FFgHr1aDkMcDNTajinGjCmvVcEtwMWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-7c7046514a2so4424255a34.0
-        for <linux-ext4@vger.kernel.org>; Tue, 16 Dec 2025 04:19:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765887545; x=1766492345;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JdJhXZEww5JI+SUXfrRczFqSgFbgygoMbU60L+eHlvA=;
-        b=j7K8jnIL+Vy0EXRFa0nkVTlNqMW4PNtg68MMeQwFdkjDcpkYvuX+IDIEut1mhSmfLK
-         pj3P8hu9gDIIk92i+r7X00dlyrj+oslj+jivKpOk0d1FcjVxwlTSBXoGzwNlpIaBspkn
-         I8ARBuHBswAMJ4HpNU5smiBcJoaY1OFk//D+g6xqxW8balwYXrfsZtlveQ3PAZ7Y3Cb5
-         kxqzQne4lq5F/IWfzFu4jhui7HqUTBSkRn2F17M3ErRdurbgHMVcrBF00f92zNT4eMnW
-         AvjjkSRSf5+4Cz8q/0NvCiBA1KnwjAv7hGQa+PT5TPbBMLexscsUe1wA6xOgHI56w5ae
-         9FUQ==
-X-Gm-Message-State: AOJu0YxXIBxdNd+AAzVJGppcUJ8Z4WNTXXC7yw7x7jCFIxRkMFebwy0K
-	luFZPMqr40k1xI2d8IimduSLIKpIQ8OlayOAMd7C4u88OuMeltrlH8q8PsrZq0VdEIWKC5a4mRx
-	vyidBEmTjzJM822akF9XiL3LS1TNkvgX7oC6zqAShsHfVbp24vI2Ml9v2LW0=
-X-Google-Smtp-Source: AGHT+IGf+W+BiJghypBLGTRkpoTrtq7DGiC4StsFb46P8GMh/8+Gxcex4JqPghQukXAVm1volp4Jgo1ZLIdt0W9pogw/zmZbv2Ur
+	s=arc-20240116; t=1765900425; c=relaxed/simple;
+	bh=espxWSD1cOfqp9QIj3FoZszFdDKuTZws5HMWSm42QUo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lhym2gyZN9ImyofGGFBn9poKa0yZ51nQVyysy5Aha9vv224RabVzeUj8IxcObBtX1KpyYrHtvqtitOdpHBXHHu3TAcXiLDsRG6z2ge/eOoEUXUMsQ7rTV84/kOSm3FX5UUbYUXVnovoEldOXpyRhfEJcR7SgRMRsqzrkdJs5+Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CYvaUBPp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765900422;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EZ08kJdj5rOMvGD3uLeYJu51cigoJ1NicH+yQQTZSWQ=;
+	b=CYvaUBPpwsMeccPMG9x54cQR011CEu5JUgg99z6aGKP491hfh4V37Vm3vvHzDzqk3DkCnx
+	vkFPYSAJFA3ywh+4PyAcl5knxIFMMsDAzBu2lI3QDvMnP3B8/z7cCnv6BubQ2ZWPjxPGEq
+	kZUP6Tf0+vCg2sch3Twj1/Xdp1ovxuI=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-253-bAAdOHPGM3aNdEwpuy_0dw-1; Tue,
+ 16 Dec 2025 10:53:40 -0500
+X-MC-Unique: bAAdOHPGM3aNdEwpuy_0dw-1
+X-Mimecast-MFC-AGG-ID: bAAdOHPGM3aNdEwpuy_0dw_1765900419
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B3CD71801212;
+	Tue, 16 Dec 2025 15:53:38 +0000 (UTC)
+Received: from bfoster (unknown [10.22.64.2])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D7B2D1953987;
+	Tue, 16 Dec 2025 15:53:37 +0000 (UTC)
+Date: Tue, 16 Dec 2025 10:53:35 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: fix dirtyclusters double decrement on fs shutdown
+Message-ID: <aUGAf_NLbIt_sktF@bfoster>
+References: <20251212154735.512651-1-bfoster@redhat.com>
+ <ef906e19-04b9-4793-998e-81c34ebf9126@huawei.com>
+ <aUApNS_YnY2Oa_93@bfoster>
+ <106ba6fe-4f94-4ed4-a53a-98a1f3ad30ab@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:3083:b0:65b:3907:b360 with SMTP id
- 006d021491bc7-65b4524c2aamr6532950eaf.62.1765887545153; Tue, 16 Dec 2025
- 04:19:05 -0800 (PST)
-Date: Tue, 16 Dec 2025 04:19:05 -0800
-In-Reply-To: <aUFKeAcD6NeBbZ6O@ndev>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69414e39.a70a0220.33cd7b.013b.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: out-of-bounds Read in ext4_xattr_set_entry
-From: syzbot <syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	wangjinchao600@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <106ba6fe-4f94-4ed4-a53a-98a1f3ad30ab@huawei.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Hello,
+On Tue, Dec 16, 2025 at 12:01:41PM +0800, Baokun Li wrote:
+> On 2025-12-15 23:28, Brian Foster wrote:
+> > On Sat, Dec 13, 2025 at 09:46:23AM +0800, Baokun Li wrote:
+> >> Hi Brian,
+> >>
+> >> Thanks for the patch.
+> >>
+> > Hi Baokun,
+> >
+> > Thanks for reviewing..
+> >
+> >> On 2025-12-12 23:47, Brian Foster wrote:
+> >>> fstests test generic/388 occasionally reproduces a warning in
+> >>> ext4_put_super() associated with the dirty clusters count:
+> >>>
+> >>>   WARNING: CPU: 7 PID: 76064 at fs/ext4/super.c:1324 ext4_put_super+0x48c/0x590 [ext4]
+> >>>
+> >>> Tracing the failure shows that the warning fires due to an
+> >>> s_dirtyclusters_counter value of -1. IOW, this appears to be a
+> >>> spurious decrement as opposed to some sort of leak. Further tracing
+> >>> of the dirty cluster count deltas and an LLM scan of the resulting
+> >>> output identified the cause as a double decrement in the error path
+> >>> between ext4_mb_mark_diskspace_used() and the caller
+> >>> ext4_mb_new_blocks().
+> >>>
+> >>> First, note that generic/388 is a shutdown vs. fsstress test and so
+> >>> produces a random set of operations and shutdown injections. In the
+> >>> problematic case, the shutdown triggers an error return from the
+> >>> ext4_handle_dirty_metadata() call(s) made from
+> >>> ext4_mb_mark_context(). The changed value is non-zero at this point,
+> >>> so ext4_mb_mark_diskspace_used() does not exit after the error
+> >>> bubbles up from ext4_mb_mark_context(). Instead, the former
+> >>> decrements both cluster counters and returns the error up to
+> >>> ext4_mb_new_blocks(). The latter falls into the !ar->len out path
+> >>> which decrements the dirty clusters counter a second time, creating
+> >>> the inconsistency.
+> >>>
+> >>> AFAICT the solution here is to exit immediately from
+> >>> ext4_mb_mark_diskspace_used() on error, regardless of the changed
+> >>> value. This leaves the caller responsible for clearing the block
+> >>> reservation at the same level it is acquired. This also skips the
+> >>> free clusters update, but the caller also calls into
+> >>> ext4_discard_allocated_blocks() to free the blocks back into the
+> >>> group. This survives an overnight loop test of generic/388 on an
+> >>> otherwise reproducing system and survives a local regression run.
+> >>>
+> >>> Signed-off-by: Brian Foster <bfoster@redhat.com>
+> >>> ---
+> >>>
+> >>> Hi all,
+> >>>
+> >>> I've thrown some testing at this and poked around the area enough that I
+> >>> _think_ it is reasonably sane, but the error paths are hairy and I could
+> >>> certainly be missing some details. I'm happy to try a different approach
+> >>> if there are any thoughts around that.. thanks.
+> >>>
+> >>> Brian
+> >>>
+> >>>  fs/ext4/mballoc.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> >>> index 56d50fd3310b..224abfd6a42b 100644
+> >>> --- a/fs/ext4/mballoc.c
+> >>> +++ b/fs/ext4/mballoc.c
+> >>> @@ -4234,7 +4234,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+> >>>  				   ac->ac_b_ex.fe_start, ac->ac_b_ex.fe_len,
+> >>>  				   flags, &changed);
+> >>>  
+> >>> -	if (err && changed == 0)
+> >>> +	if (err)
+> >>>  		return err;
+> >>>  
+> >>>  #ifdef AGGRESSIVE_CHECK
+> >> I think we might need to swap that && for an ||.
+> >>
+> >> Basically, we should only proceed with the following logic if there's
+> >> no error and the bitmap was actually changed. If we hit an error or
+> >> if the section we intended to modify was already fully handled,
+> >> we should just bail out early. Otherwise, the err could get quietly
+> >> ignored unless we hit a duplicate allocation that happens to result in
+> >> 'changed' being zero.
+> >>
+> > Hmm.. to make sure I understand, are you referring to an inconsistency
+> > case where we allocated blocks that were already marked as such in the
+> > group on disk..?
+> Yes.
+> > I'm a little uneasy about this because it seems to conflict with the
+> > surrounding code. AFAICT the only way we can hit something like !err &&
+> > !changed is via EXT4_MB_BITMAP_MARKED_CHECK, which causes
+> > _mark_context() to check the bitmap for "already modified" bits up
+> > front.
+> >
+> > If this scenario plays out, the caller has a BUG check just after the
+> > return (also under the aggressive check macro). So ISTM that this sort
+> > of (err || !changed) logic would bypass the aggressive checks and let
+> > the fs carry on when it probably shouldn't. Hm?
+> 
+> Regarding ext4_mb_mark_context, if the passed ret_changed pointer is
+> non-NULL, we initialize *ret_changed to 0. After updating the bitmap_bh,
+> we then update *ret_changed with the actual number of blocks modified
+> (changed).
+> 
+> Therefore, the original intention was for changed == 0 to signify that
+> an error occurred in ext4_mb_mark_context() before ret_changed could be
+> updated. However, as you pointed out, we also get changed == 0 when the
+> target extent has already been fully marked as allocated within bitmap_bh.
+> 
+> Crucially, we only genuinely check the bitmap to modify changed when
+> EXT4_MB_BITMAP_MARKED_CHECK is set (i.e., when AGGRESSIVE_CHECK is defined,
+> or during fast commit or resize operations). Otherwise, changed is always
+> set to the target length. This means that, in the general case, errors
+> returned after the point where ret_changed is updated (e.g., the error
+> from ext4_handle_dirty_metadata()) are usually ignored.
+> 
+> In summary:
+> 
+>  * (err && changed == 0) only concerns errors that occur before ret_changed
+>    is updated.
+>  * (err || changed == 0) concerns whether there was an error OR if any
+>    modification actually took place.
+> 
+> If we only care about err, we could move the update of ret_changed inside
+> ext4_mb_mark_context() to just before the successful return.
+> 
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: out-of-bounds Read in ext4_xattr_set_entry
+Yeah, I think the _mark_context() logic is reasonably straightforward
+from the code. What is less clear is why the allocation path only cares
+about errors prior to ret_changed being set.
 
-EXT4-fs (loop0): 1 truncate cleaned up
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
-==================================================================
-BUG: KASAN: out-of-bounds in ext4_xattr_set_entry+0x8e9/0x1e20 fs/ext4/xattr.c:1782
-Read of size 18446744073709551572 at addr ffff88800077a050 by task syz.0.17/5873
+It looks to me that this is just wrong. I suspect either due to
+copy/paste error in the mark_diskspace_used() path at some point in the
+past, or an attempt to filter out the BUG case from an obvious case
+where changed will be 0 on certain error returns.
 
-CPU: 0 UID: 0 PID: 5873 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
- print_address_description mm/kasan/report.c:378 [inline]
- print_report+0xca/0x240 mm/kasan/report.c:482
- kasan_report+0x118/0x150 mm/kasan/report.c:595
- check_region_inline mm/kasan/generic.c:-1 [inline]
- kasan_check_range+0x2b0/0x2c0 mm/kasan/generic.c:200
- __asan_memmove+0x29/0x70 mm/kasan/shadow.c:94
- ext4_xattr_set_entry+0x8e9/0x1e20 fs/ext4/xattr.c:1782
- ext4_xattr_block_set+0x872/0x2ac0 fs/ext4/xattr.c:2029
- ext4_xattr_move_to_block fs/ext4/xattr.c:2668 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
- ext4_expand_extra_isize_ea+0x12da/0x1ea0 fs/ext4/xattr.c:2831
- __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6349
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:6392 [inline]
- __ext4_mark_inode_dirty+0x45c/0x6e0 fs/ext4/inode.c:6470
- __ext4_unlink+0x631/0xab0 fs/ext4/namei.c:3282
- ext4_unlink+0x206/0x590 fs/ext4/namei.c:3312
- vfs_unlink+0x380/0x640 fs/namei.c:5369
- do_unlinkat+0x2cf/0x560 fs/namei.c:5439
- __do_sys_unlink fs/namei.c:5474 [inline]
- __se_sys_unlink fs/namei.c:5472 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:5472
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff419d8f7c9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff41abdb038 EFLAGS: 00000246 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 00007ff419fe5fa0 RCX: 00007ff419d8f7c9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000200000000180
-RBP: 00007ff419e13f91 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ff419fe6038 R14: 00007ff419fe5fa0 R15: 00007fff883d93a8
- </TASK>
+I don't think the mark_context() logic alone tells the full story here.
+I think what's relevant is the high level error handling of the
+!delalloc allocation path:
 
-Allocated by task 5873:
- kasan_save_stack mm/kasan/common.c:56 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:77
- poison_kmalloc_redzone mm/kasan/common.c:397 [inline]
- __kasan_kmalloc+0x93/0xb0 mm/kasan/common.c:414
- kasan_kmalloc include/linux/kasan.h:262 [inline]
- __do_kmalloc_node mm/slub.c:5657 [inline]
- __kmalloc_node_track_caller_noprof+0x575/0x820 mm/slub.c:5764
- kmemdup_noprof+0x2b/0x70 mm/util.c:138
- kmemdup_noprof include/linux/fortify-string.h:765 [inline]
- ext4_xattr_block_set+0x781/0x2ac0 fs/ext4/xattr.c:1977
- ext4_xattr_move_to_block fs/ext4/xattr.c:2668 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2743 [inline]
- ext4_expand_extra_isize_ea+0x12da/0x1ea0 fs/ext4/xattr.c:2831
- __ext4_expand_extra_isize+0x30d/0x400 fs/ext4/inode.c:6349
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:6392 [inline]
- __ext4_mark_inode_dirty+0x45c/0x6e0 fs/ext4/inode.c:6470
- __ext4_unlink+0x631/0xab0 fs/ext4/namei.c:3282
- ext4_unlink+0x206/0x590 fs/ext4/namei.c:3312
- vfs_unlink+0x380/0x640 fs/namei.c:5369
- do_unlinkat+0x2cf/0x560 fs/namei.c:5439
- __do_sys_unlink fs/namei.c:5474 [inline]
- __se_sys_unlink fs/namei.c:5472 [inline]
- __x64_sys_unlink+0x47/0x50 fs/namei.c:5472
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+1. ext4_mb_new_blocks() reserves blocks and attempts physical allocation
+in memory. On success, it calls into ext4_mb_mark_diskspace_used() to
+update on-disk structures.
 
-The buggy address belongs to the object at ffff88800077a000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 80 bytes inside of
- 1024-byte region [ffff88800077a000, ffff88800077a400)
+2a. If ext4_mb_mark_diskspace_used() is successful, it decrements the
+freeclusters counter and releases res from the dirtyclusers counter
+(i.e. transfer the block from dirty to used). ext4_mb_new_blocks()
+basically just returns the result.
 
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x778
-head: order:2 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x7ff00000000040(head|node=0|zone=0|lastcpupid=0x7ff)
-page_type: f5(slab)
-raw: 007ff00000000040 ffff88801a441dc0 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 007ff00000000040 ffff88801a441dc0 dead000000000122 0000000000000000
-head: 0000000000000000 0000000080080008 00000000f5000000 0000000000000000
-head: 007ff00000000002 ffffea000001de01 00000000ffffffff 00000000ffffffff
-head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000004
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x252800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP|__GFP_THISNODE), pid 5873, tgid 5872 (syz.0.17), ts 160723892073, free_ts 160040949869
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x234/0x290 mm/page_alloc.c:1846
- prep_new_page mm/page_alloc.c:1854 [inline]
- get_page_from_freelist+0x2365/0x2440 mm/page_alloc.c:3915
- __alloc_pages_slowpath+0x30b/0xce0 mm/page_alloc.c:4741
- __alloc_frozen_pages_noprof+0x319/0x370 mm/page_alloc.c:5223
- alloc_slab_page mm/slub.c:3077 [inline]
- allocate_slab+0x7a/0x3b0 mm/slub.c:3248
- new_slab mm/slub.c:3302 [inline]
- ___slab_alloc+0xf2b/0x1960 mm/slub.c:4656
- __slab_alloc+0x65/0x100 mm/slub.c:4779
- __slab_alloc_node mm/slub.c:4855 [inline]
- slab_alloc_node mm/slub.c:5251 [inline]
- __do_kmalloc_node mm/slub.c:5656 [inline]
- __kmalloc_node_noprof+0x5d9/0x820 mm/slub.c:5663
- kmalloc_array_node_noprof include/linux/slab.h:1075 [inline]
- alloc_slab_obj_exts+0x3e/0x100 mm/slub.c:2123
- __memcg_slab_post_alloc_hook+0x330/0x730 mm/memcontrol.c:3197
- memcg_slab_post_alloc_hook mm/slub.c:2338 [inline]
- slab_post_alloc_hook mm/slub.c:4964 [inline]
- slab_alloc_node mm/slub.c:5263 [inline]
- __do_kmalloc_node mm/slub.c:5656 [inline]
- __kmalloc_node_track_caller_noprof+0x5f3/0x820 mm/slub.c:5764
- __kmemdup_nul mm/util.c:64 [inline]
- kstrdup+0x42/0x100 mm/util.c:84
- alloc_vfsmnt+0xeb/0x430 fs/namespace.c:302
- vfs_create_mount+0x69/0x320 fs/namespace.c:1184
- fc_mount fs/namespace.c:1202 [inline]
- do_new_mount_fc fs/namespace.c:3636 [inline]
- do_new_mount+0x390/0xa10 fs/namespace.c:3712
- do_mount fs/namespace.c:4035 [inline]
- __do_sys_mount fs/namespace.c:4224 [inline]
- __se_sys_mount+0x313/0x410 fs/namespace.c:4201
-page last free pid 5862 tgid 5862 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1395 [inline]
- __free_frozen_pages+0xbc8/0xd30 mm/page_alloc.c:2943
- __slab_free+0x21b/0x2a0 mm/slub.c:6004
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x97/0x100 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x148/0x160 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x22/0x80 mm/kasan/common.c:349
- kasan_slab_alloc include/linux/kasan.h:252 [inline]
- slab_post_alloc_hook mm/slub.c:4953 [inline]
- slab_alloc_node mm/slub.c:5263 [inline]
- kmem_cache_alloc_noprof+0x37d/0x710 mm/slub.c:5270
- getname_flags+0xb8/0x540 fs/namei.c:146
- getname include/linux/fs.h:2498 [inline]
- do_sys_openat2+0xbc/0x200 fs/open.c:1426
- do_sys_open fs/open.c:1436 [inline]
- __do_sys_openat fs/open.c:1452 [inline]
- __se_sys_openat fs/open.c:1447 [inline]
- __x64_sys_openat+0x138/0x170 fs/open.c:1447
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+2b. If ext4_mb_mark_diskspace_used() fails, ext4_mb_new_blocks()
+receives the error. In the error exit path, it frees the blocks back
+into the incore structures and releases the reservation it acquired in
+step 1.  
 
-Memory state around the buggy address:
- ffff888000779f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888000779f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88800077a000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                                                 ^
- ffff88800077a080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88800077a100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+However the bug this patch is trying to fix is that
+ext4_mb_mark_diskspace_used() runs the counter updates regardless of
+error in some cases. If the on-disk update fails, _new_blocks() will
+release its reservation and return the blocks, so _mark_diskspace_used()
+shouldn't account that block from the dirty and free counters.
 
+What isn't quite clear to me is how this is expected to deal with the
+modified buffer. This particular case is a shutdown and journal abort,
+so I suspect the buffer can't write back.
 
-Tested on:
+> >> By the way, I spotted two other spots with similar error logic:
+> >> ext4_mb_clear_bb() and ext4_group_add_blocks().
+> >>
+> > Yeah, I saw those as well but didn't think they needed changing. My high
+> > level understanding of the alloc case is that ext4_mb_new_blocks()
+> > acquires res (!delalloc), allocs blocks out of in-core structures, then
+> > calls down into _mark_diskspace_used() to update/journal on-disk
+> > structures with the pending alloc. If the latter fails, we release res
+> > and feed blocks back into the in-core structures. So IOW, if we return
+> > directly from _mark_diskspace_used() the counters/state end up
+> > consistent afaict.
+> >
+> > For the ext4_free_blocks() case, we call _mark_context() and if it fails
+> > with changed != 0 (and don't otherwise BUG), we still go ahead and free
+> > the blocks in the e4b and return the error. It does look like the
+> > discard code can clobber the error though, so perhaps that should be
+> > fixed. But otherwise it's not clear to me why we might want to exit
+> > early there. Am I missing something else?
+> 
+> The core issue is that they risk ignoring certain errors, which can
+> result in inconsistency.
+> 
 
-commit:         40fbbd64 Merge tag 'pull-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16918392580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=72e765d013fc99c
-dashboard link: https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+Hmm.. I'm not sure it's that simple in the free path. It looks like
+things are ordered differently there. We modify the on-disk struct and
+if it changes something, then even it fails we go ahead and proceed with
+the in-core updates, and then return the error. Modulo the discard logic
+thing, the error is then passed into the standard error handling code,
+so it isn't really ignored.
 
-Note: no patches were applied.
+Though again I'm not quite sure what the expected result is here in the
+case where it's the ext4_handle_dirty_metadata() call that fails. Is
+this a guaranteed shutdown/abort situation? Perhaps Jan or somebody
+familiar with the journaling code could chime in on this..? Thanks.
+
+> >
+> >> Since this issue popped up in the last couple of years, we should
+> >> probably add a Fixes: tag to make backporting easier.
+> >>
+> > Do you have a target patch in mind? I made a pass through historical
+> > changes and it looked like this was a longer standing issue through
+> > various bits of refactoring..
+> >
+> No, I haven't, but I suspect it was introduced when
+> (err && changed == 0) was added.
+> 
+
+Making another pass.. that code is introduced in commit 2f94711b098b
+("ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used"), but
+that just refactors things and doesn't appear to introduce the problem.
+It looks like it still double decrements due to how the code is ordered.
+
+Going back further.. commit 0087d9fb3f29 ("ext4: Fix
+s_dirty_blocks_counter if block allocation failed with nodelalloc") adds
+the release in ext4_mb_new_blocks(), so that appears to be where the
+logic wart was first introduced.
+
+That said, that one goes back to 2009 and the current fix wouldn't
+apply. TBH given how old the bug is and that it's basically just a
+warning in a shutdown case, I'm not sure it's really worth the risk of
+backporting at all.. I'll defer to the community on that however and can
+at least mention the commit in the changelog if we don't ultimately tag
+it.
+
+Brian
+
+> 
+> Cheers,
+> Baokun
+> 
+
 
