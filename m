@@ -1,45 +1,53 @@
-Return-Path: <linux-ext4+bounces-12379-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12380-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB09CC5C6D
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 03:33:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B340CC5F0B
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 05:05:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6B32D3003D9B
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 02:33:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2B181300C0C3
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 04:05:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1C21A9F9D;
-	Wed, 17 Dec 2025 02:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E063D224B01;
+	Wed, 17 Dec 2025 04:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Bm/bB42I"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="51fjKLef"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2BFE7D07D;
-	Wed, 17 Dec 2025 02:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E804F208AD
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 04:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765938834; cv=none; b=FWoBOwObArQFygV+0v0XkLdfNmzWeXahbTfqPxuZtrAq1CJy4t4ir00+z/iK/lKjGxwTa2/YOza456zsSWUPNQC1JfY/tSPkk/lJvWgweY3InlvSQwTor7YaNLK+uKN9ZdyZ3BFhPdZzt9ojWDR9vnetjdueqq5YBp0uUdJ2wHI=
+	t=1765944334; cv=none; b=tsAt78X2lxtWfP1HJG3gvWW3/K40LRbjc+h+E0Cie4rSMOETpVWU5T12OFCjRE1T3mZK1cFs3aKwsOCDJQ+9N/8kTclQos2KJFP7vFTJcJk8qZGgh+EBzmt7dGm2niIjjJsv0ltHHXxq8tf825ov/1tJZX2Wrbi9tfGxjRjY+sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765938834; c=relaxed/simple;
-	bh=SLnBfXGK/38LzHXwjgY+z8lwf9izxTCuL3HHyDLlEZc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JglEhv8NvaaoB7WZsmWTTh6VJih4t5QSnWsHnV5kosmS0zDuRCTuAd2U9p+xiq4Mka/qe0onEihYJHAhuFo8p7f7UgAteOyPfvoU/9QCzjZj4OVzyR8xE5eSCvoJ9cFMePi5V4uVxMF1axuV/5kHLWwdPZf5kkkqmBkgA/3/1B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Bm/bB42I; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:To:From:
-	Content-Type; bh=cKxcmUGxLTsOtRx4sHfI/Ly2F6wi8mYtIgVmi3wm2R0=;
-	b=Bm/bB42I9rLzy+s2zWR3rtZeoAHPcv9vC6kZ9JjtAqCnYH1FKdvgL+UfWq3//f
-	i5KFZeDx105RO0XKiHn93Gl7emb7OMyWpeWgCmyzS0NU+5ePvcsIGoXurwryjnN8
-	54r66r7+wol0ydnfydKGawcpFA4F9AyeWpXYy8Cm0rJlY=
-Received: from [192.168.18.185] (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wD3XxZxFkJp0GtfAw--.52707S2;
-	Wed, 17 Dec 2025 10:33:26 +0800 (CST)
-Message-ID: <6a5f9808-5dca-4c09-896e-809b2adc17e5@163.com>
-Date: Wed, 17 Dec 2025 10:33:16 +0800
+	s=arc-20240116; t=1765944334; c=relaxed/simple;
+	bh=foE50zpapr4Ge7DptfsdHj775pdiRzXirJ8n3ntnZkQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=evoUwRuM4J77GfuEwGToXLVABg8E9f/5EHwZXV07I44Z/O8LYa9mFlcg2TU/64RJhy0f3dWlpaDGkURnUYuP0FbiQetzWDOJBJxfu5n+C/PtS/iN6q/PtwGt3c0od56aP5ZgDSX6LvfPRndCXYVLyJUWkDt3+X9IwfZCSZ8XuZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=51fjKLef; arc=none smtp.client-ip=113.46.200.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=OfKOS/I2YEx1ygaVo733KGvQqSJ4Dk+EtS7iyGvelqE=;
+	b=51fjKLefD8g6dDs+TnYeBNYDPDW+sDTONsiCByTG7L7K41c1/VGZwmZGIGiLS2DbwKBuCEjWd
+	G3lYGY428n/wvr5GQ/XowgOcm8kViPHlIqejzSPE1ufm42b1enolSYOy4Niw5BFuUPMVs5fOg8B
+	Sd4JGIGRi9Ls848QH0CcD60=
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4dWKrM3LWYzcb1N;
+	Wed, 17 Dec 2025 12:02:27 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 022E9140156;
+	Wed, 17 Dec 2025 12:05:20 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 17 Dec
+ 2025 12:05:19 +0800
+Message-ID: <5e580bd0-519d-4bd0-93f5-9a2c532380ec@huawei.com>
+Date: Wed, 17 Dec 2025 12:05:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,296 +55,276 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ext4: add sysfs attribute err_report_sec to control
- s_err_report timer
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, Baolin Liu <liubaolin@kylinos.cn>
-References: <20251209095254.11569-1-liubaolin12138@163.com>
- <21af8d64.9c77.19b0296bb66.Coremail.liubaolin12138@163.com>
- <315cf6c2-cc00-4496-8eed-9429f918a96f@163.com>
- <c594a4c4-8712-470b-a59a-178f29cd0ddf@huaweicloud.com>
-From: liubaolin <liubaolin12138@163.com>
-In-Reply-To: <c594a4c4-8712-470b-a59a-178f29cd0ddf@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] ext4: fix dirtyclusters double decrement on fs shutdown
+To: Brian Foster <bfoster@redhat.com>
+CC: <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+References: <20251212154735.512651-1-bfoster@redhat.com>
+ <ef906e19-04b9-4793-998e-81c34ebf9126@huawei.com> <aUApNS_YnY2Oa_93@bfoster>
+ <106ba6fe-4f94-4ed4-a53a-98a1f3ad30ab@huawei.com> <aUGAf_NLbIt_sktF@bfoster>
+Content-Language: en-GB
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <aUGAf_NLbIt_sktF@bfoster>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3XxZxFkJp0GtfAw--.52707S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3tFy5JF1kWr15KrWkur45Jrb_yoWkCw17pF
-	Z8JayDKrWUXa4UCw1jv3yFg3Z2yw1Iyry3Xr1fG3W7Za4DtF17tFW7tF109F1rZr48G34x
-	Xr1jgrZxCFW5ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U2kskUUUUU=
-X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbCwheNWGlCFndG2AAA3U
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-> Dear Yi, 
-> Thank you for the review. I believe your comments are reasonable.
-> 
-> The background is that customers monitor logs on a daily basis. 
-> They believe that once the ext4 file system detects an error, it will immediately print error messages starting with “EXT4-fs error”. 
-> From these logs, customers can already tell that the file system is in an abnormal state, 
-> so they feel that the daily periodic printing of file system error timestamp information is of limited value. 
-> They are more concerned about the immediate logs at the moment when the problem actually occurs.
-> 
-> However, I think your point makes sense as well. 
-> This daily periodic printing of error-related information is essentially harmless and may still be useful. 
-> Therefore, this patch does not need further attention for now.
-> 
-> I will shift my focus to other ext4-related tasks. Suggestions and discussions are always welcome.
-> 
-> Best regards,
-> Baolin
+On 2025-12-16 23:53, Brian Foster wrote:
+> On Tue, Dec 16, 2025 at 12:01:41PM +0800, Baokun Li wrote:
+>> On 2025-12-15 23:28, Brian Foster wrote:
+>>> On Sat, Dec 13, 2025 at 09:46:23AM +0800, Baokun Li wrote:
+>>>> Hi Brian,
+>>>>
+>>>> Thanks for the patch.
+>>>>
+>>> Hi Baokun,
+>>>
+>>> Thanks for reviewing..
+>>>
+>>>> On 2025-12-12 23:47, Brian Foster wrote:
+>>>>> fstests test generic/388 occasionally reproduces a warning in
+>>>>> ext4_put_super() associated with the dirty clusters count:
+>>>>>
+>>>>>   WARNING: CPU: 7 PID: 76064 at fs/ext4/super.c:1324 ext4_put_super+0x48c/0x590 [ext4]
+>>>>>
+>>>>> Tracing the failure shows that the warning fires due to an
+>>>>> s_dirtyclusters_counter value of -1. IOW, this appears to be a
+>>>>> spurious decrement as opposed to some sort of leak. Further tracing
+>>>>> of the dirty cluster count deltas and an LLM scan of the resulting
+>>>>> output identified the cause as a double decrement in the error path
+>>>>> between ext4_mb_mark_diskspace_used() and the caller
+>>>>> ext4_mb_new_blocks().
+>>>>>
+>>>>> First, note that generic/388 is a shutdown vs. fsstress test and so
+>>>>> produces a random set of operations and shutdown injections. In the
+>>>>> problematic case, the shutdown triggers an error return from the
+>>>>> ext4_handle_dirty_metadata() call(s) made from
+>>>>> ext4_mb_mark_context(). The changed value is non-zero at this point,
+>>>>> so ext4_mb_mark_diskspace_used() does not exit after the error
+>>>>> bubbles up from ext4_mb_mark_context(). Instead, the former
+>>>>> decrements both cluster counters and returns the error up to
+>>>>> ext4_mb_new_blocks(). The latter falls into the !ar->len out path
+>>>>> which decrements the dirty clusters counter a second time, creating
+>>>>> the inconsistency.
+>>>>>
+>>>>> AFAICT the solution here is to exit immediately from
+>>>>> ext4_mb_mark_diskspace_used() on error, regardless of the changed
+>>>>> value. This leaves the caller responsible for clearing the block
+>>>>> reservation at the same level it is acquired. This also skips the
+>>>>> free clusters update, but the caller also calls into
+>>>>> ext4_discard_allocated_blocks() to free the blocks back into the
+>>>>> group. This survives an overnight loop test of generic/388 on an
+>>>>> otherwise reproducing system and survives a local regression run.
+>>>>>
+>>>>> Signed-off-by: Brian Foster <bfoster@redhat.com>
+>>>>> ---
+>>>>>
+>>>>> Hi all,
+>>>>>
+>>>>> I've thrown some testing at this and poked around the area enough that I
+>>>>> _think_ it is reasonably sane, but the error paths are hairy and I could
+>>>>> certainly be missing some details. I'm happy to try a different approach
+>>>>> if there are any thoughts around that.. thanks.
+>>>>>
+>>>>> Brian
+>>>>>
+>>>>>  fs/ext4/mballoc.c | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>>>> index 56d50fd3310b..224abfd6a42b 100644
+>>>>> --- a/fs/ext4/mballoc.c
+>>>>> +++ b/fs/ext4/mballoc.c
+>>>>> @@ -4234,7 +4234,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
+>>>>>  				   ac->ac_b_ex.fe_start, ac->ac_b_ex.fe_len,
+>>>>>  				   flags, &changed);
+>>>>>  
+>>>>> -	if (err && changed == 0)
+>>>>> +	if (err)
+>>>>>  		return err;
+>>>>>  
+>>>>>  #ifdef AGGRESSIVE_CHECK
+>>>> I think we might need to swap that && for an ||.
+>>>>
+>>>> Basically, we should only proceed with the following logic if there's
+>>>> no error and the bitmap was actually changed. If we hit an error or
+>>>> if the section we intended to modify was already fully handled,
+>>>> we should just bail out early. Otherwise, the err could get quietly
+>>>> ignored unless we hit a duplicate allocation that happens to result in
+>>>> 'changed' being zero.
+>>>>
+>>> Hmm.. to make sure I understand, are you referring to an inconsistency
+>>> case where we allocated blocks that were already marked as such in the
+>>> group on disk..?
+>> Yes.
+>>> I'm a little uneasy about this because it seems to conflict with the
+>>> surrounding code. AFAICT the only way we can hit something like !err &&
+>>> !changed is via EXT4_MB_BITMAP_MARKED_CHECK, which causes
+>>> _mark_context() to check the bitmap for "already modified" bits up
+>>> front.
+>>>
+>>> If this scenario plays out, the caller has a BUG check just after the
+>>> return (also under the aggressive check macro). So ISTM that this sort
+>>> of (err || !changed) logic would bypass the aggressive checks and let
+>>> the fs carry on when it probably shouldn't. Hm?
+>> Regarding ext4_mb_mark_context, if the passed ret_changed pointer is
+>> non-NULL, we initialize *ret_changed to 0. After updating the bitmap_bh,
+>> we then update *ret_changed with the actual number of blocks modified
+>> (changed).
+>>
+>> Therefore, the original intention was for changed == 0 to signify that
+>> an error occurred in ext4_mb_mark_context() before ret_changed could be
+>> updated. However, as you pointed out, we also get changed == 0 when the
+>> target extent has already been fully marked as allocated within bitmap_bh.
+>>
+>> Crucially, we only genuinely check the bitmap to modify changed when
+>> EXT4_MB_BITMAP_MARKED_CHECK is set (i.e., when AGGRESSIVE_CHECK is defined,
+>> or during fast commit or resize operations). Otherwise, changed is always
+>> set to the target length. This means that, in the general case, errors
+>> returned after the point where ret_changed is updated (e.g., the error
+>> from ext4_handle_dirty_metadata()) are usually ignored.
+>>
+>> In summary:
+>>
+>>  * (err && changed == 0) only concerns errors that occur before ret_changed
+>>    is updated.
+>>  * (err || changed == 0) concerns whether there was an error OR if any
+>>    modification actually took place.
+>>
+>> If we only care about err, we could move the update of ret_changed inside
+>> ext4_mb_mark_context() to just before the successful return.
+>>
+> Yeah, I think the _mark_context() logic is reasonably straightforward
+> from the code. What is less clear is why the allocation path only cares
+> about errors prior to ret_changed being set.
+>
+> It looks to me that this is just wrong. I suspect either due to
+> copy/paste error in the mark_diskspace_used() path at some point in the
+> past, or an attempt to filter out the BUG case from an obvious case
+> where changed will be 0 on certain error returns.
+>
+> I don't think the mark_context() logic alone tells the full story here.
+> I think what's relevant is the high level error handling of the
+> !delalloc allocation path:
+>
+> 1. ext4_mb_new_blocks() reserves blocks and attempts physical allocation
+> in memory. On success, it calls into ext4_mb_mark_diskspace_used() to
+> update on-disk structures.
+>
+> 2a. If ext4_mb_mark_diskspace_used() is successful, it decrements the
+> freeclusters counter and releases res from the dirtyclusers counter
+> (i.e. transfer the block from dirty to used). ext4_mb_new_blocks()
+> basically just returns the result.
+>
+> 2b. If ext4_mb_mark_diskspace_used() fails, ext4_mb_new_blocks()
+> receives the error. In the error exit path, it frees the blocks back
+> into the incore structures and releases the reservation it acquired in
+> step 1.  
+>
+> However the bug this patch is trying to fix is that
+> ext4_mb_mark_diskspace_used() runs the counter updates regardless of
+> error in some cases. If the on-disk update fails, _new_blocks() will
+> release its reservation and return the blocks, so _mark_diskspace_used()
+> shouldn't account that block from the dirty and free counters.
+>
+> What isn't quite clear to me is how this is expected to deal with the
+> modified buffer. This particular case is a shutdown and journal abort,
+> so I suspect the buffer can't write back.
+
+These are actually two separate issues, so let's focus on the
+dirtyclusters problem first, as it's more straightforward.
+
+In ext4_mb_new_blocks(), when nodealloc is active, we increment
+s_dirtyclusters_counter via ext4_claim_free_clusters() to ensure
+there is enough free space to satisfy the current allocation request.
+
+Once the block allocation finishes—regardless of whether it succeeded
+or failed—we should return the incremented dirtyclusters count.
+Therefore, we don't need to pass the reserv_clstrs parameter to
+ext4_mb_mark_diskspace_used() just to update the counter there.
+Instead, we can completely remove the dirtyclusters update logic from
+that function.
+
+A better approach would be to decrement the dirtyclusters count in
+ext4_mb_new_blocks() whenever (!(ar->flags & EXT4_MB_DELALLOC_RESERVED)),
+regardless of whether ar->len is 0.
+
+This makes the code logic much clearer and helps prevent counter anomalies.
+
+>
+>>>> By the way, I spotted two other spots with similar error logic:
+>>>> ext4_mb_clear_bb() and ext4_group_add_blocks().
+>>>>
+>>> Yeah, I saw those as well but didn't think they needed changing. My high
+>>> level understanding of the alloc case is that ext4_mb_new_blocks()
+>>> acquires res (!delalloc), allocs blocks out of in-core structures, then
+>>> calls down into _mark_diskspace_used() to update/journal on-disk
+>>> structures with the pending alloc. If the latter fails, we release res
+>>> and feed blocks back into the in-core structures. So IOW, if we return
+>>> directly from _mark_diskspace_used() the counters/state end up
+>>> consistent afaict.
+>>>
+>>> For the ext4_free_blocks() case, we call _mark_context() and if it fails
+>>> with changed != 0 (and don't otherwise BUG), we still go ahead and free
+>>> the blocks in the e4b and return the error. It does look like the
+>>> discard code can clobber the error though, so perhaps that should be
+>>> fixed. But otherwise it's not clear to me why we might want to exit
+>>> early there. Am I missing something else?
+>> The core issue is that they risk ignoring certain errors, which can
+>> result in inconsistency.
+>>
+> Hmm.. I'm not sure it's that simple in the free path. It looks like
+> things are ordered differently there. We modify the on-disk struct and
+> if it changes something, then even it fails we go ahead and proceed with
+> the in-core updates, and then return the error. Modulo the discard logic
+> thing, the error is then passed into the standard error handling code,
+> so it isn't really ignored.
+>
+> Though again I'm not quite sure what the expected result is here in the
+> case where it's the ext4_handle_dirty_metadata() call that fails. Is
+> this a guaranteed shutdown/abort situation? Perhaps Jan or somebody
+> familiar with the journaling code could chime in on this..? Thanks.
+>
+>>>> Since this issue popped up in the last couple of years, we should
+>>>> probably add a Fixes: tag to make backporting easier.
+>>>>
+>>> Do you have a target patch in mind? I made a pass through historical
+>>> changes and it looked like this was a longer standing issue through
+>>> various bits of refactoring..
+>>>
+>> No, I haven't, but I suspect it was introduced when
+>> (err && changed == 0) was added.
+>>
+> Making another pass.. that code is introduced in commit 2f94711b098b
+> ("ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used"), but
+> that just refactors things and doesn't appear to introduce the problem.
+> It looks like it still double decrements due to how the code is ordered.
+
+Yes, that is a separate issue.
+
+>
+> Going back further.. commit 0087d9fb3f29 ("ext4: Fix
+> s_dirty_blocks_counter if block allocation failed with nodelalloc") adds
+> the release in ext4_mb_new_blocks(), so that appears to be where the
+> logic wart was first introduced.
+
+Yes, it does appear that this commit introduced the issue. 
+
+Thanks for finding the exact commit where it was introduced!
+
+>
+> That said, that one goes back to 2009 and the current fix wouldn't
+> apply. TBH given how old the bug is and that it's basically just a
+> warning in a shutdown case, I'm not sure it's really worth the risk of
+> backporting at all.. I'll defer to the community on that however and can
+> at least mention the commit in the changelog if we don't ultimately tag
+> it.
+
+I think it's essential to have this fixed.
+Thank you for your effort on this.
 
 
-
-
-在 2025/12/16 17:04, Zhang Yi 写道:
-> On 12/9/2025 6:13 PM, liubaolin wrote:
->>> Dear maintainers,
->>> Several customers have requested the ability to disable or adjust the frequency of the print_daily_error_info messages. The fields s_error_count, s_first_error_time, and s_last_error_time being non-zero only indicate that the filesystem has experienced errors in the past.
->>> They do not mean an error is currently happening or has just occurred. However, the presence of the word “error” in logs can confuse customers and trigger false alerts in their log monitoring systems.
-> 
-> Hi baolin,
-> 
-> Let me understand the background first. AFAIK, the log records the time of
-> the first error and the last error occurrence. This allows customers to
-> know when the errors happened. However, why might this cause confusion?
-> 
-> In addition, FYI, if a file system error occurs, it is strongly recommended
-> to use fsck to perform repairs, because such errors are usually caused by
-> file system inconsistencies. Especially in errors=continue mode, these
-> inconsistencies may potentially spread in some special cases, posing risks
-> to user data.
-> 
-> Regards,
-> Yi.
-> 
->>>
->>> To address this, customers asked for a way to disable or tune the reporting interval. Based on this requirement, I implemented this patch and verified its behavior. Initially, the timer for s_err_report was set to five minutes during fill_super, and then adjusted to a default of one day.
->>> The new sysfs attribute err_report_sec allows users to disable the timer, enable it, or set a custom timeout value.
->>
->>
->>
->> 在 2025/12/9 18:09, Baolin Liu 写道:
->>> Add .
->>>
->>>
->>>
->>>
->>>
->>>
->>> At 2025-12-09 17:52:54, "Baolin Liu" <liubaolin12138@163.com> wrote:
->>>> From: Baolin Liu <liubaolin@kylinos.cn>
->>>>
->>>> Add a new sysfs attribute "err_report_sec" to control the s_err_report
->>>> timer in ext4_sb_info. Writing '0' disables the timer, while writing
->>>> a non-zero value enables the timer and sets the timeout in seconds.
->>>>
->>>> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
->>>> ---
->>>> fs/ext4/ext4.h  |  4 +++-
->>>> fs/ext4/super.c | 31 ++++++++++++++++++++-----------
->>>> fs/ext4/sysfs.c | 36 ++++++++++++++++++++++++++++++++++++
->>>> 3 files changed, 59 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>>> index 57087da6c7be..9eb5bf2a237a 100644
->>>> --- a/fs/ext4/ext4.h
->>>> +++ b/fs/ext4/ext4.h
->>>> @@ -1673,6 +1673,8 @@ struct ext4_sb_info {
->>>>
->>>>      /* timer for periodic error stats printing */
->>>>      struct timer_list s_err_report;
->>>> +    /* timeout in seconds for s_err_report; 0 disables the timer. */
->>>> +    unsigned long s_err_report_sec;
->>>>
->>>>      /* Lazy inode table initialization info */
->>>>      struct ext4_li_request *s_li_request;
->>>> @@ -2349,7 +2351,6 @@ static inline int ext4_emergency_state(struct super_block *sb)
->>>> #define EXT4_DEF_SB_UPDATE_INTERVAL_SEC (3600) /* seconds (1 hour) */
->>>> #define EXT4_DEF_SB_UPDATE_INTERVAL_KB (16384) /* kilobytes (16MB) */
->>>>
->>>> -
->>>> /*
->>>>   * Minimum number of groups in a flexgroup before we separate out
->>>>   * directories into the first block group of a flexgroup
->>>> @@ -3187,6 +3188,7 @@ extern void ext4_mark_group_bitmap_corrupted(struct super_block *sb,
->>>>                           unsigned int flags);
->>>> extern unsigned int ext4_num_base_meta_blocks(struct super_block *sb,
->>>>                            ext4_group_t block_group);
->>>> +extern void print_daily_error_info(struct timer_list *t);
->>>>
->>>> extern __printf(7, 8)
->>>> void __ext4_error(struct super_block *, const char *, unsigned int, bool,
->>>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->>>> index 33e7c08c9529..a692fe2be1de 100644
->>>> --- a/fs/ext4/super.c
->>>> +++ b/fs/ext4/super.c
->>>> @@ -3635,10 +3635,12 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
->>>> }
->>>>
->>>> /*
->>>> - * This function is called once a day if we have errors logged
->>>> - * on the file system
->>>> + * This function is called once a day by default if we have errors logged
->>>> + * on the file system.
->>>> + * Use the err_report_sec sysfs attribute to disable or adjust its call
->>>> + * freequency.
->>>>   */
->>>> -static void print_daily_error_info(struct timer_list *t)
->>>> +void print_daily_error_info(struct timer_list *t)
->>>> {
->>>>      struct ext4_sb_info *sbi = timer_container_of(sbi, t, s_err_report);
->>>>      struct super_block *sb = sbi->s_sb;
->>>> @@ -3678,7 +3680,9 @@ static void print_daily_error_info(struct timer_list *t)
->>>>                     le64_to_cpu(es->s_last_error_block));
->>>>          printk(KERN_CONT "\n");
->>>>      }
->>>> -    mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);  /* Once a day */
->>>> +
->>>> +    if (sbi->s_err_report_sec)
->>>> +        mod_timer(&sbi->s_err_report, jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>>> }
->>>>
->>>> /* Find next suitable group and run ext4_init_inode_table */
->>>> @@ -5350,7 +5354,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->>>>      if (err)
->>>>          goto failed_mount;
->>>>
->>>> -    timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->>>>      spin_lock_init(&sbi->s_error_lock);
->>>>      INIT_WORK(&sbi->s_sb_upd_work, update_super_work);
->>>>
->>>> @@ -5637,8 +5640,13 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->>>>          clear_opt(sb, DISCARD);
->>>>      }
->>>>
->>>> -    if (es->s_error_count)
->>>> -        mod_timer(&sbi->s_err_report, jiffies + 300*HZ); /* 5 minutes */
->>>> +    timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->>>> +    if (es->s_error_count) {
->>>> +        sbi->s_err_report_sec = 5*60;    /* first time  5 minutes */
->>>> +        mod_timer(&sbi->s_err_report,
->>>> +                  jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>>> +    }
->>>> +    sbi->s_err_report_sec = 24*60*60; /* Once a day */
->>>>
->>>>      /* Enable message ratelimiting. Default is 10 messages per 5 secs. */
->>>>      ratelimit_state_init(&sbi->s_err_ratelimit_state, 5 * HZ, 10);
->>>> @@ -5656,6 +5664,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->>>>
->>>> failed_mount9:
->>>>      ext4_quotas_off(sb, EXT4_MAXQUOTAS);
->>>> +    timer_delete_sync(&sbi->s_err_report);
->>>> failed_mount8: __maybe_unused
->>>>      ext4_release_orphan_info(sb);
->>>> failed_mount7:
->>>> @@ -5690,7 +5699,6 @@ failed_mount8: __maybe_unused
->>>>      /* flush s_sb_upd_work before sbi destroy */
->>>>      flush_work(&sbi->s_sb_upd_work);
->>>>      ext4_stop_mmpd(sbi);
->>>> -    timer_delete_sync(&sbi->s_err_report);
->>>>      ext4_group_desc_free(sbi);
->>>> failed_mount:
->>>> #if IS_ENABLED(CONFIG_UNICODE)
->>>> @@ -6184,10 +6192,11 @@ static void ext4_update_super(struct super_block *sb)
->>>>                  ext4_errno_to_code(sbi->s_last_error_code);
->>>>          /*
->>>>           * Start the daily error reporting function if it hasn't been
->>>> -         * started already
->>>> +         * started already and sbi->s_err_report_sec is not zero
->>>>           */
->>>> -        if (!es->s_error_count)
->>>> -            mod_timer(&sbi->s_err_report, jiffies + 24*60*60*HZ);
->>>> +        if (!es->s_error_count && !sbi->s_err_report_sec)
->>>> +            mod_timer(&sbi->s_err_report,
->>>> +                      jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>>>          le32_add_cpu(&es->s_error_count, sbi->s_add_error_count);
->>>>          sbi->s_add_error_count = 0;
->>>>      }
->>>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
->>>> index 987bd00f916a..ce9c18f6ba26 100644
->>>> --- a/fs/ext4/sysfs.c
->>>> +++ b/fs/ext4/sysfs.c
->>>> @@ -40,6 +40,7 @@ typedef enum {
->>>>      attr_pointer_string,
->>>>      attr_pointer_atomic,
->>>>      attr_journal_task,
->>>> +    attr_err_report_sec,
->>>> } attr_id_t;
->>>>
->>>> typedef enum {
->>>> @@ -130,6 +131,36 @@ static ssize_t trigger_test_error(struct ext4_sb_info *sbi,
->>>>      return count;
->>>> }
->>>>
->>>> +static ssize_t err_report_sec_store(struct ext4_sb_info *sbi,
->>>> +                    const char *buf, size_t count)
->>>> +{
->>>> +    unsigned long t;
->>>> +    int ret;
->>>> +
->>>> +    ret = kstrtoul(skip_spaces(buf), 0, &t);
->>>> +    if (ret)
->>>> +        return ret;
->>>> +
->>>> +    /*the maximum time interval must not exceed one year.*/
->>>> +    if (t > (365*24*60*60))
->>>> +        return -EINVAL;
->>>> +
->>>> +    if (sbi->s_err_report_sec == t)        /*nothing to do*/
->>>> +        goto out;
->>>> +    else if (!sbi->s_err_report_sec && t) {
->>>> +        timer_setup(&sbi->s_err_report, print_daily_error_info, 0);
->>>> +    } else if (sbi->s_err_report_sec && !t) {
->>>> +        timer_delete_sync(&sbi->s_err_report);
->>>> +        goto out;
->>>> +    }
->>>> +
->>>> +    sbi->s_err_report_sec = t;
->>>> +    mod_timer(&sbi->s_err_report, jiffies + secs_to_jiffies(sbi->s_err_report_sec));
->>>> +
->>>> +out:
->>>> +    return count;
->>>> +}
->>>> +
->>>> static ssize_t journal_task_show(struct ext4_sb_info *sbi, char *buf)
->>>> {
->>>>      if (!sbi->s_journal)
->>>> @@ -217,6 +248,7 @@ EXT4_ATTR_OFFSET(mb_group_prealloc, 0644, clusters_in_group,
->>>>           ext4_sb_info, s_mb_group_prealloc);
->>>> EXT4_ATTR_OFFSET(mb_best_avail_max_trim_order, 0644, mb_order,
->>>>           ext4_sb_info, s_mb_best_avail_max_trim_order);
->>>> +EXT4_ATTR_OFFSET(err_report_sec, 0644, err_report_sec, ext4_sb_info, s_err_report_sec);
->>>> EXT4_RW_ATTR_SBI_UI(inode_goal, s_inode_goal);
->>>> EXT4_RW_ATTR_SBI_UI(mb_stats, s_mb_stats);
->>>> EXT4_RW_ATTR_SBI_UI(mb_max_to_scan, s_mb_max_to_scan);
->>>> @@ -309,6 +341,7 @@ static struct attribute *ext4_attrs[] = {
->>>>      ATTR_LIST(last_trim_minblks),
->>>>      ATTR_LIST(sb_update_sec),
->>>>      ATTR_LIST(sb_update_kb),
->>>> +    ATTR_LIST(err_report_sec),
->>>>      NULL,
->>>> };
->>>> ATTRIBUTE_GROUPS(ext4);
->>>> @@ -396,6 +429,7 @@ static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
->>>>              return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
->>>>          return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
->>>>      case attr_pointer_ul:
->>>> +    case attr_err_report_sec:
->>>>          return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
->>>>      case attr_pointer_u8:
->>>>          return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
->>>> @@ -519,6 +553,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
->>>>          return inode_readahead_blks_store(sbi, buf, len);
->>>>      case attr_trigger_test_error:
->>>>          return trigger_test_error(sbi, buf, len);
->>>> +    case attr_err_report_sec:
->>>> +        return err_report_sec_store(sbi, buf, len);
->>>>      default:
->>>>          return ext4_generic_attr_store(a, sbi, buf, len);
->>>>      }
->>>> -- 
->>>> 2.39.2
->>
->>
+Cheers,
+Baokun
 
 
