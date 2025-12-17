@@ -1,99 +1,124 @@
-Return-Path: <linux-ext4+bounces-12386-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12387-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C77CC8D80
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 17:45:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01FE9CC8FB2
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 18:11:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 542583148425
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 16:36:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A7783016350
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 16:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4CF358D37;
-	Wed, 17 Dec 2025 16:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D68833ADB1;
+	Wed, 17 Dec 2025 16:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OkXsifng"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FQ91WYlr"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748B535FF6E
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 16:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D675338595
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 16:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765989322; cv=none; b=Af2hg09NMbShG7If0ggFsfxiZAOVOlK7XxKLf52MphOCDp1162OUYEkN7v34UTFLMQLqRCDeCowDvpSnL0uPDQVPXFqMe/UEMAe8irf6rcfL4JKSoqqw1EJbm+0MDd2pN9NwVkE1fJkBbVnyGfNND83NpcFjjU1dIUwyNVp1iW4=
+	t=1765990795; cv=none; b=L53s/apmxFer6HRtzuIYMTA1J1E5BcHvjoniHZ8ZlBHU7YatiFqI549xZQXjmQE5ONqfm1i2UUHGtFauwkICb6M11e1ExoVgJxHYtfhds8egwXbxadQtKhrIqJl8+huhoRNq1wmu/cdZEbxcrbV3GpG+9/uyDOJyQgjCeij4NcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765989322; c=relaxed/simple;
-	bh=HgOCLvGTWJ25DrTJdaCwD2dwm3WNDk9UF3YohxIikXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FKVHSb6TPM7NDucJAH9gW+w7XS4gRGIpQgyixtcX1Qk65O2lMBqFHllVrB3UKDd+VkgZw1cC1HVQul+rWHP54OZSrQiyF97nYbj7gloi0txzcMu1Fw8uZxzfPBqtrI6+BOJzEqcveFKbDrAwn5GdIDqk31FgWcceQNrgrCNkXeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OkXsifng; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2A14C116B1;
-	Wed, 17 Dec 2025 16:35:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765989322;
-	bh=HgOCLvGTWJ25DrTJdaCwD2dwm3WNDk9UF3YohxIikXE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OkXsifngxhynpuv5jSBS4hJ4BhCFwYEVjTflGJFu6H+6RWn/zhAx05Mq2vYjDBYae
-	 ahM/uhaaIkUHgXq8dTbstj+TgwHCFaOmyGPgX/e7HYrZ16kSRHb5uyBywBBcj8MzXd
-	 syTV0jLq577A/gHNrveiYVEyqYUB7/TgIVoSL/N7aAeFiIKJbrjV6PF0v7VN9LeFWR
-	 SsIwJJpDr7l42B2ajVAlyKZCHK3aCJTuUOadeLApILCQKRi8tAolCs17eoqrsr5585
-	 luUYbJlXZiPN2xY0By69Zwu0mLNUi8MUSoKi/RqtYHyIpoQIa//pRITeMSKEQanRMF
-	 VMiN3NnSuwL+A==
-Date: Wed, 17 Dec 2025 08:35:21 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Wang Jianjian <wangjianjian3@huawei.com>
-Cc: tytso@mit.edu, linux-ext4@vger.kernel.org, wangjianjian0@foxmail.com
-Subject: Re: [PATCH] ext4,fiemap: Add inode offset for xattr fiemap
-Message-ID: <20251217163521.GO94594@frogsfrogsfrogs>
-References: <20251217084708.494396-1-wangjianjian3@huawei.com>
+	s=arc-20240116; t=1765990795; c=relaxed/simple;
+	bh=4nT3eL+nqqlKXmzFJdFVnTOdEBe7d+tIOLCTKsUwt94=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=npF6bpHapjhDmwq5EJTJpbqvWqxDvqBvBxOSMzC6fa0kZsXoUHjTACgxt9H9vaXBJ5JwMNVtsxUjKV/JW63fkP5R4sC6B6Y5Y9whIAMFwBJO2V4Ia8canSr+0a8UhOBuQ3iykAMHzr4p21ebngjwSmiBJI+SG7GvjRGyJpPILK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FQ91WYlr; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29f2676bb21so67712495ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 08:59:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765990793; x=1766595593; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0JZV4ZTKPnvVOohyqVtnOMKthFN4WCJ75pI/pYQsXF0=;
+        b=FQ91WYlrlb3ZNT2Y346nixu0QlqkDboGLvyhaNMUZ8dYVjcO+eA9CSsnPouB3awBFI
+         ih/Emu3ORhfKb4Cz9185hKIKT37ySgTcqzLRxCZae46WcNukaR3PiuBY1mBY7HUSTMpz
+         wJ669cQUKh5aNIyMPniNwaGCfGkX0hrb2tfRbAlP6w/YlfzWSX0vJtkxntBSTQq2btbL
+         XNcLtBIvRujfs81wv2VRkZAIlaNHy5rV6yO5Kw/057FRH1rojLIoVgHNYvnmn1V7gRxh
+         fZQppAAVFmtHGmhm563AhC7Wuj/cgutgNiYvdSg3B4T6j4o2pH8rJ3jSs0RJszSjcb45
+         DryQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765990793; x=1766595593;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0JZV4ZTKPnvVOohyqVtnOMKthFN4WCJ75pI/pYQsXF0=;
+        b=QaVHDgV38z+PC31g5ln8N3R3fca7hK2948+h6bvJEFl878bkRByZwFP2CNoe4VONea
+         I6O1D1CtYjUC01VJMngq6siLIHcuV47Jonfl6marWvSHrOwie0tUDyxts3WGBTtRYK+H
+         hhsYe7m6bzr+UDg4S0ilddmnvFGklnTV2I3H75oAzygVs0aEaDuMFSmeR1Gf/VtKybSb
+         2/sgE2iitYhm408d+yrXwV1Egqc1PnP7+RMk+AO77eKIlGYcH83KBa0GK9WOOh14/od9
+         0B/MaZ6+MK9xAJT+/Gn68HJIQxfzNFMoDDBIuh4kYZ84EVdFWE/BkagRbsAtb8DBwrE6
+         LI2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVDhpbzzXtWbuqLzzCrmDEl8weAOf5R7ZTZCWTl8QmNSAIDa6HefN9yQQJ2M0DhbK46+5MfzwPgXrUS@vger.kernel.org
+X-Gm-Message-State: AOJu0YyC+qRlJimy8m1WT0Q+RkIF5VbVdQLygDQahhmuwGhWAWPoRvX6
+	iwjO5Uy7Tdio9sbhH8a0l8RF+MhdTuHBsqk9GiNFRltc2vLP9vxMq7ru
+X-Gm-Gg: AY/fxX5lo6Wf+ZMH8tA7vlV822wkZE947yWBt46F/RztJ7G697MagoiNPDp1+eL1bxs
+	nS3+M2PN/yLJPyA4Ws0Em8VbB6TDNiaXD4751qIO7jOWUN3jdXydtHFKvZwDcvz/X6WNnyAWw5p
+	JJ4VSB0OvbyBzoUxF8A3Ayr8MAj7AmYKNWqqcBgu7bkKtnTHCtUyvEsj4u8H9K59xS5n3KBVdcx
+	NUtvmsir/fEaj78qTAHRrSf2NB8RGZR/pPj/oviLIXUvclV+pDKDROJenOsyA8JZm+tT+8TYPTM
+	tphauKbfFyZqpYn3WMDmaIbx2RhIA0fsJYP+KvvgKgObITvhbY1/rM/0hGRmO8Kvj3xfzr2WB78
+	oTjnlmCVbYjdGpxK0jj/MlqFdhJsrm9R3tVWNbomh1ua+ViFrSyQ1bd0i6kHQrHg8fUStuHBm20
+	Otev5LAhb+gWPpHzc=
+X-Google-Smtp-Source: AGHT+IFoKMbJ9xsJocF+/SOztzH9OTtMgNQkpOw51+pBJHLXYHTp4rBAb77rmGPybXMBIEZgWFijkA==
+X-Received: by 2002:a17:903:458d:b0:29f:135c:5f25 with SMTP id d9443c01a7336-29f23de670cmr175716925ad.4.1765990793498;
+        Wed, 17 Dec 2025 08:59:53 -0800 (PST)
+Received: from [192.168.50.70] ([49.245.38.171])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2ccdc62f6sm107615ad.29.2025.12.17.08.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Dec 2025 08:59:53 -0800 (PST)
+Message-ID: <62945fac-eab8-4e42-8f3b-dfdee66a1b15@gmail.com>
+Date: Thu, 18 Dec 2025 00:59:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251217084708.494396-1-wangjianjian3@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/13] dmflakey: override SCRATCH_DEV in _init_flakey
+To: Christoph Hellwig <hch@lst.de>, Zorro Lang <zlang@kernel.org>
+Cc: Anand Jain <asj@kernel.org>, Filipe Manana <fdmanana@suse.com>,
+ "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+References: <20251212082210.23401-1-hch@lst.de>
+ <20251212082210.23401-2-hch@lst.de>
+Content-Language: en-US
+From: Anand Jain <anajain.sg@gmail.com>
+In-Reply-To: <20251212082210.23401-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 17, 2025 at 04:47:08PM +0800, Wang Jianjian wrote:
-> For xattr in inode, need add inode offset in this block?
-> Also, there is one problem, if we have xattrs both in inode
-> and block, current implementation will only return xattr inode fiemap.
-> Is this by design?
 
-I don't think there's much value in reporting the inline xattrs via
-FIEMAP because user programs can't directly access that area anyway.
-The only reason (AFAICT) for reporting the external xattr block is for
-building a map of lost data given a report of localized media failure.
+ > where to create the custome dm table.
 
-(FIEMAP only being useful for debugging and after-the-shatter forensics)
+typo
+s/custome/custom/
 
-> Signed-off-by: Wang Jianjian <wangjianjian3@huawei.com>
-> ---
->  fs/ext4/extents.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 2cf5759ba689..a16bfc75345d 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -5043,6 +5043,7 @@ static int ext4_iomap_xattr_fiemap(struct inode *inode, struct iomap *iomap)
->  		if (error)
->  			return error;
->  		physical = (__u64)iloc.bh->b_blocknr << blockbits;
-> +		physical += iloc.offset;
 
-Also it doesn't make sense to add the address of the external block to
-the inode offset.
+>   _cleanup_flakey()
+>   {
+>   	# If dmsetup load fails then we need to make sure to do resume here
+>   	# otherwise the umount will hang
+>   	test -n "$NON_FLAKEY_LOGDEV" && $DMSETUP_PROG resume $FLAKEY_LOGNAME &> /dev/null
+>   	test -n "$NON_FLAKEY_RTDEV" && $DMSETUP_PROG resume $FLAKEY_RTNAME &> /dev/null
 
---D
 
->  		offset = EXT4_GOOD_OLD_INODE_SIZE +
->  				EXT4_I(inode)->i_extra_isize;
->  		physical += offset;
-> -- 
-> 2.34.1
-> 
-> 
+> -	$DMSETUP_PROG resume flakey-test > /dev/null 2>&1
+> +	test -n "$NON_FLAKEY_DEV" && $DMSETUP_PROG resume flakey-test > /dev/null 2>&1
+
+flakey-test target? Appears to be a typo for $FLAKEY_NAME;
+I'll send a separate patch fixing the existing bug.
+
+The rest looks good.
+
+Reviewed-by: Anand Jain <asj@kernel.org>
+
+Thanks.
 
