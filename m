@@ -1,101 +1,99 @@
-Return-Path: <linux-ext4+bounces-12385-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12386-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAEFCC8800
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 16:38:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C77CC8D80
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 17:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F220830DE56E
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 15:35:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 542583148425
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 16:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC4533C528;
-	Wed, 17 Dec 2025 15:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4CF358D37;
+	Wed, 17 Dec 2025 16:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OkXsifng"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [13.75.44.102])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B54E32E6BE;
-	Wed, 17 Dec 2025 15:22:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.75.44.102
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 748B535FF6E
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 16:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765984954; cv=none; b=nM5//GUknSZN8RFaBBVI7PKMjPRzpFyGh15Ez1OA9Uv68KoRvgjDrM59WGqJPJhrO5THJWt0/GC5MMZstRid6f6YTCX9S74uM+nLaY5Ay/G+lF9462pnfsGyZt0J2aRlm+t247cN9ZHenw6CtMPNeF8IFtsqOcG7mO3axBo73Ug=
+	t=1765989322; cv=none; b=Af2hg09NMbShG7If0ggFsfxiZAOVOlK7XxKLf52MphOCDp1162OUYEkN7v34UTFLMQLqRCDeCowDvpSnL0uPDQVPXFqMe/UEMAe8irf6rcfL4JKSoqqw1EJbm+0MDd2pN9NwVkE1fJkBbVnyGfNND83NpcFjjU1dIUwyNVp1iW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765984954; c=relaxed/simple;
-	bh=VK+f0c/XS7BDrTG0jEC8e109fwondeXx3y9Ev0ChPvA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=CvPxDWoifolWJpAEJ+RwfeCmIlSW4FE4CBgv4it2P7xj2evr79HEyme8nymvYgXnARixS7gnmhfUfqZo7+oLTTMmVYyvTXXWUuUEdvE9iwQqBiZ3fiVyX6OF4bR21uCaoKD5+YmD1r0BKDtUvsnA87RA+dCWGg8d/bnrDEs00Wc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=13.75.44.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [183.157.161.216])
-	by mtasvr (Coremail) with SMTP id _____wDX1VKuykJpMRANAQ--.4S3;
-	Wed, 17 Dec 2025 23:22:23 +0800 (CST)
-Received: from 3230100410$zju.edu.cn ( [183.157.161.216] ) by
- ajax-webmail-mail-app1 (Coremail) ; Wed, 17 Dec 2025 23:22:21 +0800
- (GMT+08:00)
-Date: Wed, 17 Dec 2025 23:22:21 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
-To: "Baokun Li" <libaokun1@huawei.com>
-Cc: security@kernel.org, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2024.3-cmXT6 build
- 20250620(94335109) Copyright (c) 2002-2025 www.mailtech.cn zju.edu.cn
-In-Reply-To: <3f5ec6d7-d291-4b37-8914-3b4347564e98@huawei.com>
-References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
- <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
- <3c54df5e.436a9.19b21b55d21.Coremail.3230100410@zju.edu.cn>
- <3f5ec6d7-d291-4b37-8914-3b4347564e98@huawei.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1765989322; c=relaxed/simple;
+	bh=HgOCLvGTWJ25DrTJdaCwD2dwm3WNDk9UF3YohxIikXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FKVHSb6TPM7NDucJAH9gW+w7XS4gRGIpQgyixtcX1Qk65O2lMBqFHllVrB3UKDd+VkgZw1cC1HVQul+rWHP54OZSrQiyF97nYbj7gloi0txzcMu1Fw8uZxzfPBqtrI6+BOJzEqcveFKbDrAwn5GdIDqk31FgWcceQNrgrCNkXeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OkXsifng; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2A14C116B1;
+	Wed, 17 Dec 2025 16:35:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765989322;
+	bh=HgOCLvGTWJ25DrTJdaCwD2dwm3WNDk9UF3YohxIikXE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OkXsifngxhynpuv5jSBS4hJ4BhCFwYEVjTflGJFu6H+6RWn/zhAx05Mq2vYjDBYae
+	 ahM/uhaaIkUHgXq8dTbstj+TgwHCFaOmyGPgX/e7HYrZ16kSRHb5uyBywBBcj8MzXd
+	 syTV0jLq577A/gHNrveiYVEyqYUB7/TgIVoSL/N7aAeFiIKJbrjV6PF0v7VN9LeFWR
+	 SsIwJJpDr7l42B2ajVAlyKZCHK3aCJTuUOadeLApILCQKRi8tAolCs17eoqrsr5585
+	 luUYbJlXZiPN2xY0By69Zwu0mLNUi8MUSoKi/RqtYHyIpoQIa//pRITeMSKEQanRMF
+	 VMiN3NnSuwL+A==
+Date: Wed, 17 Dec 2025 08:35:21 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Wang Jianjian <wangjianjian3@huawei.com>
+Cc: tytso@mit.edu, linux-ext4@vger.kernel.org, wangjianjian0@foxmail.com
+Subject: Re: [PATCH] ext4,fiemap: Add inode offset for xattr fiemap
+Message-ID: <20251217163521.GO94594@frogsfrogsfrogs>
+References: <20251217084708.494396-1-wangjianjian3@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2ef68a02.45e3e.19b2ce7b7a0.Coremail.3230100410@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:yy_KCgBn4NmuykJpU0vSBA--.26410W
-X-CM-SenderInfo: qtstiiiqquiio62m3hxhgxhubq/1tbiAhEDDmlBtgNEFAAAsT
-X-CM-DELIVERINFO: =?B?M+hsuQXKKxbFmtjJiESix3B1w3vLmOfvthuvpruYXH4olOsxqjvNQxnsdAQdqspSym
-	ePmjUMbGDqeLbVYhX+DAlPD4aWNG2dsVAq9YtxXMa3+cQViV9ce404d3RLut1dFYcpZMiE
-	5QXXVibnmanvPRfrXRbxmaXo7Op9yK1zj4Y9npCziBz9OGCbJLKe/8jE9fSfOg==
-X-Coremail-Antispam: 1Uk129KBj9xXoW7JFWUJw43ZrWDGrWrJry8Xrc_yoWfKrg_Za
-	4Fkry7Jrs5Xws29a1xAw4xGan8Gw4kZF1kXw4fX3Zxt34jqan7JFZ5KrsI9w1rGw1fG3s8
-	Aa93ZFn7uw12vosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbBkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6x
-	kI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-	6r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-	Ij64vIr41lF7xvr2IYc2Ij64vIr40E4x8a64kEw24lFcxC0VAYjxAxZF0Ew4CEw7xC0wAC
-	Y4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-	8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-	xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-	8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280
-	aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JwCE64xvF2IEb7IF0Fy7Yx
-	BIdaVFxhVjvjDU0xZFpf9x07j5l19UUUUU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251217084708.494396-1-wangjianjian3@huawei.com>
 
-SGksCgpTb3JyeSBidXQgSSBhbSBhIGJpdCBjb25mdXNlZCBieSB5b3VyIHdvcmRzLiBNeSBvcmln
-aW5hbCBmdXp6IHRlc2luZyBhbHJlYWR5IGVuYWJsZWQgQ09ORklHX0JMS19ERVZfV1JJVEVfTU9V
-TlRFRCBhcyBpbiBtb3N0IG1ham9yIExpbnV4IGRpc3RyaWJ1dGlvbnMuIAoKU28gZG9lcyBhIGJ1
-ZyBmb3VuZCB3aGVuIENPTkZJR19CTEtfREVWX1dSSVRFX01PVU5URUQgaXMgZW5hYmxlZCBzdGls
-bCBob2xkIHZhbHVlIGZvciByZXBvcnRpbmc/IFNob3VsZCBJIGVuYWJsZSBvciBkaXNhYmxlIHRo
-aXMgY29uZmlndXJhdGlvbiBpbiBteSBmdXR1cmUgZnV6emluZyB3b3JrPwoKVGhhbmtzLApIYW9j
-aGVuZyBZdQoKPiA+IEhpLAo+ID4KPiA+IEkgaGF2ZSBkaXNhYmxlZCBDT05GSUdfQkxLX0RFVl9X
-UklURV9NT1VOVEVEIGFuZCBzcGVudCBzb21lIHRpbWUgdHJ5aW5nIHRvIHRyaWdnZXIgdGhlIHJl
-cG9ydGVkIEtBU0FOIGlzc3Vlcy4gQW5kIEkgZm91bmQgbmVpdGhlciBvZiB0aGUgdHdvIGJ1Z3Mg
-aGFzIGJlZW4gb2JzZXJ2ZWQgc2luY2UuIElzIHRoaXMgaXNzdWUgc3RpbGwgd29ydGggaW52ZXN0
-aWdhdGluZz8KPiAKPiBUaGF0IGVzc2VudGlhbGx5IGNvbmZpcm1zIHRoZSBpc3N1ZSBpcyBjYXVz
-ZWQgYnkgYnlwYXNzaW5nIHRoZQo+IGZpbGVzeXN0ZW0gdG8gd3JpdGUgZGlyZWN0bHkgdG8gdGhl
-IHJhdyBkaXNrLiBUaGlzIGlzIGEga25vd24KPiBpc3N1ZSBhbmQgaXMgcXVpdGUgdHJpY2t5IHRv
-IHNvbHZlLgo+IAo+IFlvdSBjYW4gd29yayBhcm91bmQgdGhpcyBzcGVjaWZpYyBjbGFzcyBvZiBp
-c3N1ZXMgaW4geW91ciBmdXp6Cj4gdGVzdGluZyBieSBlbmFibGluZyBDT05GSUdfQkxLX0RFVl9X
-UklURV9NT1VOVEVELiBTeXpib3QgcnVucwo+IHdpdGggdGhpcyBjb25maWd1cmF0aW9uIGVuYWJs
-ZWQgYnkgZGVmYXVsdC4KPiAKPiAKPiBDaGVlcnMsCj4gQmFva3VuCg==
+On Wed, Dec 17, 2025 at 04:47:08PM +0800, Wang Jianjian wrote:
+> For xattr in inode, need add inode offset in this block?
+> Also, there is one problem, if we have xattrs both in inode
+> and block, current implementation will only return xattr inode fiemap.
+> Is this by design?
 
+I don't think there's much value in reporting the inline xattrs via
+FIEMAP because user programs can't directly access that area anyway.
+The only reason (AFAICT) for reporting the external xattr block is for
+building a map of lost data given a report of localized media failure.
+
+(FIEMAP only being useful for debugging and after-the-shatter forensics)
+
+> Signed-off-by: Wang Jianjian <wangjianjian3@huawei.com>
+> ---
+>  fs/ext4/extents.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 2cf5759ba689..a16bfc75345d 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -5043,6 +5043,7 @@ static int ext4_iomap_xattr_fiemap(struct inode *inode, struct iomap *iomap)
+>  		if (error)
+>  			return error;
+>  		physical = (__u64)iloc.bh->b_blocknr << blockbits;
+> +		physical += iloc.offset;
+
+Also it doesn't make sense to add the address of the external block to
+the inode offset.
+
+--D
+
+>  		offset = EXT4_GOOD_OLD_INODE_SIZE +
+>  				EXT4_I(inode)->i_extra_isize;
+>  		physical += offset;
+> -- 
+> 2.34.1
+> 
+> 
 
