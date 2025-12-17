@@ -1,80 +1,80 @@
-Return-Path: <linux-ext4+bounces-12389-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12390-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BAFCC8FD0
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 18:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BB38CC8FFD
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 18:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 80D6531659DD
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 17:02:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 61605316B66F
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 17:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF63338927;
-	Wed, 17 Dec 2025 17:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1742DC34B;
+	Wed, 17 Dec 2025 17:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nT1hgaD+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrCbc00H"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6781D33890D
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 17:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8742221DAE
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 17:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765990925; cv=none; b=TdGRlJBFOLKRANK4cNh83aMU1XZ76kamC22Z2rslanfubOs5WEcVSru2Izy+pwzAZMFzTROuicZ7tUZMNCImdLm2wsFFLuLpxsy9J7mB541eAhHjQFM8SrnOqh8JG8Tb3RvLJH+ybTjWO4i5tjdXsMUFvoiVZcZ5rJGkW8T9Jh8=
+	t=1765990969; cv=none; b=N3Uo0BxRC72QZS8GcmVEtf8su4hZWGs3TEMAIJ6/pqJTHxxAJ5B9ivx03kDAlUUw6tzAAOkd/+oZgTeLFzgf3s3Lm/YOgDOq6nkuL4oxVjO0bSZekz+c+PVGb4T0N2uA2M0O3dH0PCtqo8MwOhbBI5TdWk7QO2Nqs+QskYmnbIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765990925; c=relaxed/simple;
-	bh=rgDhIZfdsOfkurhbewxOfigJvc2eSqaTwXIruE5NLKU=;
+	s=arc-20240116; t=1765990969; c=relaxed/simple;
+	bh=ToRJHcpjvXVga4X877HC3kIL7IrMUEU1J2VVkV8cndc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=azsw0/79nqfaH7sYIRFKIfi+KsYroYB2nKvxjOclsIdXQmHFmeFLsdtT9mtuKgbRkpJREu6cKdKwjj0uQDKyoyzFFZVVJEElrnIRvw5B4Kuq7oPDbXKRwmAwpOVKHwI72r0VSHW1gdG+omdjyqeFWeUacIE03XHaTNzkJNcNIUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nT1hgaD+; arc=none smtp.client-ip=209.85.214.172
+	 In-Reply-To:Content-Type; b=ZvZJ1opzwgn8PQ46LtJWM0MhIKEBr/+PyHQ09EPKqf9iEdeuXNd6OPsNPf2f2QvkgfdnuDSRLby3QtXkoWiGFcCdjAVFad94zcSgpR1nEyKrmU2HVjHyffQVthtTmCFOeBH0Yx1lF84lxvqEbgmnIq9ANR6HWAtQLYoU9H6yV8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrCbc00H; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2a12ebe4b74so34839715ad.0
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 09:02:03 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34c3259da34so4613506a91.2
+        for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 09:02:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765990922; x=1766595722; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765990967; x=1766595767; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GKCp6fL8IQ3vq9/UmgCTuTo5F9F6pquy8iJD7G2eufg=;
-        b=nT1hgaD+SLPaL5AQW+dfq/Kod92fzOz936c5FLNfJvk8dvcxyGZoNrr+b7JP0Xo6CV
-         bBbjkxkySSzlrP/hkKIfXn+EAPRj9bMBoAanGSbR5mMVw2YmHBBCvetIDUN/jdrYwNgW
-         Enr92k7IlzTtAknmYGb0rCU3cvUYDQIFv3esxr7GuOsH2SxmmE4iUOphjRjjxC2RYgYs
-         GXy/20C+/OlndCRhwE+E6C+ohU9rss1LuYNgIHtFTQGtO/7+tMQZp2o+Z3kIYjVJeTbm
-         xmcWKr7NQiJVkP8HAKVR/3qzQhFOLSAp+WJblmccSiahqTxl7QlDdjao44qf9m4I2vOu
-         4kNg==
+        bh=3BlAKzA21ErBWFpH53H6S+ldLrYlUKuDSpGtu3kSDeU=;
+        b=lrCbc00HEbRr6b+RJNwKbSt0O2VWfxdq7QcAC+gbQU5Rc3TYV/D8+in0hJPHFZweJ9
+         E+fyKhwtVK8INnPGiZhmGif8Iq4c5gna92K6HXby0Tu34fB/hkNI6UMnSlclGNj6zxNW
+         z6ac6mP2Gf3Rx1yMHGokppfnzHML1TqkNBoNHTkfirXPx0VZZtWxhBjkYaF41T8l29Zr
+         xFjESe5ciixJLKAq1nzPAz0Gl4dmRbzy9euDwYx/rVQ15BfaIb7RmOnWS5cQANXyKeOe
+         7A25LFMPxAjn+4F96XRdW7v0yv6KjhFD3yxnjY1vd+9x8YTtwfXbRAZ7t5L0OrMX8TnS
+         X0Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765990923; x=1766595723;
+        d=1e100.net; s=20230601; t=1765990967; x=1766595767;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GKCp6fL8IQ3vq9/UmgCTuTo5F9F6pquy8iJD7G2eufg=;
-        b=dRBD7v7jyxsHtMEtrI9LOxoCAEZNiqry/YEDHLyDm5Dmzj5Vv7c5jqkTJXcFYpi0Ic
-         CyDyqrMFTnMSqHRb9t+TNokaTzlu0ibtRJh/5FCOT1iP85OPgj8FzCRobmuVhpRNdasL
-         aN6eJQrk9AKSmL+4fXVsRJB6FQ+2qIuHvzBn4/sPZQDbQVHFppeURqGoI4P3jyD189sk
-         YNeHRSkH+P8ee9QwWujl95hDLpdrdlnsalCO4V9OHXujbTmnBwHZWqQgVj9glUXs6qnD
-         MOUyA2y9McugK6ulJ4kAlYnFQqEjdAzb9MGXWkzu2YLD5B1DqOEyEguUz+tHz0pHzIkb
-         rhMA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXT7FquuaZjj1tNp3zD53IgYtp0jMPn5z4ekpXnO9VXSG10XecJfsox981qjBfiq13oHM6BOeY1OKP@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXAAW2zIfJtbGx/6SQEGOZveLs44OoT5ZRgGJozQqYXz3LY0Bh
-	7qSEw5A3yzZEWAkcZEFy+qEJSphS20fTk4MIDHMEKu69pIaGx+oZthin
-X-Gm-Gg: AY/fxX7x9i51YiHGzWNDMNJJlQQ/lzKPCR8GwpWXO5yCOjR79H56BPNU4XCJwDGLBBv
-	F1Z6t9XkBRtrJmJwgp080KgJ6eoY1kBE41WdPXGVbzoQC//ecb4W8zkqgKUlC8QRoPQwuJRzS7R
-	CZ0yXGTHN4hFiBk7j3vDSgURg75dn6K06Pxz4iNIXqiX+H3iFC3L1BixsSZ49uEb89wFqIrKXGM
-	x45jwpt+ZFoYnd8CeBYJkRa3vf0boinUENtrZ3NFIEBCs0xERjCLDwIKhZD3rSYaPFhWFS10/m9
-	nWbjpM8aevjrUNbpAyZUhU3Efxk7yCF2FHsjkthRVaFWVca5y0fUNiEhS+AnGAI6C52/567Y1yi
-	1TdLGqNFLp75GeLR9UnWP2aS/QCtFZNKGgZd615s4EhZcNsvdmuRmbPzwRomCiZZ07RAJkqJCkS
-	+2l6jkOspEU9JH9FM=
-X-Google-Smtp-Source: AGHT+IHQU6VgGvHLOaZBxPkML0Q3IsVDTQ69nAbkvfgwbuU/wkhHQjsH+QVx4aUpRGynw0ZJLPOnfQ==
-X-Received: by 2002:a17:903:1b47:b0:295:3d5d:fe37 with SMTP id d9443c01a7336-29f23ca6bb5mr228820485ad.41.1765990922266;
-        Wed, 17 Dec 2025 09:02:02 -0800 (PST)
+        bh=3BlAKzA21ErBWFpH53H6S+ldLrYlUKuDSpGtu3kSDeU=;
+        b=QNf6jSl+zPT45lJD1L4AkctMooD6v+Gq3ZrXuDRRk3C+86OnaAGCrIqsDVeCWxjhDp
+         Pu+drCWACwuOjoaVNsjgflsZDWeQQl0F6f3RZYDiSEX3hOOFq7SUT1WM0gSfdDfVinba
+         Oi99MqIL9FlagmZrUWwFZ56HhI7/sESxFkJUPPmJXj7hN6TuDkySJErT30MtyF9//San
+         EatcgK0D8mnRuRe6izcTo/abzleKtaxqi3uOIK6cvFnEiN82mYpkwi68i0kE/4NNU+L3
+         txHK++/F4zgCkno0uwuL0dtni6jz3aAo0v68b0kCR1fMln+Wcbz9/fHT2Q++n4upUbqQ
+         6b7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW7xjG1//QoML88uguWyzFdPWOCFtcQRGA/6XgkI02Q1zRSlKIkadOck4styz5S2SlVt6DcdififD8k@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKsod5n3Ukk+y5zN8RppzUvhoQusFASV++Qz9kp8yHU2ahh3AD
+	8stTbOyb1kc+KaSoJdI3AFVi4QdWpNsSiem4UdxO14HOrdIQsNPwyOtn
+X-Gm-Gg: AY/fxX45UY2qgtKu73UK+j3ZlS6I8t2n8uwWv5APnnr+LY7OTRxqaqIomxVBuejTBnP
+	LSwmMidT0JCeGFXoWJMaZFH2VFsmcHpVQsuYoz7rTJzOO2h+9RUTKzcPvkjzdsR8UDl9WKhu7Gq
+	X72VfJgoiwx/+TPfDySw5qYbuXQsti4//rodwArVQfJGPh1/wddAwPCkMvV3kbxLK65cXlfANRn
+	7doqVa4ULQzhUVe+9i+nuV5B6a35oqyzKGo6a1yTCptTbyZoFUGRwYSdKnuJNq7a7nZ/eMvRZvB
+	eMXxp+G1sENvcd7OiJRgWHNeDb1hgUftSreixFL/YLNxNfePkx3LKtD+Wk1vudYGKI+Qp1l9jjd
+	pA6tNAXLMQkxIrYBQgshEMuAU6CmJOUhzRtLLe9PK+wwVxQnnLrEvzsEnCa0r6c2jmlNDMT7pt1
+	iZG2KjnCyaycXrsb24s9miLKxHOw==
+X-Google-Smtp-Source: AGHT+IEjJA54aEA6lI7AscWvPNd06zlq1bSw1wMcFH8bsgGXOTWLSkjWYzIWJqEuLnR0WZ1MVIJLCQ==
+X-Received: by 2002:a17:90b:3912:b0:34a:4a8d:2e2e with SMTP id 98e67ed59e1d1-34abe47924fmr19838591a91.17.1765990964073;
+        Wed, 17 Dec 2025 09:02:44 -0800 (PST)
 Received: from [192.168.50.70] ([49.245.38.171])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2ccebafa0sm153975ad.25.2025.12.17.09.02.00
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34cd9aaaf2csm1933817a91.5.2025.12.17.09.02.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Dec 2025 09:02:01 -0800 (PST)
-Message-ID: <52111335-ca0e-4ede-a7b6-668ce2c81325@gmail.com>
-Date: Thu, 18 Dec 2025 01:01:59 +0800
+        Wed, 17 Dec 2025 09:02:43 -0800 (PST)
+Message-ID: <7f13d1fb-92c0-4175-806a-0f7dbb2bfc63@gmail.com>
+Date: Thu, 18 Dec 2025 01:02:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -82,149 +82,48 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/13] common: add a _check_dev_fs helper
+Subject: Re: [PATCH 04/13] ext4/032: use _check_dev_fs
 To: Christoph Hellwig <hch@lst.de>, Zorro Lang <zlang@kernel.org>
 Cc: Anand Jain <asj@kernel.org>, Filipe Manana <fdmanana@suse.com>,
  "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
 References: <20251212082210.23401-1-hch@lst.de>
- <20251212082210.23401-4-hch@lst.de>
+ <20251212082210.23401-5-hch@lst.de>
 Content-Language: en-US
 From: Anand Jain <anajain.sg@gmail.com>
-In-Reply-To: <20251212082210.23401-4-hch@lst.de>
+In-Reply-To: <20251212082210.23401-5-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-looks good
 
+Looks good
 Reviewed-by: Anand Jain <asj@kernel.org>
-
 
 Thanks
 
-
 On 12/12/25 16:21, Christoph Hellwig wrote:
-> Add a helper to run the file system checker for a given device, and stop
-> overloading _check_scratch_fs with the optional device argument that
-> creates complication around scratch RT and log devices.
+> _check_dev_fs is the new designated helper to check file systems on
+> arbitrary devices, use that instead of _check_generic_filesystem, which
+> is just an implementation detail.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 > ---
->   common/dmthin     |  6 +++++-
->   common/rc         | 21 +++++++++++++++++----
->   tests/btrfs/176   |  4 ++--
->   tests/generic/648 |  2 +-
->   tests/xfs/601     |  2 +-
->   5 files changed, 26 insertions(+), 9 deletions(-)
+>   tests/ext4/032 | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/common/dmthin b/common/dmthin
-> index a1e1fb8763c0..3bea828d0375 100644
-> --- a/common/dmthin
-> +++ b/common/dmthin
-> @@ -33,7 +33,11 @@ _dmthin_cleanup()
->   _dmthin_check_fs()
->   {
->   	_unmount $SCRATCH_MNT > /dev/null 2>&1
-> -	_check_scratch_fs $DMTHIN_VOL_DEV
-> +	OLD_SCRATCH_DEV=$SCRATCH_DEV
-> +	SCRATCH_DEV=$DMTHIN_VOL_DEV
-> +	_check_scratch_fs
-> +	SCRATCH_DEV=$OLD_SCRATCH_DEV
-> +	unset OLD_SCRATCH_DEV
+> diff --git a/tests/ext4/032 b/tests/ext4/032
+> index 690fcf066c11..043ae4f53505 100755
+> --- a/tests/ext4/032
+> +++ b/tests/ext4/032
+> @@ -66,7 +66,7 @@ ext4_online_resize()
+>   	$UMOUNT_PROG ${IMG_MNT}
+>   
+>   	echo "+++ check fs" | tee -a $seqres.full
+> -	_check_generic_filesystem $LOOP_DEVICE >> $seqres.full 2>&1 || \
+> +	_check_dev_fs $LOOP_DEVICE >> $seqres.full 2>&1 || \
+>   		_fail "fsck should not fail"
+>   	_destroy_loop_device $LOOP_DEVICE && LOOP_DEVICE=
 >   }
->   
->   # Set up a dm-thin device on $SCRATCH_DEV
-> diff --git a/common/rc b/common/rc
-> index c3cdc220a29b..8618f77a00b5 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -3692,14 +3692,14 @@ _check_test_fs()
->       esac
->   }
->   
-> -_check_scratch_fs()
-> +# check the file system passed in as $1
-> +_check_dev_fs()
->   {
-> -    local device=$SCRATCH_DEV
-> -    [ $# -eq 1 ] && device=$1
-> +    local device=$1
->   
->       case $FSTYP in
->       xfs)
-> -	_check_xfs_scratch_fs $device
-> +	_check_xfs_filesystem $device "none" "none"
->   	;;
->       udf)
->   	_check_udf_filesystem $device $udf_fsize
-> @@ -3751,6 +3751,19 @@ _check_scratch_fs()
->       esac
->   }
->   
-> +# check the scratch file system
-> +_check_scratch_fs()
-> +{
-> +	case $FSTYP in
-> +	xfs)
-> +		_check_xfs_scratch_fs $SCRATCH_DEV
-> +		;;
-> +	*)
-> +		_check_dev_fs $SCRATCH_DEV
-> +		;;
-> +	esac
-> +}
-> +
->   _full_fstyp_details()
->   {
->        [ -z "$FSTYP" ] && FSTYP=xfs
-> diff --git a/tests/btrfs/176 b/tests/btrfs/176
-> index 86796c8814a0..f2619bdd8e44 100755
-> --- a/tests/btrfs/176
-> +++ b/tests/btrfs/176
-> @@ -37,7 +37,7 @@ swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
->   # Deleting device 1 should work again after swapoff.
->   $BTRFS_UTIL_PROG device delete "$scratch_dev1" "$SCRATCH_MNT"
->   _scratch_unmount
-> -_check_scratch_fs "$scratch_dev2"
-> +_check_dev_fs "$scratch_dev2"
->   
->   echo "Replace device"
->   _scratch_mkfs >> $seqres.full 2>&1
-> @@ -55,7 +55,7 @@ swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
->   $BTRFS_UTIL_PROG replace start -fB "$scratch_dev1" "$scratch_dev2" "$SCRATCH_MNT" \
->   	>> $seqres.full
->   _scratch_unmount
-> -_check_scratch_fs "$scratch_dev2"
-> +_check_dev_fs "$scratch_dev2"
->   
->   # success, all done
->   status=0
-> diff --git a/tests/generic/648 b/tests/generic/648
-> index 7473c9d33746..1bba78f062cf 100755
-> --- a/tests/generic/648
-> +++ b/tests/generic/648
-> @@ -133,7 +133,7 @@ if [ -f "$loopimg" ]; then
->   		_metadump_dev $DMERROR_DEV $seqres.scratch.final.md
->   		echo "final scratch mount failed"
->   	fi
-> -	SCRATCH_RTDEV= SCRATCH_LOGDEV= _check_scratch_fs $loopimg
-> +	_check_dev_fs $loopimg
->   fi
->   
->   # success, all done; let the test harness check the scratch fs
-> diff --git a/tests/xfs/601 b/tests/xfs/601
-> index df382402b958..44911ea389a7 100755
-> --- a/tests/xfs/601
-> +++ b/tests/xfs/601
-> @@ -39,7 +39,7 @@ copy_file=$testdir/copy.img
->   
->   echo copy
->   $XFS_COPY_PROG $SCRATCH_DEV $copy_file >> $seqres.full
-> -_check_scratch_fs $copy_file
-> +_check_dev_fs $copy_file
->   
->   echo recopy
->   $XFS_COPY_PROG $copy_file $SCRATCH_DEV >> $seqres.full
 
 
