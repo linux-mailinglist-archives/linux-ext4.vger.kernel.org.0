@@ -1,48 +1,48 @@
-Return-Path: <linux-ext4+bounces-12427-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12428-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD980CCAACF
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 08:34:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4DECCAAD0
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 08:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D4C13091CC9
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 07:30:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A08803095AAB
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 07:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891A62DA759;
-	Thu, 18 Dec 2025 07:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C85D18DB01;
+	Thu, 18 Dec 2025 07:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B1rHdj93"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="O/LMXSti"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3E18DB01;
-	Thu, 18 Dec 2025 07:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB1C2D9EE3;
+	Thu, 18 Dec 2025 07:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766043055; cv=none; b=FB3DYYEM7nO7LBZfh/7LHDcgqCzAY+aNrr/4Q7GEtm0pcvkYKTVs7CGRhlKmW4Hj9z7CwOHRtQyUbG06FUQppYkR9oe8Cf0QcsSwET/KaPIgrmWsffcuNHiR/U1uGuva+/b/PU3avb/zLYJx/LVpwO2c9mu+KT8ekwcpsqEOhcw=
+	t=1766043062; cv=none; b=XKJ29bXtq5bVWPMY8BX8xiKPLi1uR/Z/1v51815xmq2nhlsyxL2dPiLQ1ljbUFrzlAFAajhruV9maRpl68SI/ViI2RRu1wWoNnhST+7g7jLXR6Wrtmh2bCwC67AMeephCQ2cbD2pBWNFBeVL5tz9DGy4LHpOUd+5f1vT1Bc+NC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766043055; c=relaxed/simple;
-	bh=+ynCMuIpEgP00dLvOhe4vCQGGoABQ0jb70+y8o6Uqvw=;
+	s=arc-20240116; t=1766043062; c=relaxed/simple;
+	bh=BRZYB7CthmeA2N8BYte+xrgQ7h5IQbDgY/Jf+uwRRg0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xaouln/rV98B3FyDFL/AEPgG9212Qdnv1oEo0cmILjkebgbKa6M9gD9OEhvza+YfhQzKdqgy+/44l5ARfD6hmV8Fb3Tk9+FPOJOpcXdmLYCPx0WRi6O2DkO+0xW0aG/Wzfbbn2Qrj/BYinbyQ9hrRvNg00w9/rt0L/u2mkfbnik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B1rHdj93; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=LbJBC2Zlc3xL6jt+bcBbeouo3xzTpn3oN2g4TubyBwm+1wU5EimyjFoYRnB1Q45+4CDnd4LlE/EYmFRNjQC3nY8O0stWt+ZuA8d16V5UD51i3XUOmVx5u428Pj/17jtb09nV/AoRBE6kpgkVN8VaXfuZdi+MvbljEFY6Dtw7nlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=O/LMXSti; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=RKhqASIZcGds8wrjgvfnvpeSZWq5E1W7NP8bj4Rt5dc=; b=B1rHdj93FJZHMSj+WBAgDU3LO4
-	VnXfU1NOTPphSqmzPCm5EW5OBL3YiF0fS2Ox8xyaqCqP+hQp3M7APyBSx5xHJBoAH1FtD2Kmx4xw0
-	8JYKvSKcR3qsGvyeFFKvjOxs4rUb2qMrxg6OKcpy2ujwlrDgWM4mH8SOeZB8ObDBCDByv2pjni6Nz
-	ErDJmgSm03ClGynB5kYGYQ5WSdaH15I2AyULevwsD6SGbW8qEoccQIWIwT+ahpGK3PZb5jMPA0WfE
-	OcNj5VVcgLwfBYzZqVKDaugluaPE3OmsrjjR8BKShgxMBGggS42j9nnvGcXuAdaEtA5UpCRHXOgr2
-	+S6mysqw==;
+	bh=wX+paZeY07bBplHe0qnMCKabUKmg4Oq0CosK4T6T44I=; b=O/LMXStirNqz15IyMxel5ZW+Ft
+	hqeBaFEBPsN6vDxsR6XKGDv8m/Z0uHy7PJgciU8wJrfkmP+wTmXS3el9pcAKSrUIfjYH3mRSM7EqL
+	XB4E9WUBRdWIj7gNraYJXUjdDBWx9Irlgihbf7zjxjS4HrM29Ce5+RmNFE8HFCEKn1VQTGB3crKNX
+	Na1qN8jDRrxFc0+G5peyU6cMlbGO4yA7VAQ2L5Q6ZJX6MVD+URq0OXOsAQbYFyxqFdlTdjs7nonUv
+	y2VGaqhWAMaRsXVHGgvCjhZSRr6fOTS1T9FEYvpIJ2WuCQNpCwZYqk9TVjIj+YPGX0RN75sAT8ucv
+	UruYSqpA==;
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vW8TM-00000007xaT-3v5Q;
-	Thu, 18 Dec 2025 07:30:53 +0000
+	id 1vW8TQ-00000007xak-219U;
+	Thu, 18 Dec 2025 07:30:58 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Zorro Lang <zlang@kernel.org>
 Cc: Anand Jain <asj@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Anand Jain <asj@kernel.org>,
 	fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
-Subject: [PATCH 07/13] xfs/185: don't use SCRATCH_{,RT}DEV helpers
-Date: Thu, 18 Dec 2025 08:30:05 +0100
-Message-ID: <20251218073023.1547648-8-hch@lst.de>
+Subject: [PATCH 08/13] xfs/424: don't use SCRATCH_DEV helpers
+Date: Thu, 18 Dec 2025 08:30:06 +0100
+Message-ID: <20251218073023.1547648-9-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251218073023.1547648-1-hch@lst.de>
 References: <20251218073023.1547648-1-hch@lst.de>
@@ -66,56 +66,88 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-This tests creates loop-based data and rt devices for testing.  Don't
-override SCRATCH_{,RT}DEV and don't use the helpers based on it because
-the options specified in MKFS_OPTIONS might not work for this
-configuration.  This also means that we will now never use a log device
-for this test even if SCRATCH_LOGDEV was set, which is fine because the
-log device is not relevant for what is tested.
+This tests forces external devices to be disabled by calling mkfs.xfs
+directly and overriding SCRATCH_{LOG,RT}DEV, but the options specified in
+MKFS_OPTIONS might not work for this configuration.  Instead hard code
+the calls to xfs_db and don't modify the scratch device configuration.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- tests/xfs/185 | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ tests/xfs/424 | 41 ++++++++++++++++++-----------------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
 
-diff --git a/tests/xfs/185 b/tests/xfs/185
-index 7aceb383ce46..84139be8e66e 100755
---- a/tests/xfs/185
-+++ b/tests/xfs/185
-@@ -22,12 +22,11 @@ _cleanup()
- {
- 	cd /
- 	rm -r -f $tmp.*
--	_scratch_unmount
-+	umount $SCRATCH_MNT
- 	test -n "$ddloop" && _destroy_loop_device "$ddloop"
- 	test -n "$rtloop" && _destroy_loop_device "$rtloop"
- 	test -n "$ddfile" && rm -f "$ddfile"
- 	test -n "$rtfile" && rm -f "$rtfile"
--	test -n "$old_use_external" && USE_EXTERNAL="$old_use_external"
+diff --git a/tests/xfs/424 b/tests/xfs/424
+index 6078d34897e7..61e9de375383 100755
+--- a/tests/xfs/424
++++ b/tests/xfs/424
+@@ -25,17 +25,11 @@ filter_dbval()
+ 	awk '{ print $4 }'
  }
  
- _require_test
-@@ -64,16 +63,8 @@ rtminor=$(stat -c '%T' "$rtloop")
- test $ddmajor -le $rtmajor || \
- 	_notrun "Data loopdev minor $ddminor larger than rt minor $rtminor"
+-# Import common functions.
+ . ./common/filter
  
--# Inject our custom-built devices as an rt-capable scratch device.
--# We avoid touching "require_scratch" so that post-test fsck will not try to
--# run on our synthesized scratch device.
--old_use_external="$USE_EXTERNAL"
--USE_EXTERNAL=yes
--SCRATCH_RTDEV="$rtloop"
--SCRATCH_DEV="$ddloop"
+-# Modify as appropriate
 -
--_scratch_mkfs >> $seqres.full
--_try_scratch_mount >> $seqres.full || \
-+$MKFS_XFS_PROG -r rtdev=$rtloop $ddloop  >> $seqres.full
-+mount -o rtdev=$rtloop $ddloop $SCRATCH_MNT >> $seqres.full || \
- 	_notrun "mount with injected rt device failed"
+-# Since we have an open-coded mkfs call, disable the external devices and
+-# don't let the post-check fsck actually run since it'll trip over us not
+-# using the external devices.
++# Since we have an open-coded mkfs call, don't let the post-check fsck run since
++# it would trip over us not using the external devices.
+ _require_scratch_nocheck
+-export SCRATCH_LOGDEV=
+-export SCRATCH_RTDEV=
  
- # Create a file that we'll use to seed fsmap entries for the rt device,
+ echo "Silence is golden."
+ 
+@@ -62,30 +56,31 @@ for SECTOR_SIZE in $sector_sizes; do
+ 		grep -q 'finobt=1' && finobt_enabled=1
+ 
+ 	for TYPE in agf agi agfl sb; do
+-		DADDR=`_scratch_xfs_db -c "$TYPE" -c "daddr" | filter_dbval`
+-		_scratch_xfs_db -c "daddr $DADDR" -c "type $TYPE"
++		DADDR=`$XFS_DB_PROG -c "$TYPE" -c "daddr" $SCRATCH_DEV |
++			filter_dbval`
++		$XFS_DB_PROG -c "daddr $DADDR" -c "type $TYPE" $SCRATCH_DEV
+ 	done
+ 
+-	DADDR=`_scratch_xfs_db -c "sb" -c "addr rootino" -c "daddr" |
++	DADDR=`$XFS_DB_PROG -c "sb" -c "addr rootino" -c "daddr" $SCRATCH_DEV |
+ 		filter_dbval`
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type inode"
+-	DADDR=`_scratch_xfs_db -c "agf" -c "addr bnoroot" -c "daddr" |
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type inode" $SCRATCH_DEV
++	DADDR=`$XFS_DB_PROG -c "agf" -c "addr bnoroot" -c "daddr" $SCRATCH_DEV |
+ 		filter_dbval`
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type bnobt"
+-	DADDR=`_scratch_xfs_db -c "agf" -c "addr cntroot" -c "daddr" |
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type bnobt" $SCRATCH_DEV
++	DADDR=`$XFS_DB_PROG -c "agf" -c "addr cntroot" -c "daddr" $SCRATCH_DEV |
+ 		filter_dbval`
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type cntbt"
+-	DADDR=`_scratch_xfs_db -c "agi" -c "addr root" -c "daddr" |
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type cntbt" $SCRATCH_DEV
++	DADDR=`$XFS_DB_PROG -c "agi" -c "addr root" -c "daddr" $SCRATCH_DEV |
+ 		filter_dbval`
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type inobt"
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type inobt" $SCRATCH_DEV
+ 	if [ $finobt_enabled -eq 1 ]; then
+-		DADDR=`_scratch_xfs_db -c "agi" -c "addr free_root" -c "daddr" |
+-			filter_dbval`
+-		_scratch_xfs_db -c "daddr $DADDR" -c "type finobt"
++		DADDR=`$XFS_DB_PROG -c "agi" -c "addr free_root" -c "daddr" $SCRATCH_DEV |
++			 filter_dbval`
++		$XFS_DB_PROG -c "daddr $DADDR" -c "type finobt" $SCRATCH_DEV
+ 	fi
+ 
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type text"
+-	_scratch_xfs_db -c "daddr $DADDR" -c "type data"
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type text" $SCRATCH_DEV
++	$XFS_DB_PROG -c "daddr $DADDR" -c "type data" $SCRATCH_DEV
+ done
+ 
+ # success, all done
 -- 
 2.47.3
 
