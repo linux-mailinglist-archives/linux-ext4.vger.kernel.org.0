@@ -1,89 +1,119 @@
-Return-Path: <linux-ext4+bounces-12392-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12393-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F52CC936D
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 19:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A28CC9F23
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 02:06:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BED40310A71C
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Dec 2025 18:04:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AF30230275D4
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 01:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39CB25A354;
-	Wed, 17 Dec 2025 18:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47201DF75B;
+	Thu, 18 Dec 2025 01:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="lpp+omV4"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Gp4kbE1P"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-24430.protonmail.ch (mail-24430.protonmail.ch [109.224.244.30])
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8DC23E34C
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 18:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236093A1E87
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Dec 2025 01:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765994671; cv=none; b=HQcYUxYf6qvaKa0AV1KROQFUbRs8bTxA+KOLb5wujY9wvg+kVWaROhCyR7N6KcC0VGjoX/yFloRAkUkhmzF6TR6ia3WNgpidiyV9iClllDppSKCPlnuj1pxjytlOKDD3uybrm/VxmVwnwCAvVTZq5b9cpVuq4hhffwE2vyi9AME=
+	t=1766019965; cv=none; b=puaTh6nTeVvUqZAsNgiiLHiP0lvLZP/CcqrHs+KgryLZ0tf37uH6LUCHlEGCnovkKDUiB3kW08b5CfIByS3Ygm1GlokiOX2PU4Sld1lYynfQUjb99mcQL7mAAymqfsebtpYVB+cmcwQ18naX/0/lN3Zvq4Clo+oXwIgr4Qi/IWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765994671; c=relaxed/simple;
-	bh=1uNdcnIsmOpSn8LrFdPUFIBBEcyNF9WTPowNAL8IYMs=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=dz1bw8Py252zPNaC9LIwQy7yaCxnAqrBQ48OX5Ri896ZSASDs6Nqsw5NQsuoNM8fvVm++/j0TXcGFvE3n/LgZDyODrBgzhNu5RelKLqhNZdER25Nd5ofexribvXD814zEGXfUWgZv81ey7dnPNhOKwNfmHb9bJ+GWhOTxkE04KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=lpp+omV4; arc=none smtp.client-ip=109.224.244.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1765994665; x=1766253865;
-	bh=1uNdcnIsmOpSn8LrFdPUFIBBEcyNF9WTPowNAL8IYMs=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=lpp+omV4ypLGvD97/s5JU7R2hGUONLHpmKMG1lcOoxjFe+BlH7vr9q+MNKV0yYes1
-	 pKa/rSRVHNxJuNyUl1Y1XF4/jhl4HR+rdpCZdEBY30Yln47Fj69naxkX4CUCd/GFfa
-	 oMcnagcFfnH+bJQJJQ4wuo0bFiSXzuu4kACLCdHnSRmNZxJSmpCbuZP8CjiCXB2Vgh
-	 LlGwCfXuzvcNuajnozhEtcEC4TorEVaAUJClZ4UF/xy75LrgpYTH9fRcsYr4C7QJyN
-	 GvkvbB4ZDkrgROh0w/QICDNQtDibfApu22/1osbQL+4WM35XqE+1IkjitBhxVcRVPo
-	 SEXVMxFleqXSA==
-Date: Wed, 17 Dec 2025 18:04:22 +0000
-To: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-From: Daniel Mazon <daniel.mazon@proton.me>
-Subject: ext4: a tool to modify the inode count
-Message-ID: <PAsXqba23hYRwwgFsaneY7Hmxe8-AmdAhSAUH2CW_vtTAi0Y8wVch4QrmW-gU2KahqhsxpxHesEDBZSXlM70jazF0yC-DaPfWgFckG6uzXo=@proton.me>
-Feedback-ID: 172137602:user:proton
-X-Pm-Message-ID: c1ffbb253c28d186462c68f26448fe2af512350c
+	s=arc-20240116; t=1766019965; c=relaxed/simple;
+	bh=fGgE/Z+Jh8+6MyYiMoLwTtOaRJRey7+o44ZVdkpobrM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SVS+65xCZb6n8kym+2w9UtEYgnjWEsQs9BDcx1Xs5x4MSGHgG9JY6Z36KS/N98HEhmrwRwIR6HbPRwmTnR7Q+k3tJ2uZwE6uK1HaKgIXhltWJpv4+tg+Jdci9FuyTzECvgv17dBHxMzUsYJXMQd1WxFlBlUZ9nz7TqzICJJ1lts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Gp4kbE1P; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=uTLWYm/cxvlOQ3EE61ghk609/PL4B3ntTZt9oe41ork=;
+	b=Gp4kbE1PYq8RxB4ILcCF4pd1qcK3p2Kfhe0rF7xP/OysnMYcdcqpsoziFliivcb4z71HOW6Ea
+	uAbUkt/+Yn4kwHKJgvC02KyMrcy1d1rTbUhOP6P7LbgEdPVjASW9PH+O5GUEf0jPz2A3voeszf7
+	QvdFwkDemItPV7RQqzt9/iU=
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4dWsqj3RvJz1T4J5;
+	Thu, 18 Dec 2025 09:03:45 +0800 (CST)
+Received: from kwepemf200016.china.huawei.com (unknown [7.202.181.9])
+	by mail.maildlp.com (Postfix) with ESMTPS id 870DB140203;
+	Thu, 18 Dec 2025 09:05:58 +0800 (CST)
+Received: from [10.108.234.194] (10.108.234.194) by
+ kwepemf200016.china.huawei.com (7.202.181.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 18 Dec 2025 09:05:57 +0800
+Message-ID: <fcc21a8b-4c53-4755-9747-8e6b83036ecd@huawei.com>
+Date: Thu, 18 Dec 2025 09:05:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4,fiemap: Add inode offset for xattr fiemap
+To: "Darrick J. Wong" <djwong@kernel.org>
+CC: <tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <wangjianjian0@foxmail.com>
+References: <20251217084708.494396-1-wangjianjian3@huawei.com>
+ <20251217163521.GO94594@frogsfrogsfrogs>
+Content-Language: en-US
+From: "wangjianjian (C)" <wangjianjian3@huawei.com>
+In-Reply-To: <20251217163521.GO94594@frogsfrogsfrogs>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemf200016.china.huawei.com (7.202.181.9)
 
-Hello,
-
-I wrote a small tool to modify the inode count of an existing ext4=20
-filesystem. It is largely based on the resize2fs tool from e2fsprogs.=20
-Previously, the inode count was selected at filesystem creation and=20
-could not be modified afterwards.
-
-It provides a way to increase or reduce the inode count. I developed it=20
-because I had a 3.5 TiB ext4 partition created with a default 16384=20
-bytes-per-inode ratio. This created over 200 million inodes, allocating=20
-over 50GiB to inode tables. However, I was using less than 0.1% of=20
-inodes, so I wanted to reallocate those unused GiB from inode tables to=20
-free space.
-
-To test the program, I created testcases trying to cover all possible=20
-ext4 options that could be impacted by a change on the inode count.=20
-After some time, I think it works well: no fsck errors after the=20
-change, and all data is still there. Please bear in mind that this has=20
-only been tested by one person.
-
-I think this tool could be useful to someone else, as it adds=20
-flexibility on a parameter which was previouly unmodifiable. The code=20
-can be found here: https://github.com/danim7/inode_count_modifier
-
-Please don't hesitate to let me know if you give it a try. I hope this=20
-mailing list is the right place to communicate this, if not, please=20
-excuse me for the noise.
-
-Regards,
-Daniel
+On 2025/12/18 0:35, Darrick J. Wong wrote:
+> On Wed, Dec 17, 2025 at 04:47:08PM +0800, Wang Jianjian wrote:
+>> For xattr in inode, need add inode offset in this block?
+>> Also, there is one problem, if we have xattrs both in inode
+>> and block, current implementation will only return xattr inode fiemap.
+>> Is this by design?
+> 
+> I don't think there's much value in reporting the inline xattrs via
+> FIEMAP because user programs can't directly access that area anyway.
+> The only reason (AFAICT) for reporting the external xattr block is for
+> building a map of lost data given a report of localized media failure.
+yes, I agree with this. however, current behavior is it will always 
+reporting inline xattr first. Do you think we should fix this?
+> 
+> (FIEMAP only being useful for debugging and after-the-shatter forensics)
+> 
+>> Signed-off-by: Wang Jianjian <wangjianjian3@huawei.com>
+>> ---
+>>   fs/ext4/extents.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 2cf5759ba689..a16bfc75345d 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -5043,6 +5043,7 @@ static int ext4_iomap_xattr_fiemap(struct inode *inode, struct iomap *iomap)
+>>   		if (error)
+>>   			return error;
+>>   		physical = (__u64)iloc.bh->b_blocknr << blockbits;
+>> +		physical += iloc.offset;
+> 
+> Also it doesn't make sense to add the address of the external block to
+> the inode offset.
+IIUC, bh is the buffer head of the inode is in and iloc.offset is its 
+offset of this block.
+> 
+> --D
+> 
+>>   		offset = EXT4_GOOD_OLD_INODE_SIZE +
+>>   				EXT4_I(inode)->i_extra_isize;
+>>   		physical += offset;
+>> -- 
+>> 2.34.1
+>>
+>>
+-- 
+Regards
 
 
