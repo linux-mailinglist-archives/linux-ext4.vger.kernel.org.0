@@ -1,102 +1,116 @@
-Return-Path: <linux-ext4+bounces-12440-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12441-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37322CCD6FE
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 20:50:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B289CCDAEA
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 22:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 428A8302068C
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 19:50:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B32213014602
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 21:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059492517AA;
-	Thu, 18 Dec 2025 19:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD94030F816;
+	Thu, 18 Dec 2025 21:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwy2M4z+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IpjYr05S"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F697237163;
-	Thu, 18 Dec 2025 19:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4658D2D4B66
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Dec 2025 21:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766087398; cv=none; b=Y2jffSOuSHwCeht0aKmxzqdqm6Bz0tuSCSiicMUJxPv8DPtVxgeq/s/OUBJVrNRs/NXE6JH934QfvKN55NGiLoBQdeDwDOKMSTNWOWXOBEfomCi1ePj/39kSNJmQ2mSW1LPtCV5itsyWHE7YWmEoDkvSLi9lzlWD5cWiwbnEMZA=
+	t=1766093265; cv=none; b=SBA2AoclRlIb++dcyw1ASxfdM2J1Fc/GU2scnPG8UYmFOi+RvjxrGuLIG4C7qWrlNZPmzcY0lMYFItlz1DdgIHUFy4KQQA4uhizVEfYYHkB5QvQF29nkV1U7wXedpKg4qNplgvjzN2QJtyAx4L8/GP0hCf+sseZvEcqIIaoh3VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766087398; c=relaxed/simple;
-	bh=tkqO3vpCZantWcHwrnUs6vVfsh10cw+iHhymLHph53M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M4FVWqriyXasBAQEostUwGFgde0ns4jBesFwbrfzfvx07pJaIXaa1RPo92cbrOgnH2DNXxVF9eLhFAxTNVyLVP2+nwLWbfooUljpJor6UopQLV4HKK9IJ7G9doU8IlpBhRzRL64wf1EsNO24kvC9J+w2fSE4VvWGzF1NTy3Mj4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwy2M4z+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 240CFC4CEFB;
-	Thu, 18 Dec 2025 19:49:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766087398;
-	bh=tkqO3vpCZantWcHwrnUs6vVfsh10cw+iHhymLHph53M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nwy2M4z+cTH1GbJEDPiCXP0zgAMzJlC2B4QVH9pcB4WCGESbf+kGMkqvJ3ABgthZK
-	 AeUkmbksp6gw4pTGczouI6d5eDMmZCqzvkCkwwTdzGR6jaPlL3suqrIYwOmZuL8uyC
-	 nk8Mt5qW8DQ+F/DR64NNI6q1VVZ6HpZTDsFZwav7b41pe4DBIx2hzzr73TH2fUjw6W
-	 RAu33WPR88XMvbHgnYx4XVNHBbyvHLuGPcUh1U8TEIYMT54Ac3htoWKdzpNSTCPfZz
-	 iVZR9x9Qs+tgXp02sa74xtIxNnif1y77fNoRGW2tks194k541C6tS1HPithZZsZjU2
-	 DH35id2+NynoQ==
-Date: Thu, 18 Dec 2025 11:49:57 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: brauner@kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/4] fs: send uevents for filesystem mount events
-Message-ID: <20251218194957.GZ7725@frogsfrogsfrogs>
-References: <176602332484.688213.11232314346072982565.stgit@frogsfrogsfrogs>
- <176602332527.688213.9644123318095990966.stgit@frogsfrogsfrogs>
- <aUOQkY3s_D_REIsH@infradead.org>
+	s=arc-20240116; t=1766093265; c=relaxed/simple;
+	bh=ssp6MgaMGnnKdoqFisDTFr9/zz2YnKqd/trrmdIJETQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Dt2F9xKTH+Gy/iu/yQ2gweJtEucOIJQMyrFKANqqmKV+9d+zTSSUy0wprPPxOWda+wxp1xrSlKvz6jWAaTNuidBjC7qvBkU8qtvCMkWqylshCNrhXM4wGinasgXlKEW43gIv+PZluWSI1JcGl9WT4iVNtBS9ZEhr0UWzJ/qCOoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IpjYr05S; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2a0a33d0585so10797755ad.1
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Dec 2025 13:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766093263; x=1766698063; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mtKlcFT+8oac25TBdlE/6dhf/oQjmi8HEpnZr0zN7f8=;
+        b=IpjYr05Sawiov8nyEBLLYIFxseaYcVcYw+kEAWNIRNBYXQnNs2xxUCG1Zr77hbk3uo
+         mjbufBIrqT+dofy0t21RZAZJQSgXAxZbc7pgBx0kujOEHJKWkUARgbiPgFAcbtsYgmHR
+         zfVGJaOcfMspIN9CY3ZayoO355IXWKcEQKzpY1I4R6CRwijqXR5WlY1CiJ2LGTYE6Q8G
+         8HM0AMK6fygecu/1nw3jcCC9qWz5mJNJPlFhxNcGwi9sj2E3YMiFFCFCA8D8RhUXuaH8
+         +FdtY3Xa1BkY/slmg/dtUKYydgIvtfJD3CEm86PjtTNWVR6O/wX/sgchkBdTMCluEIQx
+         Xm7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766093263; x=1766698063;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mtKlcFT+8oac25TBdlE/6dhf/oQjmi8HEpnZr0zN7f8=;
+        b=paLUI+dOUaWjjSovyGDUzcNRTEjVPUYiUM5K3D+6V02m5F8R5vrGUIBX+/6jNNCzxR
+         hn5R79GguvApn6GVwMLCvzpgLXyy0e3bm7ZOjEWKj+GR7cxQW9fbq46Q7WQ7XV6yP22U
+         uBTdLyoZgZTMtYRPTWAYk3BLWublpjFUnz24jTBfJutVumRZ+cv5d3afxJpYfTfgAnpD
+         BeBwcpf9i6aL5Q6ZIWhSi+sut1XnMYQ5uGqYLpwAK51u0yTJLSx9TerXQ2zzGPdL6jfC
+         KgUaKzi/rpcZhum77+GRSw8Clmlja6HZCpkL4v3wSSCxgvgd6PXLQ+3c26knGCv1m8ga
+         yaow==
+X-Forwarded-Encrypted: i=1; AJvYcCWPIYXUBnIY8gZDq8zMquhddnR2yMtCkaYzQMsdPWqo/aqKgKXzQEa3XvKGPzq4GOgFHsI5Ht4DPuS5@vger.kernel.org
+X-Gm-Message-State: AOJu0YxI2Db+iCt7U9ebOLeFbxI4RXSOSs3/usmjSjoNNDw2w1qv2zmb
+	u9x44N1lD3ZK7rScswoh7GJwSEE8fiHwA7WJTjRdah4uIPdCiBQ+Dw+D
+X-Gm-Gg: AY/fxX611PJak4W/oGKSmSdO6QAJ2dQFQjp6LaYS3/hy3GtaFKBF671DDCXnIMForKz
+	oqSj3FjXRQf26UCebi3E9loeQqwLhci9ucPGItsPAbSm7n0XYP8Sc+eHRlgwc1x6lrCR0tu+ZXW
+	zhWMfsRV9fPWux5Axc1Mz0eIHBGMUD37YMe6d6S6jgUMijSpJ4kzQMWAkGEXNbFRcNnWQbv9vH3
+	TVq1lXFEAs226OJvKHjOTlm5qFJJXnf/PMpqFC7popMXDQWu9KbCEdDouvUKEMKtHrL5PZ42fcP
+	FCVt7a9RFIcain0DSENW1uHX1qIuRQLRivD6XnP3F29RtcC8T93Ufoi37CIkyJnfGaA/Y9Hkcg9
+	34P//89ij8Dufu1FRE2hkPg/vC9tD4x2jwyKM19eJEwqPIHdvaVSn7j7zxHa89GZt9eJTrRP7uh
+	HXuhcf/FUwtkSKM5Y=
+X-Google-Smtp-Source: AGHT+IFy7ceREQxfkIyUxi+oyD4JXaH5EBPvU1D27q3jSDSQbKE1yT3afkwTKTiOeRnMobUoeH8j8g==
+X-Received: by 2002:a17:903:2ac5:b0:2a1:3ee7:cc7a with SMTP id d9443c01a7336-2a2f2223616mr6333525ad.17.1766093263501;
+        Thu, 18 Dec 2025 13:27:43 -0800 (PST)
+Received: from [192.168.50.70] ([49.245.38.171])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d76ce3sm2079125ad.90.2025.12.18.13.27.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Dec 2025 13:27:43 -0800 (PST)
+Message-ID: <3286164e-71b5-4111-8c63-c6f9856a9dd7@gmail.com>
+Date: Fri, 19 Dec 2025 05:27:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aUOQkY3s_D_REIsH@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/13] dmflakey: override SCRATCH_DEV in _init_flakey
+To: Christoph Hellwig <hch@lst.de>, Zorro Lang <zlang@kernel.org>
+Cc: Anand Jain <asj@kernel.org>, Filipe Manana <fdmanana@suse.com>,
+ "Darrick J. Wong" <djwong@kernel.org>, fstests@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+References: <20251218073023.1547648-1-hch@lst.de>
+ <20251218073023.1547648-2-hch@lst.de>
+Content-Language: en-US
+From: Anand Jain <anajain.sg@gmail.com>
+In-Reply-To: <20251218073023.1547648-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 17, 2025 at 09:26:41PM -0800, Christoph Hellwig wrote:
-> > +#define ADVANCE_ENV(envp, buf, buflen, written) \
-> > +	do { \
-> > +		ssize_t __written = (written); \
-> > +\
-> > +		WARN_ON((buflen) < (__written) + 1); \
-> > +		*(envp) = (buf); \
-> > +		(envp)++; \
-> > +		(buf) += (__written) + 1; \
-> > +		(buflen) -= (__written) + 1; \
-> > +	} while (0)
+
+
+On 18/12/25 15:29, Christoph Hellwig wrote:
+> _init_flakey already overrides SCRATCH_LOGDEV and SCRATCH_RTDEV so that
+> the XFS-specific helpers work fine with external devices.  Do the same
+> for SCRATCH_DEV itself, so that _scratch_mount and _scratch_unmount just
+> work, and so that _check_scratch_fs does not need to override the main
+> device.
 > 
-> Any reason this is a macro vs an (inline?) function?  Looking at this a
-> bit more, could this simply use a seq_buf?
+> This requires some small adjustments in how generic/741 checks that
+> mounting the underlying device fails, but the new version actually is
+> simpler than the old one, and in xfs/438 where we need to be careful
+> where to create the custom dm table.
+> 
 
-I'll change it to something like this:
+Reviewed-by: Anand Jain <asj@kernel.org>
 
-	seq_buf_init(&sbuf, buf, buflen);
-	envp = env;
-
-	/*
-	 * Add a second null terminator on the end so the next printf can start
-	 * printing at the second null terminator.
-	 */
-	seq_buf_get_buf(&sbuf, envp++);
-	seq_buf_printf(&sbuf, "TYPE=filesystem");
-	seq_buf_putc(&sbuf, 0);
-
-	seq_buf_get_buf(&sbuf, envp++);
-	seq_buf_printf(&sbuf, "SID=%s", sb->s_id);
-	seq_buf_putc(&sbuf, 0);
-
-	...
-
-	/* Add null terminator to strings array */
-	*envp = NULL;
-
-That does look a lot cleaner than opencoding it.
-
---D
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
