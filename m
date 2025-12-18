@@ -1,48 +1,48 @@
-Return-Path: <linux-ext4+bounces-12425-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12426-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F5A1CCAAC6
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 08:34:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B09CCAACC
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 08:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 668FA30810B7
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 07:30:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AA549308DAF5
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 07:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73872DAFC7;
-	Thu, 18 Dec 2025 07:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 138712DA76F;
+	Thu, 18 Dec 2025 07:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="q2vJJZ/M"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GxI2bRmH"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F1B1C5D57;
-	Thu, 18 Dec 2025 07:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F22129ACC5;
+	Thu, 18 Dec 2025 07:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766043048; cv=none; b=rjJfFUUL6NP/HffxxGfYikOhBocGbRfREBHhSGafxxA6zqsoFn4FXpdcfHBFyvA3EvVH4RE2daLZeznH6kt2mjM9A4EQ+gcRlF23GLrMrWEW+1fv3G6Zn16yQJnBqYs/rScdihVc/pjloGJ1gCZaj0x26tp5blDY1WyTgRIHErw=
+	t=1766043051; cv=none; b=u9Y3bscwRpKZvdWCU2BUONXuytcesdt4o9Tdxwqqh7AO4JVwAlzgEz8azkiXYICU3pDOQMl9dM0/VAf7S+k8gnvN0Fd1Ksc3qFAPAwMItgpJA5j7cNDviqS1FZqOqih3juPaIZYLLfvMDfIllHbiy0FJvflZyJNblUnSDEJ12m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766043048; c=relaxed/simple;
-	bh=Q1/nSRahkaCgQ1JFayBdlMFvKRmmsguheTypo8KcoTs=;
+	s=arc-20240116; t=1766043051; c=relaxed/simple;
+	bh=NxRRwYA9tnelvKUaEIe0oGn1IlKHn44lmM5FhD42L1I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NR0b6xnVUdBmDvZJG5XRVDENkYhof29jaBEmVURer/sVju8rnykJ2sjyRrfk0m4tpVo80NXs233Rj6KjhsZ1XvbDihebkn3JQPNS4WoEe1IrwaejZvRHNOYWoCzzyH9HdO1ZNPfbsHFh9yE3ICutGkrOrguM6+tfU05ViQxLiek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=q2vJJZ/M; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=rdmk63YwBNWo3EZ6STRzZb4U7qayNV4TF/o+K/q2q1TwvIvcSziewWaNYcl+lud+pUn+xftmUiX8s9yPyIXKlSPNxyc1rfhiw8nr8lCOOX6QAfVSeYigsAoyxS9IT40SYajTjPtA3iRag8fzYBWwZ6MCuIoGMo/JQ4DQL4siR1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GxI2bRmH; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=qt4pasSmEOa3g401IbUwxzfNBVukdIGYu1XBF+4uBDw=; b=q2vJJZ/MUTi5078Bv0EGeNJcYt
-	eotT3ihlJfXI+DVFyoZla5HL5BjXwTLwLth/IspnnupWiauYO0Cp8hMTVZsf6ju1LhpsBeW7mYUvO
-	ZsNbtaSR9FtT73/jE/6ru3h5/ivYKKlj3+zAw0ZvvfdHy2BCufgOf9Pr5Wta/1bORRdCJIqqRYRys
-	SJ6IffrchMa0dGlZ1TvgBU1jIcsN3C18W+4GSDvSJ9w44hVyvwPKUIyM+XBWX7yTnIiso1woqZ20j
-	FQpp1VBYGK7TDDI9lAPSzSWVrksILIdaXasnQLK12Xz/zU+UPf18Qhup+8xfXaytVqkwcH8rbOe5O
-	cwDAwyiA==;
+	bh=xbKkU/qe06OxKUaMLJVY84YlKy/2aN3ZBBvCjkpiiWU=; b=GxI2bRmHA3alqRUaAWeuga/qZu
+	k19KHv8OL78kv87KWqvx9oswJ3z8w8OJmISn/y/AoPw2wiKqEjgka+5Cbc9/IVvvvS0zCDLuJ97gY
+	Cfz4V6zMS69kIaxtlhfN2KFACUvzKKVrrMwNgsNYUTGZNL4G2m18e5jyr0FECkzYU6/uoxBGGvVuF
+	9Qf1JPl/Nf4C7ucCjFuEQjEgMlAo8v/ntEcfsbY6M2oVGo+YZv7k/fa+hcBquAM0Jz7P1Eq67JpTs
+	dSg9VWI6gL9BWSDBvhPl1n7JggXroJF1iSa7pvtjpL8GV1ZJgbCAVdYDeur2iFLt8J82uk3DtSdpq
+	3Q3gk4+Q==;
 Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vW8TF-00000007xZz-3sIq;
-	Thu, 18 Dec 2025 07:30:46 +0000
+	id 1vW8TJ-00000007xaL-1wSC;
+	Thu, 18 Dec 2025 07:30:49 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Zorro Lang <zlang@kernel.org>
 Cc: Anand Jain <asj@kernel.org>,
@@ -51,9 +51,9 @@ Cc: Anand Jain <asj@kernel.org>,
 	fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
-Subject: [PATCH 05/13] generic/590: split XFS RT specific bits out
-Date: Thu, 18 Dec 2025 08:30:03 +0100
-Message-ID: <20251218073023.1547648-6-hch@lst.de>
+Subject: [PATCH 06/13] xfs/157: don't override SCRATCH_{,LOG,RT}DEV
+Date: Thu, 18 Dec 2025 08:30:04 +0100
+Message-ID: <20251218073023.1547648-7-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251218073023.1547648-1-hch@lst.de>
 References: <20251218073023.1547648-1-hch@lst.de>
@@ -66,252 +66,159 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Currently generic/590 runs a very different test on XFS that creates
-a lot device and so on.  Split that out into a new XFS-specific test,
-and let generic/590 always run using the file system parameter specified
-in the config even for XFS.
+This tests wants to test various difference device configurations,
+and does so by overriding SCRATCH_{,LOG,RT}DEV.  This has two downside:
+
+ 1) the actual SCRATCH_{,LOG,RT}DEV configuration is still injected by
+    default, thus making the test dependent on that configuration
+ 2) the MKFS_OPTIONS might not actually be compatible with the
+    configuration created
+
+Fix this by open coding the mkfs, db, admin and repair calls and always
+run them on the specific configuration.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Anand Jain <asj@kernel.org>
 Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- tests/generic/590 |  68 ++-------------------------
- tests/xfs/650     | 117 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/xfs/650.out |   2 +
- 3 files changed, 123 insertions(+), 64 deletions(-)
- create mode 100755 tests/xfs/650
- create mode 100644 tests/xfs/650.out
+ tests/xfs/157 | 104 +++++++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 78 insertions(+), 26 deletions(-)
 
-diff --git a/tests/generic/590 b/tests/generic/590
-index ba1337a856f1..54c26f2ae5ed 100755
---- a/tests/generic/590
-+++ b/tests/generic/590
-@@ -4,27 +4,15 @@
- #
- # FS QA Test 590
- #
--# Test commit 0c4da70c83d4 ("xfs: fix realtime file data space leak") and
--# 69ffe5960df1 ("xfs: don't check for AG deadlock for realtime files in
--# bunmapi"). On XFS without the fixes, truncate will hang forever. On other
--# filesystems, this just tests writing into big fallocates.
-+# Tests writing into big fallocates.
-+#
-+# Based on an XFS RT subvolume specific test now split into xfs/650.
- #
- . ./common/preamble
- _begin_fstest auto prealloc preallocrw
+diff --git a/tests/xfs/157 b/tests/xfs/157
+index e102a5a10abe..31f05db25724 100755
+--- a/tests/xfs/157
++++ b/tests/xfs/157
+@@ -50,53 +50,105 @@ fake_rtfile=$TEST_DIR/$seq.scratch.rt
+ rm -f $fake_rtfile
+ truncate -s $fs_size $fake_rtfile
  
--# Override the default cleanup function.
--_cleanup()
--{
--	_scratch_unmount &>/dev/null
--	[ -n "$loop_dev" ] && _destroy_loop_device $loop_dev
--	cd /
--	rm -f $tmp.*
--	rm -f "$TEST_DIR/$seq"
--}
+-# Save the original variables
+-orig_ddev=$SCRATCH_DEV
+-orig_external=$USE_EXTERNAL
+-orig_logdev=$SCRATCH_LOGDEV
+-orig_rtdev=$SCRATCH_RTDEV
 -
- . ./common/filter
+ scenario() {
+ 	echo "$@" | tee -a $seqres.full
  
--_require_scratch_nocheck
- _require_xfs_io_command "falloc"
- 
- maxextlen=$((0x1fffff))
-@@ -32,54 +20,7 @@ bs=4096
- rextsize=4
- filesz=$(((maxextlen + 1) * bs))
- 
--must_disable_feature() {
--	local feat="$1"
--
--	# If mkfs doesn't know about the feature, we don't need to disable it
--	$MKFS_XFS_PROG --help 2>&1 | grep -q "${feat}=0" || return 1
--
--	# If turning the feature on works, we don't need to disable it
--	_scratch_mkfs_xfs_supported -m "${feat}=1" "${disabled_features[@]}" \
--		> /dev/null 2>&1 && return 1
--
--	# Otherwise mkfs knows of the feature and formatting with it failed,
--	# so we do need to mask it.
--	return 0
--}
--
--extra_options=""
--# If we're testing XFS, set up the realtime device to reproduce the bug.
--if [[ $FSTYP = xfs ]]; then
--	# If we don't have a realtime device, set up a loop device on the test
--	# filesystem.
--	if [[ $USE_EXTERNAL != yes || -z $SCRATCH_RTDEV ]]; then
--		_require_test
--		loopsz="$((filesz + (1 << 26)))"
--		_require_fs_space "$TEST_DIR" $((loopsz / 1024))
--		$XFS_IO_PROG -c "truncate $loopsz" -f "$TEST_DIR/$seq"
--		loop_dev="$(_create_loop_device "$TEST_DIR/$seq")"
--		USE_EXTERNAL=yes
--		SCRATCH_RTDEV="$loop_dev"
--		disabled_features=()
--
--		# disable reflink if not supported by realtime devices
--		must_disable_feature reflink &&
--			disabled_features=(-m reflink=0)
--
--		# disable rmap if not supported by realtime devices
--		must_disable_feature rmapbt &&
--			disabled_features+=(-m rmapbt=0)
--	fi
--	extra_options="$extra_options -r extsize=$((bs * rextsize))"
--	extra_options="$extra_options -d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1"
--
--	_scratch_mkfs $extra_options "${disabled_features[@]}" >>$seqres.full 2>&1
--	_try_scratch_mount >>$seqres.full 2>&1 || \
--		_notrun "mount failed, kernel doesn't support realtime?"
--	_scratch_unmount
--else
--	_scratch_mkfs $extra_options >>$seqres.full 2>&1
--fi
-+_scratch_mkfs >>$seqres.full 2>&1
- _scratch_mount
- _require_fs_space "$SCRATCH_MNT" $((filesz / 1024))
- 
-@@ -112,7 +53,6 @@ $XFS_IO_PROG -c "pwrite -b 1M -W 0 $(((maxextlen + 2 - rextsize) * bs))" \
- # Truncate the extents.
- $XFS_IO_PROG -c "truncate 0" -c fsync "$SCRATCH_MNT/file"
- 
--# We need to do this before the loop device gets torn down.
- _scratch_unmount
- _check_scratch_fs
- 
-diff --git a/tests/xfs/650 b/tests/xfs/650
-new file mode 100755
-index 000000000000..d8f70539665f
---- /dev/null
-+++ b/tests/xfs/650
-@@ -0,0 +1,117 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 Facebook.  All Rights Reserved.
-+#
-+# FS QA Test 650
-+#
-+# Test commit 0c4da70c83d4 ("xfs: fix realtime file data space leak") and
-+# 69ffe5960df1 ("xfs: don't check for AG deadlock for realtime files in
-+# bunmapi"). On XFS without the fixes, truncate will hang forever.
-+#
-+. ./common/preamble
-+_begin_fstest auto prealloc preallocrw
+-	SCRATCH_DEV=$orig_ddev
+-	USE_EXTERNAL=$orig_external
+-	SCRATCH_LOGDEV=$orig_logdev
+-	SCRATCH_RTDEV=$orig_rtdev
++	dev=$SCRATCH_DEV
++	logdev=
++	rtdev=
++}
 +
-+# Override the default cleanup function.
-+_cleanup()
++_fake_mkfs()
 +{
-+	_scratch_unmount &>/dev/null
-+	[ -n "$loop_dev" ] && _destroy_loop_device $loop_dev
-+	cd /
-+	rm -f $tmp.*
-+	rm -f "$TEST_DIR/$seq"
++	OPTIONS="$*"
++	if [ -n "$logdev" ]; then
++		OPTIONS="$OPTIONS -l logdev=$logdev"
++	fi
++	if [ -n "$rtdev" ]; then
++		OPTIONS="$OPTIONS -r rtdev=$rtdev"
++	fi
++	$MKFS_XFS_PROG -f $OPTIONS $dev || _fail "mkfs failed"
 +}
 +
-+. ./common/filter
-+
-+_require_scratch_nocheck
-+_require_xfs_io_command "falloc"
-+
-+maxextlen=$((0x1fffff))
-+bs=4096
-+rextsize=4
-+filesz=$(((maxextlen + 1) * bs))
-+
-+must_disable_feature() {
-+	local feat="$1"
-+
-+	# If mkfs doesn't know about the feature, we don't need to disable it
-+	$MKFS_XFS_PROG --help 2>&1 | grep -q "${feat}=0" || return 1
-+
-+	# If turning the feature on works, we don't need to disable it
-+	_scratch_mkfs_xfs_supported -m "${feat}=1" "${disabled_features[@]}" \
-+		> /dev/null 2>&1 && return 1
-+
-+	# Otherwise mkfs knows of the feature and formatting with it failed,
-+	# so we do need to mask it.
-+	return 0
++_fake_xfs_db_options()
++{
++	OPTIONS=""
++	if [ ! -z "$logdev" ]; then
++		OPTIONS="-l $logdev"
++	fi
++	if [ ! -z "$rtdev" ]; then
++		if [ $XFS_DB_PROG --help 2>&1 | grep -q -- '-R rtdev']; then
++			OPTIONS="$OPTIONS -R $rtdev"
++		fi
++	fi
++	echo $OPTIONS $* $dev
 +}
 +
-+extra_options=""
-+# Set up the realtime device to reproduce the bug.
++_fake_xfs_db()
++{
++	$XFS_DB_PROG "$@" $(_fake_xfs_db_options)
++}
 +
-+# If we don't have a realtime device, set up a loop device on the test
-+# filesystem.
-+if [[ $USE_EXTERNAL != yes || -z $SCRATCH_RTDEV ]]; then
-+	_require_test
-+	loopsz="$((filesz + (1 << 26)))"
-+	_require_fs_space "$TEST_DIR" $((loopsz / 1024))
-+	$XFS_IO_PROG -c "truncate $loopsz" -f "$TEST_DIR/$seq"
-+	loop_dev="$(_create_loop_device "$TEST_DIR/$seq")"
-+	USE_EXTERNAL=yes
-+	SCRATCH_RTDEV="$loop_dev"
-+	disabled_features=()
++_fake_xfs_admin()
++{
++	local options=("$dev")
++	local rt_opts=()
++	if [ -n "$logdev" ]; then
++		options+=("$logdev")
++	fi
++	if [ -n "$rtdev" ]; then
++		$XFS_ADMIN_PROG --help 2>&1 | grep -q 'rtdev' || \
++			_notrun 'xfs_admin does not support rt devices'
++		rt_opts+=(-r "$rtdev")
++	fi
 +
-+	# disable reflink if not supported by realtime devices
-+	must_disable_feature reflink &&
-+		disabled_features=(-m reflink=0)
++	# xfs_admin in xfsprogs 5.11 has a bug where an external log device
++	# forces xfs_db to be invoked, potentially with zero command arguments.
++	# When this happens, xfs_db will wait for input on stdin, which causes
++	# fstests to hang.  Since xfs_admin is not an interactive tool, we
++	# can redirect stdin from /dev/null to prevent this issue.
++	$XFS_ADMIN_PROG "${rt_opts[@]}" "$@" "${options[@]}" < /dev/null
++}
 +
-+	# disable rmap if not supported by realtime devices
-+	must_disable_feature rmapbt &&
-+		disabled_features+=(-m rmapbt=0)
-+fi
-+extra_options="$extra_options -r extsize=$((bs * rextsize))"
-+extra_options="$extra_options -d agsize=$(((maxextlen + 1) * bs / 2)),rtinherit=1"
 +
-+_scratch_mkfs $extra_options "${disabled_features[@]}" >>$seqres.full 2>&1
-+_try_scratch_mount >>$seqres.full 2>&1 || \
-+	_notrun "mount failed, kernel doesn't support realtime?"
-+_scratch_unmount
-+_scratch_mount
-+_require_fs_space "$SCRATCH_MNT" $((filesz / 1024))
-+
-+# Allocate maxextlen + 1 blocks. As long as the allocator does something sane,
-+# we should end up with two extents that look something like:
-+#
-+# u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
-+# 0:[0,0,2097148,1]
-+# 1:[2097148,2097148,4,1]
-+#
-+# Extent 0 has blockcount = ALIGN_DOWN(maxextlen, rextsize). Extent 1 is
-+# adjacent and has blockcount = rextsize. Both are unwritten.
-+$XFS_IO_PROG -c "falloc 0 $filesz" -c fsync -f "$SCRATCH_MNT/file"
-+
-+# Write extent 0 + one block of extent 1. Our extents should end up like so:
-+#
-+# u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
-+# 0:[0,0,2097149,0]
-+# 1:[2097149,2097149,3,1]
-+#
-+# Extent 0 is written and has blockcount = ALIGN_DOWN(maxextlen, rextsize) + 1,
-+# Extent 1 is adjacent, unwritten, and has blockcount = rextsize - 1 and
-+# startblock % rextsize = 1.
-+#
-+# The -b is just to speed things up (doing GBs of I/O in 4k chunks kind of
-+# sucks).
-+$XFS_IO_PROG -c "pwrite -b 1M -W 0 $(((maxextlen + 2 - rextsize) * bs))" \
-+	"$SCRATCH_MNT/file" >> "$seqres.full"
-+
-+# Truncate the extents.
-+$XFS_IO_PROG -c "truncate 0" -c fsync "$SCRATCH_MNT/file"
-+
-+# We need to do this before the loop device gets torn down.
-+_scratch_unmount
-+_check_scratch_fs
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/xfs/650.out b/tests/xfs/650.out
-new file mode 100644
-index 000000000000..d7a3e4b63483
---- /dev/null
-+++ b/tests/xfs/650.out
-@@ -0,0 +1,2 @@
-+QA output created by 650
-+Silence is golden
++_fake_xfs_repair()
++{
++	OPTIONS=""
++	if [ -n "$logdev" ]; then
++		OPTIONS="-l $logdev"
++	fi
++	if [ -n "$rtdev" ]; then
++		OPTIONS="$OPTIONS -r $rtdev"
++	fi
++	$XFS_REPAIR_PROG $OPTIONS $* $dev
+ }
+ 
+ check_label() {
+-	_scratch_mkfs_sized "$fs_size" "" -L oldlabel >> $seqres.full 2>&1
+-	_scratch_xfs_db -c label
+-	_scratch_xfs_admin -L newlabel "$@" >> $seqres.full
+-	_scratch_xfs_db -c label
+-	_scratch_xfs_repair -n &>> $seqres.full || echo "Check failed?"
++	_fake_mkfs -L oldlabel >> $seqres.full 2>&1
++	_fake_xfs_db -c label
++	_fake_xfs_admin -L newlabel "$@" >> $seqres.full
++	_fake_xfs_db -c label
++	_fake_xfs_repair -n &>> $seqres.full || echo "Check failed?"
+ }
+ 
+ scenario "S1: Check that label setting with file image"
+-SCRATCH_DEV=$fake_datafile
++dev=$fake_datafile
+ check_label -f
+ 
+ scenario "S2: Check that setting with logdev works"
+-USE_EXTERNAL=yes
+-SCRATCH_LOGDEV=$fake_logfile
++logdev=$fake_logfile
+ check_label
+ 
+ scenario "S3: Check that setting with rtdev works"
+-USE_EXTERNAL=yes
+-SCRATCH_RTDEV=$fake_rtfile
++rtdev=$fake_rtfile
+ check_label
+ 
+ scenario "S4: Check that setting with rtdev + logdev works"
+-USE_EXTERNAL=yes
+-SCRATCH_LOGDEV=$fake_logfile
+-SCRATCH_RTDEV=$fake_rtfile
++logdev=$fake_logfile
++rtdev=$fake_rtfile
+ check_label
+ 
+ scenario "S5: Check that setting with nortdev + nologdev works"
+-USE_EXTERNAL=
+-SCRATCH_LOGDEV=
+-SCRATCH_RTDEV=
+ check_label
+ 
+ scenario "S6: Check that setting with bdev incorrectly flagged as file works"
 -- 
 2.47.3
 
