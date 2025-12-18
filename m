@@ -1,197 +1,120 @@
-Return-Path: <linux-ext4+bounces-12395-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12396-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374B4CC9FF1
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 02:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33696CCA01E
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 02:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A9A91301E197
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 01:40:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4DF64301D0DE
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Dec 2025 01:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91801263F34;
-	Thu, 18 Dec 2025 01:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7F026F296;
+	Thu, 18 Dec 2025 01:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ST/E5YbZ"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="6A/mdIIZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB76D21C9FD
-	for <linux-ext4@vger.kernel.org>; Thu, 18 Dec 2025 01:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109E92222A1;
+	Thu, 18 Dec 2025 01:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766022042; cv=none; b=HEET3yLyeYnsQZaN1qLNO/KjQaynGXy15mB/CqVs2+lN8mNhQ1M9k+Uj2sBrBqc5gNIRExX55wbju0TrSZgasXSboeaBbMcomz5MigNKGfy/i/qzAv4GjVG6EBffSZ61f6U6mLPosFVRPwnp6Xke+kVH1KT0/2rP+zSXwsNLbEc=
+	t=1766022578; cv=none; b=S7YNObeVp/6+PKgVS7MN0sBi2aFTUdFj21liPgCMm3mcb14GdYBvIDFGSQqH9ytsknS/dUJd/cCZQSslqAVEVCjqLmHi6RiPNAscbZ0cB8UIVtu5xVaHKm4s94ofZ8aoxzIDIGmVhMDk2xGAzR4vRfZ2OR8gcxgRVk9Yrzdfwic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766022042; c=relaxed/simple;
-	bh=I/rAODo+HwIExcOnsjmamAW6YGMWDM8LedYa4wNcyT8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G4cUHbUM2bVU/7mmaQADT9srCNRtp6lzEdiPCMMGAsYTEtBwp/I0OamCutImvtuCTDaimLJcNB4a1f76/DG20sw4ixUyl60wqCNyQ+z/DY6u76dyQkucYTT7fCPn99OPCCppR+EKDt7iOHVWhWfnqwKJxFEDdakcjLJ7UFAf2vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ST/E5YbZ; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-34c27d14559so93943a91.2
-        for <linux-ext4@vger.kernel.org>; Wed, 17 Dec 2025 17:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766022040; x=1766626840; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tXvduGGYVPs0oki2ZyuK6X23qPiD8W0H5r3f0w1VklU=;
-        b=ST/E5YbZ/iWTqZ3hxCCPoBtpLiE6xHbl49BiT2uGfCroChA/W+G4yEXcT2iz+EbYfO
-         rwpwUjuteE4G1WjHhXPvgXt1JeJzw2Invm+Zq0tBncY1l0Pfou1ieXMFI3a1vjxLuDcD
-         ubIF4AVfVhzuMLvX4RteaTv8LqKJP4lrL4Lz6D7sk9petdp84/31JiWUQYGNrIR3Y4RG
-         WmBAk/8teGQcLBnZ0WNBS3OQEm0bMbcvhCy3kgfEAKinfnyehEuvSjAq2TTfj8v9HIOJ
-         4fWcSeAcAiMZiTXFY6PompcU7akVIot+tsRcmayDlbBwPFoL+rYksUJ//JoTxCWAL/DM
-         PXhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766022040; x=1766626840;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tXvduGGYVPs0oki2ZyuK6X23qPiD8W0H5r3f0w1VklU=;
-        b=NL0KvWd02rKeEtbifUiR1rlsPT1u1eXGCfAgCGZXQd/NG3N2zIVAsWoTGQn2JiBXir
-         R50puD9n/RPkmnpWwXiD+BUceQN0FvN7aaCyuxbEiCVb8Kxzv+FzEA19QM+dvkK16bUV
-         6szCY0JXlVaYNLS7ZZ5ZY/JUdouY9h3HBR4dxCriJuMBnJqB4tjwI+l4oPZavl+YTlJl
-         1Z2979ydImSL/EWTmaYdDnsZlnzQS0uMsh4PfkpiUrJVpUI0LEULlHVoCw9J2j495zSh
-         93qg55negefg/PUiSlTq9EzlSWx6EWfFh6i+6uh5jgeFO306Bo+isKYwrAOE8KtVC5Tx
-         xL9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUKQzis+t42dCoLNCcLqsq3w9BrTJVZU9fDfqOzMZFv//DqzHuktMti2v/1Nk0qY/V3jorRkrlfmSXs@vger.kernel.org
-X-Gm-Message-State: AOJu0YxPrzq3F3wgnRuRUqE2BnfY9aarKNocXIw358hp1vu64nNXtlQr
-	imjS8fgh16Ethya1lmj/kKS/fYdUy0KQE3w+AWGJrLGSDlDDhU439uKn
-X-Gm-Gg: AY/fxX4Pqx/+4cWP1FJwhWYS3Hm0qvYWHs2v+lDdETRyQGwEgad+5VT0OacJwJMXftQ
-	w+nkzAXTD984G6thI6mIcgzmZRStyPPKQkYShHr7YxCj8CbyrKJPIsVRthZ/ZW7+PuDTFUZT6Im
-	SM407sSv2qowVd78KJkv163li2O4Yn5YhnqmOBOsLESArfWg+u8yXvg0WzSz4ggivk1+9pxyNNM
-	iqVBsTnZqZWArhILWOYyCme23cT8q6ciGeY0RoDGTqfZxUo2uYYCZALBixMgedu/IgC4x01q8uH
-	0XoX01zjFQKbQX/cP7eZoYB1DqLGLxYCs5wpprvc3qb23F/GwWTTg1bA/7iIfFxaG3o8VHSHeE6
-	+t/s8r60ZWa0mGV8W8UgAFt4bQAwMJnehDQW+Ubtz1azKfsiDdpoYFCTQLLw+Wlmhvs226Z1gYY
-	3l/l8=
-X-Google-Smtp-Source: AGHT+IGRV2jXQCCrdDuQ9IckFl0dfpdQWVmaKgrYY4f+jm8IX4QNAUnhVgQPtQjwcLLs8oAAZGnIHg==
-X-Received: by 2002:a17:90b:3d0e:b0:340:2f48:b51a with SMTP id 98e67ed59e1d1-34abd802b08mr17080735a91.15.1766022039901;
-        Wed, 17 Dec 2025 17:40:39 -0800 (PST)
-Received: from localhost ([2a12:a304:100::105b])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70ddf58dsm750401a91.17.2025.12.17.17.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 17:40:39 -0800 (PST)
-Date: Thu, 18 Dec 2025 09:40:36 +0800
-From: Jinchao Wang <wangjinchao600@gmail.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: xattr: fix wrong search.here in clone_block
-Message-ID: <aUNbhrPEY9Aa2U4L@ndev>
-References: <20251216113504.297535-1-wangjinchao600@gmail.com>
- <4msliwnvyg6n3xdzfrh4jnqklzt6zji5vlr5qj4v3lrylaigpr@lyd36cukckl7>
+	s=arc-20240116; t=1766022578; c=relaxed/simple;
+	bh=Y3j0EAisbltsGlSTRM4jaAd6NNFo868LaUIwD3U0zUg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mzSoQ3JN9DT2tVNpXXJhxhcfXHVQCWLIqKd99C50P0hHNQmJIGIf2obfTWdU9PCV7UXEx7fIEFNu/I+cPq7yu9Ee6GaFVHE8ym6cU0lmF8nqe2zeuNRXwF7pqmFKriS7VvldGwRn7SdNLL4lrTX7NsZGxZD1/9/nQL+gVWTn368=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=6A/mdIIZ; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=sFR/d/jFXb8PTareX7VZTkOyVQRNbiDQjgxkI8reTPM=;
+	b=6A/mdIIZ1MZWiGTzV7igDiWbHAqWMZJroMQ261gX5Bw4EDDNw5Dvbo9iMCDCFOmstHvDBGPDz
+	I7N3XBbNVkxd0XkHR3/N5tv8rIiadtDH/hc7A0YfRZmXRHyK97cTpp9rJ5evN2QiUzL4s7Jj2yy
+	wX3oza8VpGOrrw36YQqV2K0=
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4dWtpB6ZQ8z1prKB;
+	Thu, 18 Dec 2025 09:47:30 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6133B1402CD;
+	Thu, 18 Dec 2025 09:49:33 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 18 Dec
+ 2025 09:49:32 +0800
+Message-ID: <7e3278d0-032c-447a-a4f4-0a34a09541f1@huawei.com>
+Date: Thu, 18 Dec 2025 09:49:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4msliwnvyg6n3xdzfrh4jnqklzt6zji5vlr5qj4v3lrylaigpr@lyd36cukckl7>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: Fix KASAN use-after-free in ext4_find_extent
+Content-Language: en-GB
+To: =?UTF-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
+CC: <security@kernel.org>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <2edd9a0c.3e90f.19b0314cfc8.Coremail.3230100410@zju.edu.cn>
+ <19b5b9b3-5243-459b-a264-257f9c8324ec@huawei.com>
+ <3c54df5e.436a9.19b21b55d21.Coremail.3230100410@zju.edu.cn>
+ <3f5ec6d7-d291-4b37-8914-3b4347564e98@huawei.com>
+ <2ef68a02.45e3e.19b2ce7b7a0.Coremail.3230100410@zju.edu.cn>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <2ef68a02.45e3e.19b2ce7b7a0.Coremail.3230100410@zju.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Wed, Dec 17, 2025 at 12:30:15PM +0100, Jan Kara wrote:
-> Hello!
-> 
-> On Tue 16-12-25 19:34:55, Jinchao Wang wrote:
-> > syzbot reported a KASAN out-of-bounds Read in ext4_xattr_set_entry()[1].
-> > 
-> > When xattr_find_entry() returns -ENODATA, search.here still points to the
-> > position after the last valid entry. ext4_xattr_block_set() clones the xattr
-> > block because the original block maybe shared and must not be modified in
-> > place.
-> > 
-> > In the clone_block, search.here is recomputed unconditionally from the old
-> > offset, which may place it past search.first. This results in a negative
-> > reset size and an out-of-bounds memmove() in ext4_xattr_set_entry().
-> > 
-> > Fix this by initializing search.here correctly when search.not_found is set.
-> > 
-> > [1] https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-> > 
-> > Fixes: fd48e9acdf2 (ext4: Unindent codeblock in ext4_xattr_block_set)
-> > Cc: stable@vger.kernel.org
-> > Reported-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-> > Signed-off-by: Jinchao Wang <wangjinchao600@gmail.com>
-> 
-> Thanks for the patch! But I think the problem must be somewhere else. 
-The first syzbot test report was run without the patch applied,
-which caused confusion.
-The correct usage and report show that this patch fixes the crash:
-https://lore.kernel.org/all/20251216123945.391988-2-wangjinchao600@gmail.com/
-https://lore.kernel.org/all/6941580e.a70a0220.33cd7b.013d.GAE@google.com/
+On 2025-12-17 23:22, 余昊铖 wrote:
+> Hi,
+>
+> Sorry but I am a bit confused by your words. My original fuzz tesing already enabled CONFIG_BLK_DEV_WRITE_MOUNTED as in most major Linux distributions. 
+>
+> So does a bug found when CONFIG_BLK_DEV_WRITE_MOUNTED is enabled still hold value for reporting? Should I enable or disable this configuration in my future fuzzing work?
 
->When
-> a search ends without success (-ENODATA error), s->here points to the
-> 4-byte zeroed word inside xattr space that terminates the part with xattr
-> headers. If I understand correctly the expression which overflows is:
-> 
-> size_t rest = (void *)last - (void *)here + sizeof(__u32);
-> 
-Yes, you are right about all of the above.
+Oh, my apologies—I mistakenly wrote "enable" instead of "disable" which
+must have been confusing.
 
-> in ext4_xattr_set_entry(). And I don't see how 'here' can be greater than
-> 'last' which should be pointing to the very same 4-byte zeroed word. The
-> fact that 'here' and 'last' are not equal is IMO the problem which needs
-> debugging and it indicates there's something really fishy going on with the
-> xattr block we work with. The block should be freshly allocated one as far
-> as I'm checking the disk image (as the 'file1' file doesn't have xattr
-> block in the original image).
+Distributions typically enable this config because some userspace tools
+still rely on writing directly to the raw disk. Once all userspace tools
+transition to using ioctls, we will be able to disable it globally or
+specifically for certain filesystems in distributions.
 
-I traced the crash path and find how this hapens:
+However, during testing, this feature is often disabled to avoid false
+positives by prohibiting raw writes that bypass the filesystem.
 
-entry_SYSCALL_64
-...
-ext4_xattr_move_to_block
-  ext4_xattr_block_find (){
-    error = xattr_find_entry(inode, &bs->s.here, ...); // bs->s.here updated 
-                                                       // to ENTRY(header(s->first)+1);
-    if (error && error != -ENODATA)
-      return error;
-    bs->s.not_found = error; // and returned to the caller
-  }
-  ext4_xattr_block_set (bs) {
-    s = bs->s;
-    offset = (char *)s->here - bs->bh->b_data; // bs->bh->b_data == bs->s.base
-                                               // offset = ENTRY(header(s->first)+1) - s.base
-                                               // leads to wrong offset
-    clone_block: {
-	s->base = kmemdup(BHDR(bs->bh), bs->bh->b_size, GFP_NOFS);
-	s->first = ENTRY(header(s->base)+1);
-	s->here = ENTRY(s->base + offset); // wrong s->here
-    }
-    ext4_xattr_set_entry (s) {
-      last = s->first; // last < here
-      rest = (void *)last - (void *)here + sizeof(__u32); // negative rest
-      memmove((void *)here + size, here, rest); // crash
-    }
-  }
-> 
-> 								Honza
-> 
-> > diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> > index 2e02efbddaac..cc30abeb7f30 100644
-> > --- a/fs/ext4/xattr.c
-> > +++ b/fs/ext4/xattr.c
-> > @@ -1980,7 +1980,10 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
-> >  			goto cleanup;
-> >  		s->first = ENTRY(header(s->base)+1);
-> >  		header(s->base)->h_refcount = cpu_to_le32(1);
-> > -		s->here = ENTRY(s->base + offset);
-> > +		if (s->not_found)
-> > +			s->here = s->first;
-> > +		else
-> > +			s->here = ENTRY(s->base + offset);
-> >  		s->end = s->base + bs->bh->b_size;
-> >  
-> >  		/*
-> > -- 
-> > 2.43.0
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+You can find more details in the original patchset if you're interested:
+https://lore.kernel.org/all/20231101173542.23597-1-jack@suse.cz
+
+
+Cheers,
+Baokun
+
+>
+> Thanks,
+> Haocheng Yu
+>
+>>> Hi,
+>>>
+>>> I have disabled CONFIG_BLK_DEV_WRITE_MOUNTED and spent some time trying to trigger the reported KASAN issues. And I found neither of the two bugs has been observed since. Is this issue still worth investigating?
+>> That essentially confirms the issue is caused by bypassing the
+>> filesystem to write directly to the raw disk. This is a known
+>> issue and is quite tricky to solve.
+>>
+>> You can work around this specific class of issues in your fuzz
+>> testing by enabling CONFIG_BLK_DEV_WRITE_MOUNTED. Syzbot runs
+>> with this configuration enabled by default.
+>>
+>>
+>> Cheers,
+>> Baokun
+
+
 
