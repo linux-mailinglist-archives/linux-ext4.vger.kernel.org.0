@@ -1,141 +1,143 @@
-Return-Path: <linux-ext4+bounces-12445-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12446-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76EA1CCE175
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 01:50:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31424CCF032
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 09:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3F7A53042FDA
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 00:50:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D5AFC303A089
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 08:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C341E0DCB;
-	Fri, 19 Dec 2025 00:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="zdKXQsU1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D512E7F00;
+	Fri, 19 Dec 2025 08:43:56 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A143B16D9C2
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Dec 2025 00:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD78523F429
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Dec 2025 08:43:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766105433; cv=none; b=JaS0XuQnFFUxAX9vGhbOun6In1kgqMU5nPeDuPfAOKx9gg1GmBCpxw+6swa008eVRGMapDrslCRIX2LiG47LaNfg22JeRtezId98pnO05fdyGuefWN3X5TsHajB+H4DxrNVnGs67joN6Ky6oqKdRHvPIN8+vWLfz2BtuIeeWE3o=
+	t=1766133836; cv=none; b=SMaq/WXXHYXAkNBXcloqk4v7e2xXAKBkEj5l0GgNS05Br9zSfCESXWjXrgC6+4ojA6OsEMKjS2HcrH+5JvPHGfVU+mNSnGocyVYVOhUsGOMIzjx09xFu/MHbnGzfONJMYd+0jNyHM67EexDnSO4qhOHYpItMcMuBrBSi7cWogJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766105433; c=relaxed/simple;
-	bh=cVZw9+gQwMSbxCQq4TclTN27XHIUq/NYqe7Mb2qSsPI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=J6GTbtOlbykaoUH/nl/4+fF6AW5nvgezeDeyF3ySDPOwkwTv2dAjfs3Q+0Iji+fy3Mj8PZRXgJRQ+jf/zhBGQvgXKiuR1x23HaKJb95zEgfBfDPFB0G76GbzUztskeYOIt3j/SqoTMu6SxfUqLHelxpCoOOGrNyD+FVnar/lrfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=zdKXQsU1; arc=none smtp.client-ip=113.46.200.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=j+8J1GztUw+l62UCxkmaSTvXg2GRuki9PXpsZUslRvo=;
-	b=zdKXQsU10K377vk8usgjqjLAfyy0nOzhHsRu9odaD0OJrnuEd0oreu0izxbCDYLtAVvO90+A5
-	Bu9WAfQd7mozDdxmMBaU00gUH+A9l/Jitk5P9Gu7PwgkMkpGPaK7VDUOGJYrIs6ZuJnWPxD5wCh
-	5XkJeHpLnqGsDU2W/0lIE04=
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4dXTQQ1chhz1K98x;
-	Fri, 19 Dec 2025 08:47:26 +0800 (CST)
-Received: from kwepemf200016.china.huawei.com (unknown [7.202.181.9])
-	by mail.maildlp.com (Postfix) with ESMTPS id CD5901800CE;
-	Fri, 19 Dec 2025 08:50:27 +0800 (CST)
-Received: from [10.108.234.194] (10.108.234.194) by
- kwepemf200016.china.huawei.com (7.202.181.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 19 Dec 2025 08:50:27 +0800
-Message-ID: <c83ef56d-9789-4552-ad5c-ffef6bf809ba@huawei.com>
-Date: Fri, 19 Dec 2025 08:50:26 +0800
+	s=arc-20240116; t=1766133836; c=relaxed/simple;
+	bh=xm/A6dEImribOoXnxnTykFSuGzhUvM8wBDtOgVzYF7U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m9/Y2uJT2MrfkRKBvMRP+g+A7H8Ld24gHdl/plnkRv9nyjrlqlgdz5aprSp+8Wv0ugen67Ag0Ul0fqRVJn9WmsNa75dH5xb/l7r1D5bS/YhQX77HYgQcy0qzMLfEVvnT9Bh0Fjc4ue4XwysAXSH0W6zdonjXF49KKrf+RBcStS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-55982d04792so1125119e0c.1
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Dec 2025 00:43:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766133833; x=1766738633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MdtOJ4ZlHucq5UjsXvtK2NYve+XmgNe+f9uend0E6DU=;
+        b=DwMklZVdhovuzDXJIzE89CyMefs0fGmYUrL5aXUGLjB5tZrdFdE2uwcRAOCYRbR4Sg
+         xb97LOlNoAdYh0Kqa06nOAB9vbJjnx8qcFm2FjfMLdZUHrMFFYbkPw/kpZhdzxUxx4iD
+         ZpcC2jlgj6fyeTDb5ply+BkQvlBx5RHPTPxTynJ+MkAnS0unXUGMopLIQn6mpnRqapw/
+         jBjH+Cxo+0EOgoft+2Yhk9noYkHA+Ao9rPbmAzbVUt4tPKcNrpp+s96LfxDJhQJDkCsU
+         BNopcFy5irAUeaZwyn75KQ8n2rSYYkdO5Y8BK6wxTff6+Ev/KsKULhemjTXCt8DWabdF
+         hLTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdaYKv7bq0QQgDzVGsbzt6EOFTBskmESjB5ymcD6gpULxzTC8yGyC8P2x/hp3csGAU0/RV5Ff0E+p7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMMKSxzoM4CNUntoFVsErL5wjNdYMUXvI700/WrrgD7/oojc8Z
+	1m00fJrawPX2ZgFcV6iMMSNGlUjBqLzItImBNfXQDp8QT/2+rb621b3/HBry8J+G
+X-Gm-Gg: AY/fxX6M2Vc/msC1DnRYGoPWy+nTQvNyuAoD0p2H9KSoJnq/DYxTMuDY0U1Ony4y14y
+	m778FutKSPsxpOUI7FV6Ki8oeM7nc44592qCFrUhyE4sZgJaQ/sQL2jOXk/3PkkOiEMiJYqQY1S
+	ig5A8od2ZlFl/aTKLeNNW5+Y+UFSHQMLmbklMNF+BLwBk3pV5Sl8/e52wJoQuAyUPCpX+2EI8Zp
+	SmGvCxAqANYlaNd6XHbkWbrF5NHVK7Tb2vI5Ykp25k52SBItGDF+sOShk+W3jDdE81Wi05WZqdV
+	q/Q4Od1L3b3bqo6iktlbUj3BLdE4ka8nOAiRnpIFuKD59OJV70lEMSfRFT+lC+e8jkhoAMH2NJZ
+	8w7gZ/B26NoPUzc3biXl1S9zi6UuxSlXs9uQmDbawq+xXYBEN79+sORnIOEWxKsNBsQhd+Ze21h
+	GRoO8rseQMe9nurS7tqeR0vPd+tH2lswjy6bPM91mRzYBFDCZC7HfC
+X-Google-Smtp-Source: AGHT+IFKvSatZImXqpCv6ARrtgIC/hCzN74J6gkhP2V9+ICZGRlLHrgT/3HGrZO1u4VJAQOE36K2VQ==
+X-Received: by 2002:a05:6122:883:b0:55b:305b:4e34 with SMTP id 71dfb90a1353d-5615be902ccmr783733e0c.20.1766133833094;
+        Fri, 19 Dec 2025 00:43:53 -0800 (PST)
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5615d1518d5sm604458e0c.16.2025.12.19.00.43.51
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Dec 2025 00:43:52 -0800 (PST)
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-55b24eedd37so1033723e0c.0
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Dec 2025 00:43:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVDDgmvP0xH8u/PWXGW9Kb59nTvxjnNtrpO+1hJpS2Iz5eAaPL6WBfqcA33FhSQ2m6RbFGDcLtbyDcu@vger.kernel.org
+X-Received: by 2002:a05:6102:5798:b0:5dd:c568:d30d with SMTP id
+ ada2fe7eead31-5eb1a817628mr700445137.30.1766133831486; Fri, 19 Dec 2025
+ 00:43:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4,fiemap: Add inode offset for xattr fiemap
-To: "Darrick J. Wong" <djwong@kernel.org>
-CC: <tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <wangjianjian0@foxmail.com>
-References: <20251217084708.494396-1-wangjianjian3@huawei.com>
- <20251217163521.GO94594@frogsfrogsfrogs>
- <fcc21a8b-4c53-4755-9747-8e6b83036ecd@huawei.com>
- <20251218233636.GR94594@frogsfrogsfrogs>
-Content-Language: en-US
-From: "wangjianjian (C)" <wangjianjian3@huawei.com>
-In-Reply-To: <20251218233636.GR94594@frogsfrogsfrogs>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemf200016.china.huawei.com (7.202.181.9)
+References: <20251204101914.1037148-1-arnd@kernel.org> <3ueamfhbmtwmclmtm77msvsuylgxabt3zqkrtvxqtajqhupfdd@vy7bw3e3wiwn>
+ <B2AC14DC-0B9D-433A-A1B0-78D0778D0A39@dilger.ca> <a1807d6f-1b47-4a30-86d8-eea56d990ed9@app.fastmail.com>
+In-Reply-To: <a1807d6f-1b47-4a30-86d8-eea56d990ed9@app.fastmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 19 Dec 2025 09:43:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUKMoaEoA=aiMUYYd22fqKv2UdVtGMG1JCE-3gtTPvz_A@mail.gmail.com>
+X-Gm-Features: AQt7F2oeTPbqWvc36txP7fMnHo3QpCBW_4W_018ea1KKcmCy1um6vrZ-270Sn3Q
+Message-ID: <CAMuHMdUKMoaEoA=aiMUYYd22fqKv2UdVtGMG1JCE-3gtTPvz_A@mail.gmail.com>
+Subject: Re: [PATCH] ext4: fix ext4_tune_sb_params padding
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@kernel.org>, 
+	"Theodore Ts'o" <tytso@mit.edu>, "Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/12/19 7:36, Darrick J. Wong wrote:
-> On Thu, Dec 18, 2025 at 09:05:57AM +0800, wangjianjian (C) wrote:
->> On 2025/12/18 0:35, Darrick J. Wong wrote:
->>> On Wed, Dec 17, 2025 at 04:47:08PM +0800, Wang Jianjian wrote:
->>>> For xattr in inode, need add inode offset in this block?
->>>> Also, there is one problem, if we have xattrs both in inode
->>>> and block, current implementation will only return xattr inode fiemap.
->>>> Is this by design?
->>>
->>> I don't think there's much value in reporting the inline xattrs via
->>> FIEMAP because user programs can't directly access that area anyway.
->>> The only reason (AFAICT) for reporting the external xattr block is for
->>> building a map of lost data given a report of localized media failure.
->> yes, I agree with this. however, current behavior is it will always
->> reporting inline xattr first. Do you think we should fix this?
-> 
-> Nah.  If there are no complaints, then let's leave it alone.
-> It's not like the xattr structure has a meaningful byte position index.
-sure, let's keep it as is.
-> 
->>> (FIEMAP only being useful for debugging and after-the-shatter forensics)
->>>
->>>> Signed-off-by: Wang Jianjian <wangjianjian3@huawei.com>
->>>> ---
->>>>    fs/ext4/extents.c | 1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->>>> index 2cf5759ba689..a16bfc75345d 100644
->>>> --- a/fs/ext4/extents.c
->>>> +++ b/fs/ext4/extents.c
->>>> @@ -5043,6 +5043,7 @@ static int ext4_iomap_xattr_fiemap(struct inode *inode, struct iomap *iomap)
->>>>    		if (error)
->>>>    			return error;
->>>>    		physical = (__u64)iloc.bh->b_blocknr << blockbits;
->>>> +		physical += iloc.offset;
->>>
->>> Also it doesn't make sense to add the address of the external block to
->>> the inode offset.
->> IIUC, bh is the buffer head of the inode is in and iloc.offset is its offset
->> of this block.
-> 
-> Oh silly me.  Yes, that's more correct, though if you really wanted to
-> be pedantic, you could also add in the distance from the start of the
-> inode core to wherever the xattr data actually is.
-I think bh->b_blocknr << blockbits has been the offset from the very 
-begin of this FS. But as above said, since nobody cares this, let's keep 
-it as is. Thanks for your reply.
->   dfd
-> --D
-> 
->>>
->>> --D
->>>
->>>>    		offset = EXT4_GOOD_OLD_INODE_SIZE +
->>>>    				EXT4_I(inode)->i_extra_isize;
->>>>    		physical += offset;
->>>> -- 
->>>> 2.34.1
->>>>
->>>>
->> -- 
->> Regards
->>
->>
--- 
-Regards
+On Fri, 5 Dec 2025 at 19:07, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Fri, Dec 5, 2025, at 11:17, Andreas Dilger wrote:
+> >> On Dec 4, 2025, at 3:31=E2=80=AFAM, Jan Kara <jack@suse.cz> wrote:
+> >> On Thu 04-12-25 11:19:10, Arnd Bergmann wrote:
+> > While this change isn't _wrong_ per-se, it does seem very strange to ha=
+ve
+> > a 68-byte padding at the end of the struct.  You have to check the numb=
+er
+> > of __u32 fields closely to see this,
+>
+> I had the same thought but decided against that because it would be
+> an ABI break on all architectures. The version I posted only changes
+> the structure size on x86-32, csky, m68k and microblaze, as far
+> as I can tell.
 
+Indeed very unfortunate...
+
+> > and I wonder if this will perpetuate
+> > errors in the future (e.g. adding a __u64 field after mount_opts[64]).
+>
+> Indeed, I can see how that could become worse.
+>
+> > IMHO, it would be more clear to either add an explicit "__u32 pad_3;"
+> > field after mount_opts[64], or alternately declare mount_opts[68] so it
+
+FTR, I would have added "__u32 pad_3;" _before_ mount_opts[64].
+
+> > will consume those bytes and leave the remaining fields properly aligne=
+d.
+> > It isn't critical if the user tools use the last 4 bytes of mount_opts[=
+]
+> > or not, so they could be changed independently at some later time.
+> >
+> > Either will ensure that new fields added in place of pad[64] will be
+> > properly aligned in the future.
+>
+> Changing mount_opts[] to 68 bytes sounds fine to me, I'll send an
+> updated patch for that. I've kept the Ack from Jan, please shout
+> if I should drop that instead.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
