@@ -1,257 +1,178 @@
-Return-Path: <linux-ext4+bounces-12454-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12455-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46B3CD1037
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 17:57:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5901CCD2993
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Dec 2025 08:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 332E8305BDD1
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Dec 2025 16:56:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3B0BB3015871
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Dec 2025 07:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE7135BDC1;
-	Fri, 19 Dec 2025 16:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uRkGcRWE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOOBW2SY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="uRkGcRWE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOOBW2SY"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3939D28C87C;
+	Sat, 20 Dec 2025 07:16:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7396A35CB9C
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Dec 2025 16:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5C520102B;
+	Sat, 20 Dec 2025 07:16:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766162822; cv=none; b=L6btn6h7mlbz5A36nRNchKgcPkk5G8QU9bfC+OLfd+xjq4YQ5THGZcAPOmIJVi7xGeXDxi4oNX7THiu0w62ApfcoauSfvAucY48znTLaphc8OfHmJHsSK1RxpFLHUXhyAtjsDl5Vi3jjdG0dMTCwcmNU4cyHOlVh7xxBA7ZE44Q=
+	t=1766215009; cv=none; b=loz1Hi/VmNbmlC1xDbi5FPlxtBuHBHAfEHm8DlOAKHQoky3i3I51K1qlmt5Uog5Cvbx1o7GWz4CuX0jSZCxOlmhBJO1QG0WMjW6bPB8uf2j+9t9mQdKtcX2A4wUj8bfCtroPtDJIRkoVJN3exjmUGn4b3SM6ZHsB4h18LMh+CCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766162822; c=relaxed/simple;
-	bh=6IAz/DgibssxpXWM5OEKgnMa3zhoSWiIHa+YPnGvuJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=brn1+UA03XUvGSsMqsVMa/xuZuyFGSiUnkyrx+u4ToeLQmwuTUVFJEke53VP/D9XppbKyvbtlTJbI8zpcOie1Rkp9p5iPBSFO8Lr/uo3wmGUkKyptLq1c+sk99PIqcCUhRE6w2umZ4wapKAkGx4s9IR3j/d9e0kLHa42XIaGTGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uRkGcRWE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOOBW2SY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=uRkGcRWE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOOBW2SY; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1E8D333742;
-	Fri, 19 Dec 2025 16:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1766162817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ivrjhi16zNRk9RAiTT2eb2crRxXyhi3JrTO91uwFab8=;
-	b=uRkGcRWEo6DrM1102Um9aNopEbw0sm7lh8+Sjgy1+5UVE8WW4g23nXtT0gxtl4vKT0O1KB
-	0xjb5uSYgJdIHEv2k0ikxbvAZ27yJ9Uk4BVolQ0lmiJmC6f5LbAmpI32nO018/ODnbS8Vg
-	Ja68rps9Zl/phuk+3Nl7dpipMcr6wbA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1766162817;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ivrjhi16zNRk9RAiTT2eb2crRxXyhi3JrTO91uwFab8=;
-	b=yOOBW2SYeVZRExcT8g8UVEPx4zKOI3P1PSQ9RlGfgA64oGQwOemXkEfsmgR6RViWrPQE5o
-	phG+kVMFIaHv5pAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1766162817; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ivrjhi16zNRk9RAiTT2eb2crRxXyhi3JrTO91uwFab8=;
-	b=uRkGcRWEo6DrM1102Um9aNopEbw0sm7lh8+Sjgy1+5UVE8WW4g23nXtT0gxtl4vKT0O1KB
-	0xjb5uSYgJdIHEv2k0ikxbvAZ27yJ9Uk4BVolQ0lmiJmC6f5LbAmpI32nO018/ODnbS8Vg
-	Ja68rps9Zl/phuk+3Nl7dpipMcr6wbA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1766162817;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ivrjhi16zNRk9RAiTT2eb2crRxXyhi3JrTO91uwFab8=;
-	b=yOOBW2SYeVZRExcT8g8UVEPx4zKOI3P1PSQ9RlGfgA64oGQwOemXkEfsmgR6RViWrPQE5o
-	phG+kVMFIaHv5pAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0FA033EA63;
-	Fri, 19 Dec 2025 16:46:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mCTOA4GBRWlqVgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 19 Dec 2025 16:46:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B2B8EA090B; Fri, 19 Dec 2025 17:46:56 +0100 (CET)
-Date: Fri, 19 Dec 2025 17:46:56 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com, yizhang089@gmail.com, 
-	libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
-Subject: Re: [PATCH -next 7/7] ext4: remove EXT4_GET_BLOCKS_IO_CREATE_EXT
-Message-ID: <qk4yw6xpmgzy3yhufoztirledrazo6gyh4sgri3d5fmpajloev@lt677they3mw>
-References: <20251213022008.1766912-1-yi.zhang@huaweicloud.com>
- <20251213022008.1766912-8-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1766215009; c=relaxed/simple;
+	bh=THGr9dij6vUQ92tAxmYUHS0K+B7d2kX45hFqayHs0uE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZAC+z70gzBhn77x1nKUTW1s+e/Bi+LamNFnakTHQQ6/uob35yCsDWfsG7egonZXJIYhFSWN4UVRErbwGMpekkUTiq8kqb8axCQ5V+o9OeCkUjejanVqd+lKY/O92YQ7mXig94umumali7BpK6uUCnanGTa8Bdm/CtWkhcaf0M8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dYG0W5Z1lzYQtf3;
+	Sat, 20 Dec 2025 15:16:11 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 50F0240562;
+	Sat, 20 Dec 2025 15:16:43 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgBnFvdZTUZprgBUAw--.52524S3;
+	Sat, 20 Dec 2025 15:16:43 +0800 (CST)
+Message-ID: <5f6f9588-52a0-4ab8-a1ad-3d466488b985@huaweicloud.com>
+Date: Sat, 20 Dec 2025 15:16:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251213022008.1766912-8-yi.zhang@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,huawei.com,fnnas.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:email,huawei.com:email]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 3/7] ext4: avoid starting handle when dio writing an
+ unwritten extent
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com,
+ yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com,
+ yukuai@fnnas.com
+References: <20251213022008.1766912-1-yi.zhang@huaweicloud.com>
+ <20251213022008.1766912-4-yi.zhang@huaweicloud.com>
+ <6kfhyiin2m3iook5c4s6dwq45yeqshv4vbez3dfvwaehltajuc@4ybsharot344>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <6kfhyiin2m3iook5c4s6dwq45yeqshv4vbez3dfvwaehltajuc@4ybsharot344>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBnFvdZTUZprgBUAw--.52524S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1rGF4DuFWUZFWxtr47Arb_yoW5WFWUpr
+	Z3KFykCF40qFyUua97Z3Wvqr1Fqw4DKr4xuF4rKr1Yqr9Igr18KF4vqFW5WF48KrZ7CF4I
+	vFWUA34xZFnxArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Sat 13-12-25 10:20:08, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On 12/19/2025 11:25 PM, Jan Kara wrote:
+> On Sat 13-12-25 10:20:04, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Since we have deferred the split of the unwritten extent until after I/O
+>> completion, it is not necessary to initiate the journal handle when
+>> submitting the I/O.
+>>
+>> This can improve the write performance of concurrent DIO for multiple
+>> files. The fio tests below show a ~25% performance improvement when
+>> wirting to unwritten files on my VM with a mem disk.
+>>
+>>   [unwritten]
+>>   direct=1
+>>   ioengine=psync
+>>   numjobs=16
+>>   rw=write     # write/randwrite
+>>   bs=4K
+>>   iodepth=1
+>>   directory=/mnt
+>>   size=5G
+>>   runtime=30s
+>>   overwrite=0
+>>   norandommap=1
+>>   fallocate=native
+>>   ramp_time=5s
+>>   group_reporting=1
+>>
+>>  [w/o]
+>>   w:  IOPS=62.5k, BW=244MiB/s
+>>   rw: IOPS=56.7k, BW=221MiB/s
+>>
+>>  [w]
+>>   w:  IOPS=79.6k, BW=311MiB/s
+>>   rw: IOPS=70.2k, BW=274MiB/s
+>>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  fs/ext4/file.c  | 4 +---
+>>  fs/ext4/inode.c | 4 +++-
+>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index 7a8b30932189..9f571acc7782 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -418,9 +418,7 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
+>>   *   updating inode i_disksize and/or orphan handling with exclusive lock.
+>>   *
+>>   * - shared locking will only be true mostly with overwrites, including
+>> - *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
+>> - *   we protect splitting extents by i_data_sem in ext4_inode_info, so we can
+>> - *   also release exclusive i_rwsem lock.
+>> + *   initialized blocks and unwritten blocks.
+>>   *
+>>   * - Otherwise we will switch to exclusive i_rwsem lock.
+>>   */
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index ffde24ff7347..08a296122fe0 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -3819,7 +3819,9 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>>  			 * For atomic writes the entire requested length should
+>>  			 * be mapped.
+>>  			 */
+>> -			if (map.m_flags & EXT4_MAP_MAPPED) {
+>> +			if ((map.m_flags & EXT4_MAP_MAPPED) ||
+>> +			    (!(flags & IOMAP_DAX) &&
 > 
-> We do not use EXT4_GET_BLOCKS_IO_CREATE_EXT or split extents before
-> submitting I/O; therefore, remove the related code.
+> Why is here an exception for DAX writes? DAX is fine writing to unwritten
+> extents AFAIK. It only needs to pre-zero newly allocated blocks... Or am I
+> missing some corner case?
 > 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 								Honza
 
-Nice! Feel free to add:
+Hi, Jan!
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thank you for reviewing this series.
 
-								Honza
+Yes, that is precisely why this exception is necessary here. Without this
+exception, a DAX write to an unwritten extent would return immediately
+without invoking ext4_iomap_alloc() to perform pre-zeroing.
 
-> ---
->  fs/ext4/ext4.h    |  9 ---------
->  fs/ext4/extents.c | 29 -----------------------------
->  fs/ext4/inode.c   | 11 -----------
->  3 files changed, 49 deletions(-)
+Thanks,
+Yi.
+
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 9a71357f192d..174c51402864 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -707,15 +707,6 @@ enum {
->  	 * found an unwritten extent, we need to split it.
->  	 */
->  #define EXT4_GET_BLOCKS_SPLIT_NOMERGE		0x0008
-> -	/*
-> -	 * Caller is from the dio or dioread_nolock buffered IO, reqest to
-> -	 * create an unwritten extent if it does not exist or split the
-> -	 * found unwritten extent. Also do not merge the newly created
-> -	 * unwritten extent, io end will convert unwritten to written,
-> -	 * and try to merge the written extent.
-> -	 */
-> -#define EXT4_GET_BLOCKS_IO_CREATE_EXT		(EXT4_GET_BLOCKS_SPLIT_NOMERGE|\
-> -					 EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT)
->  	/* Convert unwritten extent to initialized. */
->  #define EXT4_GET_BLOCKS_CONVERT			0x0010
->  	/* Eventual metadata allocation (due to growing extent tree)
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index c98f7c5482b4..c7c66ab825e7 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3925,34 +3925,6 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
->  	trace_ext4_ext_handle_unwritten_extents(inode, map, flags,
->  						*allocated, newblock);
->  
-> -	/* get_block() before submitting IO, split the extent */
-> -	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE) {
-> -		int depth;
-> -
-> -		path = ext4_split_convert_extents(handle, inode, map, path,
-> -						  flags, allocated);
-> -		if (IS_ERR(path))
-> -			return path;
-> -		/*
-> -		 * shouldn't get a 0 allocated when splitting an extent unless
-> -		 * m_len is 0 (bug) or extent has been corrupted
-> -		 */
-> -		if (unlikely(*allocated == 0)) {
-> -			EXT4_ERROR_INODE(inode,
-> -					 "unexpected allocated == 0, m_len = %u",
-> -					 map->m_len);
-> -			err = -EFSCORRUPTED;
-> -			goto errout;
-> -		}
-> -		/* Don't mark unwritten if the extent has been zeroed out. */
-> -		path = ext4_find_extent(inode, map->m_lblk, path, flags);
-> -		if (IS_ERR(path))
-> -			return path;
-> -		depth = ext_depth(inode);
-> -		if (ext4_ext_is_unwritten(path[depth].p_ext))
-> -			map->m_flags |= EXT4_MAP_UNWRITTEN;
-> -		goto out;
-> -	}
->  	/* IO end_io complete, convert the filled extent to written */
->  	if (flags & EXT4_GET_BLOCKS_CONVERT) {
->  		path = ext4_convert_unwritten_extents_endio(handle, inode,
-> @@ -4006,7 +3978,6 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
->  		goto errout;
->  	}
->  
-> -out:
->  	map->m_flags |= EXT4_MAP_NEW;
->  map_out:
->  	map->m_flags |= EXT4_MAP_MAPPED;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 39348ee46e5c..fa579e857baf 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -588,7 +588,6 @@ static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
->  static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
->  				  struct ext4_map_blocks *map, int flags)
->  {
-> -	struct extent_status es;
->  	unsigned int status;
->  	int err, retval = 0;
->  
-> @@ -649,16 +648,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
->  			return err;
->  	}
->  
-> -	/*
-> -	 * If the extent has been zeroed out, we don't need to update
-> -	 * extent status tree.
-> -	 */
-> -	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE &&
-> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es, &map->m_seq)) {
-> -		if (ext4_es_is_written(&es))
-> -			return retval;
-> -	}
-> -
->  	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
->  			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
->  	ext4_es_insert_extent(inode, map->m_lblk, map->m_len, map->m_pblk,
-> -- 
-> 2.46.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> +			     (map.m_flags & EXT4_MAP_UNWRITTEN))) {
+>>  				if ((!(flags & IOMAP_ATOMIC) && ret > 0) ||
+>>  				   (flags & IOMAP_ATOMIC && ret >= orig_mlen))
+>>  					goto out;
+>> -- 
+>> 2.46.1
+>>
+
 
