@@ -1,147 +1,479 @@
-Return-Path: <linux-ext4+bounces-12473-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12474-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C07C1CD5CC5
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 12:24:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43E4CD6785
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 16:05:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7779B3051E9D
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 11:23:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CCD7630C5275
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 15:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E78315D37;
-	Mon, 22 Dec 2025 11:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358173203BE;
+	Mon, 22 Dec 2025 15:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PBq8bao2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AfR+7BPY";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="I1Dngh0w";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UER1f8ES"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA3B312832;
-	Mon, 22 Dec 2025 11:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAF131ED60
+	for <linux-ext4@vger.kernel.org>; Mon, 22 Dec 2025 15:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766402587; cv=none; b=gz0vsoezC2GCn6C4JL20wdzwMWB4u6K/wj+xK8O87xjZ2bCK+6F0QFSSVFxBXRxHbtt355toD+vrCR+51aE1VZmFHD4LbEGmpmID9+A4QC912jvc33DMNKluxcoZi1VZW7zF5yjjXfopVq2GwXCFuvlzI5pOlxLq5LCTNdFe9+U=
+	t=1766415682; cv=none; b=WiU1pDkHbC89aA7NA1ASE4WcydFvvWlvpM0rjaq62p7lcKAyr1VP0wyAtzDxxHNzY0O16/WEJ6RATn+IOpD/mKBnS95JznbnMglrXC/PDCqpiP/Naoztnf+yC5swNWZA6Sh+Ilv2N2QHbzd3xgYxiZ/oHydvFCNngwB3uvAUbW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766402587; c=relaxed/simple;
-	bh=rre3/0sOTYhp8REZM3GPUCzJMH2TP3dGJrlNsI3p2pY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XlTl14tepcd9RLzb5evrSA6jlefX7dbKIg1MzudUHT4zr1161a0ZsqdylBStqNw652XhXUom2vLhIuCC1/nyq2pGYXDDjsDPkFXpwYP6tG88x16QQS2xz2qd97XoqnSnoe0+wmg/P4GVmcrozr5IdlBDghd9tDcJNG+/c2YS1Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dZbMj5BRlzYQv95;
-	Mon, 22 Dec 2025 19:22:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id DC7AD40577;
-	Mon, 22 Dec 2025 19:23:00 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP4 (Coremail) with SMTP id gCh0CgAHZ_cHKklpCUhVBA--.46821S3;
-	Mon, 22 Dec 2025 19:22:48 +0800 (CST)
-Message-ID: <482d8078-995f-404f-83cb-310352308bf5@huaweicloud.com>
-Date: Mon, 22 Dec 2025 19:22:47 +0800
+	s=arc-20240116; t=1766415682; c=relaxed/simple;
+	bh=SZdQECnAuh3evi5qEo98CncBOOT5aJFsfafebtH24xo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DW3lSa/vtr/EL2ovHQodOQuazUekGDCoFnWnsMSLO91DyPyqy9Voygy2TDPcpIF97ZIEow1XaaFb/cf8hUuKxq+6s+Dd2dSIJMb5fBxJXNVm0DZbxfgYiBw411iSmrcmrLgvKYrSEaQQ02xS+oVIBWkgZjS3pED4QLwOCejg+rU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PBq8bao2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AfR+7BPY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=I1Dngh0w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UER1f8ES; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4721A336A9;
+	Mon, 22 Dec 2025 15:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766415672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4+Tyu8tctXsQondAS9xaAdXgKieYmZ4xcN5I5GwVHk=;
+	b=PBq8bao2ufYtkjqAs92m6higCGY5Kg9/t0RvXWcFJBpxXzO7Byb18mjzkGgkUN1QTvVaUg
+	oAkGjwvSqsFHaCGuSx+0LZjVQsFDxyxaD1PLNE6BqMEz6uZjfErn8TMExfXrrhTRqLi+fM
+	jMn7tVUNbYUrjHbVKX0i5E3Lxq6XMWo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766415672;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4+Tyu8tctXsQondAS9xaAdXgKieYmZ4xcN5I5GwVHk=;
+	b=AfR+7BPYyKDR4IACLknj76He/9T3+LCT82QoPHTb5y3/69sbYDDUrChUEV0Wn7gPKKK8SL
+	69xAM84ssswarUCw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=I1Dngh0w;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UER1f8ES
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766415671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4+Tyu8tctXsQondAS9xaAdXgKieYmZ4xcN5I5GwVHk=;
+	b=I1Dngh0wG11P/29NCvf0BZvwBNUALZBK+ub1bgmqI5nfiKuFdYFQ1L76hqs5gEHUWhDDCO
+	srcQBAm+zmN6nWKQRotBcHrRdLss4Rmft1zl/ldgYrVpPU3C3XlI5rIrhVcNGtqSvOvgWR
+	12FebBT7XpJjoNUQRn8nJp/PkEbXgvo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766415671;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4+Tyu8tctXsQondAS9xaAdXgKieYmZ4xcN5I5GwVHk=;
+	b=UER1f8ESdqa4Ii8TK8pgsnKa6ccmoB2cY2Mfydbta40+9T2ExYiFZG7oc2IhZfCiDL/Hew
+	yp7BD6Aqw3fWgnCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 37DA71364B;
+	Mon, 22 Dec 2025 15:01:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C62cDTddSWm1BwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 22 Dec 2025 15:01:11 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C298BA09CB; Mon, 22 Dec 2025 16:01:10 +0100 (CET)
+Date: Mon, 22 Dec 2025 16:01:10 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: brauner@kernel.org, linux-api@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, jack@suse.cz, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gabriel@krisman.be, hch@lst.de, amir73il@gmail.com
+Subject: Re: [PATCH 1/6] uapi: promote EFSCORRUPTED and EUCLEAN to errno.h
+Message-ID: <vn6wnmfy2az6aecm43zmyttbnno2y7gm4jlria5vwe2ylwj3ka@m3jq5nm6yupa>
+References: <176602332085.686273.7564676516217176769.stgit@frogsfrogsfrogs>
+ <176602332146.686273.6355079912638580915.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: don't order data when zeroing unwritten or delayed
- block
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com,
- yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com,
- yukuai@fnnas.com
-References: <20251222013136.2658907-1-yi.zhang@huaweicloud.com>
- <iih22kuucq6s2pdkhdcdosaaclfapmpanuikbvvzw4zf45pqw2@23kqz7drc6pr>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <iih22kuucq6s2pdkhdcdosaaclfapmpanuikbvvzw4zf45pqw2@23kqz7drc6pr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAHZ_cHKklpCUhVBA--.46821S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF13Ww1UuFWfGw1kAr47Arb_yoW8uFW3pa
-	4fK3W0kr4kG34j9a4IvF1xXryjya18Gr4xGF4rGrW8Z343XF1a9Fn29Fy093W2yrWxG3WY
-	qF4UWa4293ZIy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOB
-	MKDUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <176602332146.686273.6355079912638580915.stgit@frogsfrogsfrogs>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:email];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,suse.cz,krisman.be,lst.de,gmail.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email,suse.com:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 4721A336A9
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
 
-On 12/22/2025 6:48 PM, Jan Kara wrote:
-> On Mon 22-12-25 09:31:36, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> When zeroing out a written partial block, it is necessary to order the
->> data to prevent exposing stale data on disk. However, if the buffer is
->> unwritten or delayed, it is not allocated as written, so ordering the
->> data is not required. This can prevent strange and unnecessary ordered
->> writes when appending data across a region within a block.
->>
->> Assume we have a 2K unwritten file on a filesystem with 4K blocksize,
->> and buffered write from 3K to 4K. Before this patch,
->> __ext4_block_zero_page_range() would add the range [2k,3k) to the
->> ordered range, and then the JBD2 commit process would write back this
->> block. However, it does nothing since the block is not mapped, this
-> 							^^^ by this you
-> mean that the block is unwritten, don't you?
+On Wed 17-12-25 18:02:56, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
 > 
+> Stop definining these privately and instead move them to the uapi
+> errno.h so that they become canonical instead of copy pasta.
+> 
+> Cc: linux-api@vger.kernel.org
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Yes, that is exactly what I wanted to express. The term "not mapped" might
-indeed be unclear and prone to misunderstanding. I will revise it to "the
-block is not mapped as written" in v2.
+Looks good. Feel free to add:
 
-Thanks,
-Yi.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
->> folio will be redirtied and written back agian through the normal write
->> back process.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> The patch looks good. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
-> 
->> ---
->>  fs/ext4/inode.c | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index fa579e857baf..fc16a89903b9 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -4104,9 +4104,13 @@ static int __ext4_block_zero_page_range(handle_t *handle,
->>  	if (ext4_should_journal_data(inode)) {
->>  		err = ext4_dirty_journalled_data(handle, bh);
->>  	} else {
->> -		err = 0;
->>  		mark_buffer_dirty(bh);
->> -		if (ext4_should_order_data(inode))
->> +		/*
->> +		 * Only the written block requires ordered data to prevent
->> +		 * exposing stale data.
->> +		 */
->> +		if (!buffer_unwritten(bh) && !buffer_delay(bh) &&
->> +		    ext4_should_order_data(inode))
->>  			err = ext4_jbd2_inode_add_write(handle, inode, from,
->>  					length);
->>  	}
->> -- 
->> 2.52.0
->>
+								Honza
 
+> ---
+>  arch/alpha/include/uapi/asm/errno.h        |    2 ++
+>  arch/mips/include/uapi/asm/errno.h         |    2 ++
+>  arch/parisc/include/uapi/asm/errno.h       |    2 ++
+>  arch/sparc/include/uapi/asm/errno.h        |    2 ++
+>  fs/erofs/internal.h                        |    2 --
+>  fs/ext2/ext2.h                             |    1 -
+>  fs/ext4/ext4.h                             |    3 ---
+>  fs/f2fs/f2fs.h                             |    3 ---
+>  fs/minix/minix.h                           |    2 --
+>  fs/udf/udf_sb.h                            |    2 --
+>  fs/xfs/xfs_linux.h                         |    2 --
+>  include/linux/jbd2.h                       |    3 ---
+>  include/uapi/asm-generic/errno.h           |    2 ++
+>  tools/arch/alpha/include/uapi/asm/errno.h  |    2 ++
+>  tools/arch/mips/include/uapi/asm/errno.h   |    2 ++
+>  tools/arch/parisc/include/uapi/asm/errno.h |    2 ++
+>  tools/arch/sparc/include/uapi/asm/errno.h  |    2 ++
+>  tools/include/uapi/asm-generic/errno.h     |    2 ++
+>  18 files changed, 20 insertions(+), 18 deletions(-)
+> 
+> 
+> diff --git a/arch/alpha/include/uapi/asm/errno.h b/arch/alpha/include/uapi/asm/errno.h
+> index 3d265f6babaf0a..6791f6508632ee 100644
+> --- a/arch/alpha/include/uapi/asm/errno.h
+> +++ b/arch/alpha/include/uapi/asm/errno.h
+> @@ -55,6 +55,7 @@
+>  #define	ENOSR		82	/* Out of streams resources */
+>  #define	ETIME		83	/* Timer expired */
+>  #define	EBADMSG		84	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EPROTO		85	/* Protocol error */
+>  #define	ENODATA		86	/* No data available */
+>  #define	ENOSTR		87	/* Device not a stream */
+> @@ -96,6 +97,7 @@
+>  #define	EREMCHG		115	/* Remote address changed */
+>  
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> diff --git a/arch/mips/include/uapi/asm/errno.h b/arch/mips/include/uapi/asm/errno.h
+> index 2fb714e2d6d8fc..c01ed91b1ef44b 100644
+> --- a/arch/mips/include/uapi/asm/errno.h
+> +++ b/arch/mips/include/uapi/asm/errno.h
+> @@ -50,6 +50,7 @@
+>  #define EDOTDOT		73	/* RFS specific error */
+>  #define EMULTIHOP	74	/* Multihop attempted */
+>  #define EBADMSG		77	/* Not a data message */
+> +#define EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define ENAMETOOLONG	78	/* File name too long */
+>  #define EOVERFLOW	79	/* Value too large for defined data type */
+>  #define ENOTUNIQ	80	/* Name not unique on network */
+> @@ -88,6 +89,7 @@
+>  #define EISCONN		133	/* Transport endpoint is already connected */
+>  #define ENOTCONN	134	/* Transport endpoint is not connected */
+>  #define EUCLEAN		135	/* Structure needs cleaning */
+> +#define EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define ENOTNAM		137	/* Not a XENIX named type file */
+>  #define ENAVAIL		138	/* No XENIX semaphores available */
+>  #define EISNAM		139	/* Is a named type file */
+> diff --git a/arch/parisc/include/uapi/asm/errno.h b/arch/parisc/include/uapi/asm/errno.h
+> index 8d94739d75c67c..8cbc07c1903e4c 100644
+> --- a/arch/parisc/include/uapi/asm/errno.h
+> +++ b/arch/parisc/include/uapi/asm/errno.h
+> @@ -36,6 +36,7 @@
+>  
+>  #define	EDOTDOT		66	/* RFS specific error */
+>  #define	EBADMSG		67	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EUSERS		68	/* Too many users */
+>  #define	EDQUOT		69	/* Quota exceeded */
+>  #define	ESTALE		70	/* Stale file handle */
+> @@ -62,6 +63,7 @@
+>  #define	ERESTART	175	/* Interrupted system call should be restarted */
+>  #define	ESTRPIPE	176	/* Streams pipe error */
+>  #define	EUCLEAN		177	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		178	/* Not a XENIX named type file */
+>  #define	ENAVAIL		179	/* No XENIX semaphores available */
+>  #define	EISNAM		180	/* Is a named type file */
+> diff --git a/arch/sparc/include/uapi/asm/errno.h b/arch/sparc/include/uapi/asm/errno.h
+> index 81a732b902ee38..4a41e7835fd5b8 100644
+> --- a/arch/sparc/include/uapi/asm/errno.h
+> +++ b/arch/sparc/include/uapi/asm/errno.h
+> @@ -48,6 +48,7 @@
+>  #define	ENOSR		74	/* Out of streams resources */
+>  #define	ENOMSG		75	/* No message of desired type */
+>  #define	EBADMSG		76	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EIDRM		77	/* Identifier removed */
+>  #define	EDEADLK		78	/* Resource deadlock would occur */
+>  #define	ENOLCK		79	/* No record locks available */
+> @@ -91,6 +92,7 @@
+>  #define	ENOTUNIQ	115	/* Name not unique on network */
+>  #define	ERESTART	116	/* Interrupted syscall should be restarted */
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index f7f622836198da..d06e99baf5d5ae 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -541,6 +541,4 @@ long erofs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
+>  long erofs_compat_ioctl(struct file *filp, unsigned int cmd,
+>  			unsigned long arg);
+>  
+> -#define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
+> -
+>  #endif	/* __EROFS_INTERNAL_H */
+> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+> index cf97b76e9fd3e9..5e0c6c5fcb6cd6 100644
+> --- a/fs/ext2/ext2.h
+> +++ b/fs/ext2/ext2.h
+> @@ -357,7 +357,6 @@ struct ext2_inode {
+>   */
+>  #define	EXT2_VALID_FS			0x0001	/* Unmounted cleanly */
+>  #define	EXT2_ERROR_FS			0x0002	/* Errors detected */
+> -#define	EFSCORRUPTED			EUCLEAN	/* Filesystem is corrupted */
+>  
+>  /*
+>   * Mount flags
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 56112f201cace7..62c091b52bacdf 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3938,7 +3938,4 @@ extern int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+>  				  get_block_t *get_block);
+>  #endif	/* __KERNEL__ */
+>  
+> -#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -
+>  #endif	/* _EXT4_H */
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 20edbb99b814a7..9f3aa3c7f12613 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -5004,7 +5004,4 @@ static inline void f2fs_invalidate_internal_cache(struct f2fs_sb_info *sbi,
+>  	f2fs_invalidate_compress_pages_range(sbi, blkaddr, len);
+>  }
+>  
+> -#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -
+>  #endif /* _LINUX_F2FS_H */
+> diff --git a/fs/minix/minix.h b/fs/minix/minix.h
+> index 2bfaf377f2086c..7e1f652f16d311 100644
+> --- a/fs/minix/minix.h
+> +++ b/fs/minix/minix.h
+> @@ -175,6 +175,4 @@ static inline int minix_test_bit(int nr, const void *vaddr)
+>  	__minix_error_inode((inode), __func__, __LINE__,	\
+>  			    (fmt), ##__VA_ARGS__)
+>  
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -
+>  #endif /* FS_MINIX_H */
+> diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
+> index 08ec8756b9487b..8399accc788dea 100644
+> --- a/fs/udf/udf_sb.h
+> +++ b/fs/udf/udf_sb.h
+> @@ -55,8 +55,6 @@
+>  #define MF_DUPLICATE_MD		0x01
+>  #define MF_MIRROR_FE_LOADED	0x02
+>  
+> -#define EFSCORRUPTED EUCLEAN
+> -
+>  struct udf_meta_data {
+>  	__u32	s_meta_file_loc;
+>  	__u32	s_mirror_file_loc;
+> diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
+> index 4dd747bdbccab2..55064228c4d574 100644
+> --- a/fs/xfs/xfs_linux.h
+> +++ b/fs/xfs/xfs_linux.h
+> @@ -121,8 +121,6 @@ typedef __u32			xfs_nlink_t;
+>  
+>  #define ENOATTR		ENODATA		/* Attribute not found */
+>  #define EWRONGFS	EINVAL		/* Mount with wrong filesystem type */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+>  
+>  #define __return_address __builtin_return_address(0)
+>  
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index f5eaf76198f377..a53a00d36228ce 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1815,7 +1815,4 @@ static inline int jbd2_handle_buffer_credits(handle_t *handle)
+>  
+>  #endif	/* __KERNEL__ */
+>  
+> -#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -
+>  #endif	/* _LINUX_JBD2_H */
+> diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
+> index cf9c51ac49f97e..92e7ae493ee315 100644
+> --- a/include/uapi/asm-generic/errno.h
+> +++ b/include/uapi/asm-generic/errno.h
+> @@ -55,6 +55,7 @@
+>  #define	EMULTIHOP	72	/* Multihop attempted */
+>  #define	EDOTDOT		73	/* RFS specific error */
+>  #define	EBADMSG		74	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EOVERFLOW	75	/* Value too large for defined data type */
+>  #define	ENOTUNIQ	76	/* Name not unique on network */
+>  #define	EBADFD		77	/* File descriptor in bad state */
+> @@ -98,6 +99,7 @@
+>  #define	EINPROGRESS	115	/* Operation now in progress */
+>  #define	ESTALE		116	/* Stale file handle */
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> diff --git a/tools/arch/alpha/include/uapi/asm/errno.h b/tools/arch/alpha/include/uapi/asm/errno.h
+> index 3d265f6babaf0a..6791f6508632ee 100644
+> --- a/tools/arch/alpha/include/uapi/asm/errno.h
+> +++ b/tools/arch/alpha/include/uapi/asm/errno.h
+> @@ -55,6 +55,7 @@
+>  #define	ENOSR		82	/* Out of streams resources */
+>  #define	ETIME		83	/* Timer expired */
+>  #define	EBADMSG		84	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EPROTO		85	/* Protocol error */
+>  #define	ENODATA		86	/* No data available */
+>  #define	ENOSTR		87	/* Device not a stream */
+> @@ -96,6 +97,7 @@
+>  #define	EREMCHG		115	/* Remote address changed */
+>  
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> diff --git a/tools/arch/mips/include/uapi/asm/errno.h b/tools/arch/mips/include/uapi/asm/errno.h
+> index 2fb714e2d6d8fc..c01ed91b1ef44b 100644
+> --- a/tools/arch/mips/include/uapi/asm/errno.h
+> +++ b/tools/arch/mips/include/uapi/asm/errno.h
+> @@ -50,6 +50,7 @@
+>  #define EDOTDOT		73	/* RFS specific error */
+>  #define EMULTIHOP	74	/* Multihop attempted */
+>  #define EBADMSG		77	/* Not a data message */
+> +#define EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define ENAMETOOLONG	78	/* File name too long */
+>  #define EOVERFLOW	79	/* Value too large for defined data type */
+>  #define ENOTUNIQ	80	/* Name not unique on network */
+> @@ -88,6 +89,7 @@
+>  #define EISCONN		133	/* Transport endpoint is already connected */
+>  #define ENOTCONN	134	/* Transport endpoint is not connected */
+>  #define EUCLEAN		135	/* Structure needs cleaning */
+> +#define EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define ENOTNAM		137	/* Not a XENIX named type file */
+>  #define ENAVAIL		138	/* No XENIX semaphores available */
+>  #define EISNAM		139	/* Is a named type file */
+> diff --git a/tools/arch/parisc/include/uapi/asm/errno.h b/tools/arch/parisc/include/uapi/asm/errno.h
+> index 8d94739d75c67c..8cbc07c1903e4c 100644
+> --- a/tools/arch/parisc/include/uapi/asm/errno.h
+> +++ b/tools/arch/parisc/include/uapi/asm/errno.h
+> @@ -36,6 +36,7 @@
+>  
+>  #define	EDOTDOT		66	/* RFS specific error */
+>  #define	EBADMSG		67	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EUSERS		68	/* Too many users */
+>  #define	EDQUOT		69	/* Quota exceeded */
+>  #define	ESTALE		70	/* Stale file handle */
+> @@ -62,6 +63,7 @@
+>  #define	ERESTART	175	/* Interrupted system call should be restarted */
+>  #define	ESTRPIPE	176	/* Streams pipe error */
+>  #define	EUCLEAN		177	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		178	/* Not a XENIX named type file */
+>  #define	ENAVAIL		179	/* No XENIX semaphores available */
+>  #define	EISNAM		180	/* Is a named type file */
+> diff --git a/tools/arch/sparc/include/uapi/asm/errno.h b/tools/arch/sparc/include/uapi/asm/errno.h
+> index 81a732b902ee38..4a41e7835fd5b8 100644
+> --- a/tools/arch/sparc/include/uapi/asm/errno.h
+> +++ b/tools/arch/sparc/include/uapi/asm/errno.h
+> @@ -48,6 +48,7 @@
+>  #define	ENOSR		74	/* Out of streams resources */
+>  #define	ENOMSG		75	/* No message of desired type */
+>  #define	EBADMSG		76	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EIDRM		77	/* Identifier removed */
+>  #define	EDEADLK		78	/* Resource deadlock would occur */
+>  #define	ENOLCK		79	/* No record locks available */
+> @@ -91,6 +92,7 @@
+>  #define	ENOTUNIQ	115	/* Name not unique on network */
+>  #define	ERESTART	116	/* Interrupted syscall should be restarted */
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> diff --git a/tools/include/uapi/asm-generic/errno.h b/tools/include/uapi/asm-generic/errno.h
+> index cf9c51ac49f97e..92e7ae493ee315 100644
+> --- a/tools/include/uapi/asm-generic/errno.h
+> +++ b/tools/include/uapi/asm-generic/errno.h
+> @@ -55,6 +55,7 @@
+>  #define	EMULTIHOP	72	/* Multihop attempted */
+>  #define	EDOTDOT		73	/* RFS specific error */
+>  #define	EBADMSG		74	/* Not a data message */
+> +#define	EFSBADCRC	EBADMSG	/* Bad CRC detected */
+>  #define	EOVERFLOW	75	/* Value too large for defined data type */
+>  #define	ENOTUNIQ	76	/* Name not unique on network */
+>  #define	EBADFD		77	/* File descriptor in bad state */
+> @@ -98,6 +99,7 @@
+>  #define	EINPROGRESS	115	/* Operation now in progress */
+>  #define	ESTALE		116	/* Stale file handle */
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN	/* Filesystem is corrupted */
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
