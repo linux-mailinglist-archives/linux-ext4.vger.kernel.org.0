@@ -1,218 +1,305 @@
-Return-Path: <linux-ext4+bounces-12477-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12478-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59ABECD6837
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 16:24:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06117CD6877
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 16:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8794630B9EB0
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 15:19:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ABBCE300FA27
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 15:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AE0327BF0;
-	Mon, 22 Dec 2025 15:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D5F32C301;
+	Mon, 22 Dec 2025 15:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="ddVgTUi9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zw7sO8ES";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EFxgzX7N";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Dj/ljclW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CbZ/HmJl"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBD83101DE;
-	Mon, 22 Dec 2025 15:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766416775; cv=pass; b=K4uOH3uR4BcHsamRKn0bp5K2VsWusVbggZR898UdHZ6HNqO4VQLhffIhxsXIqaTS0pJyn4j+fLU2IwCBEnhfJiM4vnN4RoT/5HYueiZFi+pugAjYzWzVXGM7/en0iw7r0YYQsIocqGG0eAhqP01lenWYdcDm8MdIMeDSKti+zOY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766416775; c=relaxed/simple;
-	bh=etSCr9u+N1LUS3SnD/x758R31sHspWI9Ei21SgGE/vQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UibgZuab+XEnm1x0+PpP6xVGusqW6yGV3Vq5f+reJxenYNe612jx9hNKgs7fmWuwIHjmTvAfDkEBEQmsSy3mh82o29IWH00hGV0RWoWBjN16iB8fA4UUUBdLLSAMz/tsTXlt5TMrafHkoYdB0Yc08TeCiOxSyZO8y5mzE/dBQ3c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=ddVgTUi9; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1766416766; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=hY77aq+4WFftpjmrmRiWZfZFa9sjBMux9Xuje3ROOwioG6tpUX4frmqNfrSe+oqfD73hrPbQ5H2b9K9RTqdi8F8EarrGh84OSaFjoDvSc0Y0YEST9SXBNRGEjAw3CUasZQUalhtAhj0fFX1ZSCCQdA+qIGmAFb1qgKDvbTMI4xM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1766416766; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=z8WIyx4BhnOIHIvBxzDfG//TrLbXjEv6p0cAOqY3+2A=; 
-	b=D2Wx7ZvfMlUOjuOzLwigS6RVngKqgQpAubxui7E/kkDKRr+WDe7Res/yNw+TLnk3dHJUHca7CGX6HW8sc+AGG7BLKuJ3sOfxvDMK9VdiNvI5N3Wu4hahdMmwribBWkyaiaJbBTWTZLGa/jgAxx9WGNclZIXRVWT55RO/8j7xnVs=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766416766;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=z8WIyx4BhnOIHIvBxzDfG//TrLbXjEv6p0cAOqY3+2A=;
-	b=ddVgTUi98UsAAOYIzfvpj20VtWeMWG7upXIEWjLmFc1NhH9mxsJzBgMpWjFwrowh
-	K2hO8j1Ibpespsc86dekoIk4kDJ3yX8ZTUwDPHjL35bURIJblGgEYMezhIgT1P7IKVn
-	dgCDyaTaqNXDSRWk1FEUTH8ePh6K9LXomquSPTTw=
-Received: by mx.zohomail.com with SMTPS id 1766416765398216.03092298580214;
-	Mon, 22 Dec 2025 07:19:25 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>
-Subject: [RFC PATCH v2 2/2] ext4: fast commit: fix s_fc_lock vs i_data_sem inversion
-Date: Mon, 22 Dec 2025 23:19:06 +0800
-Message-ID: <20251222151906.24607-3-me@linux.beauty>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251222151906.24607-1-me@linux.beauty>
-References: <20251222151906.24607-1-me@linux.beauty>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CEA32D443
+	for <linux-ext4@vger.kernel.org>; Mon, 22 Dec 2025 15:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766417429; cv=none; b=NxlpJbeAVnyeQz6qNE5femEBDMnvdroNFBIo/ZLxHFEyMFJ3aDrY6M6HfabjhKLq0Lm07ia8ccGF0vaV9z2Sc8oI+0MeqWzjvu7xIJwTWN+DZYjlPye+rRUD7uT+SFGpQrtya6KWKSah3YYACxYPyOScjk6x+2q/IofCks9zaM0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766417429; c=relaxed/simple;
+	bh=XnN6EflEKp/eYb58YH9xHCz8rnekR7GFnKf0c/4uQok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XUTdtzZadwC5XfPxQ1XVNhKouXsCQIPLH6KKkARCraawP1eHYWOa4YNtWIlNqS549kHDAuV92CThgFQJ/sv3Q/bLXf8zNRPgKvg8FfDiUETejgOzT1f4G4iDksfHkSDnbGsY5Dxm0eBqNmkpBzlhipteGR/m86c//QLXEJhkTos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zw7sO8ES; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EFxgzX7N; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Dj/ljclW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CbZ/HmJl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 048085BCDA;
+	Mon, 22 Dec 2025 15:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766417421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FgRC0OwhbptUyq8wymRkGUMEXCjSvB4yp4BzwrBvNz8=;
+	b=zw7sO8ESADioDfSMkN8+AsySezgi6aGGerhUiaw9ybQ0m4gEspw+L0gSKFhUB//sIsZXah
+	8BLqlifQ2QfTo77Cr+jYeVpSTzOiHqZ6IXOC/qswcbDlrEig33QM9xn4HSwjTf7IqwtoS3
+	HFcMPbCxFZnWhP038+6FmFV2VKcPMyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766417421;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FgRC0OwhbptUyq8wymRkGUMEXCjSvB4yp4BzwrBvNz8=;
+	b=EFxgzX7NDTqU/yHq5YL9K5WYzZj12T0ErSGUntAGwMfpE+XQWY97iIVQc9mrPTYE7Vxjqz
+	lkC1u9imoprocyAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="Dj/ljclW";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="CbZ/HmJl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766417420; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FgRC0OwhbptUyq8wymRkGUMEXCjSvB4yp4BzwrBvNz8=;
+	b=Dj/ljclWUg3sBmMFJebCqxK21aFOVBSE5lxgNPSufGdu1y54CcW3zRN6pfdRPbEchTbbzM
+	LJzH74Zu+5RmGBbsKgtz1F/myQDqMySCfkHPbHgLT4L0WqrCqqNKhZod1lrkcyYgLLUOK0
+	PsSQ/IrLZaXe3avxfhNEldFwLcyzNBM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766417420;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FgRC0OwhbptUyq8wymRkGUMEXCjSvB4yp4BzwrBvNz8=;
+	b=CbZ/HmJl95jxOHM6pzRZ8922NiiVMCrQ5BGM6A6qHnQ3lDXaKnTCB6txLu0Be69nUrHwft
+	dOovP+bFtL0IIRCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB1551364B;
+	Mon, 22 Dec 2025 15:30:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Q1pdOQtkSWl/DQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 22 Dec 2025 15:30:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id AFB15A09CB; Mon, 22 Dec 2025 16:30:19 +0100 (CET)
+Date: Mon, 22 Dec 2025 16:30:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: brauner@kernel.org, linux-ext4@vger.kernel.org, jack@suse.cz, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, gabriel@krisman.be, hch@lst.de, 
+	amir73il@gmail.com
+Subject: Re: [PATCH 3/6] iomap: report file I/O errors to the VFS
+Message-ID: <r2gurwreel7vcr3pkyq3axn7qotvz32qnwcrm4rrhkkqg3xtrl@qjldvkhr4epo>
+References: <176602332085.686273.7564676516217176769.stgit@frogsfrogsfrogs>
+ <176602332192.686273.7145566076281990940.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <176602332192.686273.7145566076281990940.stgit@frogsfrogsfrogs>
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Rspamd-Queue-Id: 048085BCDA
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,suse.cz,krisman.be,lst.de,gmail.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Level: 
 
-lockdep reports a possible deadlock due to lock order inversion:
+On Wed 17-12-25 18:03:27, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
+> 
+> Wire up iomap so that it reports all file read and write errors to the
+> VFS (and hence fsnotify) via the new fserror mechanism.
+> 
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-     CPU0                    CPU1
-     ----                    ----
-lock(&sbi->s_fc_lock);
-                             lock(&ei->i_data_sem);
-                             lock(&sbi->s_fc_lock);
-rlock(&ei->i_data_sem);
+Looks good. Feel free to add:
 
-ext4_fc_perform_commit() held s_fc_lock while writing fast commit blocks.
-This can write the journal inode, whose mapping can call ext4_map_blocks()
-and take i_data_sem. At the same time, metadata update paths can hold
-i_data_sem and call ext4_fc_track_inode(), which takes s_fc_lock.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Drop s_fc_lock before the log writing step. Keep inode and dentry state
-stable by using EXT4_STATE_FC_COMMITTING for synchronization: ext4_fc_del()
-waits for COMMITTING, and inodes referenced only from create dentry updates
-are also marked COMMITTING and woken up on cleanup.
+								Honza
 
-Signed-off-by: Li Chen <me@linux.beauty>
----
- fs/ext4/fast_commit.c | 79 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 60 insertions(+), 19 deletions(-)
-
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 3bcdd4619de1..722952bea515 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -244,23 +244,26 @@ void ext4_fc_del(struct inode *inode)
- 		return;
- 	}
- 
--	/*
--	 * Since ext4_fc_del is called from ext4_evict_inode while having a
--	 * handle open, there is no need for us to wait here even if a fast
--	 * commit is going on. That is because, if this inode is being
--	 * committed, ext4_mark_inode_dirty would have waited for inode commit
--	 * operation to finish before we come here. So, by the time we come
--	 * here, inode's EXT4_STATE_FC_COMMITTING would have been cleared. So,
--	 * we shouldn't see EXT4_STATE_FC_COMMITTING to be set on this inode
--	 * here.
--	 *
--	 * We may come here without any handles open in the "no_delete" case of
--	 * ext4_evict_inode as well. However, if that happens, we first mark the
--	 * file system as fast commit ineligible anyway. So, even in that case,
--	 * it is okay to remove the inode from the fc list.
--	 */
--	WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)
--		&& !ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE));
-+	/* Don't race with fast commit processing of this inode. */
-+	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
-+#if (BITS_PER_LONG < 64)
-+		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
-+				EXT4_STATE_FC_COMMITTING);
-+		wq = bit_waitqueue(&ei->i_state_flags,
-+				   EXT4_STATE_FC_COMMITTING);
-+#else
-+		DEFINE_WAIT_BIT(wait, &ei->i_flags,
-+				EXT4_STATE_FC_COMMITTING);
-+		wq = bit_waitqueue(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
-+#endif
-+		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
-+		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
-+			mutex_unlock(&sbi->s_fc_lock);
-+			schedule();
-+			mutex_lock(&sbi->s_fc_lock);
-+		}
-+		finish_wait(wq, &wait.wq_entry);
-+	}
- 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_FLUSHING_DATA)) {
- #if (BITS_PER_LONG < 64)
- 		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
-@@ -1107,6 +1110,27 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		ext4_set_inode_state(&iter->vfs_inode,
- 				     EXT4_STATE_FC_COMMITTING);
- 	}
-+	/*
-+	 * Also mark inodes referenced by create dentry updates. These inodes are
-+	 * tracked via i_fc_dilist and might not be on s_fc_q[MAIN].
-+	 */
-+	{
-+		struct ext4_fc_dentry_update *fc_dentry;
-+		struct ext4_inode_info *ei;
-+
-+		list_for_each_entry(fc_dentry, &sbi->s_fc_dentry_q[FC_Q_MAIN],
-+				    fcd_list) {
-+			if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT)
-+				continue;
-+			if (list_empty(&fc_dentry->fcd_dilist))
-+				continue;
-+			ei = list_first_entry(&fc_dentry->fcd_dilist,
-+					      struct ext4_inode_info,
-+					      i_fc_dilist);
-+			ext4_set_inode_state(&ei->vfs_inode,
-+					     EXT4_STATE_FC_COMMITTING);
-+		}
-+	}
- 	mutex_unlock(&sbi->s_fc_lock);
- 	jbd2_journal_unlock_updates(journal);
- 
-@@ -1135,7 +1159,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	}
- 
- 	/* Step 6.2: Now write all the dentry updates. */
--	mutex_lock(&sbi->s_fc_lock);
- 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
- 	if (ret)
- 		goto out;
-@@ -1157,7 +1180,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	ret = ext4_fc_write_tail(sb, crc);
- 
- out:
--	mutex_unlock(&sbi->s_fc_lock);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
-@@ -1339,6 +1361,25 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 					     struct ext4_fc_dentry_update,
- 					     fcd_list);
- 		list_del_init(&fc_dentry->fcd_list);
-+		if (fc_dentry->fcd_op == EXT4_FC_TAG_CREAT &&
-+		    !list_empty(&fc_dentry->fcd_dilist)) {
-+			ei = list_first_entry(&fc_dentry->fcd_dilist,
-+					      struct ext4_inode_info,
-+					      i_fc_dilist);
-+			ext4_clear_inode_state(&ei->vfs_inode,
-+					       EXT4_STATE_FC_COMMITTING);
-+			/*
-+			 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
-+			 * visible before we send the wakeup. Pairs with implicit
-+			 * barrier in prepare_to_wait() in ext4_fc_track_inode().
-+			 */
-+			smp_mb();
-+#if (BITS_PER_LONG < 64)
-+			wake_up_bit(&ei->i_state_flags, EXT4_STATE_FC_COMMITTING);
-+#else
-+			wake_up_bit(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
-+#endif
-+		}
- 		list_del_init(&fc_dentry->fcd_dilist);
- 
- 		release_dentry_name_snapshot(&fc_dentry->fcd_name);
+> ---
+>  fs/iomap/buffered-io.c |   23 ++++++++++++++++++++++-
+>  fs/iomap/direct-io.c   |   12 ++++++++++++
+>  fs/iomap/ioend.c       |    6 ++++++
+>  3 files changed, 40 insertions(+), 1 deletion(-)
+> 
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index e5c1ca440d93bd..b21e989b9fa5e6 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/writeback.h>
+>  #include <linux/swap.h>
+>  #include <linux/migrate.h>
+> +#include <linux/fserror.h>
+>  #include "internal.h"
+>  #include "trace.h"
+>  
+> @@ -371,8 +372,11 @@ static int iomap_read_inline_data(const struct iomap_iter *iter,
+>  	if (folio_test_uptodate(folio))
+>  		return 0;
+>  
+> -	if (WARN_ON_ONCE(size > iomap->length))
+> +	if (WARN_ON_ONCE(size > iomap->length)) {
+> +		fserror_report_io(iter->inode, FSERR_BUFFERED_READ,
+> +				  iomap->offset, size, -EIO, GFP_NOFS);
+>  		return -EIO;
+> +	}
+>  	if (offset > 0)
+>  		ifs_alloc(iter->inode, folio, iter->flags);
+>  
+> @@ -399,6 +403,11 @@ void iomap_finish_folio_read(struct folio *folio, size_t off, size_t len,
+>  		spin_unlock_irqrestore(&ifs->state_lock, flags);
+>  	}
+>  
+> +	if (error)
+> +		fserror_report_io(folio->mapping->host, FSERR_BUFFERED_READ,
+> +				  folio_pos(folio) + off, len, error,
+> +				  GFP_ATOMIC);
+> +
+>  	if (finished)
+>  		folio_end_read(folio, uptodate);
+>  }
+> @@ -540,6 +549,10 @@ static int iomap_read_folio_iter(struct iomap_iter *iter,
+>  			if (!*bytes_submitted)
+>  				iomap_read_init(folio);
+>  			ret = ctx->ops->read_folio_range(iter, ctx, plen);
+> +			if (ret < 0)
+> +				fserror_report_io(iter->inode,
+> +						  FSERR_BUFFERED_READ, pos,
+> +						  plen, ret, GFP_NOFS);
+>  			if (ret)
+>  				return ret;
+>  			*bytes_submitted += plen;
+> @@ -815,6 +828,10 @@ static int __iomap_write_begin(const struct iomap_iter *iter,
+>  			else
+>  				status = iomap_bio_read_folio_range_sync(iter,
+>  						folio, block_start, plen);
+> +			if (status < 0)
+> +				fserror_report_io(iter->inode,
+> +						  FSERR_BUFFERED_READ, pos,
+> +						  len, status, GFP_NOFS);
+>  			if (status)
+>  				return status;
+>  		}
+> @@ -1805,6 +1822,7 @@ int iomap_writeback_folio(struct iomap_writepage_ctx *wpc, struct folio *folio)
+>  	u64 pos = folio_pos(folio);
+>  	u64 end_pos = pos + folio_size(folio);
+>  	u64 end_aligned = 0;
+> +	loff_t orig_pos = pos;
+>  	size_t bytes_submitted = 0;
+>  	int error = 0;
+>  	u32 rlen;
+> @@ -1848,6 +1866,9 @@ int iomap_writeback_folio(struct iomap_writepage_ctx *wpc, struct folio *folio)
+>  
+>  	if (bytes_submitted)
+>  		wpc->nr_folios++;
+> +	if (error && pos > orig_pos)
+> +		fserror_report_io(inode, FSERR_BUFFERED_WRITE, orig_pos, 0,
+> +				  error, GFP_NOFS);
+>  
+>  	/*
+>  	 * We can have dirty bits set past end of file in page_mkwrite path
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 8e273408453a9c..a06c73eaa8901b 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/pagemap.h>
+>  #include <linux/iomap.h>
+>  #include <linux/task_io_accounting_ops.h>
+> +#include <linux/fserror.h>
+>  #include "internal.h"
+>  #include "trace.h"
+>  
+> @@ -78,6 +79,13 @@ static void iomap_dio_submit_bio(const struct iomap_iter *iter,
+>  	}
+>  }
+>  
+> +static inline enum fserror_type iomap_dio_err_type(const struct iomap_dio *dio)
+> +{
+> +	if (dio->flags & IOMAP_DIO_WRITE)
+> +		return FSERR_DIRECTIO_WRITE;
+> +	return FSERR_DIRECTIO_READ;
+> +}
+> +
+>  ssize_t iomap_dio_complete(struct iomap_dio *dio)
+>  {
+>  	const struct iomap_dio_ops *dops = dio->dops;
+> @@ -87,6 +95,10 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
+>  
+>  	if (dops && dops->end_io)
+>  		ret = dops->end_io(iocb, dio->size, ret, dio->flags);
+> +	if (dio->error)
+> +		fserror_report_io(file_inode(iocb->ki_filp),
+> +				  iomap_dio_err_type(dio), offset, dio->size,
+> +				  dio->error, GFP_NOFS);
+>  
+>  	if (likely(!ret)) {
+>  		ret = dio->size;
+> diff --git a/fs/iomap/ioend.c b/fs/iomap/ioend.c
+> index 86f44922ed3b6a..5b27ee98896707 100644
+> --- a/fs/iomap/ioend.c
+> +++ b/fs/iomap/ioend.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/list_sort.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/writeback.h>
+> +#include <linux/fserror.h>
+>  #include "internal.h"
+>  #include "trace.h"
+>  
+> @@ -55,6 +56,11 @@ static u32 iomap_finish_ioend_buffered(struct iomap_ioend *ioend)
+>  
+>  	/* walk all folios in bio, ending page IO on them */
+>  	bio_for_each_folio_all(fi, bio) {
+> +		if (ioend->io_error)
+> +			fserror_report_io(inode, FSERR_BUFFERED_WRITE,
+> +					  folio_pos(fi.folio) + fi.offset,
+> +					  fi.length, ioend->io_error,
+> +					  GFP_ATOMIC);
+>  		iomap_finish_folio_write(inode, fi.folio, fi.length);
+>  		folio_count++;
+>  	}
+> 
 -- 
-2.51.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
