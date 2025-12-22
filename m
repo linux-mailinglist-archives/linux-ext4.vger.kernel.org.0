@@ -1,63 +1,63 @@
-Return-Path: <linux-ext4+bounces-12476-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12477-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98858CD6810
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 16:19:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59ABECD6837
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 16:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8F80F300C15B
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 15:19:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8794630B9EB0
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 15:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE892324B16;
-	Mon, 22 Dec 2025 15:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AE0327BF0;
+	Mon, 22 Dec 2025 15:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="H93F6oOa"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="ddVgTUi9"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58801B425C;
-	Mon, 22 Dec 2025 15:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBD83101DE;
+	Mon, 22 Dec 2025 15:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766416769; cv=pass; b=EgtYgohgqD4eWqO9+ZOMLI3/LRjqBkUgPmbviIEpOnq6LvO4tDa6UyEe33sHRnvVnPoYJeldUx3beC05lXgmLNXkaIE/HjvbIxdo9qo+IksiLuOkqmj62GohaBXTA8tJ4IJ1AKIfFMa0d0CLtnCLCcq8FU2XZub8IMcOrPV4FUk=
+	t=1766416775; cv=pass; b=K4uOH3uR4BcHsamRKn0bp5K2VsWusVbggZR898UdHZ6HNqO4VQLhffIhxsXIqaTS0pJyn4j+fLU2IwCBEnhfJiM4vnN4RoT/5HYueiZFi+pugAjYzWzVXGM7/en0iw7r0YYQsIocqGG0eAhqP01lenWYdcDm8MdIMeDSKti+zOY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766416769; c=relaxed/simple;
-	bh=r4ptAC2F0Cn+nJWJyf4HdcW9QhTtDYM63WnoejFKh8s=;
+	s=arc-20240116; t=1766416775; c=relaxed/simple;
+	bh=etSCr9u+N1LUS3SnD/x758R31sHspWI9Ei21SgGE/vQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aUABc9hqgoNYVy6MU517/rTBPeio9APT9aQEGZgMVG7C+h3ZpnU5MH4XS5Q2oLDqfAOE8+jd3OxW+8JcUfC6t5PoX3akJLR81wG7VjOldZgBQfUqDeh3qnZ+PkdeKXnkNo4X+i86tpt9MbLGz1EYBdjhjnaf0ABeYXx0m/Tij1c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=H93F6oOa; arc=pass smtp.client-ip=136.143.188.112
+	 MIME-Version; b=UibgZuab+XEnm1x0+PpP6xVGusqW6yGV3Vq5f+reJxenYNe612jx9hNKgs7fmWuwIHjmTvAfDkEBEQmsSy3mh82o29IWH00hGV0RWoWBjN16iB8fA4UUUBdLLSAMz/tsTXlt5TMrafHkoYdB0Yc08TeCiOxSyZO8y5mzE/dBQ3c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=ddVgTUi9; arc=pass smtp.client-ip=136.143.188.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1766416762; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1766416766; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=DKq2oiRe5FxcZngqCrvBmxjnANWI8H0dtq0kcwSZIRoAqNFquWcBqIk+kzbrXNblY2wqJeOCBoUZ0YIudorkNWuShwV1Z4OlcQkpJRuKv9UTsuuiWPSdhspSf7Advf7UoSTKsS9a3eo9FGJYOBQQY6dRD2Cm9RZiPOhnY6fd9ns=
+	b=hY77aq+4WFftpjmrmRiWZfZFa9sjBMux9Xuje3ROOwioG6tpUX4frmqNfrSe+oqfD73hrPbQ5H2b9K9RTqdi8F8EarrGh84OSaFjoDvSc0Y0YEST9SXBNRGEjAw3CUasZQUalhtAhj0fFX1ZSCCQdA+qIGmAFb1qgKDvbTMI4xM=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1766416762; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=3zJGWOMUhwbiCCj7ibA/R6CB577jChz4KZzN1mfnc48=; 
-	b=aCCUWb/0JAL7rT9gvblwqqVRkWqMUBWzCBN9iJNiY4+d22Dw/H603UO7X0JvFaH0BFVKebPxssfqi1raAmqffZByAOCl5eX7fyIVgX2BgIqXItEALpx6QnhSdGFSdga6hEm9YUv+jAcC0gLFPDl+ixx43UI4QgT+zibO95zI6Mw=
+	t=1766416766; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=z8WIyx4BhnOIHIvBxzDfG//TrLbXjEv6p0cAOqY3+2A=; 
+	b=D2Wx7ZvfMlUOjuOzLwigS6RVngKqgQpAubxui7E/kkDKRr+WDe7Res/yNw+TLnk3dHJUHca7CGX6HW8sc+AGG7BLKuJ3sOfxvDMK9VdiNvI5N3Wu4hahdMmwribBWkyaiaJbBTWTZLGa/jgAxx9WGNclZIXRVWT55RO/8j7xnVs=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=linux.beauty;
 	spf=pass  smtp.mailfrom=me@linux.beauty;
 	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766416762;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766416766;
 	s=zmail; d=linux.beauty; i=me@linux.beauty;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=3zJGWOMUhwbiCCj7ibA/R6CB577jChz4KZzN1mfnc48=;
-	b=H93F6oOaCgy7ehFXCIGoxkbXfA+g3RhaUJTEcy7MGAsJFH9Zs/K8E/KcxxIX2W0j
-	GRRDZn0XHztGHoIOa3gduCxCjgB6vH4atOLcxxkvs3dGFjcmaeGaFDbCaozFNKuaFtF
-	8nqqIV9YQ1QTS5nQ1qP4wwyZGfbVozAO51a1L/+w=
-Received: by mx.zohomail.com with SMTPS id 1766416761124611.196757545155;
-	Mon, 22 Dec 2025 07:19:21 -0800 (PST)
+	bh=z8WIyx4BhnOIHIvBxzDfG//TrLbXjEv6p0cAOqY3+2A=;
+	b=ddVgTUi98UsAAOYIzfvpj20VtWeMWG7upXIEWjLmFc1NhH9mxsJzBgMpWjFwrowh
+	K2hO8j1Ibpespsc86dekoIk4kDJ3yX8ZTUwDPHjL35bURIJblGgEYMezhIgT1P7IKVn
+	dgCDyaTaqNXDSRWk1FEUTH8ePh6K9LXomquSPTTw=
+Received: by mx.zohomail.com with SMTPS id 1766416765398216.03092298580214;
+	Mon, 22 Dec 2025 07:19:25 -0800 (PST)
 From: Li Chen <me@linux.beauty>
 To: "Theodore Ts'o" <tytso@mit.edu>,
 	Andreas Dilger <adilger.kernel@dilger.ca>,
 	linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Li Chen <me@linux.beauty>
-Subject: [RFC PATCH v2 1/2] ext4: fast_commit: assert i_data_sem only before sleep
-Date: Mon, 22 Dec 2025 23:19:05 +0800
-Message-ID: <20251222151906.24607-2-me@linux.beauty>
+Subject: [RFC PATCH v2 2/2] ext4: fast commit: fix s_fc_lock vs i_data_sem inversion
+Date: Mon, 22 Dec 2025 23:19:06 +0800
+Message-ID: <20251222151906.24607-3-me@linux.beauty>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251222151906.24607-1-me@linux.beauty>
 References: <20251222151906.24607-1-me@linux.beauty>
@@ -70,54 +70,148 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-ZohoMailClient: External
 
-ext4_fc_track_inode() can return without sleeping when
-EXT4_STATE_FC_COMMITTING is already clear. The lockdep assertion for
-ei->i_data_sem was done unconditionally before the wait loop, which can
-WARN in call paths that hold i_data_sem even though we never block. Move
-lockdep_assert_not_held(&ei->i_data_sem) into the actual sleep path,
-right before schedule().
+lockdep reports a possible deadlock due to lock order inversion:
+
+     CPU0                    CPU1
+     ----                    ----
+lock(&sbi->s_fc_lock);
+                             lock(&ei->i_data_sem);
+                             lock(&sbi->s_fc_lock);
+rlock(&ei->i_data_sem);
+
+ext4_fc_perform_commit() held s_fc_lock while writing fast commit blocks.
+This can write the journal inode, whose mapping can call ext4_map_blocks()
+and take i_data_sem. At the same time, metadata update paths can hold
+i_data_sem and call ext4_fc_track_inode(), which takes s_fc_lock.
+
+Drop s_fc_lock before the log writing step. Keep inode and dentry state
+stable by using EXT4_STATE_FC_COMMITTING for synchronization: ext4_fc_del()
+waits for COMMITTING, and inodes referenced only from create dentry updates
+are also marked COMMITTING and woken up on cleanup.
 
 Signed-off-by: Li Chen <me@linux.beauty>
 ---
- fs/ext4/fast_commit.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ fs/ext4/fast_commit.c | 79 ++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 60 insertions(+), 19 deletions(-)
 
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index fa66b08de999..3bcdd4619de1 100644
+index 3bcdd4619de1..722952bea515 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -566,13 +566,6 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
- 	if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
+@@ -244,23 +244,26 @@ void ext4_fc_del(struct inode *inode)
  		return;
- 
--	/*
--	 * If we come here, we may sleep while waiting for the inode to
--	 * commit. We shouldn't be holding i_data_sem when we go to sleep since
--	 * the commit path needs to grab the lock while committing the inode.
--	 */
--	lockdep_assert_not_held(&ei->i_data_sem);
--
- 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
- #if (BITS_PER_LONG < 64)
- 		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
-@@ -586,8 +579,16 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
- 				   EXT4_STATE_FC_COMMITTING);
- #endif
- 		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
--		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
-+		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
-+			/*
-+			 * We might sleep while waiting for the inode to commit.
-+			 * We shouldn't be holding i_data_sem when we go to sleep
-+			 * since the commit path may grab it while committing this
-+			 * inode.
-+			 */
-+			lockdep_assert_not_held(&ei->i_data_sem);
- 			schedule();
-+		}
- 		finish_wait(wq, &wait.wq_entry);
  	}
  
+-	/*
+-	 * Since ext4_fc_del is called from ext4_evict_inode while having a
+-	 * handle open, there is no need for us to wait here even if a fast
+-	 * commit is going on. That is because, if this inode is being
+-	 * committed, ext4_mark_inode_dirty would have waited for inode commit
+-	 * operation to finish before we come here. So, by the time we come
+-	 * here, inode's EXT4_STATE_FC_COMMITTING would have been cleared. So,
+-	 * we shouldn't see EXT4_STATE_FC_COMMITTING to be set on this inode
+-	 * here.
+-	 *
+-	 * We may come here without any handles open in the "no_delete" case of
+-	 * ext4_evict_inode as well. However, if that happens, we first mark the
+-	 * file system as fast commit ineligible anyway. So, even in that case,
+-	 * it is okay to remove the inode from the fc list.
+-	 */
+-	WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)
+-		&& !ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE));
++	/* Don't race with fast commit processing of this inode. */
++	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
++#if (BITS_PER_LONG < 64)
++		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_state_flags,
++				   EXT4_STATE_FC_COMMITTING);
++#else
++		DEFINE_WAIT_BIT(wait, &ei->i_flags,
++				EXT4_STATE_FC_COMMITTING);
++		wq = bit_waitqueue(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
++#endif
++		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
++		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
++			mutex_unlock(&sbi->s_fc_lock);
++			schedule();
++			mutex_lock(&sbi->s_fc_lock);
++		}
++		finish_wait(wq, &wait.wq_entry);
++	}
+ 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_FLUSHING_DATA)) {
+ #if (BITS_PER_LONG < 64)
+ 		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+@@ -1107,6 +1110,27 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 		ext4_set_inode_state(&iter->vfs_inode,
+ 				     EXT4_STATE_FC_COMMITTING);
+ 	}
++	/*
++	 * Also mark inodes referenced by create dentry updates. These inodes are
++	 * tracked via i_fc_dilist and might not be on s_fc_q[MAIN].
++	 */
++	{
++		struct ext4_fc_dentry_update *fc_dentry;
++		struct ext4_inode_info *ei;
++
++		list_for_each_entry(fc_dentry, &sbi->s_fc_dentry_q[FC_Q_MAIN],
++				    fcd_list) {
++			if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT)
++				continue;
++			if (list_empty(&fc_dentry->fcd_dilist))
++				continue;
++			ei = list_first_entry(&fc_dentry->fcd_dilist,
++					      struct ext4_inode_info,
++					      i_fc_dilist);
++			ext4_set_inode_state(&ei->vfs_inode,
++					     EXT4_STATE_FC_COMMITTING);
++		}
++	}
+ 	mutex_unlock(&sbi->s_fc_lock);
+ 	jbd2_journal_unlock_updates(journal);
+ 
+@@ -1135,7 +1159,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	}
+ 
+ 	/* Step 6.2: Now write all the dentry updates. */
+-	mutex_lock(&sbi->s_fc_lock);
+ 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
+ 	if (ret)
+ 		goto out;
+@@ -1157,7 +1180,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	ret = ext4_fc_write_tail(sb, crc);
+ 
+ out:
+-	mutex_unlock(&sbi->s_fc_lock);
+ 	blk_finish_plug(&plug);
+ 	return ret;
+ }
+@@ -1339,6 +1361,25 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 					     struct ext4_fc_dentry_update,
+ 					     fcd_list);
+ 		list_del_init(&fc_dentry->fcd_list);
++		if (fc_dentry->fcd_op == EXT4_FC_TAG_CREAT &&
++		    !list_empty(&fc_dentry->fcd_dilist)) {
++			ei = list_first_entry(&fc_dentry->fcd_dilist,
++					      struct ext4_inode_info,
++					      i_fc_dilist);
++			ext4_clear_inode_state(&ei->vfs_inode,
++					       EXT4_STATE_FC_COMMITTING);
++			/*
++			 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
++			 * visible before we send the wakeup. Pairs with implicit
++			 * barrier in prepare_to_wait() in ext4_fc_track_inode().
++			 */
++			smp_mb();
++#if (BITS_PER_LONG < 64)
++			wake_up_bit(&ei->i_state_flags, EXT4_STATE_FC_COMMITTING);
++#else
++			wake_up_bit(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
++#endif
++		}
+ 		list_del_init(&fc_dentry->fcd_dilist);
+ 
+ 		release_dentry_name_snapshot(&fc_dentry->fcd_name);
 -- 
 2.51.0
 
