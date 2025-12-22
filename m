@@ -1,300 +1,186 @@
-Return-Path: <linux-ext4+bounces-12471-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12472-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91F8CD5C58
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 12:14:58 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C3ACD5C95
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 12:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C9BE330191AD
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 11:14:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 92F46300284E
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Dec 2025 11:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B21A3148B9;
-	Mon, 22 Dec 2025 11:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fXoOh5Ds";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="apc5W272"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133433161A1;
+	Mon, 22 Dec 2025 11:18:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC3F4C92;
-	Mon, 22 Dec 2025 11:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766402093; cv=fail; b=GklNruR9YF4nd08AwoukCbRwYqbRmN1YDVHHcZfHj0f9oG/Wc3OfAM+DkiZ/sCIwWiPlWJqLRYdUlkLXT/QQUaOQLyVnDue3Avhr6/Z8iitpe/XhXxUs4dHBxUjCRr3klCppB/eCbQPAUk/ywdu+Q4xS/T+GQZ0TEfT/rvD8XHA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766402093; c=relaxed/simple;
-	bh=DzIMHy2SOdub/CEoKj7Cy7NwUoLIRDD1YM17Fh/eQvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=gVsE0Ef6yW+UigQzI39cIRpFLhOD39g+PNw+D+ig2VkqL8/TlsOiE2hkhBRjwhti8cBC4UgirZqml7qyzkht5tF4RSwVeArBvZbP+/KF1IG1Kxn/jzo3debt+WA2vBswO9PzikAidxow8j6/i3ELX7B3gl+qxWIQwwQFJ7eznNg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fXoOh5Ds; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=apc5W272; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5BMBBkHb2130708;
-	Mon, 22 Dec 2025 11:14:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=B0Lc1Bi2XhST3pQ1OP1OSVQzloYEVrkm2JIZKzyUNr8=; b=
-	fXoOh5DsurV1fM9SXNXdfbXeX5dPgFpYHDUwBtmdYvhp9x4ZSBECfW9IdfrW6d6m
-	PETSdBS9ZH0W8RYJCd5vxsRywF9RnaFb6q90PAItSrP6QjVgEhjCdqvysFffXyBl
-	25l/UiK/CcXOXPUsh9J0LuabRItFvZZfvva8WNsTASP9exHLUEYP7mK0/nW9wLLg
-	WJ1oEF7ND8zk/Dvxg6CMZrzRVFkf19na+KquttvgaNDlo1g0W8fDDKHKNlZ5M7XV
-	r00dvMblNJTrNFzG0whS5BTDvUpRm1pCRi41ixczKwlETob3Dm51v5LM/b0Gm5l+
-	FnzUKMkGcoFe3eU9VcWpLw==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4b74w8002q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Dec 2025 11:14:25 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5BMAJjoW032680;
-	Mon, 22 Dec 2025 11:14:24 GMT
-Received: from bl0pr03cu003.outbound.protection.outlook.com (mail-eastusazon11012057.outbound.protection.outlook.com [52.101.53.57])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4b5j876p0y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Dec 2025 11:14:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pg9BcXcyG1ADXDt0BX9TQQgETNJHh9kWEIqUdDgNCEV5hSLIep4kzPJMvx3vS0hPgWdyg54soyNI6gux/WUYDCfmX+tCk4CED+I6BC4ebutUfNF8aQS7pU+kvfl7Ogs77hZGrmUnkuD5hvs1qlGfkYhnpQsTmiln3mvyDbLCPHhzay5f8Bks3wyeMj6QFcgMUKN/VourhMCCn+dyol2FXdBMUYZmALWRo3rMw0fQJr6OCN/q254B7izbm/1QgkBbZpxDg2ySjnYZqL0IDsVXYoAqZ0ZM3dEIbUlTJauZvOuq7tSAJJtV0hSwerJGvT491swhrvbZZq5CDAEGDWlIuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B0Lc1Bi2XhST3pQ1OP1OSVQzloYEVrkm2JIZKzyUNr8=;
- b=T5dyvKHo/jWbJ7egsBqFzf3TnYUOyzbX81pb6jQcqRlf/2BaXawk8/kSc0Dq9LEFlr+g0GSnrRHlniUSqS4ZfOXNq833q/dDoiQfm1OfPZRHJZqDqZ7M0m9alTITIsFmmrs449GG4HTJxUT3i3hpJCFnoEVFU4f+0HZ+wmAXhqTSm1J4jSzNni5DJjUrriqGFFPXxdXazvHpcCHdDbb9Krr5EhWqDOtBDOtNDytzaS/G+Y/xM7EydmJd68NlIOIcXwsw7gW99GDTrTJEosC1jgdnDxHheQqVRLdJAWFjqrAYkWPt3Qno2/YdlM2LRS0wJ7W/VZ3L304IYu1t4qw1Dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B0Lc1Bi2XhST3pQ1OP1OSVQzloYEVrkm2JIZKzyUNr8=;
- b=apc5W272xbDPOTKsoA1yWUYRl4cp9fDgCipJTwHydoNo8diKW2Ta5na2EaLnL0T1RflQGqVyFnw1xp+hq9tC28jwudhOi6e6YAfkwsEnffWrpcq142k+2STUY2JU/yg06DOGBlcxx4X88CvogFZb7Q9wy2FFk7xhOYdYXysNz1s=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by PH0PR10MB4741.namprd10.prod.outlook.com (2603:10b6:510:3d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.9; Mon, 22 Dec
- 2025 11:14:09 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9434.009; Mon, 22 Dec 2025
- 11:14:09 +0000
-Date: Mon, 22 Dec 2025 20:14:01 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com,
-        cl@linux.com, dvyukov@google.com, glider@google.com,
-        hannes@cmpxchg.org, linux-mm@kvack.org, mhocko@kernel.org,
-        muchun.song@linux.dev, rientjes@google.com, roman.gushchin@linux.dev,
-        ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
-        vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH V3 7/7] mm/slab: place slabobj_ext metadata in unused
- space within s->size
-Message-ID: <aUkn-SV9QjicEudm@hyeyoo>
-References: <20251027122847.320924-1-harry.yoo@oracle.com>
- <20251027122847.320924-8-harry.yoo@oracle.com>
- <CAJuCfpHNhes_csqvm9-Z2f-C6XWuyRuXpchNtXwTSXxTpARZSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpHNhes_csqvm9-Z2f-C6XWuyRuXpchNtXwTSXxTpARZSg@mail.gmail.com>
-X-ClientProxiedBy: SEWP216CA0111.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2bb::11) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACE43148D9;
+	Mon, 22 Dec 2025 11:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766402330; cv=none; b=m4UZ/DJ4fLgqCmFi9sN16LyYrnqryxC5WMg/r37VmmLZaY2bEsEKLU/Cx1dABZlmvpPOf2mfpl9J3TyozU49gRvL6APX7zYnFQDkIGUAqxParlmLphT2WYifKxCN/pggrHoJm60vDf7E+0T3wiOM2faASKO1IvngaqgdV6aHRN4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766402330; c=relaxed/simple;
+	bh=L5CSwTNRoAzejG8cIanyZQEioZ3Ta7TMfGL/jJVgFa8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D+HlaFjlZ6hS9IAjZ5wvKqSIoSqWG4USKDULA9mF7x+J14wI9LZ4o6IfCsNyBzdCgzpvAdXRfdWb6uusWrytDQIWepOTEvzGBDTZT9bp9OAuVc36gpn/CNvUstdYOm07riTuIXGqQuBMchqjnBVnFaisAtkPj+OYJOi3mH21ltk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dZbGk3HkXzYQv8Y;
+	Mon, 22 Dec 2025 19:18:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id A07274056C;
+	Mon, 22 Dec 2025 19:18:41 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgCX+PgOKUlpLfBUBA--.49541S3;
+	Mon, 22 Dec 2025 19:18:41 +0800 (CST)
+Message-ID: <4f6ac1c0-8bd7-4547-8eb2-bf764cff0880@huaweicloud.com>
+Date: Mon, 22 Dec 2025 19:18:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|PH0PR10MB4741:EE_
-X-MS-Office365-Filtering-Correlation-Id: 085a7dae-4edf-4059-400a-08de414b3a8c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?RVAzZEZkcklDVUUrOFN6K21UMWJDdC9tVy91TEhRQnVzV0xtbW9RcHFjUHFm?=
- =?utf-8?B?dVRrVUpBNTFLaDdKQWcxUnR3aU0zTmRqMDd2SURDdnBOeEN6WXdNWHJlZDcy?=
- =?utf-8?B?ekpqODErR3d4UjhtRFhqRFdYN0U2bGNVMG40UXhVZ2dSUEZnWE13OGdMcXRO?=
- =?utf-8?B?MU42M2ttL1NrZzF5dVEvdVZWM0VDenMxMEM2TlczTzlPeTZOSmxlUFMwRVRq?=
- =?utf-8?B?Ui8vWjhLT1Y0WDl1dHVRT2cySVNkbVUyTlNoZmhSZ3BxWUg4Wlh1N2ZiUkY3?=
- =?utf-8?B?TElDbzJ4OGxibjVNM0owOHNiaEN4U0h3Q05Jc1U3UzVHQ0ZySmgyeXUwUVpj?=
- =?utf-8?B?RVZmSTZ0SExEZ1Z0TGZkMjRESjNjemJnWFhjTURhTFlQaHZGNHpSMk1WbVEr?=
- =?utf-8?B?MmpJcGNxRzF1REJxN1FBWmt1Rk9OK1ZnUGhsK1pkSTBkbXFBcnFMdm5jOWpW?=
- =?utf-8?B?cDgwMU4yT1hxRnk0QVFML21ZZWZNTHJaMnpxQUxqRlFCQUl3enBWWk9mSExD?=
- =?utf-8?B?ZmowNHJKWEZHdm9iMWtaQmZNVS93anB3SjNGSm1GbG1EK2UyL2gyc2lJeCtp?=
- =?utf-8?B?UFRCZ3VzS1FwY2MrR25meUlpNjJTcGNrWU1qR0s3S0tIMUlJc2dYMFJsckRL?=
- =?utf-8?B?SmRmN0tiY3V6a3Y5U0lGbnlMbG4vZTJwK3hBRDZ1b2gwUnBtUnNhSHNXYUJv?=
- =?utf-8?B?d3dmMWg0WXlqZ0k1bWRYa2RhTC9lbEZwc3phT2d0b0FYVmc0U0gxQXNTQzRs?=
- =?utf-8?B?WGdIM1NVQlFOZE1uMG5aSUpiT0FZYmNpRXROV21nNGQ4QVlrdndrY0svcW9E?=
- =?utf-8?B?anltL3dEbG5Ra1FTMnRZZWdRTldjWUpYcVVNSDN6cW8zTXJBR2k5ZTRQZlBm?=
- =?utf-8?B?WnZqN3hCd05FOFljUzlDNG5PMFhDRUJvZFliNUxhZ3RaRG5IK21LMDEyRHd1?=
- =?utf-8?B?YUZxcUFGV2RYcEhibUlYYVMxdTQvNjZvekJGa2FrZ0cwbTMxL0J2cEFsREw2?=
- =?utf-8?B?ZEZ5WDFBTXFYZ1pyODZIMGpXQUVzZnZKVEFzZnBYUEM5MGxvTFhONXRBeG4r?=
- =?utf-8?B?RFBmaW1NbjVBc1NxY1h2VnErOUhWYndzL0k1OWJRVFE4QkJicVpvbUJ4c2wr?=
- =?utf-8?B?SXlkSlRMc0NiRitOVmJtTHhoeTc1ZVk0eXgrRCtmSC9wc3FiQzB6UVpRRDIv?=
- =?utf-8?B?U0JVMTc0c0Z5RURUd1JJWTF2a2xkcENBQlZNQXVwVm4wRHZyejlSeExGWVU2?=
- =?utf-8?B?dHlSQ3JtelBSWnBhaTVNK2dqa21iQnVUTVUrOVRwYjZWUjh6TWFJVnNPZUYr?=
- =?utf-8?B?TG5CSldJVXRaWTFIZXdJdjNaVkFBSlRHRFhERitFbnFPelhMaW9TdnZWTW83?=
- =?utf-8?B?bjVrdW45L2x3aUlMSXFocVpJMlUzVUV6WXdNdzEwYjRCUmc5R0JybHphZlF5?=
- =?utf-8?B?UmJpYnZnd2JYampkRmlSTWNuNFkzSGp6OFd4eVNnR2FzV201MHRMQ1N1bUR5?=
- =?utf-8?B?NWZ5Yy9nRTc0L0xkWmdDY0xRbVFSM3pnTmRnWjMxYXVRUytaVmNMTDFvN1pj?=
- =?utf-8?B?VzZQWG9WcjB1Q3A1WGM1ZkR3ay9XcVAxRUE2Tnp6eVphSjR1aG5HRGovUkdY?=
- =?utf-8?B?R0FSOE85VDF6YUIyMVVkaE1LaGdScHpqYitGRHRxazN3OUtjaEFMNmNrVmF4?=
- =?utf-8?B?elFIS296UGU0dGJockZSUXJPQ3FROXM0N013ZHpETWhZQUNIMFFQWlBTbnZ3?=
- =?utf-8?B?OUQ4M3V3dm90ekNwdGI1U2NmU0U0SDYrSTVPSlpIQWszYkg3bVMwc2FNT3hh?=
- =?utf-8?B?VjJWOTlJUnc0ZGRpRTFKS3hMUnRSOUN5cVNLdjJzckgwN0phbXlneVJNT0Yw?=
- =?utf-8?B?b3NMTW4vU0xNZHhSQi91SDJvVzFzUG9GRHkvU1AwVVZqWjc2VlA3eVhmajlS?=
- =?utf-8?Q?6nrbsZG9BwBSREa0EaE96a5mfueb9sFV?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?LzZPbVFwSENvaEZaYXlaeVc2ZnRHZXQyZWhKOVdvNXhwNFh4ckRYWm01MHAw?=
- =?utf-8?B?TGNSUUJMZjVINWR4bmY5SEVFUWVZVzFHNjAvUndPb01uODRQeWcrNmFJSmZI?=
- =?utf-8?B?STFRbTlTSHJSTXh3TEhWN1BOQThrRXA5ZDdDUmRSNGZUVXBDL3F4dGFmVC9H?=
- =?utf-8?B?WXdqLzNvaC9IMTZzN2pOWmlzbG92SFE5cHp5U1hTUmlEZ0lFcnd0UVFXVURz?=
- =?utf-8?B?RklwUFI4eDhsN0c3eHc1bmUySDFzUGkyZkdqL3BvMGVock42MkFCM2xMUlRT?=
- =?utf-8?B?RGp5R0cvcTBaTml1OE43RlptbldsNURDQjBNNWtZN01tNk8xV3ZvYmVGUnV4?=
- =?utf-8?B?WVFnMisxeGRUOGxuTS9qb28wQytrdi9Rb3ExV204cEZ2VzZ3Szd2eDdwaEFu?=
- =?utf-8?B?YVg0d2pZSlExVERmcWJ2MkZ1RlcybGJqdFBha0ZlS2Zxc1EvQUdXYlhBQzkv?=
- =?utf-8?B?aHBPL2YzdDdYTmxZZDRlMWFlQnBnUG1BV0xlZzNQY2dFaGo5dmIrWUJnMGNG?=
- =?utf-8?B?ZWFvRXR2OWpRdjNSN1FCRHZKNDFucGlzQUppbG11MnVlZ25zNW5IaVFpVW1F?=
- =?utf-8?B?alpQRktNVkFtMFYxRHB6RVVsa2QrWnpHVVZiWWIyY3hPc2hRS29kSFhISi9h?=
- =?utf-8?B?QXJISjUyUXByenNna0RRNm9FbndvYzNVOWlBc1JOcVNYRGduZlEwc2dHZlQv?=
- =?utf-8?B?Wjc5Q3FnTThiLzJxK2FLeDBKbmR2ZEliZWNvRHNYMVB3OVdNM3V6eXhESWJu?=
- =?utf-8?B?czN6MmgwclV0V05OdWxSbUJDeG5ya1NZT3Y1VEwxTWFmWEJWSU5jUGZRREtE?=
- =?utf-8?B?dVE3dDAreVpmcUdPdjZVOFZzOE4rQTBmdGZ5QlhVeDE4ZEtoWjBnVEpWTkRM?=
- =?utf-8?B?WFhYblpUMlY3aHg0SjJNVm1ZTW52dUVHb3NhL012c1NzWkVieWhpd2xpeEFs?=
- =?utf-8?B?M3NZSWRaYnpoNVVGYjZhdTB3WlcyZ1lhZjJSWTczYnF5MHk2Y09NRnJMUGpn?=
- =?utf-8?B?aEFoMkVwQ3EvUkRydis5SHpUV1JvbTMzNjdHbEF1dU8zaDRwenR0bEEybE4y?=
- =?utf-8?B?TDN3ZzBLL2VRc1M5ZWZZNWVjL1ZJdytuVWxZNEcyODVYUkVobmhYcTNXQldv?=
- =?utf-8?B?eDBrcGZxVnF1NnFjTXRMQ1FjV1YzdThMaXVKWDdQQkZhWHVtc1N4bHJ3Tm8r?=
- =?utf-8?B?enFlMlFkcjQ5RUJqRzIxR2dzUDhnTW1KdDhrVWQrUUZ0b2plaUw5Y29FcGpT?=
- =?utf-8?B?RWQ1djIySzczRTQzZlptVDF6dk5QNHprV2VFTjlBTHJmeWhqUldVUUJDWEdM?=
- =?utf-8?B?WlJiejZhTzBaUUpTbkxSWmd0aGpjdE1sMmJyU1Z0SVFZRXBGb1FZL1kxeUh1?=
- =?utf-8?B?cDBIQ09YV2ZqU1l0VDk0dU5aWGhBUlRVb2ZVNy91ZDhvWHZtdkJIcTh2YUhh?=
- =?utf-8?B?WWxvbndYbDNGS1BYajNWbGM2anlFK1c4Z0pDRnlHekJveHc5N2huYmRST0wy?=
- =?utf-8?B?MCtVc2ZZTFRDVlZmNVV1bXhsYXlZOG9rNFZxUmNZdkZIYnhxNDlwbjhpL3Nq?=
- =?utf-8?B?c0NyK09pYzJudy9VVk9JbkNEQ0RsMy9uakUyblhVUFF2ODJ3VXQ1RHBodklC?=
- =?utf-8?B?MGVWL25ybXBFYmdWUW8yTUFMRlhXYnNldmptSVd0WkEvdzlKWmV2MDhES1Yy?=
- =?utf-8?B?aE9UN05GMzZSSnhabCtiUW9OcXA3SGpmd0RGd1dnQm43dzRDR2J3OUxTckJY?=
- =?utf-8?B?T2cwbW16bmtxQm9YUXJVdzMxOHVDbmVUQ24zYjBFbklHcHRJK2FacCtNWTVZ?=
- =?utf-8?B?cTRSSlpJaGU0djFoQktwQkVhTThDc2FSMXU4TmhXZWthZjIyRUErMk9LelFQ?=
- =?utf-8?B?SUVVTU55b080YmwvUmVtcTkzd2dSQXBEclluZTRDOTVWWGxtZ2tMSGcwOGZJ?=
- =?utf-8?B?R1dOWEJvbjU2bjdpYStHanZnL2VNcVpIVloyNWJIaXhSaTRJYm0rZ0lxK29K?=
- =?utf-8?B?KzJaaG9iT3V0dTVIb3U1NEpJc1JkaWl6SUVGR2d6RE15eHRHM3l3eTd5ai9x?=
- =?utf-8?B?R2Vta1o5MnpRMjU4QzFuS3ZXdmFwSTYwVm55VW11UUpxamlITzZPZ1ZDQ1NW?=
- =?utf-8?B?Mm8ybWhJU2sraVhsdU10WHVUUmsvK01MNURJR1NzTFlQc1g0czB2Qm5Kd0V5?=
- =?utf-8?B?TXV3MWhPNitoVU1FcS91ZnNwOHVNTFhxZ0VRMjQ3Q3hmSWpPMC9qTzRsQ2c4?=
- =?utf-8?B?WGJyeGNlZVh6ajVCZG5Ha2orRXIzZDdKbVZPMVJXQXNYbTE4MmhueTFOeUdp?=
- =?utf-8?B?Ym4xMDNYQlRpSncrdXkvUnZyWE9CNXJpVTAxSVM5K3k2aFZqTERDZz09?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	7WFzdpBA92zHIRFBpQegTvfxSoHNMfe/UBpB96aCf/h7t6ilx7eDVD1eNlkvVweH7nsruR9l30BdW3G/Z9YWz/1miHtTAPRtdJdcJtwK8+ozi5PXbs44jxrKCz4nqiKtdkpShxAHFemm85VmA3wVaJrHY9oxbfLSj7n2VoZre4l+E22SRA6fhonIh2yghRjt3ppTSgh9y8fGZPCGlcixtd5Wu5avfxtelWrx00pU9as7BtQXWVqil5L3pKvjO+abDVxZ1iFm7c5Fj3OrINZC91/fOzfKikgsNcEIPMkvGQV4Kii6Bq91zC+qJcNRx41+cvwHLUT4eCCF92wCGcK4pIUFUpUmO0dDCnn9rp6XcjRA0bgj688sxF1Dpzr1jIwu1awWxM5fYZ9LxKXdUfONZ21X5eoNHj8/pG2im+56/mCn568vqD4Z1dhbinV2JVs5FkaLzeeLpdy1rj+Czay19UufFQLdvKhIE57v/lDRqh9Eq7OLuftV6zLf/wliRlmIithbgPvP2xCUw8W2msB3vpcedISQZiQYxtM7KDmyjV35AJg5hEE4GmjLe9BPmfh1JP8sAXUrovrZrad6BfbYgLc5oBiqF3yuB5CGQNSBUt0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 085a7dae-4edf-4059-400a-08de414b3a8c
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2025 11:14:09.5436
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k1bznQlPMfvLcMjMhnR6ubjVABuv/e4TVubgnNuLI2X5c8M/198xwd9cFYb5F8slG8y8Ch9jyHU1H0KPu18d5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4741
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-21_05,2025-12-19_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 adultscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2512120000
- definitions=main-2512220102
-X-Proofpoint-GUID: PlQjwdpnuz-U1EdBqG5bxEEzVgjy-2LV
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjIyMDEwMiBTYWx0ZWRfXy5YdAIio9aDG
- BDrhz6mxxV+ora1JeS9AMDOl1OY83aNPJ6dff3elqPNhZLBeKPnlS8SCkdKv430hNdU3XXmNnvp
- oEhv5MdzF+jUpsXJGG9kx/RgJIvqRqSqLSZAw/iOZVxbWhHUuCOuHvGhDxLYS98c006TA3r7A8t
- 1LJbCgHgm3/MGfJghbPFWv5HwKP/vEWK6g0925B2u35YhSr4Cs0NZOnTzbTYqXV0IVAKMwxTnob
- uLnUyknFz7IeRXjrZpoB3sWVARSKpUI6OKIOuSeP7q+5SAkhj40A6lun3n5Du736+6gKuPvsMEf
- 0aH7xTWX+YjPzveRu2/DUWsjPHV0iki4pWQ8PB4Ip/zLDR6LbNG2z9zt2kjKilvLmPlDq943EUP
- N6qm6DPlzJAjtPepBIzlp3aV++TtoziEAhuHAlIf2YKzH8ojnbHJIbfxRMT9aPKYnp/Ug7BWRmc
- PaJfCTOgX4atoEwoTGg==
-X-Proofpoint-ORIG-GUID: PlQjwdpnuz-U1EdBqG5bxEEzVgjy-2LV
-X-Authority-Analysis: v=2.4 cv=YLSSCBGx c=1 sm=1 tr=0 ts=69492811 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10
- a=wP3pNCr1ah4A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=yPCof4ZbAAAA:8 a=C5My4TV7-s9L-27-N7wA:9 a=+jEqtf1s3R9VXZ0wqowq2kgwd+I=:19
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 3/7] ext4: avoid starting handle when dio writing an
+ unwritten extent
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com,
+ yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com,
+ yukuai@fnnas.com
+References: <20251213022008.1766912-1-yi.zhang@huaweicloud.com>
+ <20251213022008.1766912-4-yi.zhang@huaweicloud.com>
+ <6kfhyiin2m3iook5c4s6dwq45yeqshv4vbez3dfvwaehltajuc@4ybsharot344>
+ <5f6f9588-52a0-4ab8-a1ad-3d466488b985@huaweicloud.com>
+ <7btwyxrkixgmv45jeh3bf4uf4fqmauypb2ss67uqsiicklz6gq@rmll5ujssmwx>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <7btwyxrkixgmv45jeh3bf4uf4fqmauypb2ss67uqsiicklz6gq@rmll5ujssmwx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCX+PgOKUlpLfBUBA--.49541S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFWfKFW3uw45Jw48GrW3Jrb_yoW5tFWxpr
+	Z3KFy8CF4vqryUu3s2v3W8Xr1Sq397Kr4xZF4Fgr1jqr909r1xKw1jqFW5WF18KrWxCF10
+	vFWUAryxZF15ArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Tue, Oct 28, 2025 at 08:19:59PM -0700, Suren Baghdasaryan wrote:
-> On Mon, Oct 27, 2025 at 5:29 AM Harry Yoo <harry.yoo@oracle.com> wrote:
-> >
-> > When a cache has high s->align value and s->object_size is not aligned
-> > to it, each object ends up with some unused space because of alignment.
-> > If this wasted space is big enough, we can use it to store the
-> > slabobj_ext metadata instead of wasting it.
-> >
-> > On my system, this happens with caches like kmem_cache, mm_struct, pid,
-> > task_struct, sighand_cache, xfs_inode, and others.
-> >
-> > To place the slabobj_ext metadata within each object, the existing
-> > slab_obj_ext() logic can still be used by setting:
-> >
-> >   - slab->obj_exts = slab_address(slab) + s->red_left_zone +
-> >                      (slabobj_ext offset)
-> >   - stride = s->size
-> >
-> > slab_obj_ext() doesn't need know where the metadata is stored,
-> > so this method works without adding extra overhead to slab_obj_ext().
-> >
-> > A good example benefiting from this optimization is xfs_inode
-> > (object_size: 992, align: 64). To measure memory savings, 2 millions of
-> > files were created on XFS.
-> >
-> > [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
-> >
-> > Before patch (creating 2M directories on xfs):
-> >   Slab:            6693844 kB
-> >   SReclaimable:    6016332 kB
-> >   SUnreclaim:       677512 kB
-> >
-> > After patch (creating 2M directories on xfs):
-> >   Slab:            6697572 kB
-> >   SReclaimable:    6034744 kB
-> >   SUnreclaim:       662828 kB (-14.3 MiB)
-> >
-> > Enjoy the memory savings!
-> >
-> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> > Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-> > ---
-> > @@ -2250,7 +2293,8 @@ static inline void free_slab_obj_exts(struct slab *slab)
-> >         if (!obj_exts)
-> >                 return;
-> >
-> > -       if (obj_exts_in_slab(slab->slab_cache, slab)) {
-> > +       if (obj_exts_in_slab(slab->slab_cache, slab) ||
-> > +                       obj_exts_in_object(slab->slab_cache)) {
+On 12/22/2025 6:15 PM, Jan Kara wrote:
+> On Sat 20-12-25 15:16:41, Zhang Yi wrote:
+>> On 12/19/2025 11:25 PM, Jan Kara wrote:
+>>> On Sat 13-12-25 10:20:04, Zhang Yi wrote:
+>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>
+>>>> Since we have deferred the split of the unwritten extent until after I/O
+>>>> completion, it is not necessary to initiate the journal handle when
+>>>> submitting the I/O.
+>>>>
+>>>> This can improve the write performance of concurrent DIO for multiple
+>>>> files. The fio tests below show a ~25% performance improvement when
+>>>> wirting to unwritten files on my VM with a mem disk.
+>>>>
+>>>>   [unwritten]
+>>>>   direct=1
+>>>>   ioengine=psync
+>>>>   numjobs=16
+>>>>   rw=write     # write/randwrite
+>>>>   bs=4K
+>>>>   iodepth=1
+>>>>   directory=/mnt
+>>>>   size=5G
+>>>>   runtime=30s
+>>>>   overwrite=0
+>>>>   norandommap=1
+>>>>   fallocate=native
+>>>>   ramp_time=5s
+>>>>   group_reporting=1
+>>>>
+>>>>  [w/o]
+>>>>   w:  IOPS=62.5k, BW=244MiB/s
+>>>>   rw: IOPS=56.7k, BW=221MiB/s
+>>>>
+>>>>  [w]
+>>>>   w:  IOPS=79.6k, BW=311MiB/s
+>>>>   rw: IOPS=70.2k, BW=274MiB/s
+>>>>
+>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>> ---
+>>>>  fs/ext4/file.c  | 4 +---
+>>>>  fs/ext4/inode.c | 4 +++-
+>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>>>> index 7a8b30932189..9f571acc7782 100644
+>>>> --- a/fs/ext4/file.c
+>>>> +++ b/fs/ext4/file.c
+>>>> @@ -418,9 +418,7 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
+>>>>   *   updating inode i_disksize and/or orphan handling with exclusive lock.
+>>>>   *
+>>>>   * - shared locking will only be true mostly with overwrites, including
+>>>> - *   initialized blocks and unwritten blocks. For overwrite unwritten blocks
+>>>> - *   we protect splitting extents by i_data_sem in ext4_inode_info, so we can
+>>>> - *   also release exclusive i_rwsem lock.
+>>>> + *   initialized blocks and unwritten blocks.
+>>>>   *
+>>>>   * - Otherwise we will switch to exclusive i_rwsem lock.
+>>>>   */
+>>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>>>> index ffde24ff7347..08a296122fe0 100644
+>>>> --- a/fs/ext4/inode.c
+>>>> +++ b/fs/ext4/inode.c
+>>>> @@ -3819,7 +3819,9 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>>>>  			 * For atomic writes the entire requested length should
+>>>>  			 * be mapped.
+>>>>  			 */
+>>>> -			if (map.m_flags & EXT4_MAP_MAPPED) {
+>>>> +			if ((map.m_flags & EXT4_MAP_MAPPED) ||
+>>>> +			    (!(flags & IOMAP_DAX) &&
+>>>
+>>> Why is here an exception for DAX writes? DAX is fine writing to unwritten
+>>> extents AFAIK. It only needs to pre-zero newly allocated blocks... Or am I
+>>> missing some corner case?
+>>>
+>>> 								Honza
+>>
+>> Hi, Jan!
+>>
+>> Thank you for reviewing this series.
+>>
+>> Yes, that is precisely why this exception is necessary here. Without this
+>> exception, a DAX write to an unwritten extent would return immediately
+>> without invoking ext4_iomap_alloc() to perform pre-zeroing.
 > 
+> Ah, you're right. I already forgot how writing to unwritten extents works
+> with DAX and it seems we convert the extents to initialized (and zero them
+> out) before copying the data. Can you please expand the comment above by
+> "For DAX we convert extents to initialized ones before copying the data,
+> otherwise we do it after IO so there's no need to call into
+> ext4_iomap_alloc()." Otherwise feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
 
-Hi Suren, thanks for the comment.
-I should have replied earlier, sorry.
- 
-> I think you need a check for obj_exts_in_object() inside
-> alloc_slab_obj_exts() to avoid allocating the vector.
+Sure! I will add this comment in v2.
 
-But slab_obj_exts() check before alloc_slab_obj_exts() should have
-returned nonzero if obj_exts_in_object() returns true?
+Thanks,
+Yi.
 
-> >                 slab->obj_exts = 0;
-> >                 return;
-> >         }
-
--- 
-Cheers,
-Harry / Hyeonggon
 
