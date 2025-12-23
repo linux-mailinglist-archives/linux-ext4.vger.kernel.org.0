@@ -1,124 +1,343 @@
-Return-Path: <linux-ext4+bounces-12496-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12497-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E719CD9685
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 14:14:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0B5FCD9BD3
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 16:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7630E30198EE
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 13:14:02 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 488653002EBB
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 15:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF70833BBD5;
-	Tue, 23 Dec 2025 13:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE8728BA95;
+	Tue, 23 Dec 2025 15:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="IePkfvv2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ud8Ux0yC"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C98A2E0413;
-	Tue, 23 Dec 2025 13:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766495640; cv=pass; b=h/XOA3cm6fuyYCI+h+ew8MSv3UUa4ikjOJauvEQcNauEy2rJQHu1vwjYBEE+w/ySo1yLZVuEAKbdqWTTBaVa9FpY8uATNon//jgS0x2t0PzIewGLvxvt8vqnYaqfeAg2yhUiMJKZ9q9MSuupIjdbKsShuY6nqBXcFHsbabbSD+U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766495640; c=relaxed/simple;
-	bh=Y1e2QsBeSw5Ng4JxBrvqj8COz9NO1FU+qOk8km7q+KU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JMv0C3uwbKBxpL/eQvoYUN3HSx3iGHZSGJN51AaHrkYAsVWKowvbXa/L+OUIz0XxSNabcx2s6i8KqNcJj6tbu2QGa5w1iYiUibvU6LZg8SKgO/qErPFeik6k33lQg5TKOQB0glNgUj779ayZqqmwR/6PO4DkXnygSvKI5Ffaxo8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=IePkfvv2; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1766495630; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=MetmiIZ3D842SjYtXdNRbDe767ozMiPtJM0NL6KGCVpnQNsbry6WHljt46SFr512hucwfJtEjjPr3q97Pb/1sO2Nwg7bFdRnp1jKJogcTNg2LeFdSkGs6NwRfxu+L4Qx2M6hrMZSUjtlN96NXtkkUhxQ4wlTy93WREehR7R8IVw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1766495630; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=bCmo53LSOHFN9GPFLqYKeAdSZOIhLNP2QIolcPH+gXc=; 
-	b=ZgBcNUufcwcRhzyKd1GCB+jZLY1ypydsqs2WjcPKcQgmSt/23+B2nh+LOD0m87qdCe/9x3BJccqMkaPp/3U9i/FTZblvooeg1IVgzf/20aIfg6btHSUMIZDIAXYr8BcgcVpkOb2XixK48Dt8hT2uhBYiraa11SEAKRIISJevVrk=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766495630;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=bCmo53LSOHFN9GPFLqYKeAdSZOIhLNP2QIolcPH+gXc=;
-	b=IePkfvv2RSy2zQJExXu4yq4z3OCIu9noBFgdHVu4VJDQzXF858VYL5B6rPGY38Kd
-	ixOgzIWSZcNKNVHXvssOHupcGueIJWxUPW46Dl7fXtHqL0v8mC/16DAoCgZseZ+qjCY
-	i2iYhYV/IuKbTOZ2Qese/w0iJmNaC3ptfMG8BwvA=
-Received: by mx.zohomail.com with SMTPS id 1766495627451236.0108956232683;
-	Tue, 23 Dec 2025 05:13:47 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>
-Subject: [PATCH] ext4: fast commit: avoid fs_reclaim inversion in perform_commit
-Date: Tue, 23 Dec 2025 21:13:42 +0800
-Message-ID: <20251223131342.287864-1-me@linux.beauty>
-X-Mailer: git-send-email 2.52.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69532877ED
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Dec 2025 15:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766502553; cv=none; b=rmjSd36y5z44rAMM+RtK7PY5APy+Q6cOSsvmNXWTeB88upIvWcoLEQRRQVWvZIaJtqOvBDazVEZeFT/cQ2PvnOdWkTcJcrwF+ncxoOC8TXbGxDee0j214gkqxTVU42lOJ0FEZAgY5Nqeuxw8GwVzXfu1QJhtC9D3ip5GIkmnVvM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766502553; c=relaxed/simple;
+	bh=0nWZKhvLvlsjo/0EzW55SNVzXhueERMWGKES5P1ossc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nS2sUtedW8HsJNm4pVNbLY7Cix8BYt5ws1RmueysBh43pXSoeIuXU0vaEUm0SzVZq0mUxn6pezw8WZOtOuzBfs8pFGR28y/5KAmm3Hvt2+RFYB6E47DBd2UyhcfItw0mg0G0AhJ+oaA/8Y7OPWwhZOz3bzOcPRpmM1azVOZPe44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ud8Ux0yC; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 23 Dec 2025 23:08:32 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766502537;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bGEmBuIAlDpfKf1Ox8wdvb0ICd3r/4M1pyLit4d3Row=;
+	b=Ud8Ux0yCoBLP5E6OpgaynfOPKbsI21180p37taLDe/7moDEyiMS7JGkLZwqYdgIplvix8e
+	U+U7u/0ULmMVjzfg0xFoo5cZeq10s71ImKcAsLxVbp8iMkur+LlJ26yVuj+7GQrVCeirrG
+	ZlBBjj+f+5JSFWRn8bdv6GKKpP0wzcU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
+	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
+	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
+	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext
+ array from leftover
+Message-ID: <graryni6wadpi3ytfq7zimj2kbmm7dumxvhxtzmxndrv5s2y67@ju4cdnsmos6e>
+References: <20251222110843.980347-1-harry.yoo@oracle.com>
+ <20251222110843.980347-8-harry.yoo@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251222110843.980347-8-harry.yoo@oracle.com>
+X-Migadu-Flow: FLOW_OUT
 
-lockdep reports a possible deadlock due to lock order inversion:
+On Mon, Dec 22, 2025 at 08:08:42PM +0900, Harry Yoo wrote:
+> The leftover space in a slab is always smaller than s->size, and
+> kmem caches for large objects that are not power-of-two sizes tend to have
+> a greater amount of leftover space per slab. In some cases, the leftover
+> space is larger than the size of the slabobj_ext array for the slab.
+> 
+> An excellent example of such a cache is ext4_inode_cache. On my system,
+> the object size is 1144, with a preferred order of 3, 28 objects per slab,
+> and 736 bytes of leftover space per slab.
+> 
+> Since the size of the slabobj_ext array is only 224 bytes (w/o mem
+> profiling) or 448 bytes (w/ mem profiling) per slab, the entire array
+> fits within the leftover space.
+> 
+> Allocate the slabobj_exts array from this unused space instead of using
+> kcalloc() when it is large enough. The array is allocated from unused
+> space only when creating new slabs, and it doesn't try to utilize unused
+> space if alloc_slab_obj_exts() is called after slab creation because
+> implementing lazy allocation involves more expensive synchronization.
+> 
+> The implementation and evaluation of lazy allocation from unused space
+> is left as future-work. As pointed by Vlastimil Babka [1], it could be
+> beneficial when a slab cache without SLAB_ACCOUNT can be created, and
+> some of the allocations from the cache use __GFP_ACCOUNT. For example,
+> xarray does that.
+> 
+> To avoid unnecessary overhead when MEMCG (with SLAB_ACCOUNT) and
+> MEM_ALLOC_PROFILING are not used for the cache, allocate the slabobj_ext
+> array only when either of them is enabled.
+> 
+> [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
+> 
+> Before patch (creating ~2.64M directories on ext4):
+>   Slab:            4747880 kB
+>   SReclaimable:    4169652 kB
+>   SUnreclaim:       578228 kB
+> 
+> After patch (creating ~2.64M directories on ext4):
+>   Slab:            4724020 kB
+>   SReclaimable:    4169188 kB
+>   SUnreclaim:       554832 kB (-22.84 MiB)
+> 
+> Enjoy the memory savings!
+> 
+> Link: https://lore.kernel.org/linux-mm/48029aab-20ea-4d90-bfd1-255592b2018e@suse.cz [1]
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> ---
+>  mm/slub.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 151 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 39c381cc1b2c..3fc3d2ca42e7 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -886,6 +886,99 @@ static inline unsigned long get_orig_size(struct kmem_cache *s, void *object)
+>  	return *(unsigned long *)p;
+>  }
+>  
+> +#ifdef CONFIG_SLAB_OBJ_EXT
+> +
+> +/*
+> + * Check if memory cgroup or memory allocation profiling is enabled.
+> + * If enabled, SLUB tries to reduce memory overhead of accounting
+> + * slab objects. If neither is enabled when this function is called,
+> + * the optimization is simply skipped to avoid affecting caches that do not
+> + * need slabobj_ext metadata.
+> + *
+> + * However, this may disable optimization when memory cgroup or memory
+> + * allocation profiling is used, but slabs are created too early
+> + * even before those subsystems are initialized.
+> + */
+> +static inline bool need_slab_obj_exts(struct kmem_cache *s)
+> +{
+> +	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> +		return true;
+> +
+> +	if (mem_alloc_profiling_enabled())
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +static inline unsigned int obj_exts_size_in_slab(struct slab *slab)
+> +{
+> +	return sizeof(struct slabobj_ext) * slab->objects;
+> +}
+> +
+> +static inline unsigned long obj_exts_offset_in_slab(struct kmem_cache *s,
+> +						    struct slab *slab)
+> +{
+> +	unsigned long objext_offset;
+> +
+> +	objext_offset = s->red_left_pad + s->size * slab->objects;
 
-     CPU0                    CPU1
-     ----                    ----
-lock(fs_reclaim);
-                             lock(&sbi->s_fc_lock);
-                             lock(fs_reclaim);
-lock(&sbi->s_fc_lock);
+Hi Harry,
 
-ext4_fc_perform_commit() holds s_fc_lock while writing the fast commit
-log. Allocations here can enter reclaim and take fs_reclaim, inverting
-with ext4_fc_del() which runs under fs_reclaim during inode eviction.
-Wrap Step 6 in memalloc_nofs_save()/restore() so reclaim is skipped
-while s_fc_lock is held.
+As s->size already includes s->red_left_pad, do we still need
+s->red_left_pad here?
 
-Fixes: 6593714d67ba ("ext4: hold s_fc_lock while during fast commit")
-Signed-off-by: Li Chen <me@linux.beauty>
----
- fs/ext4/fast_commit.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 3bcdd4619de1..b0c458082997 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1045,6 +1045,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	struct ext4_fc_head head;
- 	struct inode *inode;
- 	struct blk_plug plug;
-+	unsigned int nofs;
- 	int ret = 0;
- 	u32 crc = 0;
- 
-@@ -1118,6 +1119,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		blkdev_issue_flush(journal->j_fs_dev);
- 
- 	blk_start_plug(&plug);
-+	nofs = memalloc_nofs_save();
- 	/* Step 6: Write fast commit blocks to disk. */
- 	if (sbi->s_fc_bytes == 0) {
- 		/*
-@@ -1158,6 +1160,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 
- out:
- 	mutex_unlock(&sbi->s_fc_lock);
-+	memalloc_nofs_restore(nofs);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
--- 
-2.52.0
-
+> +	objext_offset = ALIGN(objext_offset, sizeof(struct slabobj_ext));
+> +	return objext_offset;
+> +}
+> +
+> +static inline bool obj_exts_fit_within_slab_leftover(struct kmem_cache *s,
+> +						     struct slab *slab)
+> +{
+> +	unsigned long objext_offset = obj_exts_offset_in_slab(s, slab);
+> +	unsigned long objext_size = obj_exts_size_in_slab(slab);
+> +
+> +	return objext_offset + objext_size <= slab_size(slab);
+> +}
+> +
+> +static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
+> +{
+> +	unsigned long expected;
+> +	unsigned long obj_exts;
+> +
+> +	obj_exts = slab_obj_exts(slab);
+> +	if (!obj_exts)
+> +		return false;
+> +
+> +	if (!obj_exts_fit_within_slab_leftover(s, slab))
+> +		return false;
+> +
+> +	expected = (unsigned long)slab_address(slab);
+> +	expected += obj_exts_offset_in_slab(s, slab);
+> +	return obj_exts == expected;
+> +}
+> +#else
+> +static inline bool need_slab_obj_exts(struct kmem_cache *s)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline unsigned int obj_exts_size_in_slab(struct slab *slab)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline unsigned long obj_exts_offset_in_slab(struct kmem_cache *s,
+> +						    struct slab *slab)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline bool obj_exts_fit_within_slab_leftover(struct kmem_cache *s,
+> +						     struct slab *slab)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_SLUB_DEBUG
+>  
+>  /*
+> @@ -1405,7 +1498,15 @@ slab_pad_check(struct kmem_cache *s, struct slab *slab)
+>  	start = slab_address(slab);
+>  	length = slab_size(slab);
+>  	end = start + length;
+> -	remainder = length % s->size;
+> +
+> +	if (obj_exts_in_slab(s, slab)) {
+> +		remainder = length;
+> +		remainder -= obj_exts_offset_in_slab(s, slab);
+> +		remainder -= obj_exts_size_in_slab(slab);
+> +	} else {
+> +		remainder = length % s->size;
+> +	}
+> +
+>  	if (!remainder)
+>  		return;
+>  
+> @@ -2179,6 +2280,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  		return;
+>  	}
+>  
+> +	if (obj_exts_in_slab(slab->slab_cache, slab)) {
+> +		slab->obj_exts = 0;
+> +		return;
+> +	}
+> +
+>  	/*
+>  	 * obj_exts was created with __GFP_NO_OBJ_EXT flag, therefore its
+>  	 * corresponding extension will be NULL. alloc_tag_sub() will throw a
+> @@ -2194,6 +2300,35 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  	slab->obj_exts = 0;
+>  }
+>  
+> +/*
+> + * Try to allocate slabobj_ext array from unused space.
+> + * This function must be called on a freshly allocated slab to prevent
+> + * concurrency problems.
+> + */
+> +static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+> +{
+> +	void *addr;
+> +	unsigned long obj_exts;
+> +
+> +	if (!need_slab_obj_exts(s))
+> +		return;
+> +
+> +	if (obj_exts_fit_within_slab_leftover(s, slab)) {
+> +		addr = slab_address(slab) + obj_exts_offset_in_slab(s, slab);
+> +		addr = kasan_reset_tag(addr);
+> +		obj_exts = (unsigned long)addr;
+> +
+> +		get_slab_obj_exts(obj_exts);
+> +		memset(addr, 0, obj_exts_size_in_slab(slab));
+> +		put_slab_obj_exts(obj_exts);
+> +
+> +		if (IS_ENABLED(CONFIG_MEMCG))
+> +			obj_exts |= MEMCG_DATA_OBJEXTS;
+> +		slab->obj_exts = obj_exts;
+> +		slab_set_stride(slab, sizeof(struct slabobj_ext));
+> +	}
+> +}
+> +
+>  #else /* CONFIG_SLAB_OBJ_EXT */
+>  
+>  static inline void init_slab_obj_exts(struct slab *slab)
+> @@ -2210,6 +2345,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  {
+>  }
+>  
+> +static inline void alloc_slab_obj_exts_early(struct kmem_cache *s,
+> +						       struct slab *slab)
+> +{
+> +}
+> +
+>  #endif /* CONFIG_SLAB_OBJ_EXT */
+>  
+>  #ifdef CONFIG_MEM_ALLOC_PROFILING
+> @@ -3206,7 +3346,9 @@ static inline bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
+>  static __always_inline void account_slab(struct slab *slab, int order,
+>  					 struct kmem_cache *s, gfp_t gfp)
+>  {
+> -	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> +	if (memcg_kmem_online() &&
+> +			(s->flags & SLAB_ACCOUNT) &&
+> +			!slab_obj_exts(slab))
+>  		alloc_slab_obj_exts(slab, s, gfp, true);
+>  
+>  	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> @@ -3270,9 +3412,6 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+>  	slab->objects = oo_objects(oo);
+>  	slab->inuse = 0;
+>  	slab->frozen = 0;
+> -	init_slab_obj_exts(slab);
+> -
+> -	account_slab(slab, oo_order(oo), s, flags);
+>  
+>  	slab->slab_cache = s;
+>  
+> @@ -3281,6 +3420,13 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+>  	start = slab_address(slab);
+>  
+>  	setup_slab_debug(s, slab, start);
+> +	init_slab_obj_exts(slab);
+> +	/*
+> +	 * Poison the slab before initializing the slabobj_ext array
+> +	 * to prevent the array from being overwritten.
+> +	 */
+> +	alloc_slab_obj_exts_early(s, slab);
+> +	account_slab(slab, oo_order(oo), s, flags);
+>  
+>  	shuffle = shuffle_freelist(s, slab);
+>  
+> -- 
+> 2.43.0
+> 
 
