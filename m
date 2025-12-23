@@ -1,83 +1,61 @@
-Return-Path: <linux-ext4+bounces-12493-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12494-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E793CD7AF9
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 02:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B56CD8129
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 05:46:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D8C5730184F7
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 01:40:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 123DE3018961
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Dec 2025 04:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9FB34AAFC;
-	Tue, 23 Dec 2025 01:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188E82ED873;
+	Tue, 23 Dec 2025 04:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dsAZfz7w"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="WUTJRRtO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB8334A79B;
-	Tue, 23 Dec 2025 01:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B2A1A275
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Dec 2025 04:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766454058; cv=none; b=DAKo+FGI8ETkAd5hG8Pieuk0i6Be+Y4RoVgrl1qWE/238rwHjV0So9D+TqPXhLwuh3lKSKSSbacf3RcTwU3mLGyYMdX2tIZeVfxE52iBQ6wpXj+f5qObrsvGP9oFG7+TPImunq3L7+AkgW9CE6WUJsGYCJgZmsx4x/vUbdfMifQ=
+	t=1766465142; cv=none; b=N1zTItHT64GAaDMSppQLiFQ4NDuIWI4UBsm7rwRAnFLxdAbbM8n0MiCfebhR3Xhu4DfgU08CO4s2tLt9Mhh/gXOeFsz9fyp/LQR1XaE9W6++BMS4fBi9FH47XyVBZfn7wRiiMrIlvBvA+/k7icoy7jjEH8Kf9fJZCa8c64FoYms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766454058; c=relaxed/simple;
-	bh=p8QndN5AyrEGYCocKeThKwfhP7p3sqHksByq85sFU24=;
+	s=arc-20240116; t=1766465142; c=relaxed/simple;
+	bh=xU1flpG+bFTgFXQZ1ttZ3k5xtB0GqyRLYnpQsjqTbVU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Or+IaZXjDgeXAsaCbEpd0SpgUWSHJyQlNmyL08x4iSlcHQkVWdfX3lHmG74V9FQEx5BtEcUJSpQp8f7cJ1xHmIy1IwruCoUUvfMdgUOV+qKZpMaUUrxTooT44hmdDBVCg9f2QFW1/ViXXKCZQ8Rf1jWXwmdkWgBXDa7qqxVGjFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dsAZfz7w; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766454057; x=1797990057;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=p8QndN5AyrEGYCocKeThKwfhP7p3sqHksByq85sFU24=;
-  b=dsAZfz7wLQoygcigKybUHZXfiCgDjKOmmETOmCYaHLeDr+zSCNHPUBXo
-   3DMtIq2NKJ/SJhkUmmax/PKjlFBngVS7tpvA4p1YvuQO+xS7Xd01mGcVh
-   XCcTdYaa58+qw7sIPuYrjIlEQBrpi54UHRlAsKQlRDN+kvo/pzfzV0TuV
-   qdoohBIwyCR5dmkuPDA/M4HZRvHLTn5hDjG++zFufLdLJYTrM5YfM0ZAg
-   jAmYJj6FkJEfOH2rRKnHJP6ZOAMgCmNQjJNOdGE1Dl5HDvpGaiWT9RJRr
-   xl9ZyIDmMJxywNhl2ad2kRvAygL3A5dCS/5xC16Ll7d+442nEIVdyn9nk
-   Q==;
-X-CSE-ConnectionGUID: 4C8nY8VTTYK3Tsj/KcR6Yg==
-X-CSE-MsgGUID: NNvNZYu8TC+dy7fGL8+nFA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11650"; a="90966472"
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="90966472"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 17:40:56 -0800
-X-CSE-ConnectionGUID: HH3KO3ruSFaqe8T5HyubLA==
-X-CSE-MsgGUID: zy40TVviR8+wEyDh/5xXGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="199966668"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 22 Dec 2025 17:40:50 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vXrOK-000000001Ij-25Ic;
-	Tue, 23 Dec 2025 01:40:48 +0000
-Date: Tue, 23 Dec 2025 09:40:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org,
-	vbabka@suse.cz
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
-	glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
-	mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com,
-	shakeel.butt@linux.dev, surenb@google.com,
-	vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
-	harry.yoo@oracle.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, hao.li@linux.dev
-Subject: Re: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext
- array from leftover
-Message-ID: <202512231042.EEBUajQY-lkp@intel.com>
-References: <20251222110843.980347-8-harry.yoo@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sTvdBc9NT3bhFR3TbCy9d9lJxoizjXqy7CN5MzIKo+akPvV5KHQIocAo6FKTvVa0L7MxkQSkGN5RrRrbF3TkUNyzp4ZTSZESHzWB7is0wT/OKEtyWa1hoBbFjlpYGoOKIUk3w4SRwYd5FLPZW4wmQ5hol+Oz6lxOsag2BJj+o88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=WUTJRRtO; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-82-200.bstnma.fios.verizon.net [173.48.82.200])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 5BN4jK2g011882
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Dec 2025 23:45:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1766465122; bh=bwLHe0FQH9x5sI/BxWhVk/lR7mQaV+Gll5qBxP49uO0=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=WUTJRRtOamG3CoNPpIkVQPQLQxz/wbR92AklL+O3nyT5G53ATpPWlVNf6xQxjmUfo
+	 kPC7Z6gGI/kadWyOSSgxyK2iPZATK9N8WnD7EQbYVgd9oxYMnWgYUQgPtq+ogg17VG
+	 q5xC5u26myH6saXT9psEKWveP7jQYgUx28lUPkMVHV+DxYXiH+GMAPRyj0CAhzKbyl
+	 akiy4eUzDJmU7wXd/PNJFMaKVED0pslwZ1k7nOU+Wzvo//l5luk3zH92tZH0MHCH9i
+	 dMw8aPxUS9+2AoQtL6d2fNRUmy7tRPBG/f4XfeyZj2NywaUqAc8+ojhfvlPJ+3fflW
+	 8UPuHYpByWysw==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id E2496515E930; Mon, 22 Dec 2025 23:45:19 -0500 (EST)
+Date: Mon, 22 Dec 2025 23:45:19 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Daniel Mazon <daniel.mazon@proton.me>
+Cc: Andreas Dilger <adilger@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: ext4: a tool to modify the inode count
+Message-ID: <20251223044519.GF42033@macsyma.lan>
+References: <PAsXqba23hYRwwgFsaneY7Hmxe8-AmdAhSAUH2CW_vtTAi0Y8wVch4QrmW-gU2KahqhsxpxHesEDBZSXlM70jazF0yC-DaPfWgFckG6uzXo=@proton.me>
+ <EB431D42-1CDA-4522-B365-8411801B684E@dilger.ca>
+ <woSqjqMgjW_pNb2fMhKZ20_RP4BrbYKrX6NHMhGu-n3Mt0VVdP0UiEEopdqeo63OehhHmTs2zJoF8UVU96_IaPiQRvrNyyo-FMCuoPAtKXQ=@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -86,95 +64,46 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251222110843.980347-8-harry.yoo@oracle.com>
+In-Reply-To: <woSqjqMgjW_pNb2fMhKZ20_RP4BrbYKrX6NHMhGu-n3Mt0VVdP0UiEEopdqeo63OehhHmTs2zJoF8UVU96_IaPiQRvrNyyo-FMCuoPAtKXQ=@proton.me>
 
-Hi Harry,
+On Mon, Dec 22, 2025 at 11:15:20PM +0000, Daniel Mazon wrote:
+> IMHO, maybe the best approach would be to keep it in its own binary,
+> and compile with the object files containing the functions from resize2fs
+> which are used to also modify the inode count. This shall benefit from
+> reusing code, and not overload resize2fs with functionality (which
+> already does resizing and switching between 32/64 bits). But I will let
+> the experts decide on what is the best course of action.
 
-kernel test robot noticed the following build errors:
+The reason why it's better to add that functionality to resize2fs is
+that it's clear that you were doing a lot of code reuse by cut and
+paste.  This is an anti-pattern, because when a bug is fixed in one
+variant of the copied code, it sticks around in the other variant.
+It's even worse when this copy-pasta is in security critical code,
+because then when you fix the security bug in one copy of the code,
+then the attacker might immediately check to see if you forgot it in
+the other copy or worse, the several dozen other copies.  Hence the
+meme[1], which warns against the spaghetti code that can result from
+the really nasty practice of copy-pasta.     :-)
 
-[auto build test ERROR on akpm-mm/mm-everything]
+[1] https://tenor.com/view/copy-pasta-copy-fake-plagiarism-nft-gif-5062305734325825604
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Harry-Yoo/mm-slab-use-unsigned-long-for-orig_size-to-ensure-proper-metadata-align/20251222-191144
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20251222110843.980347-8-harry.yoo%40oracle.com
-patch subject: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext array from leftover
-config: x86_64-buildonly-randconfig-001-20251223 (https://download.01.org/0day-ci/archive/20251223/202512231042.EEBUajQY-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251223/202512231042.EEBUajQY-lkp@intel.com/reproduce)
+Yes, it might mean that we might need to refactor some of the
+functions that you copied --- and then made changes --- but the
+resulting functions will hopefully be more useful in other contexts or
+for other use cases.  So it might be more work, yes.  But hopefully
+the code will be higher quality.  (And part of the code review process
+will be us trying to help you make the code be high quality before we
+accept the patch, because what's critically important is the future
+code maintainability of the code base.)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512231042.EEBUajQY-lkp@intel.com/
+As a suggestion, perhaps "resize -i NNN" would resize the inode table
+to have NNN inodes.  And perhaps "resize2fs -i +NNN" or "resize2fs -i
+-NNN" would increase or decrease the inode table by NNN inodes.  (And
+obviously we might need to round the number of inodes since the number
+of inodes must be a multiple of 8, and should be a multiple of the
+inodes per block.)
 
-All errors (new ones prefixed by >>):
+Cheers,
 
-   mm/slub.c:2140:33: error: passing 'union codetag_ref' to parameter of incompatible type 'union codetag_ref *'; take the address with &
-    2140 |                 if (unlikely(is_codetag_empty(ext->ref))) {
-         |                                               ^~~~~~~~
-         |                                               &
-   include/linux/compiler.h:47:41: note: expanded from macro 'unlikely'
-      47 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-         |                                           ^
-   include/linux/compiler.h:32:34: note: expanded from macro '__branch_check__'
-      32 |                         ______r = __builtin_expect(!!(x), expect);      \
-         |                                                       ^
-   include/linux/alloc_tag.h:52:56: note: passing argument to parameter 'ref' here
-      52 | static inline bool is_codetag_empty(union codetag_ref *ref)
-         |                                                        ^
-   mm/slub.c:2140:33: error: passing 'union codetag_ref' to parameter of incompatible type 'union codetag_ref *'; take the address with &
-    2140 |                 if (unlikely(is_codetag_empty(ext->ref))) {
-         |                                               ^~~~~~~~
-         |                                               &
-   include/linux/compiler.h:47:68: note: expanded from macro 'unlikely'
-      47 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-         |                                                                      ^
-   include/linux/compiler.h:34:19: note: expanded from macro '__branch_check__'
-      34 |                                              expect, is_constant);      \
-         |                                                      ^~~~~~~~~~~
-   include/linux/alloc_tag.h:52:56: note: passing argument to parameter 'ref' here
-      52 | static inline bool is_codetag_empty(union codetag_ref *ref)
-         |                                                        ^
->> mm/slub.c:2326:16: error: use of undeclared identifier 'MEMCG_DATA_OBJEXTS'
-    2326 |                         obj_exts |= MEMCG_DATA_OBJEXTS;
-         |                                     ^
-   3 errors generated.
-
-
-vim +/MEMCG_DATA_OBJEXTS +2326 mm/slub.c
-
-  2302	
-  2303	/*
-  2304	 * Try to allocate slabobj_ext array from unused space.
-  2305	 * This function must be called on a freshly allocated slab to prevent
-  2306	 * concurrency problems.
-  2307	 */
-  2308	static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
-  2309	{
-  2310		void *addr;
-  2311		unsigned long obj_exts;
-  2312	
-  2313		if (!need_slab_obj_exts(s))
-  2314			return;
-  2315	
-  2316		if (obj_exts_fit_within_slab_leftover(s, slab)) {
-  2317			addr = slab_address(slab) + obj_exts_offset_in_slab(s, slab);
-  2318			addr = kasan_reset_tag(addr);
-  2319			obj_exts = (unsigned long)addr;
-  2320	
-  2321			get_slab_obj_exts(obj_exts);
-  2322			memset(addr, 0, obj_exts_size_in_slab(slab));
-  2323			put_slab_obj_exts(obj_exts);
-  2324	
-  2325			if (IS_ENABLED(CONFIG_MEMCG))
-> 2326				obj_exts |= MEMCG_DATA_OBJEXTS;
-  2327			slab->obj_exts = obj_exts;
-  2328			slab_set_stride(slab, sizeof(struct slabobj_ext));
-  2329		}
-  2330	}
-  2331	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+						- Ted
 
