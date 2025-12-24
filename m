@@ -1,241 +1,116 @@
-Return-Path: <linux-ext4+bounces-12504-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12505-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDDC1CDB402
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 04:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF3ABCDB435
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 04:30:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E6625309CA00
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 03:19:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DF8873027DA9
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 03:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211A021ABAC;
-	Wed, 24 Dec 2025 03:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA72E313E0D;
+	Wed, 24 Dec 2025 03:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gvXFAIgR"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="UhFNLfUO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C425630FC32
-	for <linux-ext4@vger.kernel.org>; Wed, 24 Dec 2025 03:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766546372; cv=none; b=KhPpKCa3YwFfDILifSuRkXj4kcdkP+zoevOiD4VljuJyqf3kDEcVotScTAHMFpwX9MTiqOgsNGjjjGF48BeXIgNeK4JGRUFIjqdZ0GcxofHYM8qhbiCk5accHieIFNzU7rlExQBANG1al5YYI+zTq6mveNWRhH12rAde9sq3AaA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766546372; c=relaxed/simple;
-	bh=a7cx7pOZ00gaHhbilJT7o2Us9frLr9jTqVgm9vYawJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lIKiIU458OmTFQFR83gt5I21RuDe/NOjxy1qy2FozT15K+gNzxWIk166PLuDgA/i6QJy89VW8gqt7wmB+8cjzS8iK5C8tMDqqlyAFt7GBN4gQMusyZ+9bF6L7bM/s2LLl/JBbHmjX3loCvJbvYf0nwQVkacOdMi6/NC1xTHnWsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gvXFAIgR; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Dec 2025 11:18:56 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766546351;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8oswkuqTYHUBzus0t0fqLYz06bL+cZstFaMSGw9VGWQ=;
-	b=gvXFAIgRJN5XCpsXXDgESzfw6K7sQjtFNBY0ViOC6cMza5FexO6DA4TatMuwduoGECeldY
-	gMwgwGWI+jqBq5jmqfD2nK/46pXPjW6wkz/iM346nkf9M/OxcJSoNCdkh1AK0GqdbsRBq9
-	uwtNuJ3ZXv1iQ6rofxLmrnVXH7OYOKY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
-	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext
- array from leftover
-Message-ID: <c6owr44jdncf7q5zqgq4wn4pm57ai4cd3upauwmwszopuddf5g@52mkqbe2m27j>
-References: <20251222110843.980347-1-harry.yoo@oracle.com>
- <20251222110843.980347-8-harry.yoo@oracle.com>
- <graryni6wadpi3ytfq7zimj2kbmm7dumxvhxtzmxndrv5s2y67@ju4cdnsmos6e>
- <aUq1x_BowqYpHZAQ@hyeyoo>
- <zex6wgdlxk5vgwm7ou657fdmi27xnxihdndlszfa2chghamfuz@grhtfqw7gm7o>
- <aUrCXYdziRWP9PfV@hyeyoo>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB172E9EDA;
+	Wed, 24 Dec 2025 03:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766546998; cv=pass; b=r5Pcp4bolQK9vnoNY2hkfHiWS85E9KJ5gTHJGQUN/HPK2/R/+b9d1Gbh4Uiudr7zTZXV46wR5Nm2uRfvOageiY1EPPoYjwZShY7S7CtXNibZhutkBHe9wRheKhk3d5H4+LbBBcQ2xYw/w6u/7ghCkiZak9CaDyp6NbMNeyNKyqc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766546998; c=relaxed/simple;
+	bh=hFr0dR5M1xeCMubpgRA9lYFROYlJXJ19iAjUH/IZrVI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=QBbAZv/2v4KMw9gInLwNY+wQ4HwJMLT4Gr7KwWJofETDIrPqmXiDhwRq2xUSXfX6S/Ca9TQS6grGtuga5jYoea7yJsUI6a41gmmGYCB2oveHPTU16HBJth4L1Ny3kk6MBd3VlE6t0tJ5kzpeDcLEDP51dV8+hN+HQ0ZTHlA0/zw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=UhFNLfUO; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1766546990; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=eeRro6DOcLunveEX5OK0y0Mlj3zzqiCs38gucB1b6MjeVcgKIwanIokibmAAEzzfr7w1/3FXSNMytPeGwLkZPU9atRKV6ZQyi9ugmPB7/9SSVHwgH3NVkxhiyMGACHaDlxvWl8hXioTzUaxPoJACxf+Cwdmg3GnKPMtpFo3n0aw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1766546990; h=Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=bMv+8WixTPBRfX1Uk0wyVux8/v5sQ9R2990ZoKvaRFU=; 
+	b=nYmEBe7u7HdFkr9XP3aap2fmbXPZL/6OD9+dqrJN/N878ARjb38nKtizO5rHP9YmGhHoYJOETw1a9Q3eFhABV5O/cVSi5jwmIUlhyPkT1ZKPvdjRapXCS/pnHkHD79kCuP8kqDU8xx4v7X92t5iF4o0Mdc0AFduHn8ozwWNAIAQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766546990;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=From:From:To:To:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+	bh=bMv+8WixTPBRfX1Uk0wyVux8/v5sQ9R2990ZoKvaRFU=;
+	b=UhFNLfUOwSgJAglNN8p1a49w/usORqOwwqQ0yyeHyfmu9mFhRGExR0l7k/2pZBJO
+	2ZUjdmERhy0rKZzDB53cPZyAl2uVBefq5WtZn5/pEmAEQZCri64gugjJiE1dW9fhl3L
+	kXhNDq8odgHBINWE3odIBLrTX4AlFvu7eaazTbXs=
+Received: by mx.zohomail.com with SMTPS id 1766546987060969.1966780513108;
+	Tue, 23 Dec 2025 19:29:47 -0800 (PST)
+From: Li Chen <me@linux.beauty>
+To: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC v3 0/2] ext4: fast commit: fix lockdep issues
+Date: Wed, 24 Dec 2025 11:29:40 +0800
+Message-ID: <20251224032943.134063-1-me@linux.beauty>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aUrCXYdziRWP9PfV@hyeyoo>
-X-Migadu-Flow: FLOW_OUT
+X-ZohoMailClient: External
 
-On Wed, Dec 24, 2025 at 01:25:01AM +0900, Harry Yoo wrote:
-> On Wed, Dec 24, 2025 at 12:08:36AM +0800, Hao Li wrote:
-> > On Wed, Dec 24, 2025 at 12:31:19AM +0900, Harry Yoo wrote:
-> > > On Tue, Dec 23, 2025 at 11:08:32PM +0800, Hao Li wrote:
-> > > > On Mon, Dec 22, 2025 at 08:08:42PM +0900, Harry Yoo wrote:
-> > > > > The leftover space in a slab is always smaller than s->size, and
-> > > > > kmem caches for large objects that are not power-of-two sizes tend to have
-> > > > > a greater amount of leftover space per slab. In some cases, the leftover
-> > > > > space is larger than the size of the slabobj_ext array for the slab.
-> > > > > 
-> > > > > An excellent example of such a cache is ext4_inode_cache. On my system,
-> > > > > the object size is 1144, with a preferred order of 3, 28 objects per slab,
-> > > > > and 736 bytes of leftover space per slab.
-> > > > > 
-> > > > > Since the size of the slabobj_ext array is only 224 bytes (w/o mem
-> > > > > profiling) or 448 bytes (w/ mem profiling) per slab, the entire array
-> > > > > fits within the leftover space.
-> > > > > 
-> > > > > Allocate the slabobj_exts array from this unused space instead of using
-> > > > > kcalloc() when it is large enough. The array is allocated from unused
-> > > > > space only when creating new slabs, and it doesn't try to utilize unused
-> > > > > space if alloc_slab_obj_exts() is called after slab creation because
-> > > > > implementing lazy allocation involves more expensive synchronization.
-> > > > > 
-> > > > > The implementation and evaluation of lazy allocation from unused space
-> > > > > is left as future-work. As pointed by Vlastimil Babka [1], it could be
-> > > > > beneficial when a slab cache without SLAB_ACCOUNT can be created, and
-> > > > > some of the allocations from the cache use __GFP_ACCOUNT. For example,
-> > > > > xarray does that.
-> > > > > 
-> > > > > To avoid unnecessary overhead when MEMCG (with SLAB_ACCOUNT) and
-> > > > > MEM_ALLOC_PROFILING are not used for the cache, allocate the slabobj_ext
-> > > > > array only when either of them is enabled.
-> > > > > 
-> > > > > [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
-> > > > > 
-> > > > > Before patch (creating ~2.64M directories on ext4):
-> > > > >   Slab:            4747880 kB
-> > > > >   SReclaimable:    4169652 kB
-> > > > >   SUnreclaim:       578228 kB
-> > > > > 
-> > > > > After patch (creating ~2.64M directories on ext4):
-> > > > >   Slab:            4724020 kB
-> > > > >   SReclaimable:    4169188 kB
-> > > > >   SUnreclaim:       554832 kB (-22.84 MiB)
-> > > > > 
-> > > > > Enjoy the memory savings!
-> > > > > 
-> > > > > Link: https://lore.kernel.org/linux-mm/48029aab-20ea-4d90-bfd1-255592b2018e@suse.cz
-> > > > > Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-> > > > > ---
-> > > > >  mm/slub.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
-> > > > >  1 file changed, 151 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/mm/slub.c b/mm/slub.c
-> > > > > index 39c381cc1b2c..3fc3d2ca42e7 100644
-> > > > > --- a/mm/slub.c
-> > > > > +++ b/mm/slub.c
-> > > > > @@ -886,6 +886,99 @@ static inline unsigned long get_orig_size(struct kmem_cache *s, void *object)
-> > > > >  	return *(unsigned long *)p;
-> > > > >  }
-> > > > >  
-> > > > > +#ifdef CONFIG_SLAB_OBJ_EXT
-> > > > > +
-> > > > > +/*
-> > > > > + * Check if memory cgroup or memory allocation profiling is enabled.
-> > > > > + * If enabled, SLUB tries to reduce memory overhead of accounting
-> > > > > + * slab objects. If neither is enabled when this function is called,
-> > > > > + * the optimization is simply skipped to avoid affecting caches that do not
-> > > > > + * need slabobj_ext metadata.
-> > > > > + *
-> > > > > + * However, this may disable optimization when memory cgroup or memory
-> > > > > + * allocation profiling is used, but slabs are created too early
-> > > > > + * even before those subsystems are initialized.
-> > > > > + */
-> > > > > +static inline bool need_slab_obj_exts(struct kmem_cache *s)
-> > > > > +{
-> > > > > +	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
-> > > > > +		return true;
-> > > > > +
-> > > > > +	if (mem_alloc_profiling_enabled())
-> > > > > +		return true;
-> > > > > +
-> > > > > +	return false;
-> > > > > +}
-> > > > > +
-> > > > > +static inline unsigned int obj_exts_size_in_slab(struct slab *slab)
-> > > > > +{
-> > > > > +	return sizeof(struct slabobj_ext) * slab->objects;
-> > > > > +}
-> > > > > +
-> > > > > +static inline unsigned long obj_exts_offset_in_slab(struct kmem_cache *s,
-> > > > > +						    struct slab *slab)
-> > > > > +{
-> > > > > +	unsigned long objext_offset;
-> > > > > +
-> > > > > +	objext_offset = s->red_left_pad + s->size * slab->objects;
-> > > > 
-> > > > Hi Harry,
-> > > 
-> > > Hi Hao, thanks for the review!
-> > > Hope you're doing well.
-> > 
-> > Thanks Harry. Hope you are too!
-> > 
-> > > 
-> > > > As s->size already includes s->red_left_pad
-> > > 
-> > > Great question. It's true that s->size includes s->red_left_pad,
-> > > but we have also a redzone right before the first object:
-> > > 
-> > >   [ redzone ] [ obj 1 | redzone ] [ obj 2| redzone ] [ ... ]
-> > > 
-> > > So we have (slab->objects + 1) red zones and so
-> > 
-> > I have a follow-up question regarding the redzones. Unless I'm missing
-> > some detail, it seems the left redzone should apply to each object as
-> > well. If so, I would expect the memory layout to be:
-> > 
-> > [left redzone | obj 1 | right redzone], [left redzone | obj 2 | right redzone], [ ... ]
-> > 
-> > In `calculate_sizes()`, I see:
-> > 
-> > if ((flags & SLAB_RED_ZONE) && size == s->object_size)
-> >     size += sizeof(void *);
-> 
-> Yes, this is the right redzone,
-> 
-> > ...
-> > ...
-> > if (flags & SLAB_RED_ZONE) {
-> >     size += s->red_left_pad;
-> > }
-> 
-> This is the left red zone.
-> Both of them are included in the size...
-> 
-> Oh god, I was confused, thanks for the correction!
+Hi,
 
-Glad it helped!
+(This RFC v3 series is based on top of the patch posted at
+https://lore.kernel.org/linux-ext4/20251223131342.287864-1-me@linux.beauty/T/#u)
 
-> 
-> > Could you please confirm whether my understanding is correct, or point
-> > out what I'm missing?
-> 
-> I think your understanding is correct.
-> 
-> Hmm, perhaps we should update the "Object layout:" comment above
-> check_pad_bytes() to avoid future confusion?
+This series fixes two lockdep issues in the ext4 fast commit paths.
 
-Yes, exactly. That’s a good idea. Also, I feel the layout description in
-the check_pad_bytes() comment isn’t very intuitive and can be a bit hard
-to follow. I think it might be clearer if we explicitly list out each
-field. What do you think about that?
+1) ext4_fc_track_inode() can return without sleeping when
+   EXT4_STATE_FC_COMMITTING is already clear. The lockdep assertion for
+   i_data_sem should only fire when we actually go to sleep.
 
-> 
-> > > > do we still need > s->red_left_pad here?
-> > > 
-> > > I think this is still needed.
-> > > 
-> > > -- 
-> > > Cheers,
-> > > Harry / Hyeonggon
-> 
-> -- 
-> Cheers,
-> Harry / Hyeonggon
+2) lockdep reports a possible deadlock due to lock order inversion
+   between s_fc_lock and i_data_sem. The fast commit writer held s_fc_lock
+   while writing the fast commit log. Writing the journal inode mapping
+   can call ext4_map_blocks() and take i_data_sem, while metadata update
+   paths can hold i_data_sem and call ext4_fc_track_inode() which takes
+   s_fc_lock.
+
+The fix drops s_fc_lock before the log writing step and uses
+EXT4_STATE_FC_COMMITTING to keep inode and create dentry state stable
+until cleanup.
+
+Testing:
+- QEMU VM, ext4 -O fast_commit on virtio-pmem + dax, verified both lockdep
+  report reproduces on an older kernel and is gone with this series.
+
+RFC v2 -> RFC v3:
+ - rebase ontop of https://lore.kernel.org/linux-ext4/20251223131342.287864-1-me@linux.beauty/T/#u
+
+RFC v1 -> RFC v2:
+ - patch 1: move comments to correct place
+ - patch 2: add it to patchset.
+ - add missing RFC prefix
+
+RFC v1: https://lore.kernel.org/linux-ext4/20251222032655.87056-1-me@linux.beauty/T/#u
+RFC v2: https://lore.kernel.org/linux-ext4/20251222151906.24607-1-me@linux.beauty/T/#t
+
+Li Chen (2):
+  ext4: fast_commit: assert i_data_sem only before sleep
+  ext4: fast commit: fix s_fc_lock vs i_data_sem inversion
+
+ fs/ext4/fast_commit.c | 96 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 69 insertions(+), 27 deletions(-)
+
+-- 
+2.52.0
+
 
