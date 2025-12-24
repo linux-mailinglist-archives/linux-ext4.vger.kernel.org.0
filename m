@@ -1,218 +1,333 @@
-Return-Path: <linux-ext4+bounces-12507-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12508-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDD9CDB441
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 04:31:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094EECDB66D
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 06:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F282C306D6C2
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 03:30:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E0B43302B76F
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 05:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0E232863C;
-	Wed, 24 Dec 2025 03:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B6A2D3732;
+	Wed, 24 Dec 2025 05:34:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="brtp0Izh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iWEM1jB2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35E626C38C;
-	Wed, 24 Dec 2025 03:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766547017; cv=pass; b=cfLAdpaI9hfl+cIaUC2v97rOdY8yWBc76z2o8NAYOjTHV51x3aKI0fL68qtWJEYFnkrtNj9o3g6i0DxcYrbHpDSdflAPDSB7pVD2pXLuGMO2rhB7JCtjWHhZ0peUh1tbTZZsAT5LV/SbRo84WW2ud1l1240veXwSGQ9nfr3UeT8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766547017; c=relaxed/simple;
-	bh=A0Jyk5pPhhQN6/ChW+iz+62JUe4CUq50QOs2wl4q4lA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pR1I2dasnpFzRB5KkKss7eqaEShBGMOE57138/PrWSx5Fv8z1WiqclviV8PlxMVK4F+fcpzWgg0qgc8a3oYhVMTIhMHKPRC62EYTGYll466T4zEb2ljnsghCq5T4dYXPAsu97DUOHEQKDE+8vVd+E5Llmaqa7uqDLQtHTcWKQ14=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=brtp0Izh; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1766546994; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=EDb9Yo/SnHfxSPmTL7iVvGe7MpmM40IcayYoPA75xFAK5U9kOjp5kP2ERHoDiBuKmMLVadJ9DH9EjkzVjR5X/A/K/V73PdgsC6/RGnoVbuh1aLi3XqYKjLdkj0jJYTTmtTrf8OL+3hou81GzccJCFn5KdfQcA6dC4fwSLD1ZFLI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1766546994; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=NnsX2rVatC7xZIBojk2Z56MPR5EvFO9457C+sYqCewo=; 
-	b=OCUYvIPYh3PMMgvrvlltT3ld2AE3baNYVyBjtMhRxgu06GMRE9TpB97NrHy2GTmWYlzlXCyVe5JyH0CMvOA3bS05iP4FQr8MaPuScySoXlcaNjMjvlGn8ej9XVfTb07pziym3DaF3L//Dg6zjzfX/+8Xb1WtcrY2LGuANwcWTgU=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766546993;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=NnsX2rVatC7xZIBojk2Z56MPR5EvFO9457C+sYqCewo=;
-	b=brtp0IzhW+W/5r12ct+mgq28SpHqeiHVdq3shPW39rCeDp/K83pQIVoL+Pw4b3WP
-	+WTXe2d+gNE0nkxAD8AhFOfdB9z+xQoxoDuPFNw5G1XCWOPTzVleqThgrEtvc9o/z5v
-	J2GbvHarQ+VbqLhT23xZfOt+YDnRgI+TMiMQZyQk=
-Received: by mx.zohomail.com with SMTPS id 176654699153232.284918122682825;
-	Tue, 23 Dec 2025 19:29:51 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>
-Subject: [RFC v3 2/2] ext4: fast commit: fix s_fc_lock vs i_data_sem inversion
-Date: Wed, 24 Dec 2025 11:29:42 +0800
-Message-ID: <20251224032943.134063-3-me@linux.beauty>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251224032943.134063-1-me@linux.beauty>
-References: <20251224032943.134063-1-me@linux.beauty>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A0F2741B6
+	for <linux-ext4@vger.kernel.org>; Wed, 24 Dec 2025 05:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766554478; cv=none; b=kgXZPGyKuPZsK6lFETQ9pHougGalxvl9dxcY9ovYuAIgde317t1P6qZ5kZ1H/tBK6zZX6sToc32xUmyvBHFrvqZZdm/PX4Ft/pB4V/AnEYHHqa81up54mmy8OCXSVLDS61EqWqocJaNAiQ12GEhC6h+jKBYldzE3r7KN80XSzTk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766554478; c=relaxed/simple;
+	bh=vjL35cVgn64m32S96/3ZtWS04FxoKWVge68jehEfi6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YrJEiFYcqCYD/VqP1V1ncRHwkrNB3xGuJMDfK1pIMIjnZFEDZD472zfg3BcK16T1NGsezvmHSI0/shzf3MaHCo7rO82Xs35Og+7PHatBys16tv8bIWU4p1eaTnyJlXFXppsbQwH6f/7UrEap/PYq1117XRcKyYrtleaIiLx0tfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iWEM1jB2; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 24 Dec 2025 13:33:59 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766554463;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5uUvgpxkBcQXhe/lgxp+/QKNwwHUydYWE+af/sbSawA=;
+	b=iWEM1jB2fo+g20Ymjrv9YyXATBwriFoHD+ZuMZ8lTo7HEvqRmcwHu/WoAuHay4Fyo12hlQ
+	+hUH2kKLNqX5K2WYXUgqbImIr9fFxhUY9+2zsrlKZkFo+kUnte1TyUT8LI69LW4vWa33kq
+	WHjMvdV/63I0+cHaXzFBNKnEL8z+WKw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
+	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
+	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
+	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH V4 8/8] mm/slab: place slabobj_ext metadata in unused
+ space within s->size
+Message-ID: <l2xww4mysued3fjc2jzzy6cjrq5guygsxesmfqrhv2laxigpaq@ghj7xitfq7fh>
+References: <20251222110843.980347-1-harry.yoo@oracle.com>
+ <20251222110843.980347-9-harry.yoo@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+In-Reply-To: <20251222110843.980347-9-harry.yoo@oracle.com>
+X-Migadu-Flow: FLOW_OUT
 
-lockdep reports a possible deadlock due to lock order inversion:
+On Mon, Dec 22, 2025 at 08:08:43PM +0900, Harry Yoo wrote:
+> When a cache has high s->align value and s->object_size is not aligned
+> to it, each object ends up with some unused space because of alignment.
+> If this wasted space is big enough, we can use it to store the
+> slabobj_ext metadata instead of wasting it.
+> 
+> On my system, this happens with caches like kmem_cache, mm_struct, pid,
+> task_struct, sighand_cache, xfs_inode, and others.
+> 
+> To place the slabobj_ext metadata within each object, the existing
+> slab_obj_ext() logic can still be used by setting:
+> 
+>   - slab->obj_exts = slab_address(slab) + s->red_left_zone +
+>                      (slabobj_ext offset)
+>   - stride = s->size
+> 
+> slab_obj_ext() doesn't need know where the metadata is stored,
+> so this method works without adding extra overhead to slab_obj_ext().
+> 
+> A good example benefiting from this optimization is xfs_inode
+> (object_size: 992, align: 64). To measure memory savings, 2 millions of
+> files were created on XFS.
+> 
+> [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
+> 
+> Before patch (creating ~2.64M directories on xfs):
+>   Slab:            5175976 kB
+>   SReclaimable:    3837524 kB
+>   SUnreclaim:      1338452 kB
+> 
+> After patch (creating ~2.64M directories on xfs):
+>   Slab:            5152912 kB
+>   SReclaimable:    3838568 kB
+>   SUnreclaim:      1314344 kB (-23.54 MiB)
+> 
+> Enjoy the memory savings!
+> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> ---
+>  include/linux/slab.h |  9 ++++++
+>  mm/slab_common.c     |  6 ++--
+>  mm/slub.c            | 73 ++++++++++++++++++++++++++++++++++++++++++--
+>  3 files changed, 83 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 4554c04a9bd7..da512d9ab1a0 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -59,6 +59,9 @@ enum _slab_flag_bits {
+>  	_SLAB_CMPXCHG_DOUBLE,
+>  #ifdef CONFIG_SLAB_OBJ_EXT
+>  	_SLAB_NO_OBJ_EXT,
+> +#endif
+> +#if defined(CONFIG_SLAB_OBJ_EXT) && defined(CONFIG_64BIT)
+> +	_SLAB_OBJ_EXT_IN_OBJ,
+>  #endif
+>  	_SLAB_FLAGS_LAST_BIT
+>  };
+> @@ -244,6 +247,12 @@ enum _slab_flag_bits {
+>  #define SLAB_NO_OBJ_EXT		__SLAB_FLAG_UNUSED
+>  #endif
+>  
+> +#if defined(CONFIG_SLAB_OBJ_EXT) && defined(CONFIG_64BIT)
+> +#define SLAB_OBJ_EXT_IN_OBJ	__SLAB_FLAG_BIT(_SLAB_OBJ_EXT_IN_OBJ)
+> +#else
+> +#define SLAB_OBJ_EXT_IN_OBJ	__SLAB_FLAG_UNUSED
+> +#endif
+> +
+>  /*
+>   * ZERO_SIZE_PTR will be returned for zero sized kmalloc requests.
+>   *
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index c4cf9ed2ec92..f0a6db20d7ea 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -43,11 +43,13 @@ DEFINE_MUTEX(slab_mutex);
+>  struct kmem_cache *kmem_cache;
+>  
+>  /*
+> - * Set of flags that will prevent slab merging
+> + * Set of flags that will prevent slab merging.
+> + * Any flag that adds per-object metadata should be included,
+> + * since slab merging can update s->inuse that affects the metadata layout.
+>   */
+>  #define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
+>  		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
+> -		SLAB_FAILSLAB | SLAB_NO_MERGE)
+> +		SLAB_FAILSLAB | SLAB_NO_MERGE | SLAB_OBJ_EXT_IN_OBJ)
+>  
+>  #define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
+>  			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3fc3d2ca42e7..78f0087c8e48 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -977,6 +977,39 @@ static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
+>  {
+>  	return false;
+>  }
+> +
+> +#endif
+> +
+> +#if defined(CONFIG_SLAB_OBJ_EXT) && defined(CONFIG_64BIT)
+> +static bool obj_exts_in_object(struct kmem_cache *s)
+> +{
+> +	return s->flags & SLAB_OBJ_EXT_IN_OBJ;
+> +}
+> +
+> +static unsigned int obj_exts_offset_in_object(struct kmem_cache *s)
+> +{
+> +	unsigned int offset = get_info_end(s);
+> +
+> +	if (kmem_cache_debug_flags(s, SLAB_STORE_USER))
+> +		offset += sizeof(struct track) * 2;
+> +
+> +	if (slub_debug_orig_size(s))
+> +		offset += sizeof(unsigned long);
+> +
+> +	offset += kasan_metadata_size(s, false);
+> +
+> +	return offset;
+> +}
+> +#else
+> +static inline bool obj_exts_in_object(struct kmem_cache *s)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline unsigned int obj_exts_offset_in_object(struct kmem_cache *s)
+> +{
+> +	return 0;
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_SLUB_DEBUG
+> @@ -1277,6 +1310,9 @@ static void print_trailer(struct kmem_cache *s, struct slab *slab, u8 *p)
+>  
+>  	off += kasan_metadata_size(s, false);
+>  
+> +	if (obj_exts_in_object(s))
+> +		off += sizeof(struct slabobj_ext);
+> +
+>  	if (off != size_from_object(s))
+>  		/* Beginning of the filler is the free pointer */
+>  		print_section(KERN_ERR, "Padding  ", p + off,
+> @@ -1446,7 +1482,10 @@ check_bytes_and_report(struct kmem_cache *s, struct slab *slab,
+>   * 	A. Free pointer (if we cannot overwrite object on free)
+>   * 	B. Tracking data for SLAB_STORE_USER
+>   *	C. Original request size for kmalloc object (SLAB_STORE_USER enabled)
+> - *	D. Padding to reach required alignment boundary or at minimum
+> + *	D. KASAN alloc metadata (KASAN enabled)
+> + *	E. struct slabobj_ext to store accounting metadata
+> + *	   (SLAB_OBJ_EXT_IN_OBJ enabled)
+> + *	F. Padding to reach required alignment boundary or at minimum
+>   * 		one word if debugging is on to be able to detect writes
+>   * 		before the word boundary.
+>   *
+> @@ -1474,6 +1513,9 @@ static int check_pad_bytes(struct kmem_cache *s, struct slab *slab, u8 *p)
+>  
+>  	off += kasan_metadata_size(s, false);
+>  
+> +	if (obj_exts_in_object(s))
+> +		off += sizeof(struct slabobj_ext);
+> +
+>  	if (size_from_object(s) == off)
+>  		return 1;
+>  
+> @@ -2280,7 +2322,8 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  		return;
+>  	}
+>  
+> -	if (obj_exts_in_slab(slab->slab_cache, slab)) {
+> +	if (obj_exts_in_slab(slab->slab_cache, slab) ||
+> +			obj_exts_in_object(slab->slab_cache)) {
+>  		slab->obj_exts = 0;
+>  		return;
+>  	}
+> @@ -2326,6 +2369,23 @@ static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+>  			obj_exts |= MEMCG_DATA_OBJEXTS;
+>  		slab->obj_exts = obj_exts;
+>  		slab_set_stride(slab, sizeof(struct slabobj_ext));
+> +	} else if (obj_exts_in_object(s)) {
+> +		unsigned int offset = obj_exts_offset_in_object(s);
+> +
+> +		obj_exts = (unsigned long)slab_address(slab);
+> +		obj_exts += s->red_left_pad;
+> +		obj_exts += obj_exts_offset_in_object(s);
 
-     CPU0                    CPU1
-     ----                    ----
-lock(&sbi->s_fc_lock);
-                             lock(&ei->i_data_sem);
-                             lock(&sbi->s_fc_lock);
-rlock(&ei->i_data_sem);
+Hi, Harry
 
-ext4_fc_perform_commit() held s_fc_lock while writing fast commit blocks.
-This can write the journal inode, whose mapping can call ext4_map_blocks()
-and take i_data_sem. At the same time, metadata update paths can hold
-i_data_sem and call ext4_fc_track_inode(), which takes s_fc_lock.
+It looks like this could just be simplified to obj_exts += offset, right?
 
-Drop s_fc_lock before the log writing step. Keep inode and dentry state
-stable by using EXT4_STATE_FC_COMMITTING for synchronization: ext4_fc_del()
-waits for COMMITTING, and inodes referenced only from create dentry updates
-are also marked COMMITTING and woken up on cleanup.
+> +
+> +		get_slab_obj_exts(obj_exts);
+> +		for_each_object(addr, s, slab_address(slab), slab->objects)
+> +			memset(kasan_reset_tag(addr) + offset, 0,
+> +			       sizeof(struct slabobj_ext));
+> +		put_slab_obj_exts(obj_exts);
+> +
+> +		if (IS_ENABLED(CONFIG_MEMCG))
+> +			obj_exts |= MEMCG_DATA_OBJEXTS;
+> +		slab->obj_exts = obj_exts;
+> +		slab_set_stride(slab, s->size);
+>  	}
+>  }
+>  
+> @@ -8023,6 +8083,7 @@ static int calculate_sizes(struct kmem_cache_args *args, struct kmem_cache *s)
+>  {
+>  	slab_flags_t flags = s->flags;
+>  	unsigned int size = s->object_size;
+> +	unsigned int aligned_size;
+>  	unsigned int order;
+>  
+>  	/*
+> @@ -8132,7 +8193,13 @@ static int calculate_sizes(struct kmem_cache_args *args, struct kmem_cache *s)
+>  	 * offset 0. In order to align the objects we have to simply size
+>  	 * each object to conform to the alignment.
+>  	 */
+> -	size = ALIGN(size, s->align);
+> +	aligned_size = ALIGN(size, s->align);
+> +#if defined(CONFIG_SLAB_OBJ_EXT) && defined(CONFIG_64BIT)
+> +	if (aligned_size - size >= sizeof(struct slabobj_ext))
+> +		s->flags |= SLAB_OBJ_EXT_IN_OBJ;
+> +#endif
+> +	size = aligned_size;
+> +
 
-Signed-off-by: Li Chen <me@linux.beauty>
----
- fs/ext4/fast_commit.c | 79 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 60 insertions(+), 19 deletions(-)
+One more thought: in calculate_sizes() we add some extra padding when
+SLAB_RED_ZONE is enabled:
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index b0c458082997..aa209f1d3d36 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -244,23 +244,26 @@ void ext4_fc_del(struct inode *inode)
- 		return;
- 	}
- 
--	/*
--	 * Since ext4_fc_del is called from ext4_evict_inode while having a
--	 * handle open, there is no need for us to wait here even if a fast
--	 * commit is going on. That is because, if this inode is being
--	 * committed, ext4_mark_inode_dirty would have waited for inode commit
--	 * operation to finish before we come here. So, by the time we come
--	 * here, inode's EXT4_STATE_FC_COMMITTING would have been cleared. So,
--	 * we shouldn't see EXT4_STATE_FC_COMMITTING to be set on this inode
--	 * here.
--	 *
--	 * We may come here without any handles open in the "no_delete" case of
--	 * ext4_evict_inode as well. However, if that happens, we first mark the
--	 * file system as fast commit ineligible anyway. So, even in that case,
--	 * it is okay to remove the inode from the fc list.
--	 */
--	WARN_ON(ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)
--		&& !ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE));
-+	/* Don't race with fast commit processing of this inode. */
-+	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
-+#if (BITS_PER_LONG < 64)
-+		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
-+				EXT4_STATE_FC_COMMITTING);
-+		wq = bit_waitqueue(&ei->i_state_flags,
-+				   EXT4_STATE_FC_COMMITTING);
-+#else
-+		DEFINE_WAIT_BIT(wait, &ei->i_flags,
-+				EXT4_STATE_FC_COMMITTING);
-+		wq = bit_waitqueue(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
-+#endif
-+		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
-+		if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
-+			mutex_unlock(&sbi->s_fc_lock);
-+			schedule();
-+			mutex_lock(&sbi->s_fc_lock);
-+		}
-+		finish_wait(wq, &wait.wq_entry);
-+	}
- 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_FLUSHING_DATA)) {
- #if (BITS_PER_LONG < 64)
- 		DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
-@@ -1108,6 +1111,27 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		ext4_set_inode_state(&iter->vfs_inode,
- 				     EXT4_STATE_FC_COMMITTING);
- 	}
-+	/*
-+	 * Also mark inodes referenced by create dentry updates. These inodes are
-+	 * tracked via i_fc_dilist and might not be on s_fc_q[MAIN].
-+	 */
-+	{
-+		struct ext4_fc_dentry_update *fc_dentry;
-+		struct ext4_inode_info *ei;
-+
-+		list_for_each_entry(fc_dentry, &sbi->s_fc_dentry_q[FC_Q_MAIN],
-+				    fcd_list) {
-+			if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT)
-+				continue;
-+			if (list_empty(&fc_dentry->fcd_dilist))
-+				continue;
-+			ei = list_first_entry(&fc_dentry->fcd_dilist,
-+					      struct ext4_inode_info,
-+					      i_fc_dilist);
-+			ext4_set_inode_state(&ei->vfs_inode,
-+					     EXT4_STATE_FC_COMMITTING);
-+		}
-+	}
- 	mutex_unlock(&sbi->s_fc_lock);
- 	jbd2_journal_unlock_updates(journal);
- 
-@@ -1137,7 +1161,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	}
- 
- 	/* Step 6.2: Now write all the dentry updates. */
--	mutex_lock(&sbi->s_fc_lock);
- 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
- 	if (ret)
- 		goto out;
-@@ -1159,7 +1182,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	ret = ext4_fc_write_tail(sb, crc);
- 
- out:
--	mutex_unlock(&sbi->s_fc_lock);
- 	memalloc_nofs_restore(nofs);
- 	blk_finish_plug(&plug);
- 	return ret;
-@@ -1342,6 +1364,25 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 					     struct ext4_fc_dentry_update,
- 					     fcd_list);
- 		list_del_init(&fc_dentry->fcd_list);
-+		if (fc_dentry->fcd_op == EXT4_FC_TAG_CREAT &&
-+		    !list_empty(&fc_dentry->fcd_dilist)) {
-+			ei = list_first_entry(&fc_dentry->fcd_dilist,
-+					      struct ext4_inode_info,
-+					      i_fc_dilist);
-+			ext4_clear_inode_state(&ei->vfs_inode,
-+					       EXT4_STATE_FC_COMMITTING);
-+			/*
-+			 * Make sure clearing of EXT4_STATE_FC_COMMITTING is
-+			 * visible before we send the wakeup. Pairs with implicit
-+			 * barrier in prepare_to_wait() in ext4_fc_track_inode().
-+			 */
-+			smp_mb();
-+#if (BITS_PER_LONG < 64)
-+			wake_up_bit(&ei->i_state_flags, EXT4_STATE_FC_COMMITTING);
-+#else
-+			wake_up_bit(&ei->i_flags, EXT4_STATE_FC_COMMITTING);
-+#endif
-+		}
- 		list_del_init(&fc_dentry->fcd_dilist);
- 
- 		release_dentry_name_snapshot(&fc_dentry->fcd_name);
+if (flags & SLAB_RED_ZONE) {
+	/*
+	 * Add some empty padding so that we can catch
+	 * overwrites from earlier objects rather than let
+	 * tracking information or the free pointer be
+	 * corrupted if a user writes before the start
+	 * of the object.
+	 */
+	size += sizeof(void *);
+	...
+}
+
+
+From what I understand, this additional padding ends up being placed
+after the KASAN allocation metadata.
+Since it’s only "extra" padding (i.e., it doesn’t seem strictly required
+for the layout), and your patch would reuse this area — together with
+the final padding introduced by `size = ALIGN(size, s->align);` — for
+objext, it seems like this padding may no longer provide much benefit.
+
+Do you think it would make sense to remove this extra padding
+altogether?
+
 -- 
-2.52.0
-
+Thanks,
+Hao
+>  	s->size = size;
+>  	s->reciprocal_size = reciprocal_value(size);
+>  	order = calculate_order(size);
+> -- 
+> 2.43.0
+> 
 
