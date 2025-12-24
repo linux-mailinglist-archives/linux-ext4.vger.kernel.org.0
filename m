@@ -1,91 +1,114 @@
-Return-Path: <linux-ext4+bounces-12502-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12503-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0778CDAF3D
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 01:41:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 977DFCDB15E
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 02:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 372453003BCC
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 00:41:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B4AD330245FE
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 01:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EC1316197;
-	Wed, 24 Dec 2025 00:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AD4279DAF;
+	Wed, 24 Dec 2025 01:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="FVR38gVr"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781EB315D22
-	for <linux-ext4@vger.kernel.org>; Wed, 24 Dec 2025 00:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9F119F11B;
+	Wed, 24 Dec 2025 01:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766536324; cv=none; b=YWW4IeNN+hkyCtmw+pPQL9WJoO8LBVShkuaW0H9H7FY78h1+Nio3pMJvHiiJWN7VG716bjbr9cCfFowpPAzOuleKtY6eFbBKVKYH46BvoON3Qk1danSwq0Zny+XGNGIwE6XkFZ9Bij5MLIo+ZvdolZPzEQoprMi2LMlGY8uTyG8=
+	t=1766540357; cv=none; b=qL2Xfj7dr0gTPAQCy57Yhmzcd5F8VHUXd++JmcqJpj5bIk/FwevfYEWHUjlehXjaiWK0/n0iCAKd+Uu6znhnCtz7Oom7FJKw3JNSXYYoXVOfA1Kz4aNm7Q1ZcshmXy2yZXyk9D/SHbXw5bK3y6lr2B1V1lcnYFpk4lolpTWMXR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766536324; c=relaxed/simple;
-	bh=WLDYsKeqtHC1X7/foxDAGGLfxjA90yTqPp+EiscQlX4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Az0j495YntMD9w6mrFyGio7Y7FrgOWwKzJMm09JJHgqFjIHGqtw9X+cJmocOpytojdDuyGXjvTL+tUh0nl+/pswdNs5jk5Dl3uL6RvDbwnraLbnVzH4dwiOs77oel6CpeT2kDVg9TzwZf5oY5dbU+6+mUFb6kcy7kvVukLKEdAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-656cc4098f3so8844803eaf.2
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Dec 2025 16:32:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766536321; x=1767141121;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Va2VfPs9ApZjSsj5ATJ7KVoiJwVbCQA0CZHsuoEnzCg=;
-        b=YGMaqNCdkGqCwTSzkvacwwwcbciZR5Msy4B0sOndNcUky/78B+jHoX858Qv5Rq+sT1
-         I7hXuGUWW+0i6xwO4otbsgsVj3LEqI+gteb7tkJtnE+THe2dere1RcUtLnFCA1RVDMJ8
-         w8/8lvG5hG9FCRruCNXhc3DlfxYmQVmoYz9tNb/u9413kELc/duiKr8BqznPCrBcTjqT
-         s29ByNJDoqlU1tfoTJuJl2DzKw63wigPX9VLEVcdELE2OS6qtkrjIO579YfEtBXNn+DD
-         QQ5oKuREUKFXcKjLNmxnENMCUwp+HBPT+WUrDZMHaUlevrRzynayQZ6h+ZULCOiIlDbg
-         nocA==
-X-Forwarded-Encrypted: i=1; AJvYcCUC/B7CrfNX7yaHNLB93DFvgsb6FV79ADAnmNjbjuMNh0elE+JuVGrPVGCAdCENwZx8dgw0eOAqxnnT@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB7XCzKOerqmYgtdkUBTxI+83spRu6Ji/9F/IjSDCpDlq1x7jQ
-	Lti/+pGfDhK6yZF8+65hoIQZIJPOpA3pW0x2htvQuH6xbixBx+De371iCYl3R8Q9jjXiRXrlUtp
-	eKeSWcahPwgfVx+eCbyfWXZVEBzB4+HAvJg/tDo94HYIXzZw91f+WFphMCFM=
-X-Google-Smtp-Source: AGHT+IHOZfF91uzeoESVPCmUGI5rO+RB8szUXHzbAvDO46/yx4H8YqG3HZpHGicG5m8L3famMF9a4gnkPXDENXrHWS/b5aTfi6Wj
+	s=arc-20240116; t=1766540357; c=relaxed/simple;
+	bh=c4rp59GrnxfBa9b+ZQAugwTTfXqcFs40yuy9HG1Vmn0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AjsQHObdRzfRpiIOec6Gb2Mg7UCNwiqhlEh35FFsMuyDgshtf5+fYUeoPbwaRnrCFYVhPItZhdQSlhUyufHnu7p5D05X4IyXfPeYfw7B/9KDAA48Ilrd7BqBFjd2MTGvkJyYhvE+3DMhZSg5ttuwylEjpJ8qgzFzyH+etnVKRQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=FVR38gVr; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=vJzqNYW0GY6ZNfseR5giYfjmiT49xxHGMuFLcEB4Ldw=;
+	b=FVR38gVrvHqFpzc3XSiyKSxi4vDwIYHzSU2n6BGXyLKM0Mss98FoYfPWUpFZ1wy2CIioFMrHM
+	EQdQ0KpUshxJpX98Rot+CPcmR5ZYTdLJLs++EbyACEaMPJ2w0JU/69QrZOJ+GOnkED4VCOjHxTU
+	BOZFxFhJLt6G8+4RgY2cQCA=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dbZG134W5znTV6;
+	Wed, 24 Dec 2025 09:35:53 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0783140539;
+	Wed, 24 Dec 2025 09:39:06 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 24 Dec
+ 2025 09:39:04 +0800
+Message-ID: <b09e6934-6924-4f9a-a866-82599fe64879@huawei.com>
+Date: Wed, 24 Dec 2025 09:39:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:2229:b0:659:9a49:9026 with SMTP id
- 006d021491bc7-65d0eb10455mr7186596eaf.83.1766536321463; Tue, 23 Dec 2025
- 16:32:01 -0800 (PST)
-Date: Tue, 23 Dec 2025 16:32:01 -0800
-In-Reply-To: <67775d94.050a0220.178762.003a.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <694b3481.050a0220.35954c.0009.GAE@google.com>
-Subject: Re: [syzbot] [ocfs2?] [ext4?] WARNING in __jbd2_log_wait_for_space
-From: syzbot <syzbot+04ae2c9e709a347f1a81@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, dmantipov@yandex.ru, jack@suse.com, 
-	jlbec@evilplan.org, joseph.qi@linux.alibaba.com, kartikey406@gmail.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com, 
-	ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/ext4: Initialize new folios before use
+To: Bartlomiej Kubik <kubik.bartlomiej@gmail.com>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <david.hunter.linux@gmail.com>,
+	<skhan@linuxfoundation.org>, <khalid@kernel.org>,
+	<linux-kernel-mentees@lists.linux.dev>,
+	<syzbot+703d8a2cd20971854b06@syzkaller.appspotmail.com>
+References: <20251223215855.2486271-1-kubik.bartlomiej@gmail.com>
+Content-Language: en-GB
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20251223215855.2486271-1-kubik.bartlomiej@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-syzbot suspects this issue was fixed by commit:
+Hi Bartlomiej,
 
-commit 93ce0ff117b0c468961d7c296a03ad57e1e8da9f
-Author: Deepanshu Kartikey <kartikey406@gmail.com>
-Date:   Thu Oct 30 15:30:03 2025 +0000
+On 2025-12-24 05:58, Bartlomiej Kubik wrote:
+> KMSAN reports an uninitialized value in adiantum_crypt, created at
+> write_begin_get_folio(). New folios are allocated with the FGP_CREAT
+> flag and may be returned uninitialized. These uninitialized folios are
+> then used without proper initialization.
+>
+> Fixes: b799474b9aeb ("mm/pagemap: add write_begin_get_folio() helper function")
+> Tested-by: syzbot+703d8a2cd20971854b06@syzkaller.appspotmail.com
+> Reported-by: syzbot+703d8a2cd20971854b06@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=703d8a2cd20971854b06
+>
+> Signed-off-by: Bartlomiej Kubik <kubik.bartlomiej@gmail.com>
+> ---
+>  include/linux/pagemap.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 31a848485ad9..31bbc8299e08 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -787,7 +787,8 @@ static inline struct folio *write_begin_get_folio(const struct kiocb *iocb,
+>                  fgp_flags |= FGP_DONTCACHE;
+>
+>          return __filemap_get_folio(mapping, index, fgp_flags,
+> -                                   mapping_gfp_mask(mapping));
+> +				mapping_gfp_mask(mapping)|
+> +				__GFP_ZERO);
+We do need to perform some initialization, but doing it in this common
+path is clearly unreasonable. It would introduce unnecessary zeroing
+overhead even for non-crypto scenarios.
 
-    ocfs2: validate cl_bpc in allocator inodes to prevent divide-by-zero
+Therefore, I suspect something was missed in certain crypto-related
+initialization paths where the zeroing should have been handled instead.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11b4ef1a580000
-start commit:   63676eefb7a0 Merge tag 'sched_ext-for-6.13-rc5-fixes' of g..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ba7cde9482d6bb6
-dashboard link: https://syzkaller.appspot.com/bug?extid=04ae2c9e709a347f1a81
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c678b0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112bcedf980000
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Cheers,
+Baokun
 
-#syz fix: ocfs2: validate cl_bpc in allocator inodes to prevent divide-by-zero
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
