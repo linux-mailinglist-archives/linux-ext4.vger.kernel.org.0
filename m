@@ -1,202 +1,92 @@
-Return-Path: <linux-ext4+bounces-12515-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12516-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57ADBCDC498
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 13:57:36 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45BAACDD887
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Dec 2025 09:48:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 23BD530B178D
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Dec 2025 12:51:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7B4C1300252A
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Dec 2025 08:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74573319615;
-	Wed, 24 Dec 2025 12:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F94314B82;
+	Thu, 25 Dec 2025 08:48:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EteAKAVd"
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="DGB3VakA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27693128C2
-	for <linux-ext4@vger.kernel.org>; Wed, 24 Dec 2025 12:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA112E8E09;
+	Thu, 25 Dec 2025 08:48:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766580710; cv=none; b=ZiTWhkXv6xzRFxOaoBZ2Rj3sANUlLyt3RWarmsnzQOUnRVnzKQHsCf0GpubffpA8xDyrRuHyoSbbuBS4mW07bnq2qTBIlTH8ZawRTQZzELwqjuNdRgj+C9Hk4r/M6yoiLLO2rgofM6GgzpwgCbT5vw3WKoVmZANDImbR+Yy0OgU=
+	t=1766652494; cv=none; b=FuQfTGQRV94OcbfOY0T+m3HuckzlBhj1DHgIXcI7BauF7KFOhntlPDYpdruZWjxl85t4FFj5uwnFAEveoYvGKAFch4nmprWEoomq3tH4ChUfvT+6LF0F9Is4NcJ14yChAZdCRvLpRDi2rA/vpzEhh0ZAV4brM/ELXd74Sece+94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766580710; c=relaxed/simple;
-	bh=A+RzpZY8iCAN4Ula3XGmIsfdO1ecF6Y+Z3vXKFB5rTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rszfflVL9zDFfw0ADiTM3bfpCyt/c9sSfpOPfwjS86A9sg45dJO6MZn2FSPBIa8GclKErrq99KH02GD2E9sUqQZ/2Q8YHV0uPf3qAFex+uHAorzHVZtNZfPkFs5271zrsbB/Vgr73Vvv/jySkylmbbSf0UMVa1Ph+eagaLei7io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EteAKAVd; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Dec 2025 20:51:14 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766580706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CRieSzag4iGvTpHtsvUWdbRPgpJbX/fu/qtI6sKweRY=;
-	b=EteAKAVdI7AaeZsXkJZGXiC3GWcpQiwTLbqswnYduANuzhfYdjxwZQKi4oP+gB4Vzitol2
-	O7KMR4XxCVMZTxVGxznHE21MLxneFymlmh1m7rJjkbAK7KljziRMR7WY7Rv+DtYOsLt8e7
-	fijf2EakFJ1TPwarLAZkgATZvprtb+U=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
-	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org
-Subject: [PATCH] slub: clarify object field layout comments
-Message-ID: <z7d52kjvlzxohbly42flhtebqc7knfvilierrjr4r5776rxhgy@lcqmkcpzklse>
-References: <20251222110843.980347-1-harry.yoo@oracle.com>
- <20251222110843.980347-8-harry.yoo@oracle.com>
- <graryni6wadpi3ytfq7zimj2kbmm7dumxvhxtzmxndrv5s2y67@ju4cdnsmos6e>
- <aUq1x_BowqYpHZAQ@hyeyoo>
- <zex6wgdlxk5vgwm7ou657fdmi27xnxihdndlszfa2chghamfuz@grhtfqw7gm7o>
- <aUrCXYdziRWP9PfV@hyeyoo>
- <c6owr44jdncf7q5zqgq4wn4pm57ai4cd3upauwmwszopuddf5g@52mkqbe2m27j>
- <aUt_1uDe05diks7b@hyeyoo>
+	s=arc-20240116; t=1766652494; c=relaxed/simple;
+	bh=JoUR//jWrLRm/jqMnDPyYkdHeCyTr1u3wShTEU/rT/0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HxEpsRdttgLlZRYIZRhETqYh/oGlAjIGFOSp+259QmVKlmlwrRiQOq6bHuuaqLwb5uwlNgtazIz0OoPJkFvE6D+YPzHyuUSMKLsPmURgkEUpnFWieKm1yDn3dw2gIoj7tFf5rCs4BHhjnRe27LodbZJCHmdtJ4Vs4FC7ewltNVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=DGB3VakA; arc=none smtp.client-ip=45.254.49.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
+Received: from LAPTOP-N070L597.localdomain (unknown [58.241.16.34])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 2e8990173;
+	Thu, 25 Dec 2025 16:48:06 +0800 (GMT+08:00)
+From: Zilin Guan <zilin@seu.edu.cn>
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jianhao.xu@seu.edu.cn,
+	Zilin Guan <zilin@seu.edu.cn>
+Subject: [PATCH] ext4: Fix memory leak in ext4_ext_shift_extents()
+Date: Thu, 25 Dec 2025 08:48:00 +0000
+Message-Id: <20251225084800.905701-1-zilin@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aUt_1uDe05diks7b@hyeyoo>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a9b54b1a37703a1kunm30b6e74737ef3
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDTEtLVk4dGElOHxlJHU9OGFYeHw5VEwETFhoSFy
+	QUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZS1VLVUtVS1kG
+DKIM-Signature: a=rsa-sha256;
+	b=DGB3VakALsZoioi1G2zMyu91qilQcWyCg88sd+zm/GTauuA3Cmn+qb/TO/LCYxnKx6gzMIO3nEWi2aW3oNsbFV0C85YqSTf6BA8SGeS/OZIyWbZsx+DyxbsvOot+dY6e5HXrb9+O7s4rrcTUu+2od8Rh2BE5CJpzp/tKhPSjGqI=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
+	bh=+PyY4ptEdV2osgl/CrfMicsDI6wHAwORrha+rcsKk0I=;
+	h=date:mime-version:subject:message-id:from;
 
-The comments above check_pad_bytes() document the field layout of a
-single object. Rewrite them to improve clarity and precision.
+In ext4_ext_shift_extents(), if the extent is NULL in the while loop, the
+function returns immediately without releasing the path obtained via
+ext4_find_extent(), leading to a memory leak.
 
-Also update an outdated comment in calculate_sizes().
+Fix this by jumping to the out label to ensure the path is properly
+released.
 
-Suggested-by: Harry Yoo <harry.yoo@oracle.com>
-Signed-off-by: Hao Li <hao.li@linux.dev>
+Fixes: a18ed359bdddc ("ext4: always check ext4_ext_find_extent result")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
 ---
-Hi Harry, this patch adds more detailed object layout documentation. Let
-me know if you have any comments.
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- mm/slub.c | 92 ++++++++++++++++++++++++++++++++-----------------------
- 1 file changed, 53 insertions(+), 39 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index a94c64f56504..138e9d13540d 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1211,44 +1211,58 @@ check_bytes_and_report(struct kmem_cache *s, struct slab *slab,
- }
- 
- /*
-- * Object layout:
-- *
-- * object address
-- * 	Bytes of the object to be managed.
-- * 	If the freepointer may overlay the object then the free
-- *	pointer is at the middle of the object.
-- *
-- * 	Poisoning uses 0x6b (POISON_FREE) and the last byte is
-- * 	0xa5 (POISON_END)
-- *
-- * object + s->object_size
-- * 	Padding to reach word boundary. This is also used for Redzoning.
-- * 	Padding is extended by another word if Redzoning is enabled and
-- * 	object_size == inuse.
-- *
-- * 	We fill with 0xbb (SLUB_RED_INACTIVE) for inactive objects and with
-- * 	0xcc (SLUB_RED_ACTIVE) for objects in use.
-- *
-- * object + s->inuse
-- * 	Meta data starts here.
-- *
-- * 	A. Free pointer (if we cannot overwrite object on free)
-- * 	B. Tracking data for SLAB_STORE_USER
-- *	C. Original request size for kmalloc object (SLAB_STORE_USER enabled)
-- *	D. Padding to reach required alignment boundary or at minimum
-- * 		one word if debugging is on to be able to detect writes
-- * 		before the word boundary.
-- *
-- *	Padding is done using 0x5a (POISON_INUSE)
-- *
-- * object + s->size
-- * 	Nothing is used beyond s->size.
-- *
-- * If slabcaches are merged then the object_size and inuse boundaries are mostly
-- * ignored. And therefore no slab options that rely on these boundaries
-+ * Object field layout:
-+ *
-+ * [Left redzone padding] (if SLAB_RED_ZONE)
-+ *   - Field size: s->red_left_pad
-+ *   - Filled with 0xbb (SLUB_RED_INACTIVE) for inactive objects and
-+ *     0xcc (SLUB_RED_ACTIVE) for objects in use when SLAB_RED_ZONE.
-+ *
-+ * [Object bytes]
-+ *   - Field size: s->object_size
-+ *   - Object payload bytes.
-+ *   - If the freepointer may overlap the object, it is stored inside
-+ *     the object (typically near the middle).
-+ *   - Poisoning uses 0x6b (POISON_FREE) and the last byte is
-+ *     0xa5 (POISON_END) when __OBJECT_POISON is enabled.
-+ *
-+ * [Word-align padding] (right redzone when SLAB_RED_ZONE is set)
-+ *   - Field size: s->inuse - s->object_size
-+ *   - If redzoning is enabled and ALIGN(size, sizeof(void *)) adds no
-+ *     padding, explicitly extend by one word so the right redzone is
-+ *     non-empty.
-+ *   - Filled with 0xbb (SLUB_RED_INACTIVE) for inactive objects and
-+ *     0xcc (SLUB_RED_ACTIVE) for objects in use when SLAB_RED_ZONE.
-+ *
-+ * [Metadata starts at object + s->inuse]
-+ *   - A. freelist pointer (if freeptr_outside_object)
-+ *   - B. alloc tracking (SLAB_STORE_USER)
-+ *   - C. free tracking (SLAB_STORE_USER)
-+ *   - D. original request size (SLAB_KMALLOC && SLAB_STORE_USER)
-+ *   - E. KASAN metadata (if enabled)
-+ *
-+ * [Mandatory padding] (if CONFIG_SLUB_DEBUG && SLAB_RED_ZONE)
-+ *   - One mandatory debug word to guarantee a minimum poisoned gap
-+ *     between metadata and the next object, independent of alignment.
-+ *   - Filled with 0x5a (POISON_INUSE) when SLAB_POISON is set.
-+ * [Final alignment padding]
-+ *   - Any bytes added by ALIGN(size, s->align) to reach s->size.
-+ *   - Filled with 0x5a (POISON_INUSE) when SLAB_POISON is set.
-+ *
-+ * Notes:
-+ * - Redzones are filled by init_object() with SLUB_RED_ACTIVE/INACTIVE.
-+ * - Object contents are poisoned with POISON_FREE/END when __OBJECT_POISON.
-+ * - The trailing padding is pre-filled with POISON_INUSE by
-+ *   setup_slab_debug() when SLAB_POISON is set, and is validated by
-+ *   check_pad_bytes().
-+ * - The first object pointer is slab_address(slab) +
-+ *   (s->red_left_pad if redzoning); subsequent objects are reached by
-+ *   adding s->size each time.
-+ *
-+ * If slabcaches are merged then the object_size and inuse boundaries are
-+ * mostly ignored. Therefore no slab options that rely on these boundaries
-  * may be used with merged slabcaches.
-  */
--
- static int check_pad_bytes(struct kmem_cache *s, struct slab *slab, u8 *p)
- {
- 	unsigned long off = get_info_end(s);	/* The end of info */
-@@ -7103,9 +7117,9 @@ static int calculate_sizes(struct kmem_cache_args *args, struct kmem_cache *s)
- 
- 
- 	/*
--	 * If we are Redzoning then check if there is some space between the
--	 * end of the object and the free pointer. If not then add an
--	 * additional word to have some bytes to store Redzone information.
-+	 * If we are Redzoning and there is no space between the end of the
-+	 * object and the following fields, add one word so the right Redzone
-+	 * is non-empty.
- 	 */
- 	if ((flags & SLAB_RED_ZONE) && size == s->object_size)
- 		size += sizeof(void *);
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 2cf5759ba689..1d21943a09b0 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5375,7 +5375,8 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+ 		if (!extent) {
+ 			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
+ 					 (unsigned long) *iterator);
+-			return -EFSCORRUPTED;
++			ret = -EFSCORRUPTED;
++			goto out;
+ 		}
+ 		if (SHIFT == SHIFT_LEFT && *iterator >
+ 		    le32_to_cpu(extent->ee_block)) {
 -- 
-2.50.1
+2.34.1
 
 
