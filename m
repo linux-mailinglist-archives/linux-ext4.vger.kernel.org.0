@@ -1,294 +1,195 @@
-Return-Path: <linux-ext4+bounces-12521-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12522-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3332BCDE540
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 06:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7152CDF24F
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Dec 2025 00:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9E969300B80D
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 05:02:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A4EE5300956F
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 23:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48041DD877;
-	Fri, 26 Dec 2025 05:02:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495412727FC;
+	Fri, 26 Dec 2025 23:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="G/hKDSVg"
+	dkim=pass (2048-bit key) header.d=themaw.net header.i=@themaw.net header.b="k6Op2MFL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p9hD+4bO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DA23A1E92;
-	Fri, 26 Dec 2025 05:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766725360; cv=pass; b=YIk7p0V9F6G8epFnWDqBdEpbSPnTqqWgGEaGYcW7MxsjlP92c8yV0lM+1tBTymR6QXT/OiUX7ggnpPDkqXZ9CT9vnnl8iNKyOCb3Q00S2XKzeWWWYIYvxTT8EiAuoPc9EliYswI2QXMM5t+wrBJn4c2C06d6XFUDBRmKv4ffhes=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766725360; c=relaxed/simple;
-	bh=yCznxMTkqi3qZm+nW2rL30mF727CoYfCBgqYAHRXTKE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SfQGq1zKu4m9a7zrAQRJEd8t7GR/9B9gXcukbHCyZbldfBv70dYcuY6UZM7nEAWGK8YFddmazZUxOPV10FXezMLcEwWpKJYxwNI5kjLEOruKiQDY7v19tKkXs5XVu/fA4UvfgK8Vc5Z82brvgQbMuWm8UMrcs7TmM3OFfcb6oiU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=G/hKDSVg; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1766725351; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=GwsU0A2k+XgnMhb5kVZ/4khKGfe7YgNKxnKYkK4eFWnFhxNSGYTE/kUp3DHm02afSMnGEtvnk5mYVwb48kr3Xz/eCkgD6UUQMKNU0BEMpjMSmKmB0dOnzd8UR3HpOi3YCElrs8uWv7i+a/nw5j3vBjdSPMhFV1BbsKfQ+1JWTvw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1766725351; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=ljr2y9wPyQAtR7GqZRtXx1ATldfEYrgDSiKxNJV9mpE=; 
-	b=XBwWz2bdAXv/1DMF1xceyoUx2Q7bERSY2aWM9XySnmabpVsal4betCa9K5byRITnIheroZdAJJC60Rx6dn2TbRXKw2kCGQdQEIFHSgRMTxLoUveLAuAOfs7Si79LrqEcFvNHW4s9TLMf+Mh4kezmo8DkqUwd77HFV47FuWIpzF4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766725351;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=ljr2y9wPyQAtR7GqZRtXx1ATldfEYrgDSiKxNJV9mpE=;
-	b=G/hKDSVgOiDXuSI2eztNbjwOruL8BUf8r5nO7GCiKEl56dNZ5V+uJVQrZnYrI80v
-	sWOR17dc5Na1cUUvxGV6e/RWIotYhDAIwAiw8bwvZY6onXE+p9YtREYorW1PbKO1Kdl
-	n+M+faOyEBBOam+YFN/wsUZvmdS0FwQnP6zRQS/U=
-Received: by mx.zohomail.com with SMTPS id 1766725348148408.1575736439132;
-	Thu, 25 Dec 2025 21:02:28 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Li Chen <me@linux.beauty>
-Subject: [PATCH] ext4: publish jinode after initialization
-Date: Fri, 26 Dec 2025 13:02:20 +0800
-Message-ID: <20251226050220.138194-1-me@linux.beauty>
-X-Mailer: git-send-email 2.52.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE36F4F1;
+	Fri, 26 Dec 2025 23:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766793500; cv=none; b=Nsa+xUkQ0O8vZW6EYxqQ5uqGllbZNk/RqGSCj/1PiD73LNUYLnk9p3zflF6bMCm2ZgyRiQDeVbu1toDvRJXH7tzRzGgoQif+blOZ164fxSfLHBKMf13DOkRgpEGMWLIsy9suaF6xF6t4XpyBUTcPeWPYthwnEBCUsC1ztGZoKzk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766793500; c=relaxed/simple;
+	bh=zRLmVnYeRSFcZlCjgIszfhNKuakh2j2GEY/j42RfBtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CU1rTitiqwRVIVx3gqkviBf86lKIW/hyVcFgfAZY0HhSFUrQy0Mmoc0OMjHbyCOk+1hFAiTayWKx6T9ESk4Pis86f+Aq7bP6P+qr3ZbDWx9lIbOlqOYdUzqHLudiCopxDCxpl6pPC3/DetD8hDA6uEJC0yFJtb8Sh4ayr/eFTj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=themaw.net; spf=pass smtp.mailfrom=themaw.net; dkim=pass (2048-bit key) header.d=themaw.net header.i=@themaw.net header.b=k6Op2MFL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=p9hD+4bO; arc=none smtp.client-ip=202.12.124.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=themaw.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=themaw.net
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id BBA217A006A;
+	Fri, 26 Dec 2025 18:58:16 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Fri, 26 Dec 2025 18:58:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1766793496;
+	 x=1766879896; bh=d+03CflXQCI16mDu2/y/gDZidxMLNdelGVGnEAD9RCg=; b=
+	k6Op2MFLM4gTA/hYHX8xWwC6csvtWfeQzuo3FxV0uwHsfyJaPTagjg0leUTBf6Bc
+	KMvnQhO5tgZTjuwcL0V8ozh7L+aswrsxcfAezz0piakssxAyYbOSKMuFaagpdokL
+	oWmzxHfWcqEJQrBljVza4Xtq31bVI7mnVAh7/zYDyvsT7IHZ2/XKw9u5PqJx0tdi
+	RXfs7a3raRtuMEe0gEuPY2pDxiUESDufsV2oXhmZ/IFeOsztumxPyG/Nxql86Q9t
+	+q0ljC+rq3uhPghMUXSNNKGNKxpGONvnTNdc1HZ5/Xqb+o14M8uMMFMht7MlZMWi
+	CCSv5V4LTUtlXNPmmg4COA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1766793496; x=
+	1766879896; bh=d+03CflXQCI16mDu2/y/gDZidxMLNdelGVGnEAD9RCg=; b=p
+	9hD+4bOW1P0R6kx6R7wpEgJqEKLeyCO/Hvd2emu7fe1dNogRyIiJoauD6ZB3eoZG
+	+IvlPaxtuv4MHNManXhzx8uvPyGF0P4gEXA8CwDZeAvlMhxa184z6KYR3H607CMU
+	NHqPO1Q0/AQRQpL8u3dvqsWtiEVcSWE1hGA9cH+E6HGsC8gwJexQ6WgMua/OqTcC
+	Fl7BqRpx6Tf8Aw2YwQGBfHStX+xNANSwUQ3U3Wf3SKH+JntP+EGZij6INrD2cJTm
+	oqsFrWZBgCQ4DrkFoCjBmPUFa5Fs6Y48RyhFqxQPKPRZBcUPgy+VZoSfCuCk6JqH
+	ipUxrCuF1Q3lLkRwVOkvg==
+X-ME-Sender: <xms:GCFPaZ0iGGK9QOPUDzuXWLg9WD04TCsJ-bYGSL2bJdVwD6eAgpFtCA>
+    <xme:GCFPabDpSxGnCBFRkRYwC641UVXHpLVF4xK_-PG4v4GQ6Jty4FXx3o9tTbDVZeeX0
+    04A1JhWugyWFqxnlJzZHxZ85c47eqjZONphcLHtUOcwmXSw>
+X-ME-Received: <xmr:GCFPaY4Wj60QmCx0e991QVxEFEnW4cubU55yycJq3N8XprdNA9WeUW9yvKWOF8gbOsu1IjWEzJy4bXXGUjzSmd7_tWwNg5HoCPZGOSEq1rNPHsLMmwwCTWs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeileekgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepkfgrnhcumfgv
+    nhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpeefke
+    fhgeeigeetleffgeelteejkeduvdfhheejhfehueeitdehuefhkeeukeffheenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnsehthh
+    gvmhgrfidrnhgvthdpnhgspghrtghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhr
+    tghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepughjfi
+    honhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgvgihtgeesvhhg
+    vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdigfhhssehvghgvrh
+    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthht
+    oheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:GCFPacIy5mEeyvjbNoV7ZWO9F7VJkKetvs5LJfkW5eso3pCRDQLC-Q>
+    <xmx:GCFPaZvEuXLsOThMxfRsEu6NNnTX1q2G6xZVDMcqgiboOVh1O7ojOg>
+    <xmx:GCFPaTJmT_eKJX-RLJfZ9dfRRrog9xWy8NqzFSpM-Lde2SmEMLyaaQ>
+    <xmx:GCFPaa9DbHwnAu0BB27tmYpZ3AKkjFpaYrNK9fegOEGJadkTK2oxJA>
+    <xmx:GCFPadQJBATT6J_uMz_91-7NUjc67ViIyq3szfL2LuykLf9rlD7dMspr>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Dec 2025 18:58:14 -0500 (EST)
+Message-ID: <284c79aa-7088-40a5-a6f5-31de8404e62f@themaw.net>
+Date: Sat, 27 Dec 2025 07:58:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] fs: send uevents for filesystem mount events
+To: Christian Brauner <brauner@kernel.org>,
+ "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, hch@lst.de,
+ linux-fsdevel@vger.kernel.org
+References: <176602332484.688213.11232314346072982565.stgit@frogsfrogsfrogs>
+ <176602332527.688213.9644123318095990966.stgit@frogsfrogsfrogs>
+ <20251224-imitieren-flugtauglich-dcef25c57c8d@brauner>
+Content-Language: en-AU
+From: Ian Kent <raven@themaw.net>
+Autocrypt: addr=raven@themaw.net;
+ keydata= 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
+In-Reply-To: <20251224-imitieren-flugtauglich-dcef25c57c8d@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-ext4_inode_attach_jinode() publishes ei->jinode to concurrent users.
-It assigned ei->jinode before calling jbd2_journal_init_jbd_inode().
 
-This allows another thread to observe a non-NULL jinode with i_vfs_inode
-still unset. The fast commit flush path can then pass this jinode to
-jbd2_wait_inode_data(), which dereferences i_vfs_inode->i_mapping and may
-crash.
+On 24/12/25 20:47, Christian Brauner wrote:
+> On Wed, Dec 17, 2025 at 06:04:29PM -0800, Darrick J. Wong wrote:
+>> From: Darrick J. Wong <djwong@kernel.org>
+>>
+>> Add the ability to send uevents whenever a filesystem mounts, unmounts,
+>> or goes down.  This will enable XFS to start daemons whenever a
+>> filesystem is first mounted.
+>>
+>> Regrettably, we can't wire this directly into get_tree_bdev_flags or
+>> generic_shutdown_super because not all filesystems set up a kobject
+>> representation in sysfs, and the VFS has no idea if a filesystem
+>> actually does that.
+>>
+>> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+>> ---
+> I have issues with uevents as a mechanism for this. Uevents are tied to
+> network namespaces and they are not really namespaced appropriately. Any
+> filesystem that hooks into this mechanism will spew uevents into the
+> initial network namespace unconditionally. Any container mountable
+> filesystem that wants to use this interface will spam the host with
+> this event though the even is completely useless without appropriate
+> meta information about the relevant mount namespaces and further
+> parameters. This is a design dead end going forward imho. So please
+> let's not do this.
+>
+> Instead ties this to fanotify which is the right interface for this.
+> My suggestion would be to tie this to mount namespaces as that's the
+> appropriate object. Fanotify already supports listening for general
+> mount/umount events on mount namespaces. So extend it to send filesystem
+> creation/destruction events so that a caller may listen on the initial
+> mount namespace - where xfs fses can be mounted - you could even make it
+> filterable per filesystem type right away.
 
-Below is the crash I observe:
-```
-BUG: unable to handle page fault for address: 000000010beb47f4
-PGD 110e51067 P4D 110e51067 PUD 0
-Oops: Oops: 0000 [#1] SMP NOPTI
-CPU: 1 UID: 0 PID: 4850 Comm: fc_fsync_bench_ Not tainted 6.18.0-00764-g795a690c06a5 #1 PREEMPT(voluntary)
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-2-2 04/01/2014
-RIP: 0010:xas_find_marked+0x3d/0x2e0
-Code: e0 03 48 83 f8 02 0f 84 f0 01 00 00 48 8b 47 08 48 89 c3 48 39 c6 0f 82 fd 01 00 00 48 85 c9 74 3d 48 83 f9 03 77 63 4c 8b 0f <49> 8b 71 08 48 c7 47 18 00 00 00 00 48 89 f1 83 e1 03 48 83 f9 02
-RSP: 0018:ffffbbee806e7bf0 EFLAGS: 00010246
-RAX: 000000000010beb4 RBX: 000000000010beb4 RCX: 0000000000000003
-RDX: 0000000000000001 RSI: 0000002000300000 RDI: ffffbbee806e7c10
-RBP: 0000000000000001 R08: 0000002000300000 R09: 000000010beb47ec
-R10: ffff9ea494590090 R11: 0000000000000000 R12: 0000002000300000
-R13: ffffbbee806e7c90 R14: ffff9ea494513788 R15: ffffbbee806e7c88
-FS:  00007fc2f9e3e6c0(0000) GS:ffff9ea6b1444000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000010beb47f4 CR3: 0000000119ac5000 CR4: 0000000000750ef0
-PKRU: 55555554
-Call Trace:
- <TASK>
- filemap_get_folios_tag+0x87/0x2a0
- __filemap_fdatawait_range+0x5f/0xd0
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? __schedule+0x3e7/0x10c0
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? preempt_count_sub+0x5f/0x80
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? cap_safe_nice+0x37/0x70
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? preempt_count_sub+0x5f/0x80
- ? srso_alias_return_thunk+0x5/0xfbef5
- filemap_fdatawait_range_keep_errors+0x12/0x40
- ext4_fc_commit+0x697/0x8b0
- ? ext4_file_write_iter+0x64b/0x950
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? preempt_count_sub+0x5f/0x80
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? vfs_write+0x356/0x480
- ? srso_alias_return_thunk+0x5/0xfbef5
- ? preempt_count_sub+0x5f/0x80
- ext4_sync_file+0xf7/0x370
- do_fsync+0x3b/0x80
- ? syscall_trace_enter+0x108/0x1d0
- __x64_sys_fdatasync+0x16/0x20
- do_syscall_64+0x62/0x2c0
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
-...
-```
+Seconded, there are way too many sources of mount events for them to not
 
-To fix this issue, initialize the jbd2_inode first and only then publish
-the pointer with smp_store_release(). Use smp_load_acquire() at the read
-sites to pair with the release and ensure the initialized fields are visible.
+be specific and targeted.
 
-On x86 (TSO), the crash should primarily be due to the logical early publish
-window (another CPU can run between the store and initialization). x86
-also relies on compiler ordering; the acquire/release helpers include
-the necessary compiler barriers while keeping the fast-path cheap.
 
-On weakly-ordered architectures (e.g. arm64/ppc), plain "init; store ptr"
-is not sufficient: without release/acquire, a reader may observe the
-pointer while still missing prior initialization stores. The explicit
-pairing makes this publish/consume relationship correct under LKMM.
+Just my opinion, ;),
 
-Fixes: a361293f5fede ("jbd2: Fix oops in jbd2_journal_file_inode()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Li Chen <me@linux.beauty>
----
- fs/ext4/ext4_jbd2.h   | 18 ++++++++++++++----
- fs/ext4/fast_commit.c |  9 +++++++--
- fs/ext4/inode.c       | 15 +++++++++++----
- fs/ext4/super.c       | 10 +++++++---
- 4 files changed, 39 insertions(+), 13 deletions(-)
-
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 63d17c5201b5..3bc79b894130 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -336,18 +336,28 @@ static inline int ext4_journal_force_commit(journal_t *journal)
- static inline int ext4_jbd2_inode_add_write(handle_t *handle,
- 		struct inode *inode, loff_t start_byte, loff_t length)
- {
--	if (ext4_handle_valid(handle))
-+	if (ext4_handle_valid(handle)) {
-+		struct jbd2_inode *jinode;
-+
-+		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+		jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
- 		return jbd2_journal_inode_ranged_write(handle,
--				EXT4_I(inode)->jinode, start_byte, length);
-+				jinode, start_byte, length);
-+	}
- 	return 0;
- }
- 
- static inline int ext4_jbd2_inode_add_wait(handle_t *handle,
- 		struct inode *inode, loff_t start_byte, loff_t length)
- {
--	if (ext4_handle_valid(handle))
-+	if (ext4_handle_valid(handle)) {
-+		struct jbd2_inode *jinode;
-+
-+		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+		jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
- 		return jbd2_journal_inode_ranged_wait(handle,
--				EXT4_I(inode)->jinode, start_byte, length);
-+				jinode, start_byte, length);
-+	}
- 	return 0;
- }
- 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index a6e79b3f1b48..3f148c048a6f 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1087,16 +1087,21 @@ static int ext4_fc_flush_data(journal_t *journal)
- 	struct super_block *sb = journal->j_private;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_inode_info *ei;
-+	struct jbd2_inode *jinode;
- 	int ret = 0;
- 
- 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
--		ret = jbd2_submit_inode_data(journal, ei->jinode);
-+		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+		jinode = smp_load_acquire(&ei->jinode);
-+		ret = jbd2_submit_inode_data(journal, jinode);
- 		if (ret)
- 			return ret;
- 	}
- 
- 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
--		ret = jbd2_wait_inode_data(journal, ei->jinode);
-+		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+		jinode = smp_load_acquire(&ei->jinode);
-+		ret = jbd2_wait_inode_data(journal, jinode);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 78ea864fa8cd..74b189c10f2b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -126,6 +126,9 @@ void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
- static inline int ext4_begin_ordered_truncate(struct inode *inode,
- 					      loff_t new_size)
- {
-+	/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+	struct jbd2_inode *jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
-+
- 	trace_ext4_begin_ordered_truncate(inode, new_size);
- 	/*
- 	 * If jinode is zero, then we never opened the file for
-@@ -133,10 +136,10 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
- 	 * jbd2_journal_begin_ordered_truncate() since there's no
- 	 * outstanding writes we need to flush.
- 	 */
--	if (!EXT4_I(inode)->jinode)
-+	if (!jinode)
- 		return 0;
- 	return jbd2_journal_begin_ordered_truncate(EXT4_JOURNAL(inode),
--						   EXT4_I(inode)->jinode,
-+						   jinode,
- 						   new_size);
- }
- 
-@@ -4497,8 +4500,12 @@ int ext4_inode_attach_jinode(struct inode *inode)
- 			spin_unlock(&inode->i_lock);
- 			return -ENOMEM;
- 		}
--		ei->jinode = jinode;
--		jbd2_journal_init_jbd_inode(ei->jinode, inode);
-+		jbd2_journal_init_jbd_inode(jinode, inode);
-+		/*
-+		 * Publish ->jinode only after it is fully initialized so that
-+		 * readers never observe a partially initialized jbd2_inode.
-+		 */
-+		smp_store_release(&ei->jinode, jinode);
- 		jinode = NULL;
- 	}
- 	spin_unlock(&inode->i_lock);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 43f1ac6e8559..a3f015129c00 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1513,16 +1513,20 @@ static void destroy_inodecache(void)
- 
- void ext4_clear_inode(struct inode *inode)
- {
-+	struct jbd2_inode *jinode;
-+
- 	ext4_fc_del(inode);
- 	invalidate_inode_buffers(inode);
- 	clear_inode(inode);
- 	ext4_discard_preallocations(inode);
- 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
- 	dquot_drop(inode);
--	if (EXT4_I(inode)->jinode) {
-+	/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
-+	jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
-+	if (jinode) {
- 		jbd2_journal_release_jbd_inode(EXT4_JOURNAL(inode),
--					       EXT4_I(inode)->jinode);
--		jbd2_free_inode(EXT4_I(inode)->jinode);
-+					       jinode);
-+		jbd2_free_inode(jinode);
- 		EXT4_I(inode)->jinode = NULL;
- 	}
- 	fscrypt_put_encryption_info(inode);
--- 
-2.52.0
+Ian
 
 
