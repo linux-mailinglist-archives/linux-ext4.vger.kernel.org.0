@@ -1,206 +1,294 @@
-Return-Path: <linux-ext4+bounces-12520-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12521-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67E98CDE2FE
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 01:54:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3332BCDE540
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 06:02:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CE94B300479A
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 00:54:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9E969300B80D
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 05:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB3A7080E;
-	Fri, 26 Dec 2025 00:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48041DD877;
+	Fri, 26 Dec 2025 05:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G5kL6WxH"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="G/hKDSVg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C8F3A1E86
-	for <linux-ext4@vger.kernel.org>; Fri, 26 Dec 2025 00:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766710448; cv=none; b=Qcl5NcGFiYbYAyWnLXuq8IXbNWV3BlSHI5bf6e3MxqrNbmH0+1EMpIoSiZqnTqJtlL9SX/3M3XQXP36dlCXnEHPG6GMh/NCPLVmAZ9nLtKsGOaD5ERbqk2k80w5y/DNtiLaRVYk0rqkZj6d7T4kUYNBdWgqUpHsMFXN4g95UXs8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766710448; c=relaxed/simple;
-	bh=i5COWy3rfZwIgUNxrI4GAwaQqLJsqNDLuisCM/dK6f8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j4P3BS5ZGWcjA46AOOUrjbpnI7ugjZgyUBPJQqax8MBHXfnjTvWJH43zSSDaHc0sWiK+bqamWtH5YE40581Kfv/2p8WLqazh4T1cL/TS67Nw0jL3XgLMbUP0fTzTUNaXvxW7iXGfzC5zraYFecCT2Zfhqtrp61ZT4KqRvERdSEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G5kL6WxH; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29efd139227so91639485ad.1
-        for <linux-ext4@vger.kernel.org>; Thu, 25 Dec 2025 16:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766710446; x=1767315246; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0Nz8Tjp3AaOWOXlLmwlKJ8QCQ6dId4zIiZlrgYittUg=;
-        b=G5kL6WxHOM2FDWL9Hd8D7Dkw/R4dqp8FGwi5pRN0CHb7wlAGTCKIzpRBf3Lkw4uamt
-         bxivJcWkCsZAK+kS4HMbLIAjsYoJg+TCayiAjjtO4rOAExWIL3Ox74pW2U/VRDqiAOh1
-         zZMe3GPBZpJpsz3mpvk3NYVvHVmuKibyjrOHjQBR+QZuN6MJ87zCz5X752BIUZM0+bK5
-         4SZM8mpYsKbNSzvzHMllc4GuNJw9WZze4dz3H3zvhkfcRwTEREwWPLCtJO3lVU2bFSMq
-         yIBuj3G6BTY2CSDKHm+eGnzeoV0GyfbcEtwitlfTetcXcJagrt7ZzyRZGNHzWAG8Z52t
-         3GDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766710446; x=1767315246;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Nz8Tjp3AaOWOXlLmwlKJ8QCQ6dId4zIiZlrgYittUg=;
-        b=Mtnf7zhcN/RJhqBcdvaF7MNykL7NksIlfnx8PsyImnp1FFo8WrBy+VBwRxL/jYxD6i
-         PKixGmx/KwSQ4dV1riGN8bpRy1RdMglSi2MCpY0kK8WEmiqutOKhUhDGqphjNXQQi4W4
-         cj5YcyuVKXjvPioGcuMYC93pgWmINtVdYuZDmQb+j1HFuVVki4WvOiDuZbiKjZm8rxKh
-         IF29YrvuRMV/YzwvtIME5nqbUmssld8pA+yQhtIRxjYuslrEeG0SpvrXKEtEXjWcTbMQ
-         j6KzNkltyCcgAWFnI0wUjo3urvzAnZH2+rFmHPGiZUf9uj3vmQHbraCP+eJphwIz8nlg
-         ZIuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTB1HcZ2brPvbudrsAYhEZbNWS0zr78DmNeOKceCc7hK0NhAdMPzpGM0xRSK3PFevPQj5EEay+NYNh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxm6bEwfOuvkHLgKPBDaaArIcAuxZbbn2rhGMSDjOvho2O6esAb
-	0y2psf14ryh87sMB5+236h/9lvPhP+hU5E+6dVWAv2XFLM3iHP9+7ra0
-X-Gm-Gg: AY/fxX5CVstNN/CydqXYqwe7B4r47t21nfSOBsxColcdFQb7oFFjK6kMhdxoDOZY3uh
-	+Tehhl+zozaRRu412u0uMBN4VbDRTVk5BxT44dnY+p/jJDFGUpWDpVYG9loKrAUyn2x9CVONPFj
-	FZVUEGiBzw4hE1+d6TIpQ/sD/2OGm5tLR7ThcmELfbjXcMhE91X21rvYoHIx7+iHSFvwZyuQ4w6
-	acdglRo6IWEttgh6HtJ8rpmpGF9QHM68QQTYAFnQzqf2OkE3YpPWkK1+7bwYAWCq/dbKYXfrk/X
-	mDaX4Qb8oostq4wQJg1DPC+ejXsq5Kn2gbdd+Ibyf3ORkwrkTkzY+dCMGxkUNcfju9akaxkG4GH
-	aY6OaoG1aTR7dbz7GLvsrzdIjrCkk4WosiBkEccMKL9g4m1Ff26bPoisTALpgtoowrg66jRESwu
-	Gi8v41gjdd7w==
-X-Google-Smtp-Source: AGHT+IGaDsT0j4q8/ZSFFbw2xdc1M9VAnGq5qpd7JQCuRHzrrYcXtXjqAkcYXXbP4gPMX3j0h85Juw==
-X-Received: by 2002:a17:902:ce82:b0:2a0:f469:1f56 with SMTP id d9443c01a7336-2a2f272b393mr241519525ad.31.1766710446312;
-        Thu, 25 Dec 2025 16:54:06 -0800 (PST)
-Received: from localhost ([2403:2c80:6::30e5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7a8442edsm20380428b3a.12.2025.12.25.16.54.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Dec 2025 16:54:05 -0800 (PST)
-Date: Fri, 26 Dec 2025 08:53:54 +0800
-From: Jinchao Wang <wangjinchao600@gmail.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DA23A1E92;
+	Fri, 26 Dec 2025 05:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766725360; cv=pass; b=YIk7p0V9F6G8epFnWDqBdEpbSPnTqqWgGEaGYcW7MxsjlP92c8yV0lM+1tBTymR6QXT/OiUX7ggnpPDkqXZ9CT9vnnl8iNKyOCb3Q00S2XKzeWWWYIYvxTT8EiAuoPc9EliYswI2QXMM5t+wrBJn4c2C06d6XFUDBRmKv4ffhes=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766725360; c=relaxed/simple;
+	bh=yCznxMTkqi3qZm+nW2rL30mF727CoYfCBgqYAHRXTKE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SfQGq1zKu4m9a7zrAQRJEd8t7GR/9B9gXcukbHCyZbldfBv70dYcuY6UZM7nEAWGK8YFddmazZUxOPV10FXezMLcEwWpKJYxwNI5kjLEOruKiQDY7v19tKkXs5XVu/fA4UvfgK8Vc5Z82brvgQbMuWm8UMrcs7TmM3OFfcb6oiU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=G/hKDSVg; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1766725351; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=GwsU0A2k+XgnMhb5kVZ/4khKGfe7YgNKxnKYkK4eFWnFhxNSGYTE/kUp3DHm02afSMnGEtvnk5mYVwb48kr3Xz/eCkgD6UUQMKNU0BEMpjMSmKmB0dOnzd8UR3HpOi3YCElrs8uWv7i+a/nw5j3vBjdSPMhFV1BbsKfQ+1JWTvw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1766725351; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=ljr2y9wPyQAtR7GqZRtXx1ATldfEYrgDSiKxNJV9mpE=; 
+	b=XBwWz2bdAXv/1DMF1xceyoUx2Q7bERSY2aWM9XySnmabpVsal4betCa9K5byRITnIheroZdAJJC60Rx6dn2TbRXKw2kCGQdQEIFHSgRMTxLoUveLAuAOfs7Si79LrqEcFvNHW4s9TLMf+Mh4kezmo8DkqUwd77HFV47FuWIpzF4=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1766725351;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=ljr2y9wPyQAtR7GqZRtXx1ATldfEYrgDSiKxNJV9mpE=;
+	b=G/hKDSVgOiDXuSI2eztNbjwOruL8BUf8r5nO7GCiKEl56dNZ5V+uJVQrZnYrI80v
+	sWOR17dc5Na1cUUvxGV6e/RWIotYhDAIwAiw8bwvZY6onXE+p9YtREYorW1PbKO1Kdl
+	n+M+faOyEBBOam+YFN/wsUZvmdS0FwQnP6zRQS/U=
+Received: by mx.zohomail.com with SMTPS id 1766725348148408.1575736439132;
+	Thu, 25 Dec 2025 21:02:28 -0800 (PST)
+From: Li Chen <me@linux.beauty>
+To: "Theodore Ts'o" <tytso@mit.edu>,
 	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: xattr: fix wrong search.here in clone_block
-Message-ID: <aU3cok27oxoiyvZn@ndev>
-References: <20251216113504.297535-1-wangjinchao600@gmail.com>
- <4msliwnvyg6n3xdzfrh4jnqklzt6zji5vlr5qj4v3lrylaigpr@lyd36cukckl7>
- <aUNbhrPEY9Aa2U4L@ndev>
- <qn25xtvqu76womw47qq6uhlhmudymvfqableicrodalzfkeo4r@qjwl5oegvlpd>
+	Jan Kara <jack@suse.cz>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org,
+	Li Chen <me@linux.beauty>
+Subject: [PATCH] ext4: publish jinode after initialization
+Date: Fri, 26 Dec 2025 13:02:20 +0800
+Message-ID: <20251226050220.138194-1-me@linux.beauty>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <qn25xtvqu76womw47qq6uhlhmudymvfqableicrodalzfkeo4r@qjwl5oegvlpd>
+X-ZohoMailClient: External
 
-On Thu, Dec 18, 2025 at 04:39:08PM +0100, Jan Kara wrote:
-> On Thu 18-12-25 09:40:36, Jinchao Wang wrote:
-> > On Wed, Dec 17, 2025 at 12:30:15PM +0100, Jan Kara wrote:
-> > > Hello!
-> > > 
-> > > On Tue 16-12-25 19:34:55, Jinchao Wang wrote:
-> > > > syzbot reported a KASAN out-of-bounds Read in ext4_xattr_set_entry()[1].
-> > > > 
-> > > > When xattr_find_entry() returns -ENODATA, search.here still points to the
-> > > > position after the last valid entry. ext4_xattr_block_set() clones the xattr
-> > > > block because the original block maybe shared and must not be modified in
-> > > > place.
-> > > > 
-> > > > In the clone_block, search.here is recomputed unconditionally from the old
-> > > > offset, which may place it past search.first. This results in a negative
-> > > > reset size and an out-of-bounds memmove() in ext4_xattr_set_entry().
-> > > > 
-> > > > Fix this by initializing search.here correctly when search.not_found is set.
-> > > > 
-> > > > [1] https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-> > > > 
-> > > > Fixes: fd48e9acdf2 (ext4: Unindent codeblock in ext4_xattr_block_set)
-> > > > Cc: stable@vger.kernel.org
-> > > > Reported-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-> > > > Signed-off-by: Jinchao Wang <wangjinchao600@gmail.com>
-> > > 
-> > > Thanks for the patch! But I think the problem must be somewhere else. 
-> > The first syzbot test report was run without the patch applied,
-> > which caused confusion.
-> > The correct usage and report show that this patch fixes the crash:
-> > https://lore.kernel.org/all/20251216123945.391988-2-wangjinchao600@gmail.com/
-> > https://lore.kernel.org/all/6941580e.a70a0220.33cd7b.013d.GAE@google.com/
-> 
-> I was not arguing that your patch doesn't fix this syzbot issue. Just that
-> I don't understand how what you describe can happen and thus I'm not sure
-> whether the fix is really the best one...
-> 
-> > > in ext4_xattr_set_entry(). And I don't see how 'here' can be greater than
-> > > 'last' which should be pointing to the very same 4-byte zeroed word. The
-> > > fact that 'here' and 'last' are not equal is IMO the problem which needs
-> > > debugging and it indicates there's something really fishy going on with the
-> > > xattr block we work with. The block should be freshly allocated one as far
-> > > as I'm checking the disk image (as the 'file1' file doesn't have xattr
-> > > block in the original image).
-> > 
-> > I traced the crash path and find how this hapens:
-> 
-> Thanks for sharing the details!
-> 
-> > entry_SYSCALL_64
-> > ...
-> > ext4_xattr_move_to_block
-> >   ext4_xattr_block_find (){
-> >     error = xattr_find_entry(inode, &bs->s.here, ...); // bs->s.here updated 
-> >                                                        // to ENTRY(header(s->first)+1);
-> >     if (error && error != -ENODATA)
-> >       return error;
-> >     bs->s.not_found = error; // and returned to the caller
-> >   }
-> >   ext4_xattr_block_set (bs) {
-> >     s = bs->s;
-> >     offset = (char *)s->here - bs->bh->b_data; // bs->bh->b_data == bs->s.base
-> >                                                // offset = ENTRY(header(s->first)+1) - s.base
-> >                                                // leads to wrong offset
-> 
-> Why do you think the offset is wrong here? The offset is correct AFAICS -
-> it will be the offset of the 0 word from the beginning of xattr block. I
-> have run the reproducer myself and as I guessed in my previous email the
-> real problem is that someone modifies the xattr block between we compute
-> the offset here and the moment we call kmemdup() in clone_block. Thus the
-> computation of 'last' in ext4_xattr_set_entry() yields a different result
-> that what we saw in ext4_xattr_block_set(). The block modification happens
-> because the xattr block - block 33 is used for it - is also referenced from
-> file3 (but it was marked as unused in the block bitmap and so xattr block
-> got placed there).
-> 
-> So your patch was fixing the problem only by chance and slightly different
-> syzbot reproducer (overwriting the block 33 with a different contents)
-> would trigger the crash again.
-> 
-> So far I wasn't able to figure out how exactly the block 33 got zeroed out
-> but with corrupted filesystem it can happen in principle rather easily. The
-> question is how we can possibly fix this because this is one of the nastier
-> cases of fs corrution to deal with. The overhead of re-verifying fs
-> metadata each time we relock the buffer is just too big... So far no great
-> ideas for this.
-> 
-> 								Honza
-> 
+ext4_inode_attach_jinode() publishes ei->jinode to concurrent users.
+It assigned ei->jinode before calling jbd2_journal_init_jbd_inode().
 
-Baokun explained part of the process in the kernel space.
-https://lore.kernel.org/all/d62a25e9-04de-4309-98d1-22a4f9b5bb49@huawei.com/
+This allows another thread to observe a non-NULL jinode with i_vfs_inode
+still unset. The fast commit flush path can then pass this jinode to
+jbd2_wait_inode_data(), which dereferences i_vfs_inode->i_mapping and may
+crash.
 
-I analysed syz-reproducer and add some userspace details:
+Below is the crash I observe:
+```
+BUG: unable to handle page fault for address: 000000010beb47f4
+PGD 110e51067 P4D 110e51067 PUD 0
+Oops: Oops: 0000 [#1] SMP NOPTI
+CPU: 1 UID: 0 PID: 4850 Comm: fc_fsync_bench_ Not tainted 6.18.0-00764-g795a690c06a5 #1 PREEMPT(voluntary)
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-2-2 04/01/2014
+RIP: 0010:xas_find_marked+0x3d/0x2e0
+Code: e0 03 48 83 f8 02 0f 84 f0 01 00 00 48 8b 47 08 48 89 c3 48 39 c6 0f 82 fd 01 00 00 48 85 c9 74 3d 48 83 f9 03 77 63 4c 8b 0f <49> 8b 71 08 48 c7 47 18 00 00 00 00 48 89 f1 83 e1 03 48 83 f9 02
+RSP: 0018:ffffbbee806e7bf0 EFLAGS: 00010246
+RAX: 000000000010beb4 RBX: 000000000010beb4 RCX: 0000000000000003
+RDX: 0000000000000001 RSI: 0000002000300000 RDI: ffffbbee806e7c10
+RBP: 0000000000000001 R08: 0000002000300000 R09: 000000010beb47ec
+R10: ffff9ea494590090 R11: 0000000000000000 R12: 0000002000300000
+R13: ffffbbee806e7c90 R14: ffff9ea494513788 R15: ffffbbee806e7c88
+FS:  00007fc2f9e3e6c0(0000) GS:ffff9ea6b1444000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000010beb47f4 CR3: 0000000119ac5000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ filemap_get_folios_tag+0x87/0x2a0
+ __filemap_fdatawait_range+0x5f/0xd0
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? __schedule+0x3e7/0x10c0
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? preempt_count_sub+0x5f/0x80
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? cap_safe_nice+0x37/0x70
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? preempt_count_sub+0x5f/0x80
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ filemap_fdatawait_range_keep_errors+0x12/0x40
+ ext4_fc_commit+0x697/0x8b0
+ ? ext4_file_write_iter+0x64b/0x950
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? preempt_count_sub+0x5f/0x80
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? vfs_write+0x356/0x480
+ ? srso_alias_return_thunk+0x5/0xfbef5
+ ? preempt_count_sub+0x5f/0x80
+ ext4_sync_file+0xf7/0x370
+ do_fsync+0x3b/0x80
+ ? syscall_trace_enter+0x108/0x1d0
+ __x64_sys_fdatasync+0x16/0x20
+ do_syscall_64+0x62/0x2c0
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+...
+```
 
-- original filesystem state
-  - file1:
-    - inode 15 with File ACL block 33
-  - file2:
-    - inode 16 with data blocks 27–35
-- actions
-  - syscall(__NR_creat, "file2")
-  - syscall(__NR_unlink, "file1")  // panic happens here
+To fix this issue, initialize the jbd2_inode first and only then publish
+the pointer with smp_store_release(). Use smp_load_acquire() at the read
+sites to pair with the release and ensure the initialized fields are visible.
 
-The original filesystem state is already corrupted, with block 33 beging
-referenced both as an xattr block and as file data.
+On x86 (TSO), the crash should primarily be due to the logical early publish
+window (another CPU can run between the store and initialization). x86
+also relies on compiler ordering; the acquire/release helpers include
+the necessary compiler barriers while keeping the fast-path cheap.
+
+On weakly-ordered architectures (e.g. arm64/ppc), plain "init; store ptr"
+is not sufficient: without release/acquire, a reader may observe the
+pointer while still missing prior initialization stores. The explicit
+pairing makes this publish/consume relationship correct under LKMM.
+
+Fixes: a361293f5fede ("jbd2: Fix oops in jbd2_journal_file_inode()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Li Chen <me@linux.beauty>
+---
+ fs/ext4/ext4_jbd2.h   | 18 ++++++++++++++----
+ fs/ext4/fast_commit.c |  9 +++++++--
+ fs/ext4/inode.c       | 15 +++++++++++----
+ fs/ext4/super.c       | 10 +++++++---
+ 4 files changed, 39 insertions(+), 13 deletions(-)
+
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 63d17c5201b5..3bc79b894130 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -336,18 +336,28 @@ static inline int ext4_journal_force_commit(journal_t *journal)
+ static inline int ext4_jbd2_inode_add_write(handle_t *handle,
+ 		struct inode *inode, loff_t start_byte, loff_t length)
+ {
+-	if (ext4_handle_valid(handle))
++	if (ext4_handle_valid(handle)) {
++		struct jbd2_inode *jinode;
++
++		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++		jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
+ 		return jbd2_journal_inode_ranged_write(handle,
+-				EXT4_I(inode)->jinode, start_byte, length);
++				jinode, start_byte, length);
++	}
+ 	return 0;
+ }
+ 
+ static inline int ext4_jbd2_inode_add_wait(handle_t *handle,
+ 		struct inode *inode, loff_t start_byte, loff_t length)
+ {
+-	if (ext4_handle_valid(handle))
++	if (ext4_handle_valid(handle)) {
++		struct jbd2_inode *jinode;
++
++		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++		jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
+ 		return jbd2_journal_inode_ranged_wait(handle,
+-				EXT4_I(inode)->jinode, start_byte, length);
++				jinode, start_byte, length);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index a6e79b3f1b48..3f148c048a6f 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1087,16 +1087,21 @@ static int ext4_fc_flush_data(journal_t *journal)
+ 	struct super_block *sb = journal->j_private;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_inode_info *ei;
++	struct jbd2_inode *jinode;
+ 	int ret = 0;
+ 
+ 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+-		ret = jbd2_submit_inode_data(journal, ei->jinode);
++		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++		jinode = smp_load_acquire(&ei->jinode);
++		ret = jbd2_submit_inode_data(journal, jinode);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+ 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+-		ret = jbd2_wait_inode_data(journal, ei->jinode);
++		/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++		jinode = smp_load_acquire(&ei->jinode);
++		ret = jbd2_wait_inode_data(journal, jinode);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 78ea864fa8cd..74b189c10f2b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -126,6 +126,9 @@ void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
+ static inline int ext4_begin_ordered_truncate(struct inode *inode,
+ 					      loff_t new_size)
+ {
++	/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++	struct jbd2_inode *jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
++
+ 	trace_ext4_begin_ordered_truncate(inode, new_size);
+ 	/*
+ 	 * If jinode is zero, then we never opened the file for
+@@ -133,10 +136,10 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
+ 	 * jbd2_journal_begin_ordered_truncate() since there's no
+ 	 * outstanding writes we need to flush.
+ 	 */
+-	if (!EXT4_I(inode)->jinode)
++	if (!jinode)
+ 		return 0;
+ 	return jbd2_journal_begin_ordered_truncate(EXT4_JOURNAL(inode),
+-						   EXT4_I(inode)->jinode,
++						   jinode,
+ 						   new_size);
+ }
+ 
+@@ -4497,8 +4500,12 @@ int ext4_inode_attach_jinode(struct inode *inode)
+ 			spin_unlock(&inode->i_lock);
+ 			return -ENOMEM;
+ 		}
+-		ei->jinode = jinode;
+-		jbd2_journal_init_jbd_inode(ei->jinode, inode);
++		jbd2_journal_init_jbd_inode(jinode, inode);
++		/*
++		 * Publish ->jinode only after it is fully initialized so that
++		 * readers never observe a partially initialized jbd2_inode.
++		 */
++		smp_store_release(&ei->jinode, jinode);
+ 		jinode = NULL;
+ 	}
+ 	spin_unlock(&inode->i_lock);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 43f1ac6e8559..a3f015129c00 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1513,16 +1513,20 @@ static void destroy_inodecache(void)
+ 
+ void ext4_clear_inode(struct inode *inode)
+ {
++	struct jbd2_inode *jinode;
++
+ 	ext4_fc_del(inode);
+ 	invalidate_inode_buffers(inode);
+ 	clear_inode(inode);
+ 	ext4_discard_preallocations(inode);
+ 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+ 	dquot_drop(inode);
+-	if (EXT4_I(inode)->jinode) {
++	/* Pairs with smp_store_release() in ext4_inode_attach_jinode(). */
++	jinode = smp_load_acquire(&EXT4_I(inode)->jinode);
++	if (jinode) {
+ 		jbd2_journal_release_jbd_inode(EXT4_JOURNAL(inode),
+-					       EXT4_I(inode)->jinode);
+-		jbd2_free_inode(EXT4_I(inode)->jinode);
++					       jinode);
++		jbd2_free_inode(jinode);
+ 		EXT4_I(inode)->jinode = NULL;
+ 	}
+ 	fscrypt_put_encryption_info(inode);
+-- 
+2.52.0
+
 
