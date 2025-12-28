@@ -1,195 +1,170 @@
-Return-Path: <linux-ext4+bounces-12522-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12523-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7152CDF24F
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Dec 2025 00:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA962CE03C0
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Dec 2025 02:12:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A4EE5300956F
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Dec 2025 23:58:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 58F5D3019BD5
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Dec 2025 01:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495412727FC;
-	Fri, 26 Dec 2025 23:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=themaw.net header.i=@themaw.net header.b="k6Op2MFL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p9hD+4bO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB55719DF8D;
+	Sun, 28 Dec 2025 01:12:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE36F4F1;
-	Fri, 26 Dec 2025 23:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48592110
+	for <linux-ext4@vger.kernel.org>; Sun, 28 Dec 2025 01:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766793500; cv=none; b=Nsa+xUkQ0O8vZW6EYxqQ5uqGllbZNk/RqGSCj/1PiD73LNUYLnk9p3zflF6bMCm2ZgyRiQDeVbu1toDvRJXH7tzRzGgoQif+blOZ164fxSfLHBKMf13DOkRgpEGMWLIsy9suaF6xF6t4XpyBUTcPeWPYthwnEBCUsC1ztGZoKzk=
+	t=1766884345; cv=none; b=AlBPI8TZ8E7+I/kweyDsCh04FaGBpDYZndmN6LHfgLya+By2QEqGVzG+K943XsKu5foMYngsR8qCOEOB0GXTF2HekmFBAG83TlxmsRPmmxzq7PEr1ise44xD8305xAjFM+FLpbnKIsh7x9PHrlhjeQMAf7V9CzC+DrKbcNV79p0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766793500; c=relaxed/simple;
-	bh=zRLmVnYeRSFcZlCjgIszfhNKuakh2j2GEY/j42RfBtk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CU1rTitiqwRVIVx3gqkviBf86lKIW/hyVcFgfAZY0HhSFUrQy0Mmoc0OMjHbyCOk+1hFAiTayWKx6T9ESk4Pis86f+Aq7bP6P+qr3ZbDWx9lIbOlqOYdUzqHLudiCopxDCxpl6pPC3/DetD8hDA6uEJC0yFJtb8Sh4ayr/eFTj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=themaw.net; spf=pass smtp.mailfrom=themaw.net; dkim=pass (2048-bit key) header.d=themaw.net header.i=@themaw.net header.b=k6Op2MFL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=p9hD+4bO; arc=none smtp.client-ip=202.12.124.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=themaw.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=themaw.net
-Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id BBA217A006A;
-	Fri, 26 Dec 2025 18:58:16 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Fri, 26 Dec 2025 18:58:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1766793496;
-	 x=1766879896; bh=d+03CflXQCI16mDu2/y/gDZidxMLNdelGVGnEAD9RCg=; b=
-	k6Op2MFLM4gTA/hYHX8xWwC6csvtWfeQzuo3FxV0uwHsfyJaPTagjg0leUTBf6Bc
-	KMvnQhO5tgZTjuwcL0V8ozh7L+aswrsxcfAezz0piakssxAyYbOSKMuFaagpdokL
-	oWmzxHfWcqEJQrBljVza4Xtq31bVI7mnVAh7/zYDyvsT7IHZ2/XKw9u5PqJx0tdi
-	RXfs7a3raRtuMEe0gEuPY2pDxiUESDufsV2oXhmZ/IFeOsztumxPyG/Nxql86Q9t
-	+q0ljC+rq3uhPghMUXSNNKGNKxpGONvnTNdc1HZ5/Xqb+o14M8uMMFMht7MlZMWi
-	CCSv5V4LTUtlXNPmmg4COA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1766793496; x=
-	1766879896; bh=d+03CflXQCI16mDu2/y/gDZidxMLNdelGVGnEAD9RCg=; b=p
-	9hD+4bOW1P0R6kx6R7wpEgJqEKLeyCO/Hvd2emu7fe1dNogRyIiJoauD6ZB3eoZG
-	+IvlPaxtuv4MHNManXhzx8uvPyGF0P4gEXA8CwDZeAvlMhxa184z6KYR3H607CMU
-	NHqPO1Q0/AQRQpL8u3dvqsWtiEVcSWE1hGA9cH+E6HGsC8gwJexQ6WgMua/OqTcC
-	Fl7BqRpx6Tf8Aw2YwQGBfHStX+xNANSwUQ3U3Wf3SKH+JntP+EGZij6INrD2cJTm
-	oqsFrWZBgCQ4DrkFoCjBmPUFa5Fs6Y48RyhFqxQPKPRZBcUPgy+VZoSfCuCk6JqH
-	ipUxrCuF1Q3lLkRwVOkvg==
-X-ME-Sender: <xms:GCFPaZ0iGGK9QOPUDzuXWLg9WD04TCsJ-bYGSL2bJdVwD6eAgpFtCA>
-    <xme:GCFPabDpSxGnCBFRkRYwC641UVXHpLVF4xK_-PG4v4GQ6Jty4FXx3o9tTbDVZeeX0
-    04A1JhWugyWFqxnlJzZHxZ85c47eqjZONphcLHtUOcwmXSw>
-X-ME-Received: <xmr:GCFPaY4Wj60QmCx0e991QVxEFEnW4cubU55yycJq3N8XprdNA9WeUW9yvKWOF8gbOsu1IjWEzJy4bXXGUjzSmd7_tWwNg5HoCPZGOSEq1rNPHsLMmwwCTWs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeileekgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepkfgrnhcumfgv
-    nhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpeefke
-    fhgeeigeetleffgeelteejkeduvdfhheejhfehueeitdehuefhkeeukeffheenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnsehthh
-    gvmhgrfidrnhgvthdpnhgspghrtghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhr
-    tghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepughjfi
-    honhhgsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgvgihtgeesvhhg
-    vghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdigfhhssehvghgvrh
-    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthht
-    oheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:GCFPacIy5mEeyvjbNoV7ZWO9F7VJkKetvs5LJfkW5eso3pCRDQLC-Q>
-    <xmx:GCFPaZvEuXLsOThMxfRsEu6NNnTX1q2G6xZVDMcqgiboOVh1O7ojOg>
-    <xmx:GCFPaTJmT_eKJX-RLJfZ9dfRRrog9xWy8NqzFSpM-Lde2SmEMLyaaQ>
-    <xmx:GCFPaa9DbHwnAu0BB27tmYpZ3AKkjFpaYrNK9fegOEGJadkTK2oxJA>
-    <xmx:GCFPadQJBATT6J_uMz_91-7NUjc67ViIyq3szfL2LuykLf9rlD7dMspr>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 26 Dec 2025 18:58:14 -0500 (EST)
-Message-ID: <284c79aa-7088-40a5-a6f5-31de8404e62f@themaw.net>
-Date: Sat, 27 Dec 2025 07:58:10 +0800
+	s=arc-20240116; t=1766884345; c=relaxed/simple;
+	bh=CchwsTWG3DttAc2YMvQehIbf3PVAq69S/9ewqBjVd9M=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Dk1WZZhRmkyI+NL+ZyLievP8GqrC/vbmM9/hnCtwpJ9iAXKp0C8uBPW/HaBO4uSKIKO/msTvVTx16Nm8eWTIYCSgMYREMtV3rW12kKI/m3QEAY75Pl7RJU/ynPiHSSRa2V152xtCBiY9kMxrpThAtyFJMPo3D5iv+IAISMikpnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-7c7028db074so19576371a34.1
+        for <linux-ext4@vger.kernel.org>; Sat, 27 Dec 2025 17:12:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766884343; x=1767489143;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o6eJpI88FKh6ZjVL9JK9hMzFPX1Tp1Rejj3iWj4Z0mE=;
+        b=gmWrtb9dRtxDlBBbAb4J5D/V9+nsEQseGUkwGqco6OaU9wvd+kdBC6BsnMTnlYq+4U
+         VpSLyKpS8nyzj2/0AKTOS9Xd4JgkIUjXRZBZ7lCO2I17+oPEt92qQA58LZizUwidIyWM
+         xOi5G4DMwk/qiaA4CKsDGCB8a8C1JECS7F7YIU8cp8a4IIOwcxGJHiyR9ND9fJRjquoq
+         Ma9qHSw2xPvqOAaYeKqIaXVI62H6/rQYtvxohf9A7NhruaygjeQa9uQ4Udd3gZUHXvZ5
+         ThLpcX4ILEQ9i2iz8gwQ7ZP9GDJomFZannHeLHyjO8OnOD30RF1PjB3MPjRm0qupdjgx
+         jQ+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVdyuhGec4gczlzrZwXOszZDLhMxrjGGIf/piB3WTFTbCfItnqixC6ANR3r2oGOVjF9eylbXXcI32jJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxyhU4s21IrfKXQxzEc/w2ZxM2c3xYs83UGIcBFGcV1RWwoSG5B
+	gWmYC4m/bcZZJqx8651MWt6XLhrlQ6Ww4olGylHi3WOnUl+WGmMWvlBeWe3clbZgcNoOprUiJbl
+	BV9wwgCuVWJG7gcS0zK85q4NTPJmhF4tUsKifsdHwcImMi6dc+lNVjbOLkec=
+X-Google-Smtp-Source: AGHT+IHTEVcSbFK80DYbOJRHn/QwP6HXdw1EfojU5MjuO0UruxieEPM+wqoHQfXrag6ukfJwKvvYDz/ITqYimjTnGR2LJknoPACC
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] fs: send uevents for filesystem mount events
-To: Christian Brauner <brauner@kernel.org>,
- "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, hch@lst.de,
- linux-fsdevel@vger.kernel.org
-References: <176602332484.688213.11232314346072982565.stgit@frogsfrogsfrogs>
- <176602332527.688213.9644123318095990966.stgit@frogsfrogsfrogs>
- <20251224-imitieren-flugtauglich-dcef25c57c8d@brauner>
-Content-Language: en-AU
-From: Ian Kent <raven@themaw.net>
-Autocrypt: addr=raven@themaw.net;
- keydata= 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
-In-Reply-To: <20251224-imitieren-flugtauglich-dcef25c57c8d@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6820:2225:b0:659:9a49:8f28 with SMTP id
+ 006d021491bc7-65d0eab99c4mr11097021eaf.57.1766884342781; Sat, 27 Dec 2025
+ 17:12:22 -0800 (PST)
+Date: Sat, 27 Dec 2025 17:12:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <695083f6.a70a0220.90d62.0015.GAE@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_mb_normalize_request (2)
+From: syzbot <syzbot+90ae103900a7d79e46f1@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    b927546677c8 Merge tag 'dma-mapping-6.19-2025-12-22' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15344b92580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1f2b6fe1fdf1a00b
+dashboard link: https://syzkaller.appspot.com/bug?extid=90ae103900a7d79e46f1
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ddac8d425533/disk-b9275466.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6d9161401879/vmlinux-b9275466.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dc4982f21fd4/bzImage-b9275466.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+90ae103900a7d79e46f1@syzkaller.appspotmail.com
+
+EXT4-fs (loop2): start 0, size 131072, fe_logical 131072
+------------[ cut here ]------------
+kernel BUG at fs/ext4/mballoc.c:4657!
+Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 1 UID: 0 PID: 6131 Comm: syz.2.37 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+RIP: 0010:ext4_mb_normalize_request+0x1cd8/0x1d10 fs/ext4/mballoc.c:4657
+Code: 71 ae ff 48 8b 44 24 38 48 8b 38 48 c7 c6 80 bc fe 8a 48 c7 c2 e0 d2 fe 8a 48 8b 4c 24 28 4d 89 f0 49 89 d9 e8 19 f5 09 00 90 <0f> 0b e8 f1 3a 4c ff 90 0f 0b e8 e9 3a 4c ff 90 0f 0b e8 e1 3a 4c
+RSP: 0018:ffffc9000613ed20 EFLAGS: 00010246
+RAX: f56237077cb2d800 RBX: 0000000000020000 RCX: f56237077cb2d800
+RDX: ffffc9000ff71000 RSI: 0000000000000674 RDI: 0000000000000675
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffff52000c27d2d R12: ffffffff00020800
+R13: dffffc0000000000 R14: 0000000000020000 R15: 0000000000020000
+FS:  00007f17dd9456c0(0000) GS:ffff888126def000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110f246add CR3: 000000002897a000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ext4_mb_new_blocks+0xc46/0x46b0 fs/ext4/mballoc.c:6310
+ ext4_ext_map_blocks+0x1877/0x69c0 fs/ext4/extents.c:4383
+ ext4_map_create_blocks fs/ext4/inode.c:613 [inline]
+ ext4_map_blocks+0x82c/0x16f0 fs/ext4/inode.c:816
+ _ext4_get_block+0x1fa/0x4c0 fs/ext4/inode.c:916
+ ext4_block_write_begin+0xb03/0x1940 fs/ext4/inode.c:1203
+ ext4_write_begin+0xb3a/0x1870 fs/ext4/ext4_jbd2.h:-1
+ ext4_da_write_begin+0x352/0xd30 fs/ext4/inode.c:3130
+ generic_perform_write+0x29d/0x8c0 mm/filemap.c:4314
+ ext4_buffered_write_iter+0xd0/0x3a0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x293/0x1be0 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:593 [inline]
+ vfs_write+0x5d5/0xb40 fs/read_write.c:686
+ ksys_pwrite64 fs/read_write.c:793 [inline]
+ __do_sys_pwrite64 fs/read_write.c:801 [inline]
+ __se_sys_pwrite64 fs/read_write.c:798 [inline]
+ __x64_sys_pwrite64+0x196/0x220 fs/read_write.c:798
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xec/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f17df6ff749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f17dd945038 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 00007f17df956090 RCX: 00007f17df6ff749
+RDX: 0000000000000001 RSI: 0000200000000140 RDI: 0000000000000008
+RBP: 00007f17df783f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000008000c61 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f17df956128 R14: 00007f17df956090 R15: 00007ffdca7c0738
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_mb_normalize_request+0x1cd8/0x1d10 fs/ext4/mballoc.c:4657
+Code: 71 ae ff 48 8b 44 24 38 48 8b 38 48 c7 c6 80 bc fe 8a 48 c7 c2 e0 d2 fe 8a 48 8b 4c 24 28 4d 89 f0 49 89 d9 e8 19 f5 09 00 90 <0f> 0b e8 f1 3a 4c ff 90 0f 0b e8 e9 3a 4c ff 90 0f 0b e8 e1 3a 4c
+RSP: 0018:ffffc9000613ed20 EFLAGS: 00010246
+RAX: f56237077cb2d800 RBX: 0000000000020000 RCX: f56237077cb2d800
+RDX: ffffc9000ff71000 RSI: 0000000000000674 RDI: 0000000000000675
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffff52000c27d2d R12: ffffffff00020800
+R13: dffffc0000000000 R14: 0000000000020000 R15: 0000000000020000
+FS:  00007f17dd9456c0(0000) GS:ffff888126def000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000110f246add CR3: 000000002897a000 CR4: 00000000003526f0
 
 
-On 24/12/25 20:47, Christian Brauner wrote:
-> On Wed, Dec 17, 2025 at 06:04:29PM -0800, Darrick J. Wong wrote:
->> From: Darrick J. Wong <djwong@kernel.org>
->>
->> Add the ability to send uevents whenever a filesystem mounts, unmounts,
->> or goes down.  This will enable XFS to start daemons whenever a
->> filesystem is first mounted.
->>
->> Regrettably, we can't wire this directly into get_tree_bdev_flags or
->> generic_shutdown_super because not all filesystems set up a kobject
->> representation in sysfs, and the VFS has no idea if a filesystem
->> actually does that.
->>
->> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
->> ---
-> I have issues with uevents as a mechanism for this. Uevents are tied to
-> network namespaces and they are not really namespaced appropriately. Any
-> filesystem that hooks into this mechanism will spew uevents into the
-> initial network namespace unconditionally. Any container mountable
-> filesystem that wants to use this interface will spam the host with
-> this event though the even is completely useless without appropriate
-> meta information about the relevant mount namespaces and further
-> parameters. This is a design dead end going forward imho. So please
-> let's not do this.
->
-> Instead ties this to fanotify which is the right interface for this.
-> My suggestion would be to tie this to mount namespaces as that's the
-> appropriate object. Fanotify already supports listening for general
-> mount/umount events on mount namespaces. So extend it to send filesystem
-> creation/destruction events so that a caller may listen on the initial
-> mount namespace - where xfs fses can be mounted - you could even make it
-> filterable per filesystem type right away.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Seconded, there are way too many sources of mount events for them to not
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-be specific and targeted.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Just my opinion, ;),
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Ian
-
+If you want to undo deduplication, reply with:
+#syz undup
 
