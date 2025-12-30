@@ -1,157 +1,110 @@
-Return-Path: <linux-ext4+bounces-12529-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12530-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB52CCE916B
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Dec 2025 09:54:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A54ACE9457
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Dec 2025 10:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E9F783012951
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Dec 2025 08:54:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DDDAB3011F90
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Dec 2025 09:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769B9273803;
-	Tue, 30 Dec 2025 08:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZhetyhhN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D2C2D8370;
+	Tue, 30 Dec 2025 09:52:31 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BE8212FB9
-	for <linux-ext4@vger.kernel.org>; Tue, 30 Dec 2025 08:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FEA2C235D
+	for <linux-ext4@vger.kernel.org>; Tue, 30 Dec 2025 09:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767084859; cv=none; b=iyfYHTcWuJKLQLHVysARvRn964ontQDt+PPwgMzNjB3NrZMitYvJ4l0QtoX1kRFQkwfzTv3k9O5K0z4fNYBk7yF1FNCyDD4fJomUv8FojYDOTyNKZJJsHCO8y8We9o+dTxV7/HTBYQxG89DguyFrqsG6RxOfNdIX8B+40vQNt6Y=
+	t=1767088351; cv=none; b=N2vI7c/drqEUGJZEwx5Y2a+9Lm1Y+nZQZuR4HrU7BAiSwtLheYJerzN/Ek58Kj+bFo/jms5DN6E7aRXxsx01cMKPT/U/AjOREJ+9YjCobvfT4tIOy/vdGjG0LVBR7vCdAbeoptBE8C9Ztj29qJ+NXlTbJPqNWyko/SwFg3LQug8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767084859; c=relaxed/simple;
-	bh=2ASJQcPXt2Ym8bgzcMtEZzscEQ++ow0GPYHsRU/8ndY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JbHsv5tn4H/dAOitkpzW7bjyS2VQMdF17tvyktQMm0eaS5r+HYen+5DJ1+m/pRdleTwXhuuXHFrgDoJa9ZhE3DhEKvi6GCy9TwYdfpW2OcPgTB34PKTne607W/SMFr497DaILVFnFEmXBc6kpwAsoklN+ZKjSO6VaHtb+mGU2DI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZhetyhhN; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 30 Dec 2025 16:54:03 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767084853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aFQ1B7f3jdUQJv/G4p3v4Or/bwoQHErH3VgRPq8vePw=;
-	b=ZhetyhhNbz0ZQJ0nLazfs2RkkKQpHKojBVKfyKa3LJ1f7XmNJ/QA0MBasfWvWo7I/jgFLA
-	vudU0RbFjHioUSoDY6EQkExJa6ttuGb/hNtMst9/A4GTs+fq+tQ2Decv8wtaoINpM6nUbu
-	+rzG/WQzYg4jHhtRqf0HeQg3tq9AMh8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
-	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH V4 8/8] mm/slab: place slabobj_ext metadata in unused
- space within s->size
-Message-ID: <tyc35ufouc6uskxthnnm37aatzffy3lw3qtguqjsgtkscs4d54@cupdpbhjd64y>
-References: <20251222110843.980347-1-harry.yoo@oracle.com>
- <20251222110843.980347-9-harry.yoo@oracle.com>
- <l2xww4mysued3fjc2jzzy6cjrq5guygsxesmfqrhv2laxigpaq@ghj7xitfq7fh>
- <aUuKgRlI60Hw3-Et@hyeyoo>
- <hofqvftaj7ofgdvzb56hvjgk7chxkb5gfsj3324e7wal72mjll@7m4s7adnk35j>
- <aVNcTVKmz9N6bOfF@hyeyoo>
+	s=arc-20240116; t=1767088351; c=relaxed/simple;
+	bh=D8uqlwwBNOXH+X+QkO+ZHqcCzeD5V8VgkGv62xd8ID4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bvvV+x6vCJhK7zv+gOgzXC5u7K1+jRHn5n57QeeRSbn9QVxDJdF+Bx5u6NjIUPHT2wd1RMt/e2s9Xe8PVoE6U4jEEL4rsE2X/GkK7DotO83akEDjx0t66C1nSJ6AET8TYlEO3ueQVdXqWModF+hSS5znfQSkGsdHYlXofgUF6n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-453109b60a5so6778367b6e.0
+        for <linux-ext4@vger.kernel.org>; Tue, 30 Dec 2025 01:52:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767088348; x=1767693148;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+lZ285r7BIURCAQMfiYh+cXAdYu7GLfqweqFjNkAd0g=;
+        b=a17LiGhw+Gph7G84PiNlY7pp+PJRVwk/pRtno6Txk3wSNcKa/Qo5amcNc+hpXXvCb9
+         4eAoIdcTmTc/yRQ8x/C9iD5uBj55388MKrmD9TzbtDWeDBb219WnjRq9gZTk9rngZObY
+         KtUdS2GtJW3suDTq6Jyk8YP26KiPtj0c0hs1sxFEBqNzX+80l+ppIrK7Kee/ZYLFgU39
+         Ctnxb6wEJcVORTQKHvpILT2jB4PA3qmXO/sXo/vu2xHEZeca57DE6jr7wrrFY9Zm86Bl
+         cP7zc9k9dxOB/tcYAHyW1AHwDHpXJgAOyFslbteqJ5tZodYws695A9X17hUrjL1t9fJM
+         Fa1Q==
+X-Gm-Message-State: AOJu0YwfW00cNEamuCtVnTBIWZH1F0KRZQFYrAswcnVO2g09RZ9oMjpU
+	IpQ4zrb8vmXdBnFpxBx6T8zdbXGJmUUoFGub4ha6fsMBoQHpHXTbazTDlOQW1kjHAjJ8XRcTRtK
+	SYYxUJ8YDPlmmoaZMGYs1k3M+yo8yCmuI9M37u5eW9E9/BIeX2TQ1y4W4epQ=
+X-Google-Smtp-Source: AGHT+IFsZnj5KEpA0GX20v49K+7NPTCWMkVy+T8rwPubZ3M3zVNq1IqvAHL3qWeCj1KPCqoHZU/0NVLDg41eXxg89EygG9Y3DKDT
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aVNcTVKmz9N6bOfF@hyeyoo>
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a4a:e1d8:0:b0:65c:f991:e7fe with SMTP id
+ 006d021491bc7-65d0e922f95mr10269034eaf.6.1767088348621; Tue, 30 Dec 2025
+ 01:52:28 -0800 (PST)
+Date: Tue, 30 Dec 2025 01:52:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6953a0dc.050a0220.329c0f.0570.GAE@google.com>
+Subject: [syzbot] Monthly ext4 report (Dec 2025)
+From: syzbot <syzbot+list823c57dec607e47f3726@syzkaller.appspotmail.com>
+To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Dec 30, 2025 at 01:59:57PM +0900, Harry Yoo wrote:
-> On Wed, Dec 24, 2025 at 08:43:17PM +0800, Hao Li wrote:
-> > On Wed, Dec 24, 2025 at 03:38:57PM +0900, Harry Yoo wrote:
-> > > On Wed, Dec 24, 2025 at 01:33:59PM +0800, Hao Li wrote:
-> > > > One more thought: in calculate_sizes() we add some extra padding when
-> > > > SLAB_RED_ZONE is enabled:
-> > > > 
-> > > > if (flags & SLAB_RED_ZONE) {
-> > > > 	/*
-> > > > 	 * Add some empty padding so that we can catch
-> > > > 	 * overwrites from earlier objects rather than let
-> > > > 	 * tracking information or the free pointer be
-> > > > 	 * corrupted if a user writes before the start
-> > > > 	 * of the object.
-> > > > 	 */
-> > > > 	size += sizeof(void *);
-> > > > 	...
-> > > > }
-> > > > 
-> > > > 
-> > > > From what I understand, this additional padding ends up being placed
-> > > > after the KASAN allocation metadata.
-> > > 
-> > > Right.
-> > > 
-> > > > Since it’s only "extra" padding (i.e., it doesn’t seem strictly required
-> > > > for the layout), and your patch would reuse this area — together with
-> > > > the final padding introduced by `size = ALIGN(size, s->align);`
-> > > 
-> > > Very good point!
-> > > Nah, it wasn't intentional to reuse the extra padding.
-> 
-> Waaaait, now I'm looking into it again to write V5...
-> 
-> It may reduce (or remove) the space for the final padding but not the
-> mandatory padding because the mandatory padding is already included
-> in the size before `aligned_size = ALIGN(size, s->align)`
+Hello ext4 maintainers/developers,
 
-Ah, right - I double-checked as well. `aligned_size - size` is exactly the
-space reserved for the final padding, so slabobj_ext won't eat into the
-mandatory padding.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-> 
-> > > > for objext, it seems like this padding may no longer provide much benefit.
-> > > > Do you think it would make sense to remove this extra padding
-> > > > altogether?
-> > > 
-> > > I think when debugging flags are enabled it'd still be useful to have,
-> > 
-> > Absolutely — I’m with you on this.
-> > 
-> > After thinking about it again, I agree it’s better to keep it.
-> > 
-> > Without that mandatory extra word, we could end up with "no trailing
-> > padding at all" in cases where ALIGN(size, s->align) doesn’t actually
-> > add any bytes.
-> > 
-> > > I'll try to keep the padding area after obj_ext (so that overwrites from
-> > > the previous object won't overwrite the metadata).
-> > 
-> > Agree — we should make sure there is at least sizeof(void *) of extra
-> > space after obj_exts when SLAB_RED_ZONE is enabled, so POISON_INUSE has
-> > somewhere to go.
-> 
-> I think V4 of the patchset is already doing that, no?
-> 
-> The mandatory padding exists after obj_ext if SLAB_RED_ZONE is enabled
-> and the final padding may or may not exist. check_pad_bytes() already knows
-> that the padding(s) exist after obj_ext.
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 51 issues are still open and 166 have already been fixed.
 
-Yes, you are right, V4 already does this — I just hadn't noticed it earlier...
+Some of the still happening issues:
 
-> 
-> By the way, thanks for fixing the comment once again,
-> it's easier to think about the layout now.
+Ref  Crashes Repro Title
+<1>  2913    Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<2>  2916    Yes   WARNING in ext4_xattr_inode_update_ref (2)
+                   https://syzkaller.appspot.com/bug?extid=76916a45d2294b551fd9
+<3>  2889    Yes   kernel BUG in ext4_do_writepages
+                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+<4>  2588    Yes   possible deadlock in ext4_writepages (2)
+                   https://syzkaller.appspot.com/bug?extid=eb5b4ef634a018917f3c
+<5>  2150    Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
+                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
+<6>  992     Yes   WARNING in ext4_xattr_inode_lookup_create
+                   https://syzkaller.appspot.com/bug?extid=fe42a669c87e4a980051
+<7>  535     Yes   possible deadlock in ext4_destroy_inline_data (2)
+                   https://syzkaller.appspot.com/bug?extid=bb2455d02bda0b5701e3
+<8>  451     Yes   INFO: task hung in do_get_write_access (3)
+                   https://syzkaller.appspot.com/bug?extid=e7c786ece54bad9d1e43
+<9>  420     Yes   possible deadlock in do_writepages (2)
+                   https://syzkaller.appspot.com/bug?extid=756f498a88797cda9299
+<10> 268     Yes   possible deadlock in ext4_xattr_inode_lookup_create
+                   https://syzkaller.appspot.com/bug?extid=d91a6e2efb07bd3354e9
 
-Glad it helped. The object layout is really subtle — missing even a
-small detail was enough to throw us off. Glad we finally got it all
-straightened out.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-Thanks,
-Hao
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
