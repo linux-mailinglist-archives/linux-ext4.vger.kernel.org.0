@@ -1,211 +1,183 @@
-Return-Path: <linux-ext4+bounces-12567-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12568-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A111CF19A5
-	for <lists+linux-ext4@lfdr.de>; Mon, 05 Jan 2026 03:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 657B6CF2142
+	for <lists+linux-ext4@lfdr.de>; Mon, 05 Jan 2026 07:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B9A8300C0DE
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jan 2026 02:08:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E7D7D3011419
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Jan 2026 06:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8256E30DD1F;
-	Mon,  5 Jan 2026 02:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5EE5478D;
+	Mon,  5 Jan 2026 06:34:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pz7f+Je5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="W4l3HhzX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E7FD21D5BC
-	for <linux-ext4@vger.kernel.org>; Mon,  5 Jan 2026 02:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755BC184;
+	Mon,  5 Jan 2026 06:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767578894; cv=none; b=eW3KEWNSF8yLXmUwqlrYFwNcuMCKEo8o9UiQhFo5C2Bn48lEDW9j5ri1AmPnbfqXLq0oI9RRb9Vu0LBF1ogMHTpA7kUzSm7MLG/6YvPjTLBmuvi1KF4Wkuu8B0UmRKPGTb7g/vdoRuEyyPfeX34Maqf1IRQ2XfEl3MiEdVDyT04=
+	t=1767594897; cv=none; b=oR2DFiGxOxLhNcgWhizIxkxAntTmeSW30v7XiF+X0W6EjSEsczWJMwIaiKQI826YarGqrXt84t14SBsKiAM0fMdDdGkCiJ4CfwElVET+DAepmuG2J/p3umQUKu59Akidf9spf3sdQIsXnxe0pC8Q2uk8DfOLCTGN2clPGjSMt6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767578894; c=relaxed/simple;
-	bh=VLCGO8LMVTfOOMXGO7eFxyOVpedERZ44XFhOcjH+tPA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iKj3lxsYxvJmgKTV8JOSkhJeDpIEUiokASJBrTMcSlMBHgS5Y4iQZPSF/wwrDlRDFF6S9RBwutUY/DDR6nXikAlZzea+ApGz/zm8tusiCiLEnNylhv3xEdhrsAjpNGCVJe9K7nxuPN53iaqhsaM6etXFFruBZGEHcCEUTEmLQ4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pz7f+Je5; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-78fccbc683bso103460777b3.3
-        for <linux-ext4@vger.kernel.org>; Sun, 04 Jan 2026 18:08:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767578891; x=1768183691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=COz1YZYMuufDYpR4+kwbVsVbm5B2OI27JSM61iZDZAc=;
-        b=Pz7f+Je5evrRAL2jKALDubcLgDd4Jhz5/pJ/yQkv7iABlg2vDVMAYowsPtlG7O8YLS
-         czD7eDlTgjLHfMPDB2CXEqaNIMVa+yvjR9B5bca3HfSIF4k37sD+XBhWiRhurkan0eA1
-         5kjH4pz7lLobXGutm7I/IdXz14PYosVY9IdNAOW9wmkylZx5XE/rNocTP6P4BWNvZ84Y
-         ehnkjrpu6B27nS3wNlcEH0uAekU4a25MFbjJX8HTI6xFF3O+XiFpFyS7eD1HTFlqB6dW
-         hlcW7qYhk4gf+I733oMOErUXemFQj3DypftXi0W2yr/BCq0X2ajXy2If3sKQBnEd8opx
-         jrIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767578891; x=1768183691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=COz1YZYMuufDYpR4+kwbVsVbm5B2OI27JSM61iZDZAc=;
-        b=pSDAUPh2kt/cndjPAVNLLx9d7dYd2ksMeyxvgwwd1ELxo/c3zafvB7yfiOWAfffAei
-         QVVpdEQ0jKx3DtiANz4Nv210JfIByRE3e5a00xefN1nsbYpWmCDgJkjmoSLmtkHsP+np
-         WRxsp+O5TEuPCuhHuMBPLWi9MQeDr/+P4JVsU0zO0hDGo5+apgAqS+gClnxydT+IOUuK
-         BZ/wVg6y8gDer1z+VDI8vaaNaNoM4dMpkv9yemGIsiKQnVkweAD/RcAs+Zik6bFdfJzH
-         iHwUXzttyYshxT46IVTMR85j9rSkPKhcqw/C+L37aGE/cSuIb+l0UadCj67Sg7p8Sf5J
-         iO+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWz6OK70IV/I011Bhzn7XNbIspWP/+gJLo0GXwY5NkaW4NbjZlcHb4lWCE6S6fTNNw5py1cBN8NH41L@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxfx99/Tt7E8lIqd+i0nHyUhoLDnG5B5Dh7w1d8S+xYcGxEMos7
-	mYtc3QqfQLacF8yf/10RO/08cnVf5oRn3w+f3CoJMbagwP8tp9UQsQH80gfJm8wCQC9BM4gmyL2
-	SST2Z3wE2sgrV9dXUNgZt1pgfrHdjVgU=
-X-Gm-Gg: AY/fxX6tNaGs1BemmpT0khwaRhPUShDLovr71rB36rNaSG3hC9f4ZuE7KobcmR0Z0qo
-	aCshcqM/inICP0Hs+MqZsT6sLEDW7f2hW8e99F5hOvfFhBGLjXKSHoAR2uAnshopNUgPKrdQn2L
-	fMkHFlXiosKWU0mLsDwvWOIG3C4OVwsUsnxK7f9tg8houH3yD/Z+zP5OtsUSCSIZBp3wi1q7tD3
-	0CkkOK0zEDxHbn1f2mEkVUWaTpal+JIYc7pHFATa5cn3l1fcVmaWNqTF1mfOnxXhcLJc40UMh38
-	Q4CXZ7Yjw1j2ZoR9UauRU3+Hmsot6vri07f/87pNtDYUdOCneFMAR7tsmN0W
-X-Google-Smtp-Source: AGHT+IG2DN6+m1VVgsg2DZ0jSZaguOv/8nDEh4/+XY03NOx9Ro0ClSJKf+HJUausMBH5GRXiOPDoBr83pe0Olt5QW60=
-X-Received: by 2002:a05:690c:7083:b0:78c:2857:7e8d with SMTP id
- 00721157ae682-78fb4001161mr448959507b3.37.1767578891490; Sun, 04 Jan 2026
- 18:08:11 -0800 (PST)
+	s=arc-20240116; t=1767594897; c=relaxed/simple;
+	bh=GzTMMIwkqRezQlSnoIZtID8YrFaF3ivdsqUl+79XAnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mXiGTcWImo8H5bOYHkGN9BMZn5X4mS3qLSjDTM5ut/B9+HqZgwUL27k9RZopWpL17CsDO6mNeU/WHO+6K6Ev6XnVvdyQ1JOcffqLBFtx/GaBBbQavrGomCF6565cvF/zYAEyY14EBCi8G6rKnUpT2DRB6I2NONMs0O/o8RfIYJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=W4l3HhzX; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 604Hgw8T022493;
+	Mon, 5 Jan 2026 06:34:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=KTeTcfCbVyWmnG4R+qkSqJeSpUMlNg
+	3ebi6tx1KW9JU=; b=W4l3HhzXxWjmKHYUNHseDKmEKqX17tHK56n76QlJUnGeb4
+	AG4YhsngcCdK0P1+k1axh9mrv6uFYVWUl1KjNR8+iUaZepf2OZlHMF4u73cqhxjm
+	dCs+FX7vql1L0Xy6QKapHQx9D0FghAiQidUrrDmU/YCfTVP61tcVV5dirVs8GDH+
+	4c9+ePN94uuAbYby4vsowu2/v/oQ6ULueX+OosOKR4D67vDAyJw2YgN3P/B63iPy
+	rwuvkL/3OhT3BbLxrFAlWAyze3KEmlz2JCY9y4sTzCjWQs/0E7gWunrwYfA2p3YM
+	msGAkgMnVnDDwnJTVgmkXAuPU8WGLx5G/f4hXTbw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betspwuvp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Jan 2026 06:34:39 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 6056XRFw011793;
+	Mon, 5 Jan 2026 06:34:38 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betspwuvm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Jan 2026 06:34:38 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6053cGCu012560;
+	Mon, 5 Jan 2026 06:34:37 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bffnj43ps-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 05 Jan 2026 06:34:37 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6056Ya2s60424668
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 5 Jan 2026 06:34:36 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 110A320043;
+	Mon,  5 Jan 2026 06:34:36 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 416FD20040;
+	Mon,  5 Jan 2026 06:34:34 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.124.214.2])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  5 Jan 2026 06:34:34 +0000 (GMT)
+Date: Mon, 5 Jan 2026 12:04:30 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, Zhang Yi <yi.zhang@huawei.com>,
+        Jan Kara <jack@suse.cz>, libaokun1@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] ext4 extent split/convert refactor and kunit tests
+Message-ID: <aVtbS3Ybg49qTpIw@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <cover.1767528171.git.ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7b2fafab-a156-47e3-b504-469133b8793d@huaweicloud.com>
- <CADhLXY7AVVfxeTtDfEJXsYvk66CV7vsRMVw4P8PEn3rgOuSOLA@mail.gmail.com>
- <aadd43df-3df4-4dcc-a0b3-e7bfded0dff8@huaweicloud.com> <CADhLXY4Pk60+sSLtOOuR2QdTKbYXUAjwhgb7nH8qugf4DROT7w@mail.gmail.com>
- <20251203154657.GC93777@macsyma.lan> <aTCtITpW9yLNm2hz@casper.infradead.org>
- <20251203223300.GB71988@macsyma.lan> <CADhLXY4_yYdGQCYxq3=gQ6ZTJ7y_=dGsEBqdJ4g7JizX+ocVYA@mail.gmail.com>
- <20251205021818.GF71988@macsyma.lan> <aTJSglQznqeph5lM@casper.infradead.org>
- <20251205133739.GA19558@macsyma.lan> <CADhLXY6bvnv9eipp1Uo5N3s9dKFoqEL+qom+ni3_4D_==+wJAg@mail.gmail.com>
-In-Reply-To: <CADhLXY6bvnv9eipp1Uo5N3s9dKFoqEL+qom+ni3_4D_==+wJAg@mail.gmail.com>
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-Date: Mon, 5 Jan 2026 07:38:00 +0530
-X-Gm-Features: AQt7F2qJ3vvGmUZHv3lUyOtnE0Z8wgHQVqfjiDJEM5DNYd4Z1Woes_ZBUgROfNA
-Message-ID: <CADhLXY6ZPwXU8EQuLKF99mv9p5t85=jA0aKG=5+8TF=sVZjJyg@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: check folio uptodate state in ext4_page_mkwrite()
-To: Theodore Tso <tytso@mit.edu>
-Cc: Matthew Wilcox <willy@infradead.org>, Zhang Yi <yi.zhang@huaweicloud.com>, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzbot+b0a0670332b6b3230a0a@syzkaller.appspotmail.com, 
-	adilger.kernel@dilger.ca, djwong@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1767528171.git.ojaswin@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AGMWQUhgsMtBn_X51J3PaIbdF0NUBXdL
+X-Authority-Analysis: v=2.4 cv=Jvf8bc4C c=1 sm=1 tr=0 ts=695b5b7f cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=kj9zAlcOel0A:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=AiHppB-aAAAA:8 a=JoMeTywGKBwSziRazvcA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-ORIG-GUID: MZwoHs34CryZKo3ew2fsaWep9kHrdFYa
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA1MDA1NiBTYWx0ZWRfX7csyJIreYFk8
+ 4klqIpZWpDwjyjufL63YsJsT21vX4bQioUSQs2tbPLgbDOnn60vgrJR9OLFsZ8ZQzSLPOOiVkKI
+ 5JhOnzugJ9yYZWUoXuqyM0B/QpQH4EBYr204a4mjI5pQ4w95Y8Zl94tTUI97bzbr1W3kpZ9y+K4
+ N30A/7z1CuFseahTvIAN4gUZTFdKmQLDUBlpvg6SvC0F7gs8WhAtDWNPkWxVEbN6grf0UAuV9fA
+ TdipKnLO1kNMXHEVHDu2oH4+6WuX1tNJK1v3k/Su9iICSlYxxut3kc9HrHr9yU2xSIrOSWZJURa
+ 35QsWmfUo/xxoPpA+q3O48OqCKzJr9p3C/cI1l8YPE2gfLV6ihWcPvPBxKRPaNHm9OFhRPeTPyX
+ QFm8/q3Ulq2UCJP2QgtInZY9W9+sOpW4A+JnHd3TcTUBfqZ+U/yciprnI5yYMwwNLOykWcFPwnG
+ k48nsXaO/1jSlfJKt2w==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-05_01,2025-12-31_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 adultscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
+ definitions=main-2601050056
 
-On Fri, Dec 5, 2025 at 7:58=E2=80=AFPM Deepanshu Kartikey <kartikey406@gmai=
-l.com> wrote:
->
-> On Fri, Dec 5, 2025 at 7:08=E2=80=AFPM Theodore Tso <tytso@mit.edu> wrote=
-:
-> >
-> > On Fri, Dec 05, 2025 at 03:33:22AM +0000, Matthew Wilcox wrote:
-> > > It sounds like I was confused -- I thought the folios being
-> > > invalidated in mpage_release_unused_pages() belonged to the block
-> > > device, but from what you're saying, they belong to a user-visible
-> > > file?
-> >
-> > Yes, correct.  I'm guessing that we were marking the page !uptodate
-> > back when that was the only way to indicate that there had been any
-> > kind of I/O error (either on the read or write side).  Obviously we
-> > have much better ways of doing it in the 21st century.  :-)
-> >
-> > > Now, is the folio necessarily dirty at this point?  I guess so if
-> > > we're in the writeback path.  Darrick got rid of similar code in
-> > > iomap a few years ago; see commit e9c3a8e820ed.  So it'd probably be
-> > > good to have ext4 behave the same way.
-> >
-> > Hmm, yes.   Agreed.
-> >
-> >     commit e9c3a8e820ed0eeb2be05072f29f80d1b79f053b
-> >     Author: Darrick J. Wong <djwong@kernel.org>
-> >     Date:   Mon May 16 15:27:38 2022 -0700
-> >
-> >     iomap: don't invalidate folios after writeback errors
-> >
-> >     XFS has the unique behavior (as compared to the other Linux
-> >     filesystems) that on writeback errors it will completely
-> >     invalidate the affected folio and force the page cache to reread
-> >     the contents from disk.  All other filesystems leave the page
-> >     mapped and up to date.
-> >
-> >     This is a rude awakening for user programs, since (in the case
-> >     where write fails but reread doesn't) file contents will appear to
-> >     revert old disk contents with no notification other than an EIO on
-> >     fsync.  This might have been annoying back in the days when iomap
-> >     dealt with one page at a time, but with multipage folios, we can
-> >     now throw away *megabytes* worth of data for a single write error..=
-.
-> >
-> > As Darrick pointed out we could potentially append a *single* byte to
-> > a file, and if there was some kind of writeback error, we could
-> > potentially throw away *vast* amounts of data for no good reason.
-> >
-> >                                      - Ted
->
->
-> Hi Ted and Matthew,
->
-> Thank you for pointing out the iomap commit. I now understand that
-> invalidating folios on writeback errors is the wrong approach.
->
-> Looking at Darrick's commit e9c3a8e820ed, iomap removed both
-> folio_clear_uptodate() and the invalidation call, keeping folios in
-> memory with their data intact even after writeback errors.
->
-> For ext4, should I apply the same approach to mpage_release_unused_pages(=
-)?
-> Specifically, remove the invalidation entirely:
->
->   if (invalidate) {
->       /*
->        * On writeback errors, do not invalidate the folio or
->        * clear the uptodate flag. This follows the behavior
->        * established by iomap (commit e9c3a8e820ed "iomap:
->        * don't invalidate folios after writeback errors").
->        */
->       if (folio_mapped(folio))
->           folio_clear_dirty_for_io(folio);
-> -     block_invalidate_folio(folio, 0, folio_size(folio));
-> -     folio_clear_uptodate(folio);
->   }
->
-> This would:
-> - Keep user data in memory instead of discarding it
-> - Prevent the WARNING since folio remains uptodate
-> - Match the behavior of modern filesystems
-> - Prevent data loss from discarding potentially megabytes of data
->
-> Is this the correct approach? If so, I'll send v4 with this fix.
->
-> Best regards,
-> Deepanshu
+On Sun, Jan 04, 2026 at 05:49:13PM +0530, Ojaswin Mujoo wrote:
+> Offlate we've have seen multiple issues and inconsistencies in the
+> our extent splitting and conversion logic causing subtle bugs. Recent
+> patches by Yhang Zi [1] helped address some of the issues however
+> the messy use of EXT4_EXT_DATA_VALID* and EXT4_EXT_MARK_UNWRIT* flags
+> made the implementation confusing and error prone.
+> 
+> This patchset aims to refactor the explent split and convert code paths
+> to make the code simpler and the behavior consistent and easy to
+> understand. It also adds several Kunit tests to stress various
+> permutations of extent splitting and conversion.
+> 
+> I've rebased this over [2] since it seems like it'll go in first. 
+> 
+> Another idea I want to try out after this is proactively zeroout
+> before even trying to split, as Jan suggested here [3], but before
+> trying to do that I wanted to refactor and add some tests hence sending
+> these patches out first.
+> 
+> [1] https://lore.kernel.org/linux-ext4/20251129103247.686136-1-yi.zhang@huaweicloud.com/
+> [2] https://lore.kernel.org/linux-ext4/20251223011802.31238-1-yi.zhang@huaweicloud.com/T/#t
+> [3] https://lore.kernel.org/linux-ext4/yro4hwpttmy6e2zspvwjfdbpej6qvhlqjvlr5kp3nwffqgcnfd@z6qual55zhfq/
+> 
+> Rest of the details can be found in the commit messages.
+> 
+> Patch 1-2: new kunit tests
+> Patch 3-4: minor fixes
+> Patch 5: refactoring zeroout and making sure zeroout handles all
+>         permutations correctly
+> Patch 6: Refactoring ext4_split_* functions.
+> Patch 7: Enable zeroout for writ to unwrit case
+> 
+> Testing:
+> - I've run kvm-xfstests for 4k, 1k and bigalloc_4k with -g quick and I
+>   see no failures.
+> - Some new kunit tests that were failing due to inconsistencies are not
+>   passing
 
-Hi Ted and Matthew,
+Are *now* passing with the patches* :)
 
-I wanted to follow up on my previous email about the fix approach.
-
-Just to confirm: should I remove the folio invalidation from
-mpage_release_unused_pages() entirely, following Darrick's commit
-e9c3a8e820ed for iomap?
-
-The change would be:
-
-  if (invalidate) {
-      if (folio_mapped(folio))
-          folio_clear_dirty_for_io(folio);
--     block_invalidate_folio(folio, 0, folio_size(folio));
--     folio_clear_uptodate(folio);
-  }
-
-This keeps the folio in memory with data intact, prevents the WARNING,
-and matches modern filesystem behavior.
-
-If this approach is correct, I'll test and send v4. Otherwise, please
-let me know what adjustments are needed.
-
-Thank you,
-Deepanshu
+> - Due to dev servers being down for eoy maintanence I couldn't run more
+>   rigourous tests. In the coming week I'll run stress and auto group as
+>   well.
+> 
+> Thoughts and comments are welcome.
+> 
+> Ojaswin Mujoo (7):
+>   ext4: kunit tests for extent splitting and conversion
+>   ext4: kunit tests for higher level extent manipulation functions
+>   ext4: propagate flags to convert_initialized_extent()
+>   ext4: propagate flags to ext4_convert_unwritten_extents_endio()
+>   ext4: Refactor zeroout path and handle all cases
+>   ext4: Refactor split and convert extents
+>   ext4: Allow zeroout when doing written to unwritten split
+> 
+>  fs/ext4/extents-test.c   | 871 +++++++++++++++++++++++++++++++++++++++
+>  fs/ext4/extents.c        | 591 +++++++++++++++-----------
+>  fs/ext4/extents_status.c |   3 +
+>  fs/ext4/inode.c          |   4 +
+>  4 files changed, 1226 insertions(+), 243 deletions(-)
+>  create mode 100644 fs/ext4/extents-test.c
+> 
+> -- 
+> 2.51.0
+> 
 
