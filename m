@@ -1,254 +1,363 @@
-Return-Path: <linux-ext4+bounces-12586-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12587-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3EAFCF7E9D
-	for <lists+linux-ext4@lfdr.de>; Tue, 06 Jan 2026 11:57:03 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF356CF837F
+	for <lists+linux-ext4@lfdr.de>; Tue, 06 Jan 2026 13:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DDE9B3029C22
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jan 2026 10:57:02 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E50AF300C36C
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Jan 2026 12:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CA4310774;
-	Tue,  6 Jan 2026 10:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24D4325720;
+	Tue,  6 Jan 2026 12:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dknFXvlg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xEENhlSj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="o6GYRRI/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="euT+aJA3"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="gy5TJwDQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-pp-e105.zoho.com (sender4-pp-e105.zoho.com [136.143.188.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09FA27B35F
-	for <linux-ext4@vger.kernel.org>; Tue,  6 Jan 2026 10:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767697020; cv=none; b=iaGMMtnBjrSuaBAqq1Zyovt9qdGhLrxLQi0jSGOzcSe0AjGIrr1RimjzjzBJgG3+72E0bHIzcdGbDBGxraS0Kd79KOHAH3hRlxKXRAQN5J0uCkoEKl6GEPWZCpoz5VInuvYvucMqSpEJwtJ4e231krDoNXBG22gU2C6mEJ+QsUA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767697020; c=relaxed/simple;
-	bh=6s4Ay9LOJUcj9HxtsFOyGRFDUVmw+G4S56sQDNxNndY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z4CN2Sg/bbAIKqGzqpRBP1U12clXzXsb86ooshVcTQh7ot+VxeyIp042XRmYpfPoFviBkcfN6QWB297vZ1Ofx3zJHh83K2Uq81LCkPBM1FXcoTz8Ig5EQnFFU1/Sq3IHlEefDD12qVgu/Vn95sDO1qb9betX35r1N6NSyk+f/s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dknFXvlg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xEENhlSj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=o6GYRRI/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=euT+aJA3; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D06D55BCCE;
-	Tue,  6 Jan 2026 10:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767697017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EceJEOv3NYd1LQb0kSunwml0UObwvblgyGa3oOMlbGo=;
-	b=dknFXvlgnbY19pfzC9pG3IUKV8An0dSEDhKSI1U/paVB+tz7v3HAbvSwypsUIkK+t7qL3z
-	93131A0zcmGfK3FfFaXhjID5wxWrsjWvfkP8J5JhJzDVTR/8QwTrY3vyp2PHDdArNvrfW7
-	PkoxdBbaOt65+OIih1y09OFHiINfBKU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767697017;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EceJEOv3NYd1LQb0kSunwml0UObwvblgyGa3oOMlbGo=;
-	b=xEENhlSjb6y2skfxDNQWBe+rJKAHJ74SzC1rDsdB4sdve5ek+H4tFoW/GUgHE8U3LhHWNP
-	dz37u9Kdqg0ZM/Cg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767697016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EceJEOv3NYd1LQb0kSunwml0UObwvblgyGa3oOMlbGo=;
-	b=o6GYRRI/0USuVXYJv4ur1CqL21ByA8M6JFOEDsO2XbCRdKFk73vkbByN8EPtC+Xz6cdf+a
-	wzsuNREd/QPWOgGalJEk9e/TkOoPfGq4DlUDR3ZJGfKSFqE+BuyKy4lyKDbd2YY3pAkeTc
-	hhIIachc1kmCvVWZsSIY11vWHRFV5jY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767697016;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EceJEOv3NYd1LQb0kSunwml0UObwvblgyGa3oOMlbGo=;
-	b=euT+aJA3HglZmsa12FEkRoAJKimyUxXGDy0s+5Fop1qCs8ylhfeyIxGmftDvdblTbuGwPi
-	SgxEyHBs7JYGmBDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C48443EA63;
-	Tue,  6 Jan 2026 10:56:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bp3qL3jqXGlDNwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 06 Jan 2026 10:56:56 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 84FA0A08E3; Tue,  6 Jan 2026 11:56:52 +0100 (CET)
-Date: Tue, 6 Jan 2026 11:56:52 +0100
-From: Jan Kara <jack@suse.cz>
-To: sunyongjian1@huawei.com
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	tytso@mit.edu, jack@suse.cz, yangerkun@huawei.com, yi.zhang@huawei.com, 
-	libaokun1@huawei.com, chengzhihao1@huawei.com
-Subject: Re: [RFC PATCH] ext4: fix e4b bitmap inconsistency reports
-Message-ID: <ak5cxhlqoqdq47nyp6v6ynbww4u4pndkytzitzt3w2ukad2wlq@qlcwq5fhr7qa>
-References: <20260106090820.836242-1-sunyongjian@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1A8322B79;
+	Tue,  6 Jan 2026 12:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767701203; cv=pass; b=IHBQYzxT9ctIdG88Y3QwUdgaY1o+RZWvvI7b/kxRA7g4KTHcZZZvJzLvXN8oOgF+biUYU6S3G5sK0NlxIL6Q6r13NgS+HTzZo79z4q/ij0HqV7rl5OrITd1hlMjzsZbZjHfmaiA2z5cUzADuV+3kXvRDFWZmSSgvlfeaSHhiC04=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767701203; c=relaxed/simple;
+	bh=ZCaY/TeFHxCFIInQU2Dok4zB1zYQta2W0E0U3wmGyGs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bNSEgZ4PB0wHfRnmki/yFQZSYaUBZfl2ym78H7vibrwS5BwP4uVJ9VDUK7qpoaVTbKeEfm6r0lx3NKYXmQtZzBJLqsh/jgAVKXEPB+/p5DlgO5qG2k/P5bKjS7azlVIABDShCArBvhuaUpP3mqZ9vSFv62XFsDKKSeZXr1nyedE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=gy5TJwDQ; arc=pass smtp.client-ip=136.143.188.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1767701193; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=WG9rk+/WxrBqQ/SOva2aB5Dk2h5c+zs3BVXM5+AP9uqLBSoSkuq3PGlWMZT5Qne+e7mGRXrWCCiz88OHfSNC7M2dZIDCZN0NBpoUByUZZHkrgAQFNNUNoglcKpu5NRtTsytogc+4B/aaHt4oYzJqc+MksjUno8jEomVz6lfqce4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1767701193; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=gwJQRtVsFpnaGJrh1tJrF9j/gUldNpQSSDiq3hc3NzM=; 
+	b=Re7R2aROXYU0YA+3Uo0xX7FMhSrKe9NUwO/uEWYULIIA2CNwDe/j90iu27H2KoUBswYqR0iM1+A35q9GORZqajH4C8sT4zdgRp/6PAfLj392fngMfcA5XwZWLcm4/b13N9i7v32dlxDt02NAiM7ghHIecgwzvwe2KUpwRB05UEs=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1767701193;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=gwJQRtVsFpnaGJrh1tJrF9j/gUldNpQSSDiq3hc3NzM=;
+	b=gy5TJwDQiIWhlbjv9vB/0jUnQD+FeTuZ/8gJj4+AW9JFyMrmodBRpvoB3LS5aNTe
+	V/XoNDlqp3wv/zWv4Ieryb8eqe3anGgFEPjNWh/ODQQgcTsRZ1S33j/61JE8FHo7Qhs
+	zRMRNQsAzil98ZzTv9ZNx/+r+d5YLm/tDn87/V4Y=
+Received: by mx.zohomail.com with SMTPS id 1767701190947332.03842567560923;
+	Tue, 6 Jan 2026 04:06:30 -0800 (PST)
+From: Li Chen <me@linux.beauty>
+To: Jan Kara <jack@suse.cz>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Li Chen <me@linux.beauty>
+Subject: [PATCH] ext4: fast commit: make s_fc_lock reclaim-safe
+Date: Tue,  6 Jan 2026 20:06:21 +0800
+Message-ID: <20260106120621.440126-1-me@linux.beauty>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260106090820.836242-1-sunyongjian@huaweicloud.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.995];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	URIBL_BLOCKED(0.00)[huawei.com:email,suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
-On Tue 06-01-26 17:08:20, Yongjian Sun wrote:
-> From: Yongjian Sun <sunyongjian1@huawei.com>
-> 
-> A bitmap inconsistency issue was observed during stress tests under
-> mixed huge-page workloads. Ext4 reported multiple e4b bitmap check
-> failures like:
-> 
-> ext4_mb_complex_scan_group:2508: group 350, 8179 free clusters as
-> per group info. But got 8192 blocks
-> 
-> Analysis and experimentation confirmed that the issue is caused by a
-> race condition between page migration and bitmap modification. Although
-> this timing window is extremely narrow, it is still hit in practice:
-> 
-> folio_lock                        ext4_mb_load_buddy
-> __migrate_folio
->   check ref count
->   folio_mc_copy                     __filemap_get_folio
->                                       folio_try_get(folio)
->                                   ......
->                                   mb_mark_used
->                                   ext4_mb_unload_buddy
->   __folio_migrate_mapping
->     folio_ref_freeze
-> folio_unlock
-> 
-> The root cause of this issue is that the fast path of load_buddy only
-> increments the folio's reference count, which is insufficient to prevent
-> concurrent folio migration. We observed that the folio migration process
-> acquires the folio lock. Therefore, we can determine whether to take the
-> fast path in load_buddy by checking the lock status. If the folio is
-> locked, we opt for the slow path (which acquires the lock) to close this
-> concurrency window.
-> 
-> Additionally, this change addresses the following issues:
-> 
-> When the DOUBLE_CHECK macro is enabled to inspect bitmap-related
-> issues, the following error may be triggered:
-> 
-> corruption in group 324 at byte 784(6272): f in copy != ff on
-> disk/prealloc
-> 
-> Analysis reveals that this is a false positive. There is a specific race
-> window where the bitmap and the group descriptor become momentarily
-> inconsistent, leading to this error report:
-> 
-> ext4_mb_load_buddy                   ext4_mb_load_buddy
->   __filemap_get_folio(create|lock)
->     folio_lock
->   ext4_mb_init_cache
->     folio_mark_uptodate
->                                      __filemap_get_folio(no lock)
->                                      ......
->                                      mb_mark_used
->                                        mb_mark_used_double
->   mb_cmp_bitmaps
->                                        mb_set_bits(e4b->bd_bitmap)
->   folio_unlock
-> 
-> The original logic assumed that since mb_cmp_bitmaps is called when the
-> bitmap is newly loaded from disk, the folio lock would be sufficient to
-> prevent concurrent access. However, this overlooks a specific race
-> condition: if another process attempts to load buddy and finds the folio
-> is already in an uptodate state, it will immediately begin using it without
-> holding folio lock.
-> 
-> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+s_fc_lock can be acquired from inode eviction and thus is
+reclaim unsafe. Since the fast commit path holds s_fc_lock while writing
+the commit log, allocations under the lock can enter reclaim and invert
+the lock order with fs_reclaim. Add ext4_fc_lock()/ext4_fc_unlock()
+helpers which acquire s_fc_lock under memalloc_nofs_save()/restore()
+context and use them everywhere so allocations under the lock cannot
+recurse into filesystem reclaim.
 
-Nice catch! The fix looks good to me. Feel free to add:
+Fixes: 6593714d67ba ("ext4: hold s_fc_lock while during fast commit")
+Signed-off-by: Li Chen <me@linux.beauty>
+---
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+RFC->v1:  create helper functions for acquiring / releasing the lock as suggested by Jan Kara.
 
-								Honza
+RFC: https://patchwork.ozlabs.org/project/linux-ext4/patch/20251223131342.287864-1-me@linux.beauty/
 
-> ---
->  fs/ext4/mballoc.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 56d50fd3310b..de4cacb740b3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1706,16 +1706,17 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
->  
->  	/* Avoid locking the folio in the fast path ... */
->  	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
-> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-> +	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
-> +		/*
-> +		 * folio_test_locked is employed to detect ongoing folio
-> +		 * migrations, since concurrent migrations can lead to
-> +		 * bitmap inconsistency. And if we are not uptodate that
-> +		 * implies somebody just created the folio but is yet to
-> +		 * initialize it. We can drop the folio reference and
-> +		 * try to get the folio with lock in both cases to avoid
-> +		 * concurrency.
-> +		 */
->  		if (!IS_ERR(folio))
-> -			/*
-> -			 * drop the folio reference and try
-> -			 * to get the folio with lock. If we
-> -			 * are not uptodate that implies
-> -			 * somebody just created the folio but
-> -			 * is yet to initialize it. So
-> -			 * wait for it to initialize.
-> -			 */
->  			folio_put(folio);
->  		folio = __filemap_get_folio(inode->i_mapping, pnum,
->  				FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
-> @@ -1764,7 +1765,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
->  
->  	/* we need another folio for the buddy */
->  	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
-> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-> +	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
->  		if (!IS_ERR(folio))
->  			folio_put(folio);
->  		folio = __filemap_get_folio(inode->i_mapping, pnum,
-> -- 
-> 2.39.2
-> 
+ fs/ext4/ext4.h        | 16 ++++++++++++++
+ fs/ext4/fast_commit.c | 51 ++++++++++++++++++++++++-------------------
+ 2 files changed, 44 insertions(+), 23 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 57087da6c7be..933297251f66 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1771,6 +1771,10 @@ struct ext4_sb_info {
+ 	 * Main fast commit lock. This lock protects accesses to the
+ 	 * following fields:
+ 	 * ei->i_fc_list, s_fc_dentry_q, s_fc_q, s_fc_bytes, s_fc_bh.
++	 *
++	 * s_fc_lock can be taken from reclaim context (inode eviction) and is
++	 * thus reclaim unsafe. Use ext4_fc_lock()/ext4_fc_unlock() helpers
++	 * when acquiring / releasing the lock.
+ 	 */
+ 	struct mutex s_fc_lock;
+ 	struct buffer_head *s_fc_bh;
+@@ -1815,6 +1819,18 @@ static inline void ext4_writepages_up_write(struct super_block *sb, int ctx)
+ 	percpu_up_write(&EXT4_SB(sb)->s_writepages_rwsem);
+ }
+ 
++static inline int ext4_fc_lock(struct super_block *sb)
++{
++	mutex_lock(&EXT4_SB(sb)->s_fc_lock);
++	return memalloc_nofs_save();
++}
++
++static inline void ext4_fc_unlock(struct super_block *sb, int ctx)
++{
++	memalloc_nofs_restore(ctx);
++	mutex_unlock(&EXT4_SB(sb)->s_fc_lock);
++}
++
+ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
+ {
+ 	return ino == EXT4_ROOT_INO ||
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 5727ff4e9273..2f28a089fc7e 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -231,16 +231,16 @@ static bool ext4_fc_disabled(struct super_block *sb)
+ void ext4_fc_del(struct inode *inode)
+ {
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+-	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 	struct ext4_fc_dentry_update *fc_dentry;
+ 	wait_queue_head_t *wq;
++	int alloc_ctx;
+ 
+ 	if (ext4_fc_disabled(inode->i_sb))
+ 		return;
+ 
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(inode->i_sb);
+ 	if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
+-		mutex_unlock(&sbi->s_fc_lock);
++		ext4_fc_unlock(inode->i_sb, alloc_ctx);
+ 		return;
+ 	}
+ 
+@@ -275,9 +275,9 @@ void ext4_fc_del(struct inode *inode)
+ #endif
+ 		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+ 		if (ext4_test_inode_state(inode, EXT4_STATE_FC_FLUSHING_DATA)) {
+-			mutex_unlock(&sbi->s_fc_lock);
++			ext4_fc_unlock(inode->i_sb, alloc_ctx);
+ 			schedule();
+-			mutex_lock(&sbi->s_fc_lock);
++			alloc_ctx = ext4_fc_lock(inode->i_sb);
+ 		}
+ 		finish_wait(wq, &wait.wq_entry);
+ 	}
+@@ -288,7 +288,7 @@ void ext4_fc_del(struct inode *inode)
+ 	 * dentry create references, since it is not needed to log it anyways.
+ 	 */
+ 	if (list_empty(&ei->i_fc_dilist)) {
+-		mutex_unlock(&sbi->s_fc_lock);
++		ext4_fc_unlock(inode->i_sb, alloc_ctx);
+ 		return;
+ 	}
+ 
+@@ -298,7 +298,7 @@ void ext4_fc_del(struct inode *inode)
+ 	list_del_init(&fc_dentry->fcd_dilist);
+ 
+ 	WARN_ON(!list_empty(&ei->i_fc_dilist));
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(inode->i_sb, alloc_ctx);
+ 
+ 	release_dentry_name_snapshot(&fc_dentry->fcd_name);
+ 	kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
+@@ -315,6 +315,7 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
+ 	tid_t tid;
+ 	bool has_transaction = true;
+ 	bool is_ineligible;
++	int alloc_ctx;
+ 
+ 	if (ext4_fc_disabled(sb))
+ 		return;
+@@ -329,12 +330,12 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
+ 			has_transaction = false;
+ 		read_unlock(&sbi->s_journal->j_state_lock);
+ 	}
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	is_ineligible = ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+ 	if (has_transaction && (!is_ineligible || tid_gt(tid, sbi->s_fc_ineligible_tid)))
+ 		sbi->s_fc_ineligible_tid = tid;
+ 	ext4_set_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 	WARN_ON(reason >= EXT4_FC_REASON_MAX);
+ 	sbi->s_fc_stats.fc_ineligible_reason_count[reason]++;
+ }
+@@ -358,6 +359,7 @@ static int ext4_fc_track_template(
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 	tid_t tid = 0;
++	int alloc_ctx;
+ 	int ret;
+ 
+ 	tid = handle->h_transaction->t_tid;
+@@ -373,14 +375,14 @@ static int ext4_fc_track_template(
+ 	if (!enqueue)
+ 		return ret;
+ 
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(inode->i_sb);
+ 	if (list_empty(&EXT4_I(inode)->i_fc_list))
+ 		list_add_tail(&EXT4_I(inode)->i_fc_list,
+ 				(sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+ 				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
+ 				&sbi->s_fc_q[FC_Q_STAGING] :
+ 				&sbi->s_fc_q[FC_Q_MAIN]);
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(inode->i_sb, alloc_ctx);
+ 
+ 	return ret;
+ }
+@@ -402,6 +404,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+ 	struct inode *dir = dentry->d_parent->d_inode;
+ 	struct super_block *sb = inode->i_sb;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	int alloc_ctx;
+ 
+ 	spin_unlock(&ei->i_fc_lock);
+ 
+@@ -425,7 +428,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+ 	take_dentry_name_snapshot(&node->fcd_name, dentry);
+ 	INIT_LIST_HEAD(&node->fcd_dilist);
+ 	INIT_LIST_HEAD(&node->fcd_list);
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+ 		sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
+ 		list_add_tail(&node->fcd_list,
+@@ -446,7 +449,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+ 		WARN_ON(!list_empty(&ei->i_fc_dilist));
+ 		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
+ 	}
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 	spin_lock(&ei->i_fc_lock);
+ 
+ 	return 0;
+@@ -1051,18 +1054,19 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	struct blk_plug plug;
+ 	int ret = 0;
+ 	u32 crc = 0;
++	int alloc_ctx;
+ 
+ 	/*
+ 	 * Step 1: Mark all inodes on s_fc_q[MAIN] with
+ 	 * EXT4_STATE_FC_FLUSHING_DATA. This prevents these inodes from being
+ 	 * freed until the data flush is over.
+ 	 */
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+ 		ext4_set_inode_state(&iter->vfs_inode,
+ 				     EXT4_STATE_FC_FLUSHING_DATA);
+ 	}
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 
+ 	/* Step 2: Flush data for all the eligible inodes. */
+ 	ret = ext4_fc_flush_data(journal);
+@@ -1072,7 +1076,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	 * any error from step 2. This ensures that waiters waiting on
+ 	 * EXT4_STATE_FC_FLUSHING_DATA can resume.
+ 	 */
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+ 		ext4_clear_inode_state(&iter->vfs_inode,
+ 				       EXT4_STATE_FC_FLUSHING_DATA);
+@@ -1089,7 +1093,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	 * prepare_to_wait() in ext4_fc_del().
+ 	 */
+ 	smp_mb();
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 
+ 	/*
+ 	 * If we encountered error in Step 2, return it now after clearing
+@@ -1106,12 +1110,12 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	 * previous handles are now drained. We now mark the inodes on the
+ 	 * commit queue as being committed.
+ 	 */
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+ 		ext4_set_inode_state(&iter->vfs_inode,
+ 				     EXT4_STATE_FC_COMMITTING);
+ 	}
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 	jbd2_journal_unlock_updates(journal);
+ 
+ 	/*
+@@ -1122,6 +1126,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 		blkdev_issue_flush(journal->j_fs_dev);
+ 
+ 	blk_start_plug(&plug);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	/* Step 6: Write fast commit blocks to disk. */
+ 	if (sbi->s_fc_bytes == 0) {
+ 		/*
+@@ -1139,7 +1144,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	}
+ 
+ 	/* Step 6.2: Now write all the dentry updates. */
+-	mutex_lock(&sbi->s_fc_lock);
+ 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
+ 	if (ret)
+ 		goto out;
+@@ -1161,7 +1165,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	ret = ext4_fc_write_tail(sb, crc);
+ 
+ out:
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 	blk_finish_plug(&plug);
+ 	return ret;
+ }
+@@ -1295,6 +1299,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_inode_info *ei;
+ 	struct ext4_fc_dentry_update *fc_dentry;
++	int alloc_ctx;
+ 
+ 	if (full && sbi->s_fc_bh)
+ 		sbi->s_fc_bh = NULL;
+@@ -1302,7 +1307,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 	trace_ext4_fc_cleanup(journal, full, tid);
+ 	jbd2_fc_release_bufs(journal);
+ 
+-	mutex_lock(&sbi->s_fc_lock);
++	alloc_ctx = ext4_fc_lock(sb);
+ 	while (!list_empty(&sbi->s_fc_q[FC_Q_MAIN])) {
+ 		ei = list_first_entry(&sbi->s_fc_q[FC_Q_MAIN],
+ 					struct ext4_inode_info,
+@@ -1361,7 +1366,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 
+ 	if (full)
+ 		sbi->s_fc_bytes = 0;
+-	mutex_unlock(&sbi->s_fc_lock);
++	ext4_fc_unlock(sb, alloc_ctx);
+ 	trace_ext4_fc_stats(sb);
+ }
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.52.0
+
 
