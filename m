@@ -1,94 +1,94 @@
-Return-Path: <linux-ext4+bounces-12615-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12616-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52247CFEA16
-	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 16:41:21 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 104BBCFF138
+	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 18:22:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 11D6330146E2
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 15:41:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C7E453035AAE
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 17:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294D735B12E;
-	Wed,  7 Jan 2026 14:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B8638FEE9;
+	Wed,  7 Jan 2026 17:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVfmxpSj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y7o0Ld2c";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVfmxpSj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y7o0Ld2c"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOr4dsBY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Vjs7QAK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOr4dsBY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Vjs7QAK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0033F35B120
-	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 14:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD30938F227
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 17:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767797805; cv=none; b=UvozmvqNwebF+oDBzOes54J+cerNhWtUsVQ1WRYMHQq4lo3u5H/NwgesaHwfxf8yqi6SdWvDCMsUtTRnm/9hxIlK4jAIHmQVfkyMIT2ZnmBRO+r3aNjEWvOZJH15QNF8YzFXSFrGTmlAYseDwP3DINLvQNobMd3jndi7T4XIghs=
+	t=1767805741; cv=none; b=aYFgE8mb2EMvUs5+sjeVdeZWqClbQmDUcFwT7RVjw+bFHjS2ch3r8Apuu+5imEur2lv3N32BgLOD0YN6hf/Zc0pruirsCB7AVdTXQAgyP5ic5ZwjMRNUWXGitf4wK+Gdy6GlxkcWV0fHC1a/0HaW3cDFI7Ky+2an8hhR2B0XPXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767797805; c=relaxed/simple;
-	bh=NZG9lowQx8XORAM5gbORLY3DW3F31wKXP839ej9sJxc=;
+	s=arc-20240116; t=1767805741; c=relaxed/simple;
+	bh=33VQ/B0khT7h2r+xzoWJPmE/F0JYIe0DJsk1VnqJBAY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Okvm/EIYF1DS5FKJX1Nqxp6Bskviz9cfFNLw6s3wrm9GoRD38sAb/tpbnV545auGG6evpZXKYoOXung/rsjeJUjm/J1ZBfOcMWeh6L9HtMSfYKNNoGx5G93Z6yzj3ZAdNT3Z8DX3M2O42QmXCrXtMldTQlDLkcBnxtpF9Jh6wDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVfmxpSj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y7o0Ld2c; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVfmxpSj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y7o0Ld2c; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:Content-Type; b=OB78MBD2yuDn1kLZOAFrEF7iX3hp/S31C8FDur6M8lRQrLpajddmYjEKpPi4kPn1KnVJkXHkbmjrpi8MrORRbj+p6ma2Xp1hJMNS7L+tg9W9Zy3w9SO/VB6K0TQT9KcuSxo4049VA5py44b4B8JGy2aqCeDsTWg8Sb/TZwcuBMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOr4dsBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Vjs7QAK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOr4dsBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Vjs7QAK; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 109EB33698;
-	Wed,  7 Jan 2026 14:56:42 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AE8A334070;
+	Wed,  7 Jan 2026 17:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767797802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1767805737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=3pNbEV2X9F3dC2FKpEusaXu9Rk21HMKvaDGthzwuF1I=;
-	b=IVfmxpSjzCgbKWfkYGb5epWy5sM6fs1eWgraxZK8ieYVQwrHpUFS7FKovc7/LEswSKLidY
-	Ngq9VLOrOD9PUA9YEGG7pNr5h9xjujlMw82ei2xZPfqZTZ1aHGthpTwZOECN2sOW9uWlhX
-	F1pV29B82HQ5NohmOugR+BFuoFsvzQo=
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=yOr4dsBY3Mj6ddqZlcFAyjmHUnkutVjvpYhe/yfO3KwWX6wM81RvVif2llgQeTTN/LhaIZ
+	CSkFnd+PQfLge8g3V7uecRF808fPIR7psh3k4JUC8Ljhq+TtVP64AEJNpZoKBGC/NjRVxi
+	zXa0+hvA44bRlL6+evOP69SJKFaVHjA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767797802;
+	s=susede2_ed25519; t=1767805737;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=3pNbEV2X9F3dC2FKpEusaXu9Rk21HMKvaDGthzwuF1I=;
-	b=y7o0Ld2clnRcKX2TzaDs0Uyz/Ty7ptfzebm2gZ6Eg0w4BmKRJ+5KUh8r4zg4IXQUGsq5h8
-	7p+0+x1qosJFMZAQ==
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=2Vjs7QAK/XGu5nVeTnzQMI17QMocDVk3y+fvR1i143vkBdJeo+mwp4u8lzZ9/zpdGs+yfT
+	xduaLzItQXt3qIDw==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IVfmxpSj;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=y7o0Ld2c
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yOr4dsBY;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2Vjs7QAK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767797802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1767805737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=3pNbEV2X9F3dC2FKpEusaXu9Rk21HMKvaDGthzwuF1I=;
-	b=IVfmxpSjzCgbKWfkYGb5epWy5sM6fs1eWgraxZK8ieYVQwrHpUFS7FKovc7/LEswSKLidY
-	Ngq9VLOrOD9PUA9YEGG7pNr5h9xjujlMw82ei2xZPfqZTZ1aHGthpTwZOECN2sOW9uWlhX
-	F1pV29B82HQ5NohmOugR+BFuoFsvzQo=
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=yOr4dsBY3Mj6ddqZlcFAyjmHUnkutVjvpYhe/yfO3KwWX6wM81RvVif2llgQeTTN/LhaIZ
+	CSkFnd+PQfLge8g3V7uecRF808fPIR7psh3k4JUC8Ljhq+TtVP64AEJNpZoKBGC/NjRVxi
+	zXa0+hvA44bRlL6+evOP69SJKFaVHjA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767797802;
+	s=susede2_ed25519; t=1767805737;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=3pNbEV2X9F3dC2FKpEusaXu9Rk21HMKvaDGthzwuF1I=;
-	b=y7o0Ld2clnRcKX2TzaDs0Uyz/Ty7ptfzebm2gZ6Eg0w4BmKRJ+5KUh8r4zg4IXQUGsq5h8
-	7p+0+x1qosJFMZAQ==
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=2Vjs7QAK/XGu5nVeTnzQMI17QMocDVk3y+fvR1i143vkBdJeo+mwp4u8lzZ9/zpdGs+yfT
+	xduaLzItQXt3qIDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB13C3EA63;
-	Wed,  7 Jan 2026 14:56:41 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 863873EA63;
+	Wed,  7 Jan 2026 17:08:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CG4qNSl0XmmzXwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 14:56:41 +0000
-Message-ID: <473d479c-4eae-4589-b8c2-e2a29e8e6bc1@suse.cz>
-Date: Wed, 7 Jan 2026 15:56:41 +0100
+	id RE9wICmTXmlUYwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 17:08:57 +0000
+Message-ID: <644e163d-edd9-4128-9516-0f70a25526df@suse.cz>
+Date: Wed, 7 Jan 2026 18:08:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -96,8 +96,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 4/8] mm/slab: abstract slabobj_ext access via new
- slab_obj_ext() helper
+Subject: Re: [PATCH V5 7/8] mm/slab: save memory by allocating slabobj_ext
+ array from leftover
 Content-Language: en-US
 To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
 Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
@@ -108,7 +108,7 @@ Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
  tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
  linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev
 References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-5-harry.yoo@oracle.com>
+ <20260105080230.13171-8-harry.yoo@oracle.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -149,9 +149,12 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
  dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
  m6M14QORSWTLRg==
-In-Reply-To: <20260105080230.13171-5-harry.yoo@oracle.com>
+In-Reply-To: <20260105080230.13171-8-harry.yoo@oracle.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: AE8A334070
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -160,144 +163,94 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[23];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TO_DN_SOME(0.00)[]
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spam-Level: 
-X-Rspamd-Queue-Id: 109EB33698
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
 
 On 1/5/26 09:02, Harry Yoo wrote:
-> Currently, the slab allocator assumes that slab->obj_exts is a pointer
-> to an array of struct slabobj_ext objects. However, to support storage
-> methods where struct slabobj_ext is embedded within objects, the slab
-> allocator should not make this assumption. Instead of directly
-> dereferencing the slabobj_exts array, abstract access to
-> struct slabobj_ext via helper functions.
+> The leftover space in a slab is always smaller than s->size, and
+> kmem caches for large objects that are not power-of-two sizes tend to have
+> a greater amount of leftover space per slab. In some cases, the leftover
+> space is larger than the size of the slabobj_ext array for the slab.
 > 
-> Introduce a new API slabobj_ext metadata access:
+> An excellent example of such a cache is ext4_inode_cache. On my system,
+> the object size is 1136, with a preferred order of 3, 28 objects per slab,
+> and 960 bytes of leftover space per slab.
 > 
->   slab_obj_ext(slab, obj_exts, index) - returns the pointer to
->   struct slabobj_ext element at the given index.
+> Since the size of the slabobj_ext array is only 224 bytes (w/o mem
+> profiling) or 448 bytes (w/ mem profiling) per slab, the entire array
+> fits within the leftover space.
 > 
-> Directly dereferencing the return value of slab_obj_exts() is no longer
-> allowed. Instead, slab_obj_ext() must always be used to access
-> individual struct slabobj_ext objects.
+> Allocate the slabobj_exts array from this unused space instead of using
+> kcalloc() when it is large enough. The array is allocated from unused
+> space only when creating new slabs, and it doesn't try to utilize unused
+> space if alloc_slab_obj_exts() is called after slab creation because
+> implementing lazy allocation involves more expensive synchronization.
 > 
-> Convert all users to use these APIs.
-> No functional changes intended.
+> The implementation and evaluation of lazy allocation from unused space
+> is left as future-work. As pointed by Vlastimil Babka [1], it could be
+> beneficial when a slab cache without SLAB_ACCOUNT can be created, and
+> some of the allocations from the cache use __GFP_ACCOUNT. For example,
+> xarray does that.
 > 
+> To avoid unnecessary overhead when MEMCG (with SLAB_ACCOUNT) and
+> MEM_ALLOC_PROFILING are not used for the cache, allocate the slabobj_ext
+> array only when either of them is enabled on slab allocation.
+> 
+> [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
+> 
+> Before patch (creating ~2.64M directories on ext4):
+>   Slab:            4747880 kB
+>   SReclaimable:    4169652 kB
+>   SUnreclaim:       578228 kB
+> 
+> After patch (creating ~2.64M directories on ext4):
+>   Slab:            4724020 kB
+>   SReclaimable:    4169188 kB
+>   SUnreclaim:       554832 kB (-22.84 MiB)
+> 
+> Enjoy the memory savings!
+> 
+> Link: https://lore.kernel.org/linux-mm/48029aab-20ea-4d90-bfd1-255592b2018e@suse.cz [1]
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 
-> +/*
-> + * slab_obj_ext - get the pointer to the slab object extension metadata
-> + * associated with an object in a slab.
-> + * @slab: a pointer to the slab struct
-> + * @obj_exts: a pointer to the object extension vector
-> + * @index: an index of the object
-> + *
-> + * Returns a pointer to the object extension associated with the object.
-> + */
-> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
-> +					       unsigned long obj_exts,
-> +					       unsigned int index)
+> +static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
 > +{
-> +	struct slabobj_ext *obj_ext;
-> +
-> +	VM_WARN_ON_ONCE(!slab_obj_exts(slab));
-> +	VM_WARN_ON_ONCE(obj_exts != slab_obj_exts(slab));
-
-The first check seems redundant given we have the second one? If we get
-passed obj_ext 0 and slab_obj_exts() is also 0, it will blow up quickly anyway.
-
-> +
-> +	obj_ext = (struct slabobj_ext *)obj_exts;
-> +	return &obj_ext[index];
->  }
->  
->  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-> @@ -533,7 +558,13 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
->  
->  #else /* CONFIG_SLAB_OBJ_EXT */
->  
-> -static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
-> +static inline unsigned long slab_obj_exts(struct slab *slab)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
-> +					       unsigned int index)
-
-Hmm this is missing the obj_exts parameter? Either will not compile
-!CONFIG_SLAB_OBJ_EXT or isn't reachable in that config anyway?
-
->  {
->  	return NULL;
->  }
-> @@ -550,7 +581,7 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
->  bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->  				  gfp_t flags, size_t size, void **p);
->  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-> -			    void **p, int objects, struct slabobj_ext *obj_exts);
-> +			    void **p, int objects, unsigned long obj_exts);
->  #endif
->  
->  void kvfree_rcu_cb(struct rcu_head *head);
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 0e32f6420a8a..84bd4f23dc4a 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-
-<snip>
-
-> @@ -2176,7 +2178,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
->  
->  static inline void free_slab_obj_exts(struct slab *slab)
->  {
-> -	struct slabobj_ext *obj_exts;
+> +	unsigned long expected;
 > +	unsigned long obj_exts;
+> +
+> +	obj_exts = slab_obj_exts(slab);
+> +	if (!obj_exts)
+> +		return false;
+> +
+> +	if (!obj_exts_fit_within_slab_leftover(s, slab))
+> +		return false;
+> +
+> +	expected = (unsigned long)slab_address(slab);
+> +	expected += obj_exts_offset_in_slab(s, slab);
+> +	return obj_exts == expected;
+> +}
 
-I think in this function we could leave it as pointer.
-
->  	obj_exts = slab_obj_exts(slab);
-
-And do a single cast here.
-
->  	if (!obj_exts) {
-> @@ -2196,11 +2198,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
->  	 * NULL, therefore replace NULL with CODETAG_EMPTY to indicate that
->  	 * the extension for obj_exts is expected to be NULL.
->  	 */
-> -	mark_objexts_empty(obj_exts);
-> +	mark_objexts_empty((struct slabobj_ext *)obj_exts);
->  	if (unlikely(READ_ONCE(slab->obj_exts) & OBJEXTS_NOSPIN_ALLOC))
-> -		kfree_nolock(obj_exts);
-> +		kfree_nolock((void *)obj_exts);
->  	else
-> -		kfree(obj_exts);
-> +		kfree((void *)obj_exts);
->  	slab->obj_exts = 0;
->  }
-
-And avoid those 3 above.
-Unless it gets more complicated with later patches...
-
+Wonder if we could just check if the pointer is within the slab page's
+virtual address range. And if we need to distinguish if it's slab_leftover
+or unused within s->size, determine it by the stride?
 
 
