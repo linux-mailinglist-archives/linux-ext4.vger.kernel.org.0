@@ -1,205 +1,417 @@
-Return-Path: <linux-ext4+bounces-12612-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12614-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A77CFEEF8
-	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 17:46:13 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C82CFE832
+	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 16:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3F67C31DFF93
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 16:37:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 596563097B6D
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 15:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48FB3446D1;
-	Wed,  7 Jan 2026 14:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613C33587DE;
+	Wed,  7 Jan 2026 14:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="hh1HlCob"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tD414w/m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10333446A0;
-	Wed,  7 Jan 2026 14:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767796240; cv=pass; b=Dc3Q54KXplXmguNuY3S33dW0e+Uie+W2CDHnHIgh6fxYR9Ej7PP++PbEYaVtRuhgdI0tqz2pY4Am6TZm6B4YhhM8G1n/y7I5KkLw7CeHTz0jSxDNL4ZyIZku5Owl/RDgZig4d3qNoBG7Fv2cH0pTBwxavyUPPZX0k/2jkOsaqG8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767796240; c=relaxed/simple;
-	bh=VazaG8fKnrdrclnpjh9pm6+587POHVlCKO9amzOd8kU=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=QPuVIe25bz5YGgGQkAjJHhFzmpSaQh4A2Io87QmDXw303OeICgHSfyUZLkdqgjaYP32vjP2bU7++XDkxC/7jt/2nIb9PLWyVkH0KbQjPxiaBDAclv1C6HPTjaZ3cJ94ZFKmvmfoYYks81Lb7AtzlB+YF6V7NyJsItR6LcdGt9+E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=hh1HlCob; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1767796235; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=VHiFLjp7+gXKVnCFg29dJmijO/6YjHoi4mCEJOj/rdBXpbK+W7AD0oKOCUEoIBhkpJ0QQPg6mbPVpvoefIFiAOpYqw8vRnfPhbiwwV9APLeRsVth5XudCCCBCTlOhY2uU6y6nD0J2hZey/5FmNTP9qHj65vGowyZWDZyvOznffc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1767796235; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=dLcpAXrRiG6zIAgFWPxpdj/w09uFYZ3OsZqoWHN3WHc=; 
-	b=YQffBEkOaDXknfNZrVeWiiKFuBFVH8lr1IhWh16tC/9EG2y4vVTQFzQSZPVbWSW7l5E1TMOaxyGYsX0TxnX4Jb3gJoy8TuqpbyBOke5xhP9ELli/dCGDqJK/LvTQ/DM6/S2m6hHLBcv5GQG6FjfL+cLIFkyD7r9OedjtR6jYRJc=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1767796235;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=dLcpAXrRiG6zIAgFWPxpdj/w09uFYZ3OsZqoWHN3WHc=;
-	b=hh1HlCobc30bcvgjAS9CaputvGnnF94EJCTFyaByiSbmxdWqPwxZooyV1JsVDdrg
-	H9jUf+5wLJdGFJ27yxZ4gNDh7do/UsfwEmFjIRZ2RccBRTIsIF4MRtt6lhZPtevpM27
-	Oxa3ZS9fOnvpH/dhpkLn7PjtZZKWA1JDCMCyB1/w=
-Received: from mail.zoho.com by mx.zohomail.com
-	with SMTP id 1767796232516623.2821289037377; Wed, 7 Jan 2026 06:30:32 -0800 (PST)
-Date: Wed, 07 Jan 2026 22:30:32 +0800
-From: Li Chen <me@linux.beauty>
-To: "Zhang Yi" <yi.zhang@huaweicloud.com>
-Cc: "linux-ext4" <linux-ext4@vger.kernel.org>,
-	"Theodore Ts'o" <tytso@mit.edu>,
-	"Andreas Dilger" <adilger.kernel@dilger.ca>,
-	"linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <19b98ddd118.2300666e5265102.1629777029508214951@linux.beauty>
-In-Reply-To: <a507a2ce-a2ae-4592-b171-63974034fc1b@huaweicloud.com>
-References: <20251224032943.134063-1-me@linux.beauty>
- <20251224032943.134063-2-me@linux.beauty>
- <e3465e09-0b6f-419c-9af5-00e750448e53@huaweicloud.com>
- <19b933e4928.7e19f7474492475.8810694155148118128@linux.beauty> <a507a2ce-a2ae-4592-b171-63974034fc1b@huaweicloud.com>
-Subject: Re: [RFC v3 1/2] ext4: fast_commit: assert i_data_sem only before
- sleep
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A14D93563CC;
+	Wed,  7 Jan 2026 14:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767797677; cv=none; b=Xmz+CCXstXjHR8EofwMMyhQGh79gXZfaXCs5NcIcXiKdefD/7yt9Zw9MMV6fuifvXsK8NQrkuvoZwuGvNLTx0IHIXu3KhNAb3Yn1MsOtbNrp+1bX1LMmJUYUkjF9kNRORUmDvnlQKXcPrbaE4Fe9Urr7eoE2/MW20YuEu8LkhzM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767797677; c=relaxed/simple;
+	bh=LrPPGdstqjlvIyHJ5YmeKiIMvP1LrF7p7ujAU4bQrbQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O09zdnW2iIZLj87Wk2QHxU26AYAFnX0Pj71LL/sWYEl67p2I/sU+OoD1dr7jpRIy0SNagJihN4HccZ/N/a7INKqrHIufIYIEilNa9fVtKeQNYcr2BsG6fHueSMPwP1lio/aJhBSeVD3hM9eWPg101cnoDWQfYoltQnnpXTcJNzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tD414w/m; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 7 Jan 2026 22:53:48 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767797662;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Y0xU9Dbp20DUGDHu2Ggngi6mIEuMC7eQW0YVbkY+7w=;
+	b=tD414w/mIde6l3B72sBn4u7OfuoErrciHo7366jQ9OQiSZdPl7UYhn3CD3s3k6cl6jtL9F
+	YoVuWbqKH/iaKAHu9nY01AndMcOJLJn1SJRu0Z6xhmp1jfly3LvY0h4tOVrqk8UbJBCZD3
+	+SJhBnie44tYPvVxQQghl1mJkAtZCVM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
+	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
+	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
+	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH V5 4/8] mm/slab: abstract slabobj_ext access via new
+ slab_obj_ext() helper
+Message-ID: <n6kyluk3nahdxytwek4ijzy4en6mc6ps7fjjgftww4ith7llom@cijm4who24w2>
+References: <20260105080230.13171-1-harry.yoo@oracle.com>
+ <20260105080230.13171-5-harry.yoo@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260105080230.13171-5-harry.yoo@oracle.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Zhang,
+On Mon, Jan 05, 2026 at 05:02:26PM +0900, Harry Yoo wrote:
+> Currently, the slab allocator assumes that slab->obj_exts is a pointer
+> to an array of struct slabobj_ext objects. However, to support storage
+> methods where struct slabobj_ext is embedded within objects, the slab
+> allocator should not make this assumption. Instead of directly
+> dereferencing the slabobj_exts array, abstract access to
+> struct slabobj_ext via helper functions.
+> 
+> Introduce a new API slabobj_ext metadata access:
+> 
+>   slab_obj_ext(slab, obj_exts, index) - returns the pointer to
+>   struct slabobj_ext element at the given index.
+> 
+> Directly dereferencing the return value of slab_obj_exts() is no longer
+> allowed. Instead, slab_obj_ext() must always be used to access
+> individual struct slabobj_ext objects.
+> 
+> Convert all users to use these APIs.
+> No functional changes intended.
+> 
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> ---
+>  mm/memcontrol.c | 23 +++++++++++++++-------
+>  mm/slab.h       | 43 +++++++++++++++++++++++++++++++++++------
+>  mm/slub.c       | 51 ++++++++++++++++++++++++++++---------------------
+>  3 files changed, 82 insertions(+), 35 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index be810c1fbfc3..fd9105a953b0 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2596,7 +2596,8 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
+>  	 * Memcg membership data for each individual object is saved in
+>  	 * slab->obj_exts.
+>  	 */
+> -	struct slabobj_ext *obj_exts;
+> +	unsigned long obj_exts;
+> +	struct slabobj_ext *obj_ext;
+>  	unsigned int off;
+>  
+>  	obj_exts = slab_obj_exts(slab);
+> @@ -2604,8 +2605,9 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
+>  		return NULL;
+>  
+>  	off = obj_to_index(slab->slab_cache, slab, p);
+> -	if (obj_exts[off].objcg)
+> -		return obj_cgroup_memcg(obj_exts[off].objcg);
+> +	obj_ext = slab_obj_ext(slab, obj_exts, off);
+> +	if (obj_ext->objcg)
+> +		return obj_cgroup_memcg(obj_ext->objcg);
+>  
+>  	return NULL;
+>  }
+> @@ -3191,6 +3193,9 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  	}
+>  
+>  	for (i = 0; i < size; i++) {
+> +		unsigned long obj_exts;
+> +		struct slabobj_ext *obj_ext;
+> +
+>  		slab = virt_to_slab(p[i]);
+>  
+>  		if (!slab_obj_exts(slab) &&
+> @@ -3213,29 +3218,33 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  					slab_pgdat(slab), cache_vmstat_idx(s)))
+>  			return false;
+>  
+> +		obj_exts = slab_obj_exts(slab);
+>  		off = obj_to_index(s, slab, p[i]);
+> +		obj_ext = slab_obj_ext(slab, obj_exts, off);
+>  		obj_cgroup_get(objcg);
+> -		slab_obj_exts(slab)[off].objcg = objcg;
+> +		obj_ext->objcg = objcg;
+>  	}
+>  
+>  	return true;
+>  }
+>  
+>  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -			    void **p, int objects, struct slabobj_ext *obj_exts)
+> +			    void **p, int objects, unsigned long obj_exts)
+>  {
+>  	size_t obj_size = obj_full_size(s);
+>  
+>  	for (int i = 0; i < objects; i++) {
+>  		struct obj_cgroup *objcg;
+> +		struct slabobj_ext *obj_ext;
+>  		unsigned int off;
+>  
+>  		off = obj_to_index(s, slab, p[i]);
+> -		objcg = obj_exts[off].objcg;
+> +		obj_ext = slab_obj_ext(slab, obj_exts, off);
+> +		objcg = obj_ext->objcg;
+>  		if (!objcg)
+>  			continue;
+>  
+> -		obj_exts[off].objcg = NULL;
+> +		obj_ext->objcg = NULL;
+>  		refill_obj_stock(objcg, obj_size, true, -obj_size,
+>  				 slab_pgdat(slab), cache_vmstat_idx(s));
+>  		obj_cgroup_put(objcg);
+> diff --git a/mm/slab.h b/mm/slab.h
+> index e767aa7e91b0..6bd8e018117d 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -509,10 +509,12 @@ static inline bool slab_in_kunit_test(void) { return false; }
+>   * associated with a slab.
+>   * @slab: a pointer to the slab struct
+>   *
+> - * Returns a pointer to the object extension vector associated with the slab,
+> - * or NULL if no such vector has been associated yet.
+> + * Returns the address of the object extension vector associated with the slab,
+> + * or zero if no such vector has been associated yet.
+> + * Do not dereference the return value directly; use slab_obj_ext() to access
+> + * its elements.
+>   */
+> -static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+> +static inline unsigned long slab_obj_exts(struct slab *slab)
+>  {
+>  	unsigned long obj_exts = READ_ONCE(slab->obj_exts);
+>  
+> @@ -525,7 +527,30 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+>  		       obj_exts != OBJEXTS_ALLOC_FAIL, slab_page(slab));
+>  	VM_BUG_ON_PAGE(obj_exts & MEMCG_DATA_KMEM, slab_page(slab));
+>  #endif
+> -	return (struct slabobj_ext *)(obj_exts & ~OBJEXTS_FLAGS_MASK);
+> +
+> +	return obj_exts & ~OBJEXTS_FLAGS_MASK;
+> +}
+> +
+> +/*
+> + * slab_obj_ext - get the pointer to the slab object extension metadata
+> + * associated with an object in a slab.
+> + * @slab: a pointer to the slab struct
+> + * @obj_exts: a pointer to the object extension vector
+> + * @index: an index of the object
+> + *
+> + * Returns a pointer to the object extension associated with the object.
+> + */
+> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
+> +					       unsigned long obj_exts,
+> +					       unsigned int index)
+> +{
+> +	struct slabobj_ext *obj_ext;
+> +
+> +	VM_WARN_ON_ONCE(!slab_obj_exts(slab));
+> +	VM_WARN_ON_ONCE(obj_exts != slab_obj_exts(slab));
+> +
+> +	obj_ext = (struct slabobj_ext *)obj_exts;
+> +	return &obj_ext[index];
+>  }
+>  
+>  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+> @@ -533,7 +558,13 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>  
+>  #else /* CONFIG_SLAB_OBJ_EXT */
+>  
+> -static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+> +static inline unsigned long slab_obj_exts(struct slab *slab)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
+> +					       unsigned int index)
 
-Thanks a lot for your detailed review!
+Hi Harry, just a small nit: the parameter list of slab_obj_ext() should
+include `unsigned long obj_exts`.
 
- ---- On Wed, 07 Jan 2026 10:00:23 +0800  Zhang Yi <yi.zhang@huaweicloud.co=
-m> wrote ---=20
- > On 1/6/2026 8:18 PM, Li Chen wrote:
- > > Hi Zhang Yi,
- > >=20
- > >  ---- On Mon, 05 Jan 2026 20:18:42 +0800  Zhang Yi <yi.zhang@huaweiclo=
-ud.com> wrote ---=20
- > >  > Hi Li,
- > >  >=20
- > >  > On 12/24/2025 11:29 AM, Li Chen wrote:
- > >  > > ext4_fc_track_inode() can return without sleeping when
- > >  > > EXT4_STATE_FC_COMMITTING is already clear. The lockdep assertion =
-for
- > >  > > ei->i_data_sem was done unconditionally before the wait loop, whi=
-ch can
- > >  > > WARN in call paths that hold i_data_sem even though we never bloc=
-k. Move
- > >  > > lockdep_assert_not_held(&ei->i_data_sem) into the actual sleep pa=
-th,
- > >  > > right before schedule().
- > >  > >=20
- > >  > > Signed-off-by: Li Chen <me@linux.beauty>
- > >  >=20
- > >  > Thank you for the fix patch! However, the solution does not seem to=
- fix
- > >  > the issue. IIUC, the root cause of this issue is the following race
- > >  > condition (show only one case), and it may cause a real ABBA dead l=
-ock
- > >  > issue.
- > >  >=20
- > >  > ext4_map_blocks()
- > >  >  hold i_data_sem // <- A
- > >  >  ext4_mb_new_blocks()
- > >  >   ext4_dirty_inode()
- > >  >                                  ext4_fc_commit()
- > >  >                                   ext4_fc_perform_commit()
- > >  >                                    set EXT4_STATE_FC_COMMITTING  <-=
-B
- > >  >                                    ext4_fc_write_inode_data()
- > >  >                                    ext4_map_blocks()
- > >  >                                     hold i_data_sem  // <- A
- > >  >    ext4_fc_track_inode()
- > >  >     wait EXT4_STATE_FC_COMMITTING  <- B
- > >  >                                   jbd2_fc_end_commit()
- > >  >                                    ext4_fc_cleanup()
- > >  >                                     clear EXT4_STATE_FC_COMMITTING(=
-)
- > >  >=20
-=20
-I think the ABBA reasoning is plausible: if a caller violates the ordering
-contract and enters ext4_fc_track_inode() while holding i_data_sem, and the
-recheck still finds EXT4_STATE_FC_COMMITTING set (so we actually schedule()=
-),
-then we can get A -> wait(B). If the commit task, while holding the inode
-in COMMITTING, still needs i_data_sem (e.g. via mapping/log writing), that
-gives B -> wait(A), forming a cycle.
+-- 
+Thanks,
+Hao
 
- > >  > Postponing the lockdep assertion to the point where sleeping is act=
-ually
- > >  > necessary does not resolve this deadlock issue, it merely masks the
- > >  > problem, right?
- > >  >=20
- > >  > I currently don't quite understand why only ext4_fc_track_inode() n=
-eeds
- > >  > to wait for the inode being fast committed to be completed, instead=
- of
- > >  > adding it to the FC_Q_STAGING list like other tracking operations.
- >=20
- > It seems that the inode metadata of the tracked inode was not recorded
- > during the __track_inode(), so the inode metadata committed at commit
- > time reflects real-time data. However, the current
- > ext4_fc_perform_commit() lacks concurrency control, allowing other
- > processes to simultaneously initiate new handles that modify the inode
- > metadata while the previous metadata is being fast committed. Therefore,
- > to prevent recording newly changed inode metadata during the old commit
- > phase, the ext4_fc_track_inode() function must wait for the ongoing
- > commit process to complete before modifying.
- >=20
- > >  > So
- > >  > now I don't have a good idea to fix this problem either.  Perhaps w=
-e
- > >  > need to rethink the necessity of this waiting, or find a way to avo=
-id
- > >  > acquiring i_data_sem during fast commit.
- >=20
- > Ha, the solution seems to have already been listed in the TODOs in
- > fast_commit.c.
- >=20
- >   Change ext4_fc_commit() to lookup logical to physical mapping using ex=
-tent
- >   status tree. This would get rid of the need to call ext4_fc_track_inod=
-e()
- >   before acquiring i_data_sem. To do that we would need to ensure that
- >   modified extents from the extent status tree are not evicted from memo=
-ry.
- >=20
- > Alternatively, recording the mapped range of tracking might also be
- > feasible.
-
-Thanks a lot for your insights!
-
-For the next revesion, I plan to follow the "Alternatively" way firstly:
-record the mapped ranges (and relvant inode metadata) at commit time in a
-snapshot, when journal updates are locked/handles are drained, and then
-consume only the snapshot during log writing. This avoids doing
-logical-to-physical mapping (and thus avoids taking i_data_sem) in the log
-writing phase, and removes the need for ext4_fc_track_inode() to wait for
-EXT4_STATE_FC_COMMITTING.
-
-I did not pick the extent status tree approach because it would require
-additional work to guarantee the needed mappings are resident and not
-evicted under memory pressure, which seems like a larger correctness
-surface(Please correct me if I'm wrong). If you believe the extent stats tr=
-ee
-approach is better, please let me know, and I will do my best to implement =
-it.
-
-Thanks again for the guidance. I'll post an RFC v3 later.
-
-Regards,
-Li=E2=80=8B
-
+>  {
+>  	return NULL;
+>  }
+> @@ -550,7 +581,7 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+>  bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  				  gfp_t flags, size_t size, void **p);
+>  void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> -			    void **p, int objects, struct slabobj_ext *obj_exts);
+> +			    void **p, int objects, unsigned long obj_exts);
+>  #endif
+>  
+>  void kvfree_rcu_cb(struct rcu_head *head);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 0e32f6420a8a..84bd4f23dc4a 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2042,7 +2042,7 @@ static bool freelist_corrupted(struct kmem_cache *s, struct slab *slab,
+>  
+>  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+>  {
+> -	struct slabobj_ext *slab_exts;
+> +	unsigned long slab_exts;
+>  	struct slab *obj_exts_slab;
+>  
+>  	obj_exts_slab = virt_to_slab(obj_exts);
+> @@ -2050,13 +2050,15 @@ static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+>  	if (slab_exts) {
+>  		unsigned int offs = obj_to_index(obj_exts_slab->slab_cache,
+>  						 obj_exts_slab, obj_exts);
+> +		struct slabobj_ext *ext = slab_obj_ext(obj_exts_slab,
+> +						       slab_exts, offs);
+>  
+> -		if (unlikely(is_codetag_empty(&slab_exts[offs].ref)))
+> +		if (unlikely(is_codetag_empty(ext->ref)))
+>  			return;
+>  
+>  		/* codetag should be NULL here */
+> -		WARN_ON(slab_exts[offs].ref.ct);
+> -		set_codetag_empty(&slab_exts[offs].ref);
+> +		WARN_ON(ext->ref.ct);
+> +		set_codetag_empty(&ext->ref);
+>  	}
+>  }
+>  
+> @@ -2176,7 +2178,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>  
+>  static inline void free_slab_obj_exts(struct slab *slab)
+>  {
+> -	struct slabobj_ext *obj_exts;
+> +	unsigned long obj_exts;
+>  
+>  	obj_exts = slab_obj_exts(slab);
+>  	if (!obj_exts) {
+> @@ -2196,11 +2198,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  	 * NULL, therefore replace NULL with CODETAG_EMPTY to indicate that
+>  	 * the extension for obj_exts is expected to be NULL.
+>  	 */
+> -	mark_objexts_empty(obj_exts);
+> +	mark_objexts_empty((struct slabobj_ext *)obj_exts);
+>  	if (unlikely(READ_ONCE(slab->obj_exts) & OBJEXTS_NOSPIN_ALLOC))
+> -		kfree_nolock(obj_exts);
+> +		kfree_nolock((void *)obj_exts);
+>  	else
+> -		kfree(obj_exts);
+> +		kfree((void *)obj_exts);
+>  	slab->obj_exts = 0;
+>  }
+>  
+> @@ -2225,26 +2227,29 @@ static inline void free_slab_obj_exts(struct slab *slab)
+>  #ifdef CONFIG_MEM_ALLOC_PROFILING
+>  
+>  static inline struct slabobj_ext *
+> -prepare_slab_obj_exts_hook(struct kmem_cache *s, gfp_t flags, void *p)
+> +prepare_slab_obj_ext_hook(struct kmem_cache *s, gfp_t flags, void *p)
+>  {
+>  	struct slab *slab;
+> +	unsigned long obj_exts;
+>  
+>  	slab = virt_to_slab(p);
+> -	if (!slab_obj_exts(slab) &&
+> +	obj_exts = slab_obj_exts(slab);
+> +	if (!obj_exts &&
+>  	    alloc_slab_obj_exts(slab, s, flags, false)) {
+>  		pr_warn_once("%s, %s: Failed to create slab extension vector!\n",
+>  			     __func__, s->name);
+>  		return NULL;
+>  	}
+>  
+> -	return slab_obj_exts(slab) + obj_to_index(s, slab, p);
+> +	obj_exts = slab_obj_exts(slab);
+> +	return slab_obj_ext(slab, obj_exts, obj_to_index(s, slab, p));
+>  }
+>  
+>  /* Should be called only if mem_alloc_profiling_enabled() */
+>  static noinline void
+>  __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
+>  {
+> -	struct slabobj_ext *obj_exts;
+> +	struct slabobj_ext *obj_ext;
+>  
+>  	if (!object)
+>  		return;
+> @@ -2255,14 +2260,14 @@ __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
+>  	if (flags & __GFP_NO_OBJ_EXT)
+>  		return;
+>  
+> -	obj_exts = prepare_slab_obj_exts_hook(s, flags, object);
+> +	obj_ext = prepare_slab_obj_ext_hook(s, flags, object);
+>  	/*
+>  	 * Currently obj_exts is used only for allocation profiling.
+>  	 * If other users appear then mem_alloc_profiling_enabled()
+>  	 * check should be added before alloc_tag_add().
+>  	 */
+> -	if (likely(obj_exts))
+> -		alloc_tag_add(&obj_exts->ref, current->alloc_tag, s->size);
+> +	if (likely(obj_ext))
+> +		alloc_tag_add(&obj_ext->ref, current->alloc_tag, s->size);
+>  	else
+>  		alloc_tag_set_inaccurate(current->alloc_tag);
+>  }
+> @@ -2279,8 +2284,8 @@ static noinline void
+>  __alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+>  			       int objects)
+>  {
+> -	struct slabobj_ext *obj_exts;
+>  	int i;
+> +	unsigned long obj_exts;
+>  
+>  	/* slab->obj_exts might not be NULL if it was created for MEMCG accounting. */
+>  	if (s->flags & (SLAB_NO_OBJ_EXT | SLAB_NOLEAKTRACE))
+> @@ -2293,7 +2298,7 @@ __alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p
+>  	for (i = 0; i < objects; i++) {
+>  		unsigned int off = obj_to_index(s, slab, p[i]);
+>  
+> -		alloc_tag_sub(&obj_exts[off].ref, s->size);
+> +		alloc_tag_sub(&slab_obj_ext(slab, obj_exts, off)->ref, s->size);
+>  	}
+>  }
+>  
+> @@ -2352,7 +2357,7 @@ static __fastpath_inline
+>  void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+>  			  int objects)
+>  {
+> -	struct slabobj_ext *obj_exts;
+> +	unsigned long obj_exts;
+>  
+>  	if (!memcg_kmem_online())
+>  		return;
+> @@ -2367,7 +2372,8 @@ void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+>  static __fastpath_inline
+>  bool memcg_slab_post_charge(void *p, gfp_t flags)
+>  {
+> -	struct slabobj_ext *slab_exts;
+> +	unsigned long obj_exts;
+> +	struct slabobj_ext *obj_ext;
+>  	struct kmem_cache *s;
+>  	struct page *page;
+>  	struct slab *slab;
+> @@ -2408,10 +2414,11 @@ bool memcg_slab_post_charge(void *p, gfp_t flags)
+>  		return true;
+>  
+>  	/* Ignore already charged objects. */
+> -	slab_exts = slab_obj_exts(slab);
+> -	if (slab_exts) {
+> +	obj_exts = slab_obj_exts(slab);
+> +	if (obj_exts) {
+>  		off = obj_to_index(s, slab, p);
+> -		if (unlikely(slab_exts[off].objcg))
+> +		obj_ext = slab_obj_ext(slab, obj_exts, off);
+> +		if (unlikely(obj_ext->objcg))
+>  			return true;
+>  	}
+>  
+> -- 
+> 2.43.0
+> 
 
