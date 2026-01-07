@@ -1,243 +1,190 @@
-Return-Path: <linux-ext4+bounces-12610-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12611-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0CF8CFE176
-	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 14:54:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCDECFE459
+	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 15:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5FEF930039C3
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 13:54:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2AC1A30C7168
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 14:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D73332EAE;
-	Wed,  7 Jan 2026 13:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825BF3081AD;
+	Wed,  7 Jan 2026 14:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NUi+xZcW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="I2Zb2Tnw";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="STmjf0fs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="446vAx/s"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="E/QT3Lxo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABEC33291D
-	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 13:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767794061; cv=none; b=gY6Dd4H0EiLOYTdP7B8jNDItf/Rk8q+GOkh+DsPzyUbFCCv2eiV3HkXTb0foDBpWmAZRD7MslYZTAyJiVAVep/cOp96qIdeb/trisy9btes1nFklFy2egrDP28etQ0GuyseOHDhNwT8nc3pF07MtUnfJf2CL+hgqC95rdWw0ovg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767794061; c=relaxed/simple;
-	bh=8w4PePWYohzkOaQZvV5nZh0nz8DrzMnzXCRY+mdazdg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y/r0f/bLgQTPakMBiNkprAJrTM5iVWxUO5mX7FYHrfJrFjDoMlLbNRqqCV7eCN11j+g3i8pVLvY00IpyVhtaBkYrY1ShZrTDjxtet5/Nu5f2rKdngfcko0ANA/cgctlO2Su8nKW9NsHTAshtq3ZLIq3nl1Bbd59vv7M9yBJlpig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NUi+xZcW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=I2Zb2Tnw; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=STmjf0fs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=446vAx/s; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 76F535C123;
-	Wed,  7 Jan 2026 13:54:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767794057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UGuntV3J1idHYlamoG5JcaZ3RKqpek8czi0dvq5gqps=;
-	b=NUi+xZcWM6llmAE3Js0C5j62nlWXEoYaCsdOxNbqSH7t6J+6afLJsVG7PPRHqJmRmD5my/
-	svsAkjFUGzTM89W3Bx3hIJN6M1mLvpxPTBcLOrzHipXfhE/yZ/bbugdAHgPHBfKuHUon15
-	SugQ1vJqZgDWqTJ96PRhnb0t1SN/TEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767794057;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UGuntV3J1idHYlamoG5JcaZ3RKqpek8czi0dvq5gqps=;
-	b=I2Zb2Tnwks/vNrIxu3CJYRBQXTxoMXt11zJr0hfZmipQ+vc3ae3bQOeeNR9Kguc5HGsuew
-	70LqEko7PkrdSoBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=STmjf0fs;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="446vAx/s"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767794056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UGuntV3J1idHYlamoG5JcaZ3RKqpek8czi0dvq5gqps=;
-	b=STmjf0fshgU821QuLzB9IQCeTzOTfjeZDbqNRxxh0azeCAoX9DsdzSdE+0IHdwcLvd/B9U
-	4k/AaqQ2agbwDNPilH09YXH1oC3eReDiSyMF2OaPkPaITjaxu8ahFhd0vvjPyyf+lwiK5j
-	PQWhy3z4s10pgPxXEviZNaGdG2OGVkg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767794056;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UGuntV3J1idHYlamoG5JcaZ3RKqpek8czi0dvq5gqps=;
-	b=446vAx/sOr3QbHgE+/e4MkYKT6AEemfBAQM30r+Ybs96pXndLkdflt0KWNaOHJp1I/2FWi
-	k3ap2N9i/vxAHbCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F3293EA63;
-	Wed,  7 Jan 2026 13:54:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Wz38EohlXmkxIgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 13:54:16 +0000
-Message-ID: <e28c08e4-5048-429b-97a0-8d51e494efcd@suse.cz>
-Date: Wed, 7 Jan 2026 14:54:15 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF8933F8BB
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 14:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767795574; cv=pass; b=qNhizmdYjtsCO4ncoS7vMXf6Y907WurxiISH8TGI1iJGVuQ4M55li/9rBulpWef4o/+2UWFWhzFVe+fuC5gTEPVgT1uQ5kdoFRbGq/Cj83lRdsmMoTmyvPke97WQ+Ar4Pdwd8LbdwNje0A9az1HvRjC9RNkcZ3LiqJDBzoxJfLo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767795574; c=relaxed/simple;
+	bh=7jaRDaJxLVAGQ1GJCJtsT1GbN8AIwL8i0iJ1qpHdUMg=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=IK0l+mtjsT7guppk1u/nC02eHvEGxTTC7FhhTkCjEHtb6j21Xx0irW4j5+E9mJrX2EF4kuHaN3RFIISjM4VYlJiEtBtXGjXBt2K3V0BGkpDOXAX3uG6ZLkOAyCNJOmuegYvyEw8uOGF0ydE36s8uo/dpkzpBVww6GdKt/GDRuK8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=E/QT3Lxo; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1767795562; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=JqQ999Z1RTmXqklrVpGtRrDKWo3tf76SJHUxP/h6zSAMev75wfAz9oMmO4eWPu/e0wAWe2jfO6Y4JV+xC9SK8+U1KYyV/kvTmJg6PkTXJFBfcBBl/2clKo4l/cEtF1cjFbtWG6ih7jYOOfO7OBb3l0kFKhNq2qvfdUA0xgOgEDs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1767795562; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=iqhIUfBevoGJGsstOFRB5NLFts/FmlQNPdT/xcEN6DE=; 
+	b=jLzWPEC5hxTlPIOW8vDDWoY9p1BkRjF3Q+44EXDj7gN+eY0FHBDQPFD8JdxciEcHD/uIGHxVz95JsFhgsIt7ZVQyYTnFYpBiLG9KF0Kx2D+kCE98JBhBxJlBHsJ3x2XYeA5a7gBNQcsitwX3G1nI2BN3Ukmj2/gESFEu43pmZSY=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1767795562;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=iqhIUfBevoGJGsstOFRB5NLFts/FmlQNPdT/xcEN6DE=;
+	b=E/QT3LxosritVp6g2wtp3bdyZU0qci6oBovviz6oNuTEqt0XgZ9KgVFysPDNAqeq
+	iBo1NU6pVtR0V360hSgb+Eu+S8ptioOk0Ox8g8vvlorBUZD+8JuxlUVHvM3Rm3E0ylo
+	oWX2c8XzL/8COk1t+8MVRo85k1F9+c8rKJTSIOq4=
+Received: from mail.zoho.com by mx.zohomail.com
+	with SMTP id 1767795560492567.7120386748766; Wed, 7 Jan 2026 06:19:20 -0800 (PST)
+Date: Wed, 07 Jan 2026 22:19:20 +0800
+From: Li Chen <me@linux.beauty>
+To: "Zhang Yi" <yi.zhang@huaweicloud.com>
+Cc: "linux-ext4" <linux-ext4@vger.kernel.org>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	"Andreas Dilger" <adilger.kernel@dilger.ca>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <19b98d3901d.6853c0d25256967.6003033557062251155@linux.beauty>
+In-Reply-To: <e3465e09-0b6f-419c-9af5-00e750448e53@huaweicloud.com>
+References: <20251224032943.134063-1-me@linux.beauty>
+ <20251224032943.134063-2-me@linux.beauty> <e3465e09-0b6f-419c-9af5-00e750448e53@huaweicloud.com>
+Subject: Re: [RFC v3 1/2] ext4: fast_commit: assert i_data_sem only before
+ sleep
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 3/8] ext4: specify the free pointer offset for
- ext4_inode_cache
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
-Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
- glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
- roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
- surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
- tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-4-harry.yoo@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260105080230.13171-4-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 76F535C123
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 
-On 1/5/26 09:02, Harry Yoo wrote:
-> Convert ext4_inode_cache to use the kmem_cache_args interface and
-> specify a free pointer offset.
-> 
-> Since ext4_inode_cache uses a constructor, the free pointer would be
-> placed after the object to overwriting fields used by the constructor.
+Hi Zhang,
 
-                             ^ prevent?
+Thanks a lot for your comments!
 
-> However, some fields such as ->i_flags are not used by the constructor
-> and can safely be repurposed for the free pointer.
-> 
-> Specify the free pointer offset at i_flags to reduce the object size.
-> 
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-> ---
->  fs/ext4/super.c | 20 ++++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 87205660c5d0..42580643a466 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1491,12 +1491,20 @@ static void init_once(void *foo)
->  
->  static int __init init_inodecache(void)
->  {
-> -	ext4_inode_cachep = kmem_cache_create_usercopy("ext4_inode_cache",
-> -				sizeof(struct ext4_inode_info), 0,
-> -				SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
-> -				offsetof(struct ext4_inode_info, i_data),
-> -				sizeof_field(struct ext4_inode_info, i_data),
-> -				init_once);
-> +	struct kmem_cache_args args = {
-> +		.align = 0,
+ ---- On Mon, 05 Jan 2026 20:18:42 +0800  Zhang Yi <yi.zhang@huaweicloud.co=
+m> wrote ---=20
+ > Hi Li,
+ >=20
+ > On 12/24/2025 11:29 AM, Li Chen wrote:
+ > > ext4_fc_track_inode() can return without sleeping when
+ > > EXT4_STATE_FC_COMMITTING is already clear. The lockdep assertion for
+ > > ei->i_data_sem was done unconditionally before the wait loop, which ca=
+n
+ > > WARN in call paths that hold i_data_sem even though we never block. Mo=
+ve
+ > > lockdep_assert_not_held(&ei->i_data_sem) into the actual sleep path,
+ > > right before schedule().
+ > >=20
+ > > Signed-off-by: Li Chen <me@linux.beauty>
+ >=20
+ > Thank you for the fix patch! However, the solution does not seem to fix
+ > the issue. IIUC, the root cause of this issue is the following race
+ > condition (show only one case), and it may cause a real ABBA dead lock
+ > issue.
+ >=20
+ > ext4_map_blocks()
+ >  hold i_data_sem // <- A
+ >  ext4_mb_new_blocks()
+ >   ext4_dirty_inode()
+ >                                  ext4_fc_commit()
+ >                                   ext4_fc_perform_commit()
+ >                                    set EXT4_STATE_FC_COMMITTING  <-B
+ >                                    ext4_fc_write_inode_data()
+ >                                    ext4_map_blocks()
+ >                                     hold i_data_sem  // <- A
+ >    ext4_fc_track_inode()
+ >     wait EXT4_STATE_FC_COMMITTING  <- B
+ >                                   jbd2_fc_end_commit()
+ >                                    ext4_fc_cleanup()
+ >                                     clear EXT4_STATE_FC_COMMITTING()
+ >=20
+ > Postponing the lockdep assertion to the point where sleeping is actually
+ > necessary does not resolve this deadlock issue, it merely masks the
+ > problem, right?
+=20
+I agree. Moving lockdep_assert_not_held(&ei->i_data_sem) closer to the
+schedule() site can reduce spurious warnings (since the wait-bit pattern
+rechecks the bit after prepare_to_wait()), but it does not remove the
+underlying deadlock risk if we ever end up sleeping there, althoughI still=
+=20
+haven't been able to reproduce this ABBA issue.
 
-Nit: it's implicit so not necessary.
+ > I currently don't quite understand why only ext4_fc_track_inode() needs
+ > to wait for the inode being fast committed to be completed, instead of
+ > adding it to the FC_Q_STAGING list like other tracking operations. So
+ > now I don't have a good idea to fix this problem either.  Perhaps we
+ > need to rethink the necessity of this waiting, or find a way to avoid
+ > acquiring i_data_sem during fast commit.
+ >=20
+ > Thanks,
+ > Yi.
+ >=20
+ > > ---
+ > >  fs/ext4/fast_commit.c | 17 +++++++++--------
+ > >  1 file changed, 9 insertions(+), 8 deletions(-)
+ > >=20
+ > > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+ > > index d0926967d086..b0c458082997 100644
+ > > --- a/fs/ext4/fast_commit.c
+ > > +++ b/fs/ext4/fast_commit.c
+ > > @@ -566,13 +566,6 @@ void ext4_fc_track_inode(handle_t *handle, struct=
+ inode *inode)
+ > >      if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
+ > >          return;
+ > > =20
+ > > -    /*
+ > > -     * If we come here, we may sleep while waiting for the inode to
+ > > -     * commit. We shouldn't be holding i_data_sem when we go to sleep=
+ since
+ > > -     * the commit path needs to grab the lock while committing the in=
+ode.
+ > > -     */
+ > > -    lockdep_assert_not_held(&ei->i_data_sem);
+ > > -
+ > >      while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+ > >  #if (BITS_PER_LONG < 64)
+ > >          DEFINE_WAIT_BIT(wait, &ei->i_state_flags,
+ > > @@ -586,8 +579,16 @@ void ext4_fc_track_inode(handle_t *handle, struct=
+ inode *inode)
+ > >                     EXT4_STATE_FC_COMMITTING);
+ > >  #endif
+ > >          prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+ > > -        if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
+ > > +        if (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
+ > > +            /*
+ > > +             * We might sleep while waiting for the inode to commit.
+ > > +             * We shouldn't be holding i_data_sem when we go to sleep
+ > > +             * since the commit path may grab it while committing thi=
+s
+ > > +             * inode.
+ > > +             */
+ > > +            lockdep_assert_not_held(&ei->i_data_sem);
+ > >              schedule();
+ > > +        }
+ > >          finish_wait(wq, &wait.wq_entry);
+ > >      }
+ > > =20
+ >=20
+ >=20
 
-> +		.useroffset = offsetof(struct ext4_inode_info, i_data),
-> +		.usersize = sizeof_field(struct ext4_inode_info, i_data),
-> +		.use_freeptr_offset = true,
-> +		.freeptr_offset = offsetof(struct ext4_inode_info, i_flags),
-> +		.ctor = init_once,
-> +	};
-> +
-> +	ext4_inode_cachep = kmem_cache_create("ext4_inode_cache",
-> +				sizeof(struct ext4_inode_info),
-> +				&args,
-> +				SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT);
-> +
->  	if (ext4_inode_cachep == NULL)
->  		return -ENOMEM;
->  	return 0;
+Regards,
+Li=E2=80=8B
 
 
