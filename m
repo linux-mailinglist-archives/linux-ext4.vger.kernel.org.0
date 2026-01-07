@@ -1,88 +1,99 @@
-Return-Path: <linux-ext4+bounces-12605-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12607-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7745CFC4D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 08:19:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD7A7CFCE03
+	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 10:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3B8D83029C30
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 07:19:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 73420303C237
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 09:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D53261B8A;
-	Wed,  7 Jan 2026 07:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C053330101F;
+	Wed,  7 Jan 2026 09:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Tvh1e162"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bXfedOmC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jW9f7Yus";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="h4IHSs4J";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KP6u3b9p"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B675B1FBEA8;
-	Wed,  7 Jan 2026 07:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC712FCBE3
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 09:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767770381; cv=none; b=MmAwsCFPR9OCpFVlxP4Ovj5neS5aMu0udwnupp+bGdz98WlGXemHJPDGPUaSgtfVSm8tyltI2Bn34lXfD0DK3gSCoMSw1RHj/udrVLK9WW2TjWcS1miiCIufbSMIhoIXBm/jlMW6klZ3P/KbSVvweKFpyZU9zoPRXedHjo7McFA=
+	t=1767777604; cv=none; b=a9xplnUTFgLHZ/FCfEYtG0974HjKrv6sNzNfM9Ajo2QWqw60EcH1g4VI3/8XbJCfKEnlPejwYT30zzuI7H0nqEv2x5E5pYUS2ocUcRqhQIc+mlLge8iCgK2XLjAUqAd4VAYim8DrYpvFlvxf1ws5pNJMoT+KFO7b8CNka0QCJkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767770381; c=relaxed/simple;
-	bh=usXX+jbE+7tSLQxByBoByQ1yErt20JK0LjdJRBeDDZQ=;
+	s=arc-20240116; t=1767777604; c=relaxed/simple;
+	bh=JCHXxrF7Y+7Sq6FcTC54S4bP/QhVFrsw6qhIl7klmFw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k0ganx8dskdzZZALvYyIIYe9+oOPRnH5zk9mWgSeBD/LWEz6ZbSFzk0BdmJpqPiUAtHH/TayTfUT3Qwl42//LvVzXTLChfyUwscqNaDFaYClIYGeJDnR24ZLbVZNJqI/wxM178ME3NSv5tZnXUFo7nHMVyH/cjzApHTRymsaTYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Tvh1e162; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 606JJVEm026728;
-	Wed, 7 Jan 2026 07:19:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=s27Ca3/t6Iy0t1ZIsERMz0fYl+Gaky
-	oOMRi4ggbV98o=; b=Tvh1e162NRULN0srCRI4Fs5acVW9+jrhfPrdAyBfXXdFtN
-	IPqzvTpQxCVV4+qJngbB0+qY1qFH0sgMk8pY/2fR/wpcCCjqDDuKkgjmg8SYK/07
-	Ub8B2LzmzoOs9Qq+06s1VhKpBh+UStn58G3Rz0Ns1ZMHG9AZheNVM7nDbGfscSc9
-	Ymru8LvR76X8ivYCY+eEf9COj+dhmGqOIg7pjmCrxagbuLX+w4k1b9veicwfHOmS
-	UixOu0jeviAZk4EJz6Q0Aa7aBZIhTRzZser1nJG5cE2oOllY0reheqji2DfYC3KX
-	UF3qix0iD4yrIaZGdedgWoPBPHwakRLbGcja/jng==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betm77jet-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Jan 2026 07:19:29 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60778ble022347;
-	Wed, 7 Jan 2026 07:19:28 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4betm77jeq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Jan 2026 07:19:28 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 6075EQKw019154;
-	Wed, 7 Jan 2026 07:19:27 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bfg517epx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 07 Jan 2026 07:19:27 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 6077JQQw31588666
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 7 Jan 2026 07:19:26 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 211C12004B;
-	Wed,  7 Jan 2026 07:19:26 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4610920043;
-	Wed,  7 Jan 2026 07:19:24 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.31.215])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  7 Jan 2026 07:19:24 +0000 (GMT)
-Date: Wed, 7 Jan 2026 12:49:21 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>, Zhang Yi <yi.zhang@huawei.com>,
-        libaokun1@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] ext4: propagate flags to convert_initialized_extent()
-Message-ID: <aV4I-TiTi_McQ3uM@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <cover.1767528171.git.ojaswin@linux.ibm.com>
- <a8078155d7d97e0fcaae1c576112033c84968aec.1767528171.git.ojaswin@linux.ibm.com>
- <dibws2hdldmuefxvotoeo2gitzxie6oc6uinfl33fh73jizh2w@t3us4sfqcb7l>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BN6ED62OYaiSbdyG6Hu4OceQ+igf46VIjbIl4SdRboGPlSaZD0Eq5MG6yovjtd2nBxJ7rMWyFC5Q5NEiZUu9OMalTO7l9uP3RACnX7SVM9CN/ZBXw4OdkmD/kzR05B7UfGZt3p8fEkOWnmZ8Ee2VRs3yY7X1zV2oNzR0EwouHY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bXfedOmC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jW9f7Yus; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=h4IHSs4J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KP6u3b9p; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D65D15BD1D;
+	Wed,  7 Jan 2026 09:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767777600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qlGYLZNyph8hwnmX949LAFvR/W9X+jGV+eGG9YFr+iU=;
+	b=bXfedOmC9atRFSGdFpW1KxyaZNPQ4bY5Nyh29DSJ492/Babj0RmmYLqYpWxq9JZrJe5kVX
+	zs4ErBlXbW+vSSqF5TawBIERL8bQENJc2jRkTo2bzHC1OAQK2YhO6xLQe0gYy4bJi1AaUe
+	NfHKBGsVD5csw+3oOD9mUhsP5bVcaL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767777600;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qlGYLZNyph8hwnmX949LAFvR/W9X+jGV+eGG9YFr+iU=;
+	b=jW9f7YusVK7GF6BmyqVhLyHQirVfDQqoFe1Q6WfCw/NFBUdpbaixfEtocef55I/BF+HdPY
+	146nuCRl07Lgk3Cg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767777599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qlGYLZNyph8hwnmX949LAFvR/W9X+jGV+eGG9YFr+iU=;
+	b=h4IHSs4JSrqj93ZXFqsMfDZ6GZ21Tbxlffs3UXOrzRKnB9ECSpAS/oAq7vCKgKY2Hbtoke
+	A8EAyhTBY7D6Y3Yjn/pirqKly+89tzaR83PMfR3K32XUOiVEbp2MM8iHn3gGta5ppkhYei
+	0+Qc37vjlr9RhkunSG5K8e97klx/dqE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767777599;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qlGYLZNyph8hwnmX949LAFvR/W9X+jGV+eGG9YFr+iU=;
+	b=KP6u3b9p1clYfgk7bXomx05vaoCAYs/KU1Zr8RhMhBWKm1K6mC6l85Eg8z9jdBVwz3LoE9
+	9+IeyLKYVe83l2Ag==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBB083EA63;
+	Wed,  7 Jan 2026 09:19:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id l621MT8lXmntEwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 07 Jan 2026 09:19:59 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 7CA55A090B; Wed,  7 Jan 2026 10:19:59 +0100 (CET)
+Date: Wed, 7 Jan 2026 10:19:59 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: jack@suse.cz, brauner@kernel.org, linux-api@vger.kernel.org, 
+	hch@lst.de, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gabriel@krisman.be, amir73il@gmail.com
+Subject: Re: [PATCH 7/6] fs: improve comment in fserror_alloc_event
+Message-ID: <z64qfesodgulcztm7377w475vpriwo47svljmvorwdqmoxo5qm@konpxvnqn4se>
+References: <176602332085.686273.7564676516217176769.stgit@frogsfrogsfrogs>
+ <20260106233349.GL191501@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,108 +102,70 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dibws2hdldmuefxvotoeo2gitzxie6oc6uinfl33fh73jizh2w@t3us4sfqcb7l>
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=OdmVzxTY c=1 sm=1 tr=0 ts=695e0901 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=kj9zAlcOel0A:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=iox4zFpeAAAA:8 a=oCizLOX1Ic_CH96QbJ0A:9 a=CjuIK1q_8ugA:10
- a=WzC6qhA0u3u7Ye7llzcV:22
-X-Proofpoint-GUID: HmIXUavcuGYoZfo6NuJ8GyBlZJe4GB3o
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA3MDA1NyBTYWx0ZWRfX6PEa/UUYt5Y/
- w4KxJzpqEzc9VBVndJ0Dv4yO6GrflEtrMwzzKonzSbUOYKCFzvgLnxH1Qf3qxCOrBdE13hx4Z2L
- mJLFGhzQZVy8Iq//tmk7YEpjHk4m2qa20DLB6GWZMFM4WyG4RElUdiFZ92ulpQvlZPfNiECJ7qM
- UveyDQPlPA9VPQXnyufw/khVmhd4/JYoIY9QMzXju1E20NIR8WxSICECIxFSW6Z32kIV1+6mVyH
- QLphz6ML/oWVF35u25AN077tR/x0kIa7XusxvgYeY31oOvEuBLn3+VQc7wAIDwnthiDw0Z7G7uZ
- WQM5zzh7W+dHp5yXPw1FP2MQSyGLQeONqYScaHrKEA+M0atgjCLMQJW3vEu1Aw3aa7lD9q2U1c+
- q72/XOCi2r8Satb49u1Fl1M3Rj+/dymNvbunyhlO3iqV3pqx9valn6nHHmb+KgmSByAVVUuX0ZJ
- 7Yv3n022QqSSX9bSfCw==
-X-Proofpoint-ORIG-GUID: FDvv45gaGalmWpn-LT9ufagAxC-Jyk3r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-06_03,2026-01-06_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
- suspectscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
- definitions=main-2601070057
+In-Reply-To: <20260106233349.GL191501@frogsfrogsfrogs>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,kernel.org,vger.kernel.org,lst.de,krisman.be,gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Tue, Jan 06, 2026 at 03:33:07PM +0100, Jan Kara wrote:
-> On Sun 04-01-26 17:49:16, Ojaswin Mujoo wrote:
-> > Currently, ext4_zero_range passes EXT4_EX_NOCACHE flag to avoid caching
-> > extents however this is not respected by convert_initialized_extent().
-> > Hence, modify it to accept flags from the caller and to pass the flags
-> > on to other extent manipulation functions it calls. This makes
-> > sure the NOCACHE flag is respected throughout the code path.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  fs/ext4/extents-test.c | 2 +-
-> >  fs/ext4/extents.c      | 5 +++--
-> >  2 files changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/ext4/extents-test.c b/fs/ext4/extents-test.c
-> > index 4fb94d3c8a1e..54aed3eabfe2 100644
-> > --- a/fs/ext4/extents-test.c
-> > +++ b/fs/ext4/extents-test.c
-> > @@ -422,7 +422,7 @@ static void test_convert_initialized(struct kunit *test)
-> >  
-> >  	map.m_lblk = param->split_map.m_lblk;
-> >  	map.m_len = param->split_map.m_len;
-> > -	convert_initialized_extent(NULL, inode, &map, path, &allocated);
-> > +	convert_initialized_extent(NULL, inode, &map, path, 0, &allocated);
-> >  
-> >  	path = ext4_find_extent(inode, EX_DATA_LBLK, NULL, 0);
-> >  	ex = path->p_ext;
-> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > index 0ad0a9f2e3d4..5228196f5ad4 100644
-> > --- a/fs/ext4/extents.c
-> > +++ b/fs/ext4/extents.c
-> > @@ -3845,6 +3845,7 @@ static struct ext4_ext_path *
-> >  convert_initialized_extent(handle_t *handle, struct inode *inode,
-> >  			   struct ext4_map_blocks *map,
-> >  			   struct ext4_ext_path *path,
-> > +			   int flags,
-> >  			   unsigned int *allocated)
-> >  {
-> >  	struct ext4_extent *ex;
-> > @@ -3870,7 +3871,7 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
-> >  
-> >  	if (ee_block != map->m_lblk || ee_len > map->m_len) {
-> >  		path = ext4_split_convert_extents(handle, inode, map, path,
-> > -				EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
-> > +				flags | EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
+On Tue 06-01-26 15:33:49, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
 > 
-> No need to keep EXT4_GET_BLOCKS_CONVERT_UNWRITTEN here as the caller has
-> it in flags already? Otherwise the patch looks good.
-
-Hi Jan,
-
-Right, I'll make this change in v2.
-
-Thanks again!
-Ojaswin
-
+> Document the ordering requirements between SB_ACTIVE and
+> s_pending_errors in the new fserror code.
 > 
-> 								Honza
+> Cc: jack@suse.cz
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+
+Thanks! I guess this will be folded into the original patch but just in
+case:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/fserror.c |    5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> >  		if (IS_ERR(path))
-> >  			return path;
-> >  
-> > @@ -4264,7 +4265,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
-> >  			if ((!ext4_ext_is_unwritten(ex)) &&
-> >  			    (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)) {
-> >  				path = convert_initialized_extent(handle,
-> > -					inode, map, path, &allocated);
-> > +					inode, map, path, flags, &allocated);
-> >  				if (IS_ERR(path))
-> >  					err = PTR_ERR(path);
-> >  				goto out;
-> > -- 
-> > 2.51.0
-> > 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> diff --git a/fs/fserror.c b/fs/fserror.c
+> index ec92f5a6db59ce..06ca86adab9b76 100644
+> --- a/fs/fserror.c
+> +++ b/fs/fserror.c
+> @@ -79,6 +79,11 @@ static inline struct fserror_event *fserror_alloc_event(struct super_block *sb,
+>  	 * If pending_errors already reached zero or is no longer active,
+>  	 * the superblock is being deactivated so there's no point in
+>  	 * continuing.
+> +	 *
+> +	 * The order of the check of s_pending_errors and SB_ACTIVE are
+> +	 * mandated by order of accesses in generic_shutdown_super and
+> +	 * fserror_unmount.  Barriers are implicitly provided by the refcount
+> +	 * manipulations in this function and fserror_unmount.
+>  	 */
+>  	if (!refcount_inc_not_zero(&sb->s_pending_errors))
+>  		return NULL;
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
