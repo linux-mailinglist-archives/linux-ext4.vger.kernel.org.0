@@ -1,152 +1,420 @@
-Return-Path: <linux-ext4+bounces-12637-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12640-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17538D02CC2
-	for <lists+linux-ext4@lfdr.de>; Thu, 08 Jan 2026 13:59:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51F59D02EF1
+	for <lists+linux-ext4@lfdr.de>; Thu, 08 Jan 2026 14:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C1CC6339CF0E
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jan 2026 12:10:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D959030124F5
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jan 2026 13:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD5C472D98;
-	Thu,  8 Jan 2026 11:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YawHteLV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E0C4F4C7B;
+	Thu,  8 Jan 2026 12:34:59 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BD24735A1
-	for <linux-ext4@vger.kernel.org>; Thu,  8 Jan 2026 11:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE5A4F2994;
+	Thu,  8 Jan 2026 12:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767872408; cv=none; b=cm3owDP0akM4vIO7hudS4MoNe7/1jmBMP9nodZtEwNGHTgvBn4iNokg7ESiN7uYSEnJpa4XUuAGAz3bo/rOGwV0jV2h9onvHHJeMxpo7GqTDCbaf/sWs4FwUenkYbyLk87OCo0H19Ryxlb2IVMtLL1y4RzGW/hW3D1Nh0ZZSDGo=
+	t=1767875699; cv=none; b=Qg941B4GwW1MQWUOKW3xG2QDx7kNciQYzPzlcTOKsyUBTdN2Uz+3Mgf4RXKGhddnRePN3JZX29tL/EJHkwPHYVhko54vcFfW9Bqb6Vdty++ueGTFDtiMkjEXAdKhZwDAd9QDGNd7etdWAh4JesSumvmY5n5FXWuuFEEFIai+y+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767872408; c=relaxed/simple;
-	bh=ezvnqHz57gvkldOznzeZCMww1jUfcQ7xappaEfnvzZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VfXioZsR9WykaXJFKeAkVO+M5kpb5JpvCSVqsIDXoGSiUNtPRjrFJRJE2ims+PywGWnbbYdhDRN0x4zn4PoxlMoDQKuUBJRTXRLbK671DWsSNPq/owVUmdxcE1wSze/QvulG4o0e1f1liCHBVJbZ5r6bwjX2uwl8BtLmEmZxIkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YawHteLV; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-8907ec50855so32942526d6.3
-        for <linux-ext4@vger.kernel.org>; Thu, 08 Jan 2026 03:40:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767872400; x=1768477200; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=De/F7GrZ3a7XQW11zwFhVMyznAHPN5+HCcRNv17+1Go=;
-        b=YawHteLVrnHK3lXXOFIIgMvlqbUWb1l2jMcI7SZhdlee5Hk49JnqZPZHuqm+TVpzZz
-         4RicRRov650HZEdbMMi3ueF/cXYISxpVbPE3M4WZVRsxHM53TZnDdoRJiva3rFqsnjTV
-         GwOZxFVa5V0hxW/DDbqvAXSnvAQLvH1evxeMNUpFshLrEWEsFXmo+o29w3mve3mIjfPW
-         lBrdOYalCBklb+kcFbqrC1c0jeb6nOYkmKKQMNaEkoWGHs070V9YKA7TKkSYwaBRL/b5
-         e+ky/HkNZclcQoKMLxzmqhmjvq57wXiaiGu2KK7noDOY9rdvSGbmVPMYab+QmIgXiGUT
-         zHSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767872400; x=1768477200;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=De/F7GrZ3a7XQW11zwFhVMyznAHPN5+HCcRNv17+1Go=;
-        b=LecV4+VF2fHtoKO9B0kOUfrMxutl4s/Fovu23zB3inHq6XG+w3g7WCNh9HsTHNLnBC
-         28AwIaaOmQ9nbvrRICX9QCrNrBKTo7LSHG31kEl/OkOjVgKqxApFtJ3CLSj43kbw/K8K
-         xshX2vG2U3HlPTK9X4dmktNVHZdyk7ZsattEVebLyukiZVPUrE9wBxteDcumHrzn+JVE
-         F3yJ4lZijBX7jTk5mMJLExhq6V1GSuktpGvH42OppDyt2Zs4RaHEGd+lwNMqbWxkpAjQ
-         W8nVKkd+rdfS0+mVPSYUpsFpD2U2AvBf/dEW6m/dRJ5pktdLk63iOy2hIlW9ZEaWwaBC
-         H03Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXkQCLb70dGeNmB65PMRe3qxGFBadxdPoVCMJj1tP3U30/UyGcK6+LrUoFEW+bV6X4KEFjbpYOLPfNI@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx815OvSmZWRi9ybXuvCn5vAvHXqW3n2z/WLl+fhu+yejqoLvpW
-	0ScZrXu7KXEkUzOTgHV3fryBee2PjAfM98g8OBTvu+5/6AjK5E+4PDECVSuQ/nS5Ybdkz+4+Mye
-	TNH3sdF/kl4rl42OFoIoCtQipij0rpi+zIuz7AvF1
-X-Gm-Gg: AY/fxX5YSPmc01J+Ipkk4arjX7B4OjO2rq0XxC/bDuq0Z9Y+A0jH1xZO6hMR8PxeQmD
-	YLThYe+SRQAY3MUfHwHuG7REpR2ipuyvYXqHv9yTqcYkcCLLiFV1RPL2HujXdLd9YnV8s6HFqko
-	OiFLWAS9BsHeK7lUfpbEnfPvV0u9ZYTbkSsbs7R7QHfeUNX7oDc7RqnMLLOJXlA9CwdKcB9/0O4
-	HF5USrbzGOf8GuAlKJk49x5q+/0LQoaQz23ozKdn2NNacre2LO4xijbXPvJf4LvKGsAxQCz4WiB
-	pO+WiTmTMew5wOr3/S8b+5yshz/qd3iVjuie
-X-Google-Smtp-Source: AGHT+IEtTsutQpO25KKJJxkwWclrV1NkoOFyJBOS1res7lIatKk2McpUxH3uFSbvGt+LR+VAYJv6MCV9dzQjj1c4j+4=
-X-Received: by 2002:a05:6214:20c4:b0:87c:152c:7b25 with SMTP id
- 6a1803df08f44-8908417a83emr85986576d6.13.1767872399549; Thu, 08 Jan 2026
- 03:39:59 -0800 (PST)
+	s=arc-20240116; t=1767875699; c=relaxed/simple;
+	bh=hcbWR8G3tt9bvuyUkGGV2bvJA809eYncRJ5mFFrviT0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f8948HAnFFRx2fm0h/qamEZ6UVmveqiCZlKaE+91AIBSWEalb/+tba3M1C7kv6Aqo5gJU5kBcYViiyVPvUTnkpA2oTwEQtrr4CwsjLIXqKf/TgdSVdMYt+QRif5bJ+dLDH/fG5UE/8kFrs+ZEwdtZytFefzxYh3J3T1wGLVpwzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dn49P6rlWzYQtxH;
+	Thu,  8 Jan 2026 20:34:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8A7774056D;
+	Thu,  8 Jan 2026 20:34:53 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgAXePhrpF9p3X5IDA--.50438S3;
+	Thu, 08 Jan 2026 20:34:53 +0800 (CST)
+Message-ID: <e93751dc-bc58-4808-b36c-40618b510d20@huaweicloud.com>
+Date: Thu, 8 Jan 2026 20:34:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260105080230.13171-1-harry.yoo@oracle.com> <20260105080230.13171-2-harry.yoo@oracle.com>
-In-Reply-To: <20260105080230.13171-2-harry.yoo@oracle.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Thu, 8 Jan 2026 12:39:22 +0100
-X-Gm-Features: AQt7F2p4_VUyRgHz6qqEM5-JBZ5E2KV2nkrPg5vKNyZeCt2rwmq1SfsxSID667s
-Message-ID: <CAG_fn=XCx9-uYOhRQXTde7ud=H9kwM_Sf3ZjHQd9hfYDspzeOA@mail.gmail.com>
-Subject: Re: [PATCH V5 1/8] mm/slab: use unsigned long for orig_size to ensure
- proper metadata align
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@gentwo.org, dvyukov@google.com, hannes@cmpxchg.org, linux-mm@kvack.org, 
-	mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
-	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, 
-	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/7] ext4: Refactor split and convert extents
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, Jan Kara <jack@suse.cz>,
+ libaokun1@huawei.com, linux-kernel@vger.kernel.org
+References: <cover.1767528171.git.ojaswin@linux.ibm.com>
+ <8c318aa0eeb0c5c4ad0b5f620de3a7f4df596b82.1767528171.git.ojaswin@linux.ibm.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <8c318aa0eeb0c5c4ad0b5f620de3a7f4df596b82.1767528171.git.ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAXePhrpF9p3X5IDA--.50438S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Zr4fXry3Zw48Cry7XrW3trb_yoWkXFykpF
+	nrurn3Cr4UKwn0grWxAF4UZr1a93W5Gr47AFW3K3yFya9FqFnYgFyYy3WFkFWrKrW8XayY
+	yFW0y34UCasrWaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, Jan 5, 2026 at 9:02=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wro=
-te:
->
-> When both KASAN and SLAB_STORE_USER are enabled, accesses to
-> struct kasan_alloc_meta fields can be misaligned on 64-bit architectures.
-> This occurs because orig_size is currently defined as unsigned int,
-> which only guarantees 4-byte alignment. When struct kasan_alloc_meta is
-> placed after orig_size, it may end up at a 4-byte boundary rather than
-> the required 8-byte boundary on 64-bit systems.
->
-> Note that 64-bit architectures without HAVE_EFFICIENT_UNALIGNED_ACCESS
-> are assumed to require 64-bit accesses to be 64-bit aligned.
-> See HAVE_64BIT_ALIGNED_ACCESS and commit adab66b71abf ("Revert:
-> "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"") for more details.
->
-> Change orig_size from unsigned int to unsigned long to ensure proper
-> alignment for any subsequent metadata. This should not waste additional
-> memory because kmalloc objects are already aligned to at least
-> ARCH_KMALLOC_MINALIGN.
->
-> Suggested-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: stable@vger.kernel.org
-> Fixes: 6edf2576a6cc ("mm/slub: enable debugging memory wasting of kmalloc=
-")
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+On 1/4/2026 8:19 PM, Ojaswin Mujoo wrote:
+> ext4_split_convert_extents() has been historically prone to subtle
+> bugs and inconsistent behavior due to the way all the various flags
+> interact with the extent split and conversion process. For example,
+> callers like ext4_convert_unwritten_extents_endio() and
+> convert_initialized_extents() needed to open code extent conversion
+> despite passing CONVERT or CONVERT_UNWRITTEN flags because
+> ext4_split_convert_extents() wasn't performing the conversion.
+> 
+> Hence, refactor ext4_split_convert_extents() to clearly enforce the
+> semantics of each flag. The major changes here are:
+> 
+>  * Clearly separate the split and convert process:
+>    * ext4_split_extent() and ext4_split_extent_at() are now only
+>      responsible to perform the split.
+>    * ext4_split_convert_extents() is now responsible to perform extent
+>      conversion after calling ext4_split_extent() for splitting.
+>    * This helps get rid of all the MARK_UNWRIT* flags.
+> 
+>  * Clearly enforce the semantics of flags passed to
+>    ext4_split_convert_extents():
+> 
+>    * EXT4_GET_BLOCKS_CONVERT: Will convert the split extent to written
+>    * EXT4_GET_BLOCKS_CONVERT_UNWRITTEN: Will convert the split extent to
+>      unwritten
+>    * Passing neither of the above means we only want a split.
+>    * Modify all callers to enforce the above semantics.
+> 
+>  * Use ext4_split_convert_extents() instead of ext4_split_extents()
+>  * in ext4_ext_convert_to_initialized() for uniformity.
+> 
+>  * Cleanup all callers open coding the conversion logic.
+>  * Further, modify kuniy tests to pass flags based on the new semantics.
+> 
+> From an end user point of view, we should not see any changes in
+> behavior of ext4.
+> 
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+
+Some comments below.
+
 > ---
->  mm/slub.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index ad71f01571f0..1c747435a6ab 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -857,7 +857,7 @@ static inline bool slab_update_freelist(struct kmem_c=
-ache *s, struct slab *slab,
->   * request size in the meta data area, for better debug and sanity check=
-.
->   */
->  static inline void set_orig_size(struct kmem_cache *s,
-> -                               void *object, unsigned int orig_size)
-> +                               void *object, unsigned long orig_size)
->  {
->         void *p =3D kasan_reset_tag(object);
->
-> @@ -867,10 +867,10 @@ static inline void set_orig_size(struct kmem_cache =
-*s,
->         p +=3D get_info_end(s);
->         p +=3D sizeof(struct track) * 2;
->
-> -       *(unsigned int *)p =3D orig_size;
-> +       *(unsigned long *)p =3D orig_size;
+>  fs/ext4/extents-test.c |  12 +-
+>  fs/ext4/extents.c      | 299 +++++++++++++++++++----------------------
+>  2 files changed, 145 insertions(+), 166 deletions(-)
+> 
 
-Instead of calculating the offset of the original size in several
-places, should we maybe introduce a function that returns a pointer to
-it?
+[..]
+
+> @@ -3820,6 +3786,26 @@ ext4_ext_convert_to_initialized(handle_t *handle, struct inode *inode,
+>  	return ERR_PTR(err);
+>  }
+>  
+> +static bool ext4_ext_needs_conv(struct inode *inode, struct ext4_ext_path *path,
+> +				int flags)
+> +{
+> +	struct ext4_extent *ex;
+> +	bool is_unwrit;
+> +	int depth;
+> +
+> +	depth = ext_depth(inode);
+> +	ex = path[depth].p_ext;
+> +	is_unwrit = ext4_ext_is_unwritten(ex);
+> +
+> +	if (is_unwrit && (flags & EXT4_GET_BLOCKS_CONVERT))
+> +		return true;
+> +
+> +	if (!is_unwrit && (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  /*
+>   * This function is called by ext4_ext_map_blocks() from
+>   * ext4_get_blocks_dio_write() when DIO to write
+> @@ -3856,7 +3842,9 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
+>  	ext4_lblk_t ee_block;
+>  	struct ext4_extent *ex;
+>  	unsigned int ee_len;
+> -	int split_flag = 0, depth;
+> +	int split_flag = 0, depth, err = 0;
+> +	bool did_zeroout = false;
+> +	bool needs_conv = ext4_ext_needs_conv(inode, path, flags);
+
+As I described in Patch 05, there is currently no situation where
+splitting occurs without conversion, so I don't think we need this check.
+Is it right?
+
+>  
+>  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
+>  		  (unsigned long long)map->m_lblk, map->m_len);
+> @@ -3870,19 +3858,81 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
+>  	ee_block = le32_to_cpu(ex->ee_block);
+>  	ee_len = ext4_ext_get_actual_len(ex);
+>  
+> -	if (flags & (EXT4_GET_BLOCKS_UNWRIT_EXT |
+> -			    EXT4_GET_BLOCKS_CONVERT)) {
+> +	/* No split needed */
+> +	if (ee_block == map->m_lblk && ee_len == map->m_len)
+> +		goto convert;
+> +
+> +	/*
+> +	 * We don't use zeroout fallback for written to unwritten conversion as
+> +	 * it is not as critical as endio and it might take unusually long.
+> +	 * Also, it is only safe to convert extent to initialized via explicit
+> +	 * zeroout only if extent is fully inside i_size or new_size.
+> +	 */
+> +	if (!(flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
+> +		split_flag |= ee_block + ee_len <= eof_block ?
+> +				      EXT4_EXT_MAY_ZEROOUT :
+> +				      0;
+> +
+> +	/*
+> +	 * pass SPLIT_NOMERGE explicitly so we don't end up merging extents we
+> +	 * just split.
+> +	 */
+> +	path = ext4_split_extent(handle, inode, path, map, split_flag,
+> +				 flags | EXT4_GET_BLOCKS_SPLIT_NOMERGE,
+> +				 allocated, &did_zeroout);
+> +
+> +convert:
+> +	/*
+> +	 * We don't need a conversion if:
+> +	 * 1. There was an error in split.
+> +	 * 2. We split via zeroout.
+> +	 * 3. None of the convert flags were passed.
+> +	 */
+> +	if (IS_ERR(path) || did_zeroout || !needs_conv)
+> +		return path;
+> +
+> +	path = ext4_find_extent(inode, map->m_lblk, path, flags);
+> +	if (IS_ERR(path))
+> +		return path;
+> +
+> +	depth = ext_depth(inode);
+> +	ex = path[depth].p_ext;
+> +
+> +	err = ext4_ext_get_access(handle, inode, path + depth);
+> +	if (err)
+> +		goto err;
+> +
+> +	if (flags & EXT4_GET_BLOCKS_CONVERT)
+> +		ext4_ext_mark_initialized(ex);
+> +	else if (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)
+> +		ext4_ext_mark_unwritten(ex);
+> +
+> +	if (!(flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
+>  		/*
+> -		 * It is safe to convert extent to initialized via explicit
+> -		 * zeroout only if extent is fully inside i_size or new_size.
+> +		 * note: ext4_ext_correct_indexes() isn't needed here because
+> +		 * borders are not changed
+>  		 */
+> -		split_flag |= ee_block + ee_len <= eof_block ?
+> -			      EXT4_EXT_MAY_ZEROOUT : 0;
+> -		split_flag |= EXT4_EXT_MARK_UNWRIT2;
+> +		ext4_ext_try_to_merge(handle, inode, path, ex);
+> +
+> +	err = ext4_ext_dirty(handle, inode, path + depth);
+> +	if (err)
+> +		goto err;
+> +
+> +	/* Lets update the extent status tree after conversion */
+> +	ext4_es_insert_extent(inode, le32_to_cpu(ex->ee_block),
+> +			      ext4_ext_get_actual_len(ex), ext4_ext_pblock(ex),
+> +			      ext4_ext_is_unwritten(ex) ?
+> +				      EXTENT_STATUS_UNWRITTEN :
+> +				      EXTENT_STATUS_WRITTEN,
+> +			      false);
+
+I think the did_zeroout case also should update the extent status tree (and
+it should be better to be added in the previous patch). Otherwise, this
+would lead to residual stale unwritten extents in the zeroed range.
+
+We should be careful about the extent status tree. I'd suggest that pay
+close attention to the following error output when running tests,
+
+ EXT4-fs warning (device pmem2s): ext4_es_cache_extent:1079: inode #718: comm 108573.fsstress: ES cache extent failed: add [55,22,12260,0x1] conflict with existing [75,2,12280,0x2]
+
+or directly add a WARN_ON_ONCE(1) at the end of ext4_es_cache_extent().
+There may be other problems related to the stale extents that could
+arise.
+
+Thanks,
+Yi.
+
+> +
+> +err:
+> +	if (err) {
+> +		ext4_free_ext_path(path);
+> +		return ERR_PTR(err);
+>  	}
+> -	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
+> -	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
+> -				 allocated);
+> +
+> +	return path;
+>  }
+>  
+>  static struct ext4_ext_path *
+> @@ -3894,7 +3944,6 @@ ext4_convert_unwritten_extents_endio(handle_t *handle, struct inode *inode,
+>  	ext4_lblk_t ee_block;
+>  	unsigned int ee_len;
+>  	int depth;
+> -	int err = 0;
+>  
+>  	depth = ext_depth(inode);
+>  	ex = path[depth].p_ext;
+> @@ -3904,41 +3953,8 @@ ext4_convert_unwritten_extents_endio(handle_t *handle, struct inode *inode,
+>  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
+>  		  (unsigned long long)ee_block, ee_len);
+>  
+> -	if (ee_block != map->m_lblk || ee_len > map->m_len) {
+> -		path = ext4_split_convert_extents(handle, inode, map, path,
+> -						  flags, NULL);
+> -		if (IS_ERR(path))
+> -			return path;
+> -
+> -		path = ext4_find_extent(inode, map->m_lblk, path, 0);
+> -		if (IS_ERR(path))
+> -			return path;
+> -		depth = ext_depth(inode);
+> -		ex = path[depth].p_ext;
+> -	}
+> -
+> -	err = ext4_ext_get_access(handle, inode, path + depth);
+> -	if (err)
+> -		goto errout;
+> -	/* first mark the extent as initialized */
+> -	ext4_ext_mark_initialized(ex);
+> -
+> -	/* note: ext4_ext_correct_indexes() isn't needed here because
+> -	 * borders are not changed
+> -	 */
+> -	ext4_ext_try_to_merge(handle, inode, path, ex);
+> -
+> -	/* Mark modified extent as dirty */
+> -	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+> -	if (err)
+> -		goto errout;
+> -
+> -	ext4_ext_show_leaf(inode, path);
+> -	return path;
+> -
+> -errout:
+> -	ext4_free_ext_path(path);
+> -	return ERR_PTR(err);
+> +	return ext4_split_convert_extents(handle, inode, map, path, flags,
+> +					  NULL);
+>  }
+>  
+>  static struct ext4_ext_path *
+> @@ -3952,7 +3968,6 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
+>  	ext4_lblk_t ee_block;
+>  	unsigned int ee_len;
+>  	int depth;
+> -	int err = 0;
+>  
+>  	/*
+>  	 * Make sure that the extent is no bigger than we support with
+> @@ -3969,40 +3984,12 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
+>  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
+>  		  (unsigned long long)ee_block, ee_len);
+>  
+> -	if (ee_block != map->m_lblk || ee_len > map->m_len) {
+> -		path = ext4_split_convert_extents(handle, inode, map, path,
+> -				flags | EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
+> -		if (IS_ERR(path))
+> -			return path;
+> -
+> -		path = ext4_find_extent(inode, map->m_lblk, path, 0);
+> -		if (IS_ERR(path))
+> -			return path;
+> -		depth = ext_depth(inode);
+> -		ex = path[depth].p_ext;
+> -		if (!ex) {
+> -			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
+> -					 (unsigned long) map->m_lblk);
+> -			err = -EFSCORRUPTED;
+> -			goto errout;
+> -		}
+> -	}
+> -
+> -	err = ext4_ext_get_access(handle, inode, path + depth);
+> -	if (err)
+> -		goto errout;
+> -	/* first mark the extent as unwritten */
+> -	ext4_ext_mark_unwritten(ex);
+> -
+> -	/* note: ext4_ext_correct_indexes() isn't needed here because
+> -	 * borders are not changed
+> -	 */
+> -	ext4_ext_try_to_merge(handle, inode, path, ex);
+> +	path = ext4_split_convert_extents(
+> +		handle, inode, map, path,
+> +		flags | EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
+> +	if (IS_ERR(path))
+> +		return path;
+>  
+> -	/* Mark modified extent as dirty */
+> -	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+> -	if (err)
+> -		goto errout;
+>  	ext4_ext_show_leaf(inode, path);
+>  
+>  	ext4_update_inode_fsync_trans(handle, inode, 1);
+> @@ -4012,10 +3999,6 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
+>  		*allocated = map->m_len;
+>  	map->m_len = *allocated;
+>  	return path;
+> -
+> -errout:
+> -	ext4_free_ext_path(path);
+> -	return ERR_PTR(err);
+>  }
+>  
+>  static struct ext4_ext_path *
+> @@ -5649,7 +5632,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+>  	struct ext4_extent *extent;
+>  	ext4_lblk_t start_lblk, len_lblk, ee_start_lblk = 0;
+>  	unsigned int credits, ee_len;
+> -	int ret, depth, split_flag = 0;
+> +	int ret, depth;
+>  	loff_t start;
+>  
+>  	trace_ext4_insert_range(inode, offset, len);
+> @@ -5720,12 +5703,8 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+>  		 */
+>  		if ((start_lblk > ee_start_lblk) &&
+>  				(start_lblk < (ee_start_lblk + ee_len))) {
+> -			if (ext4_ext_is_unwritten(extent))
+> -				split_flag = EXT4_EXT_MARK_UNWRIT1 |
+> -					EXT4_EXT_MARK_UNWRIT2;
+>  			path = ext4_split_extent_at(handle, inode, path,
+> -					start_lblk, split_flag,
+> -					EXT4_EX_NOCACHE |
+> +					start_lblk, EXT4_EX_NOCACHE |
+>  					EXT4_GET_BLOCKS_SPLIT_NOMERGE |
+>  					EXT4_GET_BLOCKS_METADATA_NOFAIL);
+>  		}
+
 
