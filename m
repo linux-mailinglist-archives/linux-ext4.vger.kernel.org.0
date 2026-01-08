@@ -1,232 +1,152 @@
-Return-Path: <linux-ext4+bounces-12636-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12637-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAAF1D02694
-	for <lists+linux-ext4@lfdr.de>; Thu, 08 Jan 2026 12:33:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17538D02CC2
+	for <lists+linux-ext4@lfdr.de>; Thu, 08 Jan 2026 13:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E4FF73102C46
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jan 2026 11:12:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C1CC6339CF0E
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jan 2026 12:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1953B49F0D0;
-	Thu,  8 Jan 2026 10:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD5C472D98;
+	Thu,  8 Jan 2026 11:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OZWatOhS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o90qgpF3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OZWatOhS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o90qgpF3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YawHteLV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8DD48BD33
-	for <linux-ext4@vger.kernel.org>; Thu,  8 Jan 2026 10:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BD24735A1
+	for <linux-ext4@vger.kernel.org>; Thu,  8 Jan 2026 11:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767869571; cv=none; b=pFJAc4pwRn9yJE6Icgx1Z1K0J5vE8LzjURu+znouLbm9Ikmb09+zPYCrtBu5Kn0kbr5hHFURyB8eNtcYpQO8A32DTywUIwGX9kf6KbpUcfc1WNYMNh3GAtfB02AVpnUeuYRoP9r87lK5oVi7HTegGpC2WfOwGdzN7R/IEseU3Gk=
+	t=1767872408; cv=none; b=cm3owDP0akM4vIO7hudS4MoNe7/1jmBMP9nodZtEwNGHTgvBn4iNokg7ESiN7uYSEnJpa4XUuAGAz3bo/rOGwV0jV2h9onvHHJeMxpo7GqTDCbaf/sWs4FwUenkYbyLk87OCo0H19Ryxlb2IVMtLL1y4RzGW/hW3D1Nh0ZZSDGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767869571; c=relaxed/simple;
-	bh=SDLBWhgAeqC/vsf/wB2SjfoQrAxxghQRmnE5qiserZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SwT7yjmDgnIXmrSGMBCUwB+T3R4mWK54hnILbFd5Kfl3Bx3QHUrsjpgp1zbygRGPps/mXAxIfpLUi2gXiw6Z4O9kPQ7JORWh+Ngwyr33WEQgw/owbLm+IrQNmNrvYI+dzr3lCunev7HOjnPCachgGMVStoA3JGH7MqOWPaFjlEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OZWatOhS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o90qgpF3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OZWatOhS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o90qgpF3; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2D5C533D4C;
-	Thu,  8 Jan 2026 10:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767869557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yod1SBP8Av8mIX1056fUl6cNPUx3Lw9V+pfuR+yXM0c=;
-	b=OZWatOhSXbyKwoe/5KAlVpASvMoU7eF24kLJhBW5mHc7SVFD7CrQuTGReUBYOz1MMahnGN
-	SKwdFT0f04eo5jgbEIC6OKolWFa56x2ZBwqMgklpdlW56F6au1hRizipkuQQBVibNuwYM9
-	sKRNCGNPrIqMl+UYxbOCgS5zkhyEEhM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767869557;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yod1SBP8Av8mIX1056fUl6cNPUx3Lw9V+pfuR+yXM0c=;
-	b=o90qgpF3H7JtDSenbiPpXm5BCmrVnQuvPTE+gpNt/gVyGTLDm1ETaTfkAlspOmIZQulwuT
-	ntg0fVPcGzfGPqAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767869557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yod1SBP8Av8mIX1056fUl6cNPUx3Lw9V+pfuR+yXM0c=;
-	b=OZWatOhSXbyKwoe/5KAlVpASvMoU7eF24kLJhBW5mHc7SVFD7CrQuTGReUBYOz1MMahnGN
-	SKwdFT0f04eo5jgbEIC6OKolWFa56x2ZBwqMgklpdlW56F6au1hRizipkuQQBVibNuwYM9
-	sKRNCGNPrIqMl+UYxbOCgS5zkhyEEhM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767869557;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yod1SBP8Av8mIX1056fUl6cNPUx3Lw9V+pfuR+yXM0c=;
-	b=o90qgpF3H7JtDSenbiPpXm5BCmrVnQuvPTE+gpNt/gVyGTLDm1ETaTfkAlspOmIZQulwuT
-	ntg0fVPcGzfGPqAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE7A03EA63;
-	Thu,  8 Jan 2026 10:52:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hq3jOXSMX2mdbQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 08 Jan 2026 10:52:36 +0000
-Message-ID: <30ecc144-ea2c-4259-afbf-3d96849aded2@suse.cz>
-Date: Thu, 8 Jan 2026 11:52:36 +0100
+	s=arc-20240116; t=1767872408; c=relaxed/simple;
+	bh=ezvnqHz57gvkldOznzeZCMww1jUfcQ7xappaEfnvzZE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VfXioZsR9WykaXJFKeAkVO+M5kpb5JpvCSVqsIDXoGSiUNtPRjrFJRJE2ims+PywGWnbbYdhDRN0x4zn4PoxlMoDQKuUBJRTXRLbK671DWsSNPq/owVUmdxcE1wSze/QvulG4o0e1f1liCHBVJbZ5r6bwjX2uwl8BtLmEmZxIkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YawHteLV; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-8907ec50855so32942526d6.3
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Jan 2026 03:40:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1767872400; x=1768477200; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=De/F7GrZ3a7XQW11zwFhVMyznAHPN5+HCcRNv17+1Go=;
+        b=YawHteLVrnHK3lXXOFIIgMvlqbUWb1l2jMcI7SZhdlee5Hk49JnqZPZHuqm+TVpzZz
+         4RicRRov650HZEdbMMi3ueF/cXYISxpVbPE3M4WZVRsxHM53TZnDdoRJiva3rFqsnjTV
+         GwOZxFVa5V0hxW/DDbqvAXSnvAQLvH1evxeMNUpFshLrEWEsFXmo+o29w3mve3mIjfPW
+         lBrdOYalCBklb+kcFbqrC1c0jeb6nOYkmKKQMNaEkoWGHs070V9YKA7TKkSYwaBRL/b5
+         e+ky/HkNZclcQoKMLxzmqhmjvq57wXiaiGu2KK7noDOY9rdvSGbmVPMYab+QmIgXiGUT
+         zHSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767872400; x=1768477200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=De/F7GrZ3a7XQW11zwFhVMyznAHPN5+HCcRNv17+1Go=;
+        b=LecV4+VF2fHtoKO9B0kOUfrMxutl4s/Fovu23zB3inHq6XG+w3g7WCNh9HsTHNLnBC
+         28AwIaaOmQ9nbvrRICX9QCrNrBKTo7LSHG31kEl/OkOjVgKqxApFtJ3CLSj43kbw/K8K
+         xshX2vG2U3HlPTK9X4dmktNVHZdyk7ZsattEVebLyukiZVPUrE9wBxteDcumHrzn+JVE
+         F3yJ4lZijBX7jTk5mMJLExhq6V1GSuktpGvH42OppDyt2Zs4RaHEGd+lwNMqbWxkpAjQ
+         W8nVKkd+rdfS0+mVPSYUpsFpD2U2AvBf/dEW6m/dRJ5pktdLk63iOy2hIlW9ZEaWwaBC
+         H03Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXkQCLb70dGeNmB65PMRe3qxGFBadxdPoVCMJj1tP3U30/UyGcK6+LrUoFEW+bV6X4KEFjbpYOLPfNI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx815OvSmZWRi9ybXuvCn5vAvHXqW3n2z/WLl+fhu+yejqoLvpW
+	0ScZrXu7KXEkUzOTgHV3fryBee2PjAfM98g8OBTvu+5/6AjK5E+4PDECVSuQ/nS5Ybdkz+4+Mye
+	TNH3sdF/kl4rl42OFoIoCtQipij0rpi+zIuz7AvF1
+X-Gm-Gg: AY/fxX5YSPmc01J+Ipkk4arjX7B4OjO2rq0XxC/bDuq0Z9Y+A0jH1xZO6hMR8PxeQmD
+	YLThYe+SRQAY3MUfHwHuG7REpR2ipuyvYXqHv9yTqcYkcCLLiFV1RPL2HujXdLd9YnV8s6HFqko
+	OiFLWAS9BsHeK7lUfpbEnfPvV0u9ZYTbkSsbs7R7QHfeUNX7oDc7RqnMLLOJXlA9CwdKcB9/0O4
+	HF5USrbzGOf8GuAlKJk49x5q+/0LQoaQz23ozKdn2NNacre2LO4xijbXPvJf4LvKGsAxQCz4WiB
+	pO+WiTmTMew5wOr3/S8b+5yshz/qd3iVjuie
+X-Google-Smtp-Source: AGHT+IEtTsutQpO25KKJJxkwWclrV1NkoOFyJBOS1res7lIatKk2McpUxH3uFSbvGt+LR+VAYJv6MCV9dzQjj1c4j+4=
+X-Received: by 2002:a05:6214:20c4:b0:87c:152c:7b25 with SMTP id
+ 6a1803df08f44-8908417a83emr85986576d6.13.1767872399549; Thu, 08 Jan 2026
+ 03:39:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 8/8] mm/slab: place slabobj_ext metadata in unused
- space within s->size
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, Hao Li <hao.li@linux.dev>
-Cc: akpm@linux-foundation.org, andreyknvl@gmail.com, cl@gentwo.org,
- dvyukov@google.com, glider@google.com, hannes@cmpxchg.org,
- linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
- rientjes@google.com, roman.gushchin@linux.dev, ryabinin.a.a@gmail.com,
- shakeel.butt@linux.dev, surenb@google.com, vincenzo.frascino@arm.com,
- yeoreum.yun@arm.com, tytso@mit.edu, adilger.kernel@dilger.ca,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-9-harry.yoo@oracle.com>
- <fgx3lapibabra4x7tewx55nuvxz235ruvm3agpprjbdcmt3rc6@h54ln5tfdssz>
- <aV9tnLlsecX8ukMv@hyeyoo>
- <7uiizca4ejiqw6zegjwmou5va4kw7na7wivy4kxebrju7dsdwo@5brr7vhwf5oh>
- <aV-Kn8vfyL5mnlJv@hyeyoo>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <aV-Kn8vfyL5mnlJv@hyeyoo>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[]
+References: <20260105080230.13171-1-harry.yoo@oracle.com> <20260105080230.13171-2-harry.yoo@oracle.com>
+In-Reply-To: <20260105080230.13171-2-harry.yoo@oracle.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 8 Jan 2026 12:39:22 +0100
+X-Gm-Features: AQt7F2p4_VUyRgHz6qqEM5-JBZ5E2KV2nkrPg5vKNyZeCt2rwmq1SfsxSID667s
+Message-ID: <CAG_fn=XCx9-uYOhRQXTde7ud=H9kwM_Sf3ZjHQd9hfYDspzeOA@mail.gmail.com>
+Subject: Re: [PATCH V5 1/8] mm/slab: use unsigned long for orig_size to ensure
+ proper metadata align
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
+	cl@gentwo.org, dvyukov@google.com, hannes@cmpxchg.org, linux-mm@kvack.org, 
+	mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
+	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
+	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/8/26 11:44, Harry Yoo wrote:
-> On Thu, Jan 08, 2026 at 05:52:27PM +0800, Hao Li wrote:
->> On Thu, Jan 08, 2026 at 05:41:00PM +0900, Harry Yoo wrote:
->> > On Thu, Jan 08, 2026 at 01:52:09PM +0800, Hao Li wrote:
->> > > On Mon, Jan 05, 2026 at 05:02:30PM +0900, Harry Yoo wrote:
->> > > > When a cache has high s->align value and s->object_size is not aligned
->> > > > to it, each object ends up with some unused space because of alignment.
->> > > > If this wasted space is big enough, we can use it to store the
->> > > > slabobj_ext metadata instead of wasting it.
->> > > 
->> > > Hi, Harry,
->> > 
->> > Hi Hao,
->> > 
->> > > When we save obj_ext in s->size space, it seems that slab_ksize() might
->> > > be missing the corresponding handling.
->> > 
->> > Oops.
->> > 
->> > > It still returns s->size, which could cause callers of slab_ksize()
->> > > to see unexpected data (i.e. obj_ext), or even overwrite the obj_ext data.
->> > 
->> > Yes indeed.
->> > Great point, thanks!
->> > 
->> > I'll fix it by checking if the slab has obj_exts within the object
->> > layout and returning s->object_size if so.
->> 
->> Makes sense - I think there's one more nuance worth capturing.
->> slab_ksize() seems to compute the maximum safe size by applying layout
->> constraints from most-restrictive to least-restrictive:
->> redzones/poison/KASAN clamp it to object_size, tail metadata
->> (SLAB_TYPESAFE_BY_RCU / SLAB_STORE_USER) clamps it to inuse, and only
->> when nothing metadata lives does it return s->size.
-> 
-> Waaaait, SLAB_TYPESAFE_BY_RCU isn't the only case where we put freelist
-> pointer after the object.
-> 
-> What about caches with constructor?
-> We do place it after object, but slab_ksize() may return s->size? 
+On Mon, Jan 5, 2026 at 9:02=E2=80=AFAM Harry Yoo <harry.yoo@oracle.com> wro=
+te:
+>
+> When both KASAN and SLAB_STORE_USER are enabled, accesses to
+> struct kasan_alloc_meta fields can be misaligned on 64-bit architectures.
+> This occurs because orig_size is currently defined as unsigned int,
+> which only guarantees 4-byte alignment. When struct kasan_alloc_meta is
+> placed after orig_size, it may end up at a 4-byte boundary rather than
+> the required 8-byte boundary on 64-bit systems.
+>
+> Note that 64-bit architectures without HAVE_EFFICIENT_UNALIGNED_ACCESS
+> are assumed to require 64-bit accesses to be 64-bit aligned.
+> See HAVE_64BIT_ALIGNED_ACCESS and commit adab66b71abf ("Revert:
+> "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"") for more details.
+>
+> Change orig_size from unsigned int to unsigned long to ensure proper
+> alignment for any subsequent metadata. This should not waste additional
+> memory because kmalloc objects are already aligned to at least
+> ARCH_KMALLOC_MINALIGN.
+>
+> Suggested-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: stable@vger.kernel.org
+> Fixes: 6edf2576a6cc ("mm/slub: enable debugging memory wasting of kmalloc=
+")
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+> ---
+>  mm/slub.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/mm/slub.c b/mm/slub.c
+> index ad71f01571f0..1c747435a6ab 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -857,7 +857,7 @@ static inline bool slab_update_freelist(struct kmem_c=
+ache *s, struct slab *slab,
+>   * request size in the meta data area, for better debug and sanity check=
+.
+>   */
+>  static inline void set_orig_size(struct kmem_cache *s,
+> -                               void *object, unsigned int orig_size)
+> +                               void *object, unsigned long orig_size)
+>  {
+>         void *p =3D kasan_reset_tag(object);
+>
+> @@ -867,10 +867,10 @@ static inline void set_orig_size(struct kmem_cache =
+*s,
+>         p +=3D get_info_end(s);
+>         p +=3D sizeof(struct track) * 2;
+>
+> -       *(unsigned int *)p =3D orig_size;
+> +       *(unsigned long *)p =3D orig_size;
 
-I think the freelist pointer is fine because it's not used by allocated objects?
-Also ksize() should no longer be used to fill more of the object than that
-was requested in the first place.
-
-
-
+Instead of calculating the offset of the original size in several
+places, should we maybe introduce a function that returns a pointer to
+it?
 
