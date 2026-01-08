@@ -1,94 +1,43 @@
-Return-Path: <linux-ext4+bounces-12618-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12619-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09471CFF95E
-	for <lists+linux-ext4@lfdr.de>; Wed, 07 Jan 2026 19:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE34D00C1C
+	for <lists+linux-ext4@lfdr.de>; Thu, 08 Jan 2026 04:01:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 096DF3333DC5
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Jan 2026 18:11:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1213F301F8FC
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Jan 2026 03:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3C43A0B21;
-	Wed,  7 Jan 2026 17:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9B4IYW1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nMQDgDvq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9B4IYW1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nMQDgDvq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABCD27EC7C;
+	Thu,  8 Jan 2026 03:00:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37083A0B34
-	for <linux-ext4@vger.kernel.org>; Wed,  7 Jan 2026 17:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2551227E7F0;
+	Thu,  8 Jan 2026 03:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767807829; cv=none; b=Xoa7OVhuNhse7u5R2X1E0Jz/aVQvDA+LAvvd+xQir1XDr8MMJmmpxfP8GmtSPJWtBqfFp9Jhl6YEKt19ltTU7iisn/ov1pciw6u4Kq0N8+oE9AjhxNLMaYiLDCsBh/Jw90L6/YpoYAGqYz28VrOPB8hriKFoJFfXL2bukhUos60=
+	t=1767841248; cv=none; b=JR2qSQyNvMYROURRTpEMi/2YtPVTHVFPOq54u2vX+ibb6lbR4mzrqOQKRpAj3Na5G3Q6g0Iqxgaf9reIdv1pZR+w2w/bG45YS4N9GEtqBo9R3vAUlJyc64e2z5Q955DA0IrCP7AHbTUSDH0PfjZ+Y2EV0bKpU47pzvan9AmGGxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767807829; c=relaxed/simple;
-	bh=CVy31zC43f9X0TWwOZEkd2ypj+Ac0oN4odsdsmAQO9k=;
+	s=arc-20240116; t=1767841248; c=relaxed/simple;
+	bh=O7VIQBvgZhz41kt4iXTJ2z0M5IxxLnHsImG8cGSQeVo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ADGXrh1vBJN9CdnwKKqzWQjHsjP5qAvmLXHY5VDJLToQV6RmHaSz9gOmFdR2apV4bRFCPpLL6eiT4YRmtIJwUpZGqbq1nvtC+gFoc/W4utzXR4WW2DzgXg7mUURTDfFqgbmMG0QGqCitRSRbxHJe9WLtQbu0sRO4Yidhepy/uuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9B4IYW1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nMQDgDvq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9B4IYW1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nMQDgDvq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 931F034063;
-	Wed,  7 Jan 2026 17:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767807810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=C9B4IYW1tY4C+ZJ2UHAd8pkP14AIBeOdhDzu7v/kYuLhCkc459lT2SPvknmFHmejAj6b/b
-	AehJmPCzv+nGGuYM4WAgotAcbwJ5UPTlJtaTmLYJCyo4p1qdreBAGoiKpsaF0p5fbxdMkT
-	jQSYgr/D5eCC1bE1mvHXPq6OO9i3upE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767807810;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=nMQDgDvqcs2P8S8lZDsu4LIgdj1cdscIovkzKG8qU9Adp4kjmGQmuMM8DmqPEgOXpWKNhO
-	iY/uddSdv47QKfCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=C9B4IYW1;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nMQDgDvq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767807810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=C9B4IYW1tY4C+ZJ2UHAd8pkP14AIBeOdhDzu7v/kYuLhCkc459lT2SPvknmFHmejAj6b/b
-	AehJmPCzv+nGGuYM4WAgotAcbwJ5UPTlJtaTmLYJCyo4p1qdreBAGoiKpsaF0p5fbxdMkT
-	jQSYgr/D5eCC1bE1mvHXPq6OO9i3upE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767807810;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=nMQDgDvqcs2P8S8lZDsu4LIgdj1cdscIovkzKG8qU9Adp4kjmGQmuMM8DmqPEgOXpWKNhO
-	iY/uddSdv47QKfCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6EFAD3EA63;
-	Wed,  7 Jan 2026 17:43:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vPLGGkKbXmk2BgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 17:43:30 +0000
-Message-ID: <14a0f149-5d22-4a3b-9cbf-3336d0783e9d@suse.cz>
-Date: Wed, 7 Jan 2026 18:43:30 +0100
+	 In-Reply-To:Content-Type; b=i5onJE24g2/jmUo++LwHEhuEXpkgsUw9+gecqAcm9626xOcWsgvKVHOl+ynFYRTh5iuJnZYGbXhw8wcuMaeCUB/sz5t2GlGW1INAWx32K7d7Nl0izk23nV+6nmzrZzJkGeLEDtZ3XvAZ0MvXSpm7mZc02iBocwfLVJEOfvhrL2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dmqQ65KJwzKHLy2;
+	Thu,  8 Jan 2026 10:59:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id EA51E4058F;
+	Thu,  8 Jan 2026 11:00:40 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgD3WPnXHV9pSZoYDA--.47337S3;
+	Thu, 08 Jan 2026 11:00:40 +0800 (CST)
+Message-ID: <e947ad33-afdb-40e6-9f8f-46cc5ea951ee@huaweicloud.com>
+Date: Thu, 8 Jan 2026 11:00:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -96,166 +45,153 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 0/8] mm/slab: reduce slab accounting memory overhead by
- allocating slabobj_ext metadata within unsed slab space
+Subject: Re: [RFC v3 1/2] ext4: fast_commit: assert i_data_sem only before
+ sleep
+To: Li Chen <me@linux.beauty>
+Cc: linux-ext4 <linux-ext4@vger.kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+References: <20251224032943.134063-1-me@linux.beauty>
+ <20251224032943.134063-2-me@linux.beauty>
+ <e3465e09-0b6f-419c-9af5-00e750448e53@huaweicloud.com>
+ <19b933e4928.7e19f7474492475.8810694155148118128@linux.beauty>
+ <a507a2ce-a2ae-4592-b171-63974034fc1b@huaweicloud.com>
+ <19b98ddd118.2300666e5265102.1629777029508214951@linux.beauty>
 Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
-Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
- glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
- roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
- surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
- tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260105080230.13171-1-harry.yoo@oracle.com>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <19b98ddd118.2300666e5265102.1629777029508214951@linux.beauty>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 931F034063
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgD3WPnXHV9pSZoYDA--.47337S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryrArWkKw1fGr1kur13XFb_yoW7JryDpF
+	WxCa1xGF4kJry0kw4xtry8WFy2k3s5Jr47XF9xKFyxurs0ka4fKF47KFyfWa4qkr4kAw1q
+	qF4Fq39xX3Wqya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 1/5/26 09:02, Harry Yoo wrote:
-> Happy new year!
+On 1/7/2026 10:30 PM, Li Chen wrote:
+> Hi Zhang,
 > 
-> V4: https://lore.kernel.org/linux-mm/20251027122847.320924-1-harry.yoo@oracle.com
-> V4 -> V5:
-> - Patch 4: Fixed returning false when the return type is unsigned long
-> - Patch 7: Fixed incorrect calculation of slabobj_ext offset (Thanks Hao!)
+> Thanks a lot for your detailed review!
+> 
+>  ---- On Wed, 07 Jan 2026 10:00:23 +0800  Zhang Yi <yi.zhang@huaweicloud.com> wrote --- 
+>  > On 1/6/2026 8:18 PM, Li Chen wrote:
+>  > > Hi Zhang Yi,
+>  > > 
+>  > >  ---- On Mon, 05 Jan 2026 20:18:42 +0800  Zhang Yi <yi.zhang@huaweicloud.com> wrote --- 
+>  > >  > Hi Li,
+>  > >  > 
+>  > >  > On 12/24/2025 11:29 AM, Li Chen wrote:
+>  > >  > > ext4_fc_track_inode() can return without sleeping when
+>  > >  > > EXT4_STATE_FC_COMMITTING is already clear. The lockdep assertion for
+>  > >  > > ei->i_data_sem was done unconditionally before the wait loop, which can
+>  > >  > > WARN in call paths that hold i_data_sem even though we never block. Move
+>  > >  > > lockdep_assert_not_held(&ei->i_data_sem) into the actual sleep path,
+>  > >  > > right before schedule().
+>  > >  > > 
+>  > >  > > Signed-off-by: Li Chen <me@linux.beauty>
+>  > >  > 
+>  > >  > Thank you for the fix patch! However, the solution does not seem to fix
+>  > >  > the issue. IIUC, the root cause of this issue is the following race
+>  > >  > condition (show only one case), and it may cause a real ABBA dead lock
+>  > >  > issue.
+>  > >  > 
+>  > >  > ext4_map_blocks()
+>  > >  >  hold i_data_sem // <- A
+>  > >  >  ext4_mb_new_blocks()
+>  > >  >   ext4_dirty_inode()
+>  > >  >                                  ext4_fc_commit()
+>  > >  >                                   ext4_fc_perform_commit()
+>  > >  >                                    set EXT4_STATE_FC_COMMITTING  <-B
+>  > >  >                                    ext4_fc_write_inode_data()
+>  > >  >                                    ext4_map_blocks()
+>  > >  >                                     hold i_data_sem  // <- A
+>  > >  >    ext4_fc_track_inode()
+>  > >  >     wait EXT4_STATE_FC_COMMITTING  <- B
+>  > >  >                                   jbd2_fc_end_commit()
+>  > >  >                                    ext4_fc_cleanup()
+>  > >  >                                     clear EXT4_STATE_FC_COMMITTING()
+>  > >  > 
+>  
+> I think the ABBA reasoning is plausible: if a caller violates the ordering
+> contract and enters ext4_fc_track_inode() while holding i_data_sem, and the
+> recheck still finds EXT4_STATE_FC_COMMITTING set (so we actually schedule()),
+> then we can get A -> wait(B). If the commit task, while holding the inode
+> in COMMITTING, still needs i_data_sem (e.g. via mapping/log writing), that
+> gives B -> wait(A), forming a cycle.
+> 
+>  > >  > Postponing the lockdep assertion to the point where sleeping is actually
+>  > >  > necessary does not resolve this deadlock issue, it merely masks the
+>  > >  > problem, right?
+>  > >  > 
+>  > >  > I currently don't quite understand why only ext4_fc_track_inode() needs
+>  > >  > to wait for the inode being fast committed to be completed, instead of
+>  > >  > adding it to the FC_Q_STAGING list like other tracking operations.
+>  > 
+>  > It seems that the inode metadata of the tracked inode was not recorded
+>  > during the __track_inode(), so the inode metadata committed at commit
+>  > time reflects real-time data. However, the current
+>  > ext4_fc_perform_commit() lacks concurrency control, allowing other
+>  > processes to simultaneously initiate new handles that modify the inode
+>  > metadata while the previous metadata is being fast committed. Therefore,
+>  > to prevent recording newly changed inode metadata during the old commit
+>  > phase, the ext4_fc_track_inode() function must wait for the ongoing
+>  > commit process to complete before modifying.
+>  > 
+>  > >  > So
+>  > >  > now I don't have a good idea to fix this problem either.  Perhaps we
+>  > >  > need to rethink the necessity of this waiting, or find a way to avoid
+>  > >  > acquiring i_data_sem during fast commit.
+>  > 
+>  > Ha, the solution seems to have already been listed in the TODOs in
+>  > fast_commit.c.
+>  > 
+>  >   Change ext4_fc_commit() to lookup logical to physical mapping using extent
+>  >   status tree. This would get rid of the need to call ext4_fc_track_inode()
+>  >   before acquiring i_data_sem. To do that we would need to ensure that
+>  >   modified extents from the extent status tree are not evicted from memory.
+>  > 
+>  > Alternatively, recording the mapped range of tracking might also be
+>  > feasible.
+> 
+> Thanks a lot for your insights!
+> 
+> For the next revesion, I plan to follow the "Alternatively" way firstly:
+> record the mapped ranges (and relvant inode metadata) at commit time in a
+> snapshot, when journal updates are locked/handles are drained, and then
+> consume only the snapshot during log writing. This avoids doing
+> logical-to-physical mapping (and thus avoids taking i_data_sem) in the log
+> writing phase, and removes the need for ext4_fc_track_inode() to wait for
+> EXT4_STATE_FC_COMMITTING.
+> 
+> I did not pick the extent status tree approach because it would require
+> additional work to guarantee the needed mappings are resident and not
+> evicted under memory pressure, which seems like a larger correctness
+> surface(Please correct me if I'm wrong). If you believe the extent stats tree
+> approach is better, please let me know, and I will do my best to implement it.
+> 
+> Thanks again for the guidance. I'll post an RFC v3 later.
 
-Besides the stuff pointed out the rest seemed ok to me. Can you resend with
-those addressed, and rebased on slab.git slab/for-7.0/obj_metadata to avoid
-a conflict in patch 8/8 with Hao's comment update patch there? I will add
-the series on top there then. Thanks!
+Yes, in my opinion, I also prefer the solution of recording the mapped ranges,
+as it should not incur too much overhead. Please give it a try.
 
-> When CONFIG_MEMCG and CONFIG_MEM_ALLOC_PROFILING are enabled,
-> the kernel allocates two pointers per object: one for the memory cgroup
-> (actually, obj_cgroup) to which it belongs, and another for the code
-> location that requested the allocation.
+Cheers,
+Yi.
+
 > 
-> In two special cases, this overhead can be eliminated by allocating
-> slabobj_ext metadata from unused space within a slab:
-> 
->   Case 1. The "leftover" space after the last slab object is larger than
->           the size of an array of slabobj_ext.
-> 
->   Case 2. The per-object alignment padding is larger than
->           sizeof(struct slabobj_ext).
-> 
-> For these two cases, one or two pointers can be saved per slab object.
-> Examples: ext4 inode cache (case 1) and xfs inode cache (case 2).
-> That's approximately 0.7-0.8% (memcg) or 1.5-1.6% (memcg + mem profiling)
-> of the total inode cache size.
-> 
-> Implementing case 2 is not straightforward, because the existing code
-> assumes that slab->obj_exts is an array of slabobj_ext, while case 2
-> breaks the assumption.
-> 
-> As suggested by Vlastimil, abstract access to individual slabobj_ext
-> metadata via a new helper named slab_obj_ext():
-> 
-> static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
->                                                unsigned long obj_exts,
->                                                unsigned int index)
-> {
->         return (struct slabobj_ext *)(obj_exts + slab_get_stride(slab) * index);
-> } 
-> 
-> In the normal case (including case 1), slab->obj_exts points to an array
-> of slabobj_ext, and the stride is sizeof(struct slabobj_ext).
-> 
-> In case 2, the stride is s->size and
-> slab->obj_exts = slab_address(slab) + s->red_left_pad + (offset of slabobj_ext)
-> 
-> With this approach, the memcg charging fastpath doesn't need to care the
-> storage method of slabobj_ext.
-> 
-> Harry Yoo (8):
->   mm/slab: use unsigned long for orig_size to ensure proper metadata
->     align
->   mm/slab: allow specifying free pointer offset when using constructor
->   ext4: specify the free pointer offset for ext4_inode_cache
->   mm/slab: abstract slabobj_ext access via new slab_obj_ext() helper
->   mm/slab: use stride to access slabobj_ext
->   mm/memcontrol,alloc_tag: handle slabobj_ext access under KASAN poison
->   mm/slab: save memory by allocating slabobj_ext array from leftover
->   mm/slab: place slabobj_ext metadata in unused space within s->size
-> 
->  fs/ext4/super.c      |  20 ++-
->  include/linux/slab.h |  39 +++--
->  mm/memcontrol.c      |  31 +++-
->  mm/slab.h            | 120 ++++++++++++++-
->  mm/slab_common.c     |   8 +-
->  mm/slub.c            | 345 +++++++++++++++++++++++++++++++++++--------
->  6 files changed, 466 insertions(+), 97 deletions(-)
+> Regards,
+> Li​
 > 
 
 
