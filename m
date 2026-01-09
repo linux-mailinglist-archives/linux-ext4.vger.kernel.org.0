@@ -1,168 +1,210 @@
-Return-Path: <linux-ext4+bounces-12702-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12705-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6529D08BD6
-	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 11:57:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232EDD0BF52
+	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 19:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 51A0C3043A77
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 10:54:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 82F373064344
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 18:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5CD33A003;
-	Fri,  9 Jan 2026 10:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2012E06E6;
+	Fri,  9 Jan 2026 18:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="J1yqGkmt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="baeRpb5c";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vvs9UEtt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mSzSdXBD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TevMVnTO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E1626E71E
-	for <linux-ext4@vger.kernel.org>; Fri,  9 Jan 2026 10:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80882DB7A3
+	for <linux-ext4@vger.kernel.org>; Fri,  9 Jan 2026 18:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767956041; cv=none; b=APQ/nexhrG/AQxAUpu+0L3jMCzt0Cp2y4xxCgJI/xYwPFzd1IDnGBJ/Q6ZvKQEYB8XeEQBWW83ui5jwMVVlN9ptBipSzuRJ/pJ2YZ+knZRh6PXHpXlu/JnpQa49TdKAaUVnzUfRNKzW+mCtSfYNU9R17zaZo0XE6ba/E+XAxr6w=
+	t=1767984795; cv=none; b=T+e60aYXhbLLiRKIhVpY5TyAG4Aqtn1TVrppiIpB/nwTitv8yHY4tm4Ppyjm/WOzUsbXPFKrjlCor323QwMCjxMlNq6y4X96EfqqRp1asp/qgn4PLDPJTzMa5nTzf79f0PpJlNtXS7OX9aLyeIqSFjGgIKHF4KSu25vsiLqeJgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767956041; c=relaxed/simple;
-	bh=/4JmcVJiWXlBczobs0inDBux8exFQvMRu261N1pCOhw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m7Y0nv6la1SuH7YNtDITzA/kEALbIYPd1vOUFCIFOoIkXG5BX2s2RkVgFRiPOrtaW0iRDXP80XnFiqZbj7RoAk58m20P/7qK+pDl1aTp/A791/dIimryc7C6+rXPfn7c2iQRm1djKJq+EcSy4tANYrujY8Umyv/dD667ms0KFqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=J1yqGkmt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=baeRpb5c; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vvs9UEtt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mSzSdXBD; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EB7A03398F;
-	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767956038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
-	b=J1yqGkmtuSZNmnz39PNtxJd0wYIxDo56q3CBoCSBs5+YQGGsHNRtVtuqQDAuUMZcvwfYFT
-	otY6o9EYopTLb/ItuI69yUK0fpUCBvFrww2OYasJQj6a5FFl45YmQ62KUoNPGNwg/pLUBG
-	OElZr2fZcN0XHmIP3Putx+W+aX+Jpj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767956038;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
-	b=baeRpb5cXPcX/Yow2rD6pTK4oBpQahxTKeE1J7cJLH+I0oNDf73k62dc924jCNKDIg35kp
-	hFMLaBt9YMuU0YCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767956037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
-	b=vvs9UEttciX8cInXRX3IdH/mdBfv11/w8mx25tzryD8HfhW1vOjzG65BP3deI/6h8oiqQ3
-	ZBkublxb7Z6NyuXA5SutYsenXUesV2ssmAV2fAY6x22Fn2H8CP5IG2oIfAecqxsyAsJldz
-	7qOM/YyH+fl+d8vHzaA0ZcwxE7bVQkE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767956037;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
-	b=mSzSdXBDSXihXOV8HsVfIzzUtg2i4c0Ie+mtZovMESbjYM4fUIhURHo9mSWmLcwp6PQb/g
-	wbZ3xxmCEiPAgUBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E28BE3EA65;
-	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GPZNN0XeYGlKVwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 09 Jan 2026 10:53:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A16C9A0A61; Fri,  9 Jan 2026 11:53:57 +0100 (CET)
-From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH 2/2] ext4: use optimized mballoc scanning regardless of inode format
-Date: Fri,  9 Jan 2026 11:53:38 +0100
-Message-ID: <20260109105354.16008-4-jack@suse.cz>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260109105007.27673-1-jack@suse.cz>
-References: <20260109105007.27673-1-jack@suse.cz>
+	s=arc-20240116; t=1767984795; c=relaxed/simple;
+	bh=PEO8wbSaGOwwRv5UKfYcgXejOCV3Kmi4mBiob/Mhc5w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dJ6kGUQ8nDniqnvQcWisnh+KV2hTRppgvVAYSKGMG/teg5xwBN0n3g2s6QkQo7qPRCYiutM7OJ5L5zGKoenge0Is440DsTofTXU2UE0a+43vCeUfb1skpgMOoifPmGzRlNvyxIguxo+tc+wxswOjG6x8/z6wmAys66u9CdnMqt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TevMVnTO; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-64d0d41404cso7021587a12.0
+        for <linux-ext4@vger.kernel.org>; Fri, 09 Jan 2026 10:53:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767984790; x=1768589590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PEO8wbSaGOwwRv5UKfYcgXejOCV3Kmi4mBiob/Mhc5w=;
+        b=TevMVnTO4L/IsXa/A6Yb8C9ZKd7r8e5kfFD1o3TWcjasOa7MuaL5VvuAy4N9Ln9LPA
+         FLwXD7HoXI8YIlKcLYrC4/tOH+MHENDjCv0O/gZ7Y0v8ZB6IIO1Ug+BNU0uzuFI7GdHq
+         7ITmxR9O4u7734h5en21yhxH3bCCBLGCj+DHGUKn7eeak5W9VNbd+qZf/mA1d3slRfIt
+         y/TYWhbCrheCQgmL3EdAvoSSfdZmQCyjzBO83of4dLof/djhazL/OOPeoFp6EcYLrUTX
+         x5iKxv035Tzy8cECnp0l8kNjHQgAJsk0Q0CeyGUY1hJnEDug4AQDx0lWyAf35ifXUBaF
+         qL3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767984790; x=1768589590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PEO8wbSaGOwwRv5UKfYcgXejOCV3Kmi4mBiob/Mhc5w=;
+        b=whwv+tX8bWJPr/zDyGXOq+oTvsCTDtwFGH6iOCTZR8Mj70CZ8Sm3/3uyaEe7+sYPmu
+         crHN/Zbx7M8x2BYRNCA+AjfSIcpga01EnENjhsnXYIH8BttOUml91LtgBfqGf4Ruvd/T
+         gh4M8sP044fSDyUj0P6W/x5N4pKprnbiXHFfXwbuBGvLC1LIp9+W8duoo/Vd6ynu2vCc
+         xnlHzuIhLvcdUEoJoH2eaGUqIa84s5LYibIPtbQhVearBQ+ThMMPxkDipC3BhuexH3Qf
+         yfcKhStn6qAWhtJEOqcQVVIpNKfpuCj76xx9Fkdbr4VSjAQc+oqjTBJc6X3NS6xFIPox
+         EcIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDtlYI1KCcpSkfWXYzLWxkwqhVpMfvLQVgunpgesXYATQaY/VAhHXw45ZmQoaJxxbBlK8xwjH1c24k@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywsl161qiILRBsX1pQ1x1kYdKgfj77djx5WcA9jCC6TlzQSpNOJ
+	I+THzyhmSQUde/UbqZUDSCwRDECq4J47HQL3Li8PBouWEdSS2ZJ5KoT5J1B2lW2InPmYyLbjdvv
+	HvPolY9tSJfzABSKo0C4uiKDx2NuHQHg=
+X-Gm-Gg: AY/fxX4sAVo9X+BCYKIojvtCu0Qr/+9X8qlbTaXW96KAUqWxQ54cnvIUK8GE1YG3T0d
+	Q2qgcmMwuMap6RdsVTRSEuoiFtl18Rx8YcqTd4wwggwdg+DhRViJTdLFTO2gRS8pQbAIuOxNsPK
+	YXlJyKYjedNYGXCfmFKp2EOEauPoZEL2/i7c4FnNDUBzM6NFlE5/hi55Pk6qpb2sG7xLMqP6HHz
+	LIWHuwGS+jmdwuOYKRDZaI0a2Av/WZf4LR5ugjzDMqE9CYlZI5vVM1LS3oO6oSKuzMwQZC1+cwi
+	iaVIcqV3Aw1g1mlAiW5qkE/jzqhxYTpcMhPQ6xkq
+X-Google-Smtp-Source: AGHT+IFY7MBbUL67We039/hTqFQidfYCDXoLMKl5hH4eJeY3RDGzxdromP5L0kMZXOGuaChoBhGE8PO55vilYs9+TsQ=
+X-Received: by 2002:a05:6402:278f:b0:64b:4333:1ece with SMTP id
+ 4fb4d7f45d1cf-65097e88af5mr10672063a12.34.1767984790069; Fri, 09 Jan 2026
+ 10:53:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1258; i=jack@suse.cz; h=from:subject; bh=/4JmcVJiWXlBczobs0inDBux8exFQvMRu261N1pCOhw=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBpYN5DWu3CwgWaRj2yGYOoAbuk1Si70cUWrPFLx q9sYpAFNwiJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaWDeQwAKCRCcnaoHP2RA 2WM5CACkKGvce91PUVi3hySvk7oAplS6oXpVxfuBBhDGkFTpnmikVw6LGHXmWyY29q2NL/2YIO2 W05xcMPWi13HT+0s9pIN0IfDh3OycmKyMIjvnAh/TCua3X0uLoQA6D8BycCNTukhs89+75CD7sD +pDbaNesSvYMkuT9hqDcvb91kFtNceWdS5ZDfxm2g5ArcMSAcDzSzfqA2nyXzmFvfMpvsvKjtk+ oMd5KgTzdiFH4Us+Awy30+c8dwhdv8plX/9CdCcMaY9k+HjXEh04hFc+bvkLHjiAYGP2r9ZaiAr iJtAXlsowPC083buY2YSH1eew5MH//ADsmCWnmcTIJISUU6y
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
+ <m3mywef74xhcakianlrovrnaadnhzhfqjfusulkcnyioforfml@j2xnk7dzkmv4> <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
+In-Reply-To: <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 9 Jan 2026 19:52:57 +0100
+X-Gm-Features: AQt7F2pw3gC6snSxmHIFjd46zJk7oZ4nEXaveS8flAw1hsLI4KglAqmZVf1WWIg
+Message-ID: <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
+Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
+ lease support
+To: Jeff Layton <jlayton@kernel.org>, Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
+	Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>, Anders Larsen <al@alarsen.net>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
+	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
+	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Phillip Lougher <phillip@squashfs.org.uk>, 
+	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+	Yuezhang Mo <yuezhang.mo@sony.com>, Chuck Lever <chuck.lever@oracle.com>, 
+	Alexander Aring <alex.aring@gmail.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, 
+	Paulo Alcantara <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+	Bharath SM <bharathsm@microsoft.com>, Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
+	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
+	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently we don't used mballoc optimized scanning (using max free
-extent order and avg free extent order group lists) for inodes with
-indirect block based format. This is confusing for users and I don't see
-a good reason for that. Even with indirect block based inode format we
-can spend big amount of time searching for free blocks for large
-filesystems with fragmented free space. To add to the confusion before
-commit 077d0c2c78df ("ext4: make mb_optimize_scan performance mount
-option work with extents") optimized scanning was applied *only* to
-indirect block based inodes so that commit appears as a performance
-regression to some users. Just use optimized scanning whenever it is
-enabled by mount options.
+On Thu, Jan 8, 2026 at 7:57=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
+te:
+>
+> On Thu, 2026-01-08 at 18:40 +0100, Jan Kara wrote:
+> > On Thu 08-01-26 12:12:55, Jeff Layton wrote:
+> > > Yesterday, I sent patches to fix how directory delegation support is
+> > > handled on filesystems where the should be disabled [1]. That set is
+> > > appropriate for v6.19. For v7.0, I want to make lease support be more
+> > > opt-in, rather than opt-out:
+> > >
+> > > For historical reasons, when ->setlease() file_operation is set to NU=
+LL,
+> > > the default is to use the kernel-internal lease implementation. This
+> > > means that if you want to disable them, you need to explicitly set th=
+e
+> > > ->setlease() file_operation to simple_nosetlease() or the equivalent.
+> > >
+> > > This has caused a number of problems over the years as some filesyste=
+ms
+> > > have inadvertantly allowed leases to be acquired simply by having lef=
+t
+> > > it set to NULL. It would be better if filesystems had to opt-in to le=
+ase
+> > > support, particularly with the advent of directory delegations.
+> > >
+> > > This series has sets the ->setlease() operation in a pile of existing
+> > > local filesystems to generic_setlease() and then changes
+> > > kernel_setlease() to return -EINVAL when the setlease() operation is =
+not
+> > > set.
+> > >
+> > > With this change, new filesystems will need to explicitly set the
+> > > ->setlease() operations in order to provide lease and delegation
+> > > support.
+> > >
+> > > I mainly focused on filesystems that are NFS exportable, since NFS an=
+d
+> > > SMB are the main users of file leases, and they tend to end up export=
+ing
+> > > the same filesystem types. Let me know if I've missed any.
+> >
+> > So, what about kernfs and fuse? They seem to be exportable and don't ha=
+ve
+> > .setlease set...
+> >
+>
+> Yes, FUSE needs this too. I'll add a patch for that.
+>
+> As far as kernfs goes: AIUI, that's basically what sysfs and resctrl
+> are built on. Do we really expect people to set leases there?
+>
+> I guess it's technically a regression since you could set them on those
+> sorts of files earlier, but people don't usually export kernfs based
+> filesystems via NFS or SMB, and that seems like something that could be
+> used to make mischief.
+>
+> AFAICT, kernfs_export_ops is mostly to support open_by_handle_at(). See
+> commit aa8188253474 ("kernfs: add exportfs operations").
+>
+> One idea: we could add a wrapper around generic_setlease() for
+> filesystems like this that will do a WARN_ONCE() and then call
+> generic_setlease(). That would keep leases working on them but we might
+> get some reports that would tell us who's setting leases on these files
+> and why.
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c | 2 --
- 1 file changed, 2 deletions(-)
+IMO, you are being too cautious, but whatever.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f0e07bf11a93..cd98c472631e 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1145,8 +1145,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
- 		return 0;
- 	if (ac->ac_criteria >= CR_GOAL_LEN_SLOW)
- 		return 0;
--	if (!ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
--		return 0;
- 	return 1;
- }
- 
--- 
-2.51.0
+It is not accurate that kernfs filesystems are NFS exportable in general.
+Only cgroupfs has KERNFS_ROOT_SUPPORT_EXPORTOP.
 
+If any application is using leases on cgroup files, it must be some
+very advanced runtime (i.e. systemd), so we should know about the
+regression sooner rather than later.
+
+There are also the recently added nsfs and pidfs export_operations.
+
+I have a recollection about wanting to be explicit about not allowing
+those to be exportable to NFS (nsfs specifically), but I can't see where
+and if that restriction was done.
+
+Christian? Do you remember?
+
+Thanks,
+Amir.
 
