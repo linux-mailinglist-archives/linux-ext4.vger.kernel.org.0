@@ -1,61 +1,61 @@
-Return-Path: <linux-ext4+bounces-12703-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12702-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E398DD08BD9
-	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 11:57:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6529D08BD6
+	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 11:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CA14330486AE
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 10:54:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 51A0C3043A77
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 10:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EB6339B3C;
-	Fri,  9 Jan 2026 10:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5CD33A003;
+	Fri,  9 Jan 2026 10:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ddq2IjY5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tL2Yq/4n";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PzwFZvCf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bAAJygQd"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="J1yqGkmt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="baeRpb5c";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vvs9UEtt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mSzSdXBD"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34C533985A
-	for <linux-ext4@vger.kernel.org>; Fri,  9 Jan 2026 10:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E1626E71E
+	for <linux-ext4@vger.kernel.org>; Fri,  9 Jan 2026 10:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767956047; cv=none; b=T2wfMvT2RtpM/w2eymDloA4zw/FQs0yHqSCmV1OE/Fsy5crNju1XtuJqo9wCeCoYPOB+fZfkFNm/4/ryfmP1wVQVSRREtQIzeD24hOnF/er/t+2GkWk7zBLuXj4tE1LQsuXAv8RyxahrzfcY+XcRX70fhJJTmpwKHO4vaGa60ak=
+	t=1767956041; cv=none; b=APQ/nexhrG/AQxAUpu+0L3jMCzt0Cp2y4xxCgJI/xYwPFzd1IDnGBJ/Q6ZvKQEYB8XeEQBWW83ui5jwMVVlN9ptBipSzuRJ/pJ2YZ+knZRh6PXHpXlu/JnpQa49TdKAaUVnzUfRNKzW+mCtSfYNU9R17zaZo0XE6ba/E+XAxr6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767956047; c=relaxed/simple;
-	bh=1rXtUATUqiMsqCB2ibBgEENASEXWt5A5IbC8rCm24RQ=;
+	s=arc-20240116; t=1767956041; c=relaxed/simple;
+	bh=/4JmcVJiWXlBczobs0inDBux8exFQvMRu261N1pCOhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=chB0HQjHagd4LHggrIy+3V4df08lMJkJWk0w7aUpbAgXUGygJ9oCviIZSsTM1g35ceCtQ0XsOTDs72hx9a1CeqZtiAN6jDNlc9iPGJKkEstxeivEEvMh2ntRKOzprt9670hkAwk0HaA0Nmw9wouSOtePxBgXM+N6rO98Gkh7wDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ddq2IjY5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tL2Yq/4n; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PzwFZvCf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bAAJygQd; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=m7Y0nv6la1SuH7YNtDITzA/kEALbIYPd1vOUFCIFOoIkXG5BX2s2RkVgFRiPOrtaW0iRDXP80XnFiqZbj7RoAk58m20P/7qK+pDl1aTp/A791/dIimryc7C6+rXPfn7c2iQRm1djKJq+EcSy4tANYrujY8Umyv/dD667ms0KFqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=J1yqGkmt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=baeRpb5c; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vvs9UEtt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mSzSdXBD; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F183833995;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EB7A03398F;
 	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1767956038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8XNpdhXNgZlTR/wWJxB7zNPnPPZh/8oBh/kwNuquHNE=;
-	b=Ddq2IjY58TExZkqzifCzmKI+1B1p4x+QmTBVyxaY8PWAQbU61sWOvOxp+AymUlUMhjBgeZ
-	CQoy2ST0DebhkGOAjI+9ZCTbsd/EPrcqZvKpbVco4XZz4Lhep3B8YtP+ZJ3q/fwikdTRyb
-	1D6UKuIqbs4WaqDMA720seoBT65Jvh4=
+	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
+	b=J1yqGkmtuSZNmnz39PNtxJd0wYIxDo56q3CBoCSBs5+YQGGsHNRtVtuqQDAuUMZcvwfYFT
+	otY6o9EYopTLb/ItuI69yUK0fpUCBvFrww2OYasJQj6a5FFl45YmQ62KUoNPGNwg/pLUBG
+	OElZr2fZcN0XHmIP3Putx+W+aX+Jpj8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1767956038;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8XNpdhXNgZlTR/wWJxB7zNPnPPZh/8oBh/kwNuquHNE=;
-	b=tL2Yq/4nwMnJmudeWCchw+tD8HW1HqgsxgP8d7Vq/Pl6+Wu19Xj0M1FzunaK90OLC2DvNP
-	+N/oH5ank8+OD3DA==
+	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
+	b=baeRpb5cXPcX/Yow2rD6pTK4oBpQahxTKeE1J7cJLH+I0oNDf73k62dc924jCNKDIg35kp
+	hFMLaBt9YMuU0YCA==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -63,39 +63,39 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8XNpdhXNgZlTR/wWJxB7zNPnPPZh/8oBh/kwNuquHNE=;
-	b=PzwFZvCfYOwI2BemT1PrMEipFILwBR2HcGjEN+m8z/MOGdl4mj9GZr0ZRZGySn1Qd1tG+x
-	f6NWimm8LLDPdZmF2mvBYgosOvgjHz16CEvAYQNypI6cOErwVq0UY37IWGKPW9pnOdsxuN
-	JIC1sPcsFr6ZFfpqBezYsZuMfKT/S2g=
+	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
+	b=vvs9UEttciX8cInXRX3IdH/mdBfv11/w8mx25tzryD8HfhW1vOjzG65BP3deI/6h8oiqQ3
+	ZBkublxb7Z6NyuXA5SutYsenXUesV2ssmAV2fAY6x22Fn2H8CP5IG2oIfAecqxsyAsJldz
+	7qOM/YyH+fl+d8vHzaA0ZcwxE7bVQkE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1767956037;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8XNpdhXNgZlTR/wWJxB7zNPnPPZh/8oBh/kwNuquHNE=;
-	b=bAAJygQdffuFWJL6kD8gnkK6AKE9xDrt3gkio1E73ueEUTe2hBdiz6gl7YsboGvVeESTON
-	nNQgy8zG0qQsQLAQ==
+	bh=TB6GuENXMpNC5xVYqxUJyxYgsZVgpGxwfqu/xZAxYEs=;
+	b=mSzSdXBDSXihXOV8HsVfIzzUtg2i4c0Ie+mtZovMESbjYM4fUIhURHo9mSWmLcwp6PQb/g
+	wbZ3xxmCEiPAgUBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E42223EA66;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E28BE3EA65;
 	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KYlJN0XeYGlIVwAAD6G6ig
+	id GPZNN0XeYGlKVwAAD6G6ig
 	(envelope-from <jack@suse.cz>); Fri, 09 Jan 2026 10:53:57 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9834AA08E3; Fri,  9 Jan 2026 11:53:57 +0100 (CET)
+	id A16C9A0A61; Fri,  9 Jan 2026 11:53:57 +0100 (CET)
 From: Jan Kara <jack@suse.cz>
 To: Ted Tso <tytso@mit.edu>
 Cc: <linux-ext4@vger.kernel.org>,
 	Baokun Li <libaokun1@huawei.com>,
 	Jan Kara <jack@suse.cz>
-Subject: [PATCH 1/2] ext4: always allocate blocks only from groups inode can use
-Date: Fri,  9 Jan 2026 11:53:37 +0100
-Message-ID: <20260109105354.16008-3-jack@suse.cz>
+Subject: [PATCH 2/2] ext4: use optimized mballoc scanning regardless of inode format
+Date: Fri,  9 Jan 2026 11:53:38 +0100
+Message-ID: <20260109105354.16008-4-jack@suse.cz>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260109105007.27673-1-jack@suse.cz>
 References: <20260109105007.27673-1-jack@suse.cz>
@@ -105,9 +105,10 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3553; i=jack@suse.cz; h=from:subject; bh=1rXtUATUqiMsqCB2ibBgEENASEXWt5A5IbC8rCm24RQ=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBpYN5Csc57WXIKc3JX/linpwcPRJlU6BnYJt+Ci raGCSTLnk+JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaWDeQgAKCRCcnaoHP2RA 2bl7CACcc3H6QY2L/I9u8UKT6ndpo1pcj1Kj0Gshra//xdDK44ZhE/sSAEBUsVdfqdJZPnVpi0r UxSQLTx0qGnzGItk0BytJmz7njcpMKU/HVZaeT/QP8Zd2sQyVkoF12vrGGzPC2t1SLUuDWBOK3N kUBx36O5nsS/+siC6TxSGTtEpHFfH3uWWyNJVw8ZjAuFRbCAz97dJi/AKiyXvcD9aywn4oPfAH0 zv80xOf8y7R0JT1vK0NrWmWmQ7HEZPqD12wDTRSvkd7oiLZKEAtVxs2E0DiEkoAnsFvtTAFTBxu PLF8uz7P3ncLz7Qa3Zt20q89B+s95q7mZ/fwUFmcheDFOBr+
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1258; i=jack@suse.cz; h=from:subject; bh=/4JmcVJiWXlBczobs0inDBux8exFQvMRu261N1pCOhw=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBpYN5DWu3CwgWaRj2yGYOoAbuk1Si70cUWrPFLx q9sYpAFNwiJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaWDeQwAKCRCcnaoHP2RA 2WM5CACkKGvce91PUVi3hySvk7oAplS6oXpVxfuBBhDGkFTpnmikVw6LGHXmWyY29q2NL/2YIO2 W05xcMPWi13HT+0s9pIN0IfDh3OycmKyMIjvnAh/TCua3X0uLoQA6D8BycCNTukhs89+75CD7sD +pDbaNesSvYMkuT9hqDcvb91kFtNceWdS5ZDfxm2g5ArcMSAcDzSzfqA2nyXzmFvfMpvsvKjtk+ oMd5KgTzdiFH4Us+Awy30+c8dwhdv8plX/9CdCcMaY9k+HjXEh04hFc+bvkLHjiAYGP2r9ZaiAr iJtAXlsowPC083buY2YSH1eew5MH//ADsmCWnmcTIJISUU6y
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -128,96 +129,39 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCPT_COUNT_THREE(0.00)[4];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
 X-Spam-Level: 
+X-Spam-Flag: NO
 
-For filesystems with more than 2^32 blocks inodes using indirect block
-based format cannot use blocks beyond the 32-bit limit.
-ext4_mb_scan_groups_linear() takes care to not select these unsupported
-groups for such inodes however other functions selecting groups for
-allocation don't. So far this is harmless because the other selection
-functions are used only with mb_optimize_scan and this is currently
-disabled for inodes with indirect blocks however in the following patch
-we want to enable mb_optimize_scan regardless of inode format.
+Currently we don't used mballoc optimized scanning (using max free
+extent order and avg free extent order group lists) for inodes with
+indirect block based format. This is confusing for users and I don't see
+a good reason for that. Even with indirect block based inode format we
+can spend big amount of time searching for free blocks for large
+filesystems with fragmented free space. To add to the confusion before
+commit 077d0c2c78df ("ext4: make mb_optimize_scan performance mount
+option work with extents") optimized scanning was applied *only* to
+indirect block based inodes so that commit appears as a performance
+regression to some users. Just use optimized scanning whenever it is
+enabled by mount options.
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/mballoc.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+ fs/ext4/mballoc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 56d50fd3310b..f0e07bf11a93 100644
+index f0e07bf11a93..cd98c472631e 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -892,6 +892,18 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
- 	}
+@@ -1145,8 +1145,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+ 		return 0;
+ 	if (ac->ac_criteria >= CR_GOAL_LEN_SLOW)
+ 		return 0;
+-	if (!ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
+-		return 0;
+ 	return 1;
  }
  
-+static ext4_group_t ext4_get_allocation_groups_count(
-+				struct ext4_allocation_context *ac)
-+{
-+	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
-+
-+	/* non-extent files are limited to low blocks/groups */
-+	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
-+		ngroups = EXT4_SB(ac->ac_sb)->s_blockfile_groups;
-+
-+	return ngroups;
-+}
-+
- static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
- 					struct xarray *xa,
- 					ext4_group_t start, ext4_group_t end)
-@@ -899,7 +911,7 @@ static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
- 	struct super_block *sb = ac->ac_sb;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	enum criteria cr = ac->ac_criteria;
--	ext4_group_t ngroups = ext4_get_groups_count(sb);
-+	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
- 	unsigned long group = start;
- 	struct ext4_group_info *grp;
- 
-@@ -951,7 +963,7 @@ static int ext4_mb_scan_groups_p2_aligned(struct ext4_allocation_context *ac,
- 	ext4_group_t start, end;
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	for (i = ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
- 		ret = ext4_mb_scan_groups_largest_free_order_range(ac, i,
-@@ -1001,7 +1013,7 @@ static int ext4_mb_scan_groups_goal_fast(struct ext4_allocation_context *ac,
- 	ext4_group_t start, end;
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
- 	for (; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
-@@ -1083,7 +1095,7 @@ static int ext4_mb_scan_groups_best_avail(struct ext4_allocation_context *ac,
- 		min_order = fls(ac->ac_o_ex.fe_len);
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	for (i = order; i >= min_order; i--) {
- 		int frag_order;
-@@ -1182,11 +1194,7 @@ static int ext4_mb_scan_groups(struct ext4_allocation_context *ac)
- 	int ret = 0;
- 	ext4_group_t start;
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
--	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
--
--	/* non-extent files are limited to low blocks/groups */
--	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
--		ngroups = sbi->s_blockfile_groups;
-+	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
- 
- 	/* searching for the right group start from the goal value specified */
- 	start = ac->ac_g_ex.fe_group;
 -- 
 2.51.0
 
