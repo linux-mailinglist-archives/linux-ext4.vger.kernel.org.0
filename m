@@ -1,193 +1,145 @@
-Return-Path: <linux-ext4+bounces-12701-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12704-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72510D08962
-	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 11:34:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029FFD08BAC
+	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 11:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0D812300E60B
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 10:34:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DFFDD30056CC
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 10:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B084333859E;
-	Fri,  9 Jan 2026 10:34:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B1233A003;
+	Fri,  9 Jan 2026 10:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ghpAxnj9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0VSoiq5q";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x51bbXT6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yPVE+kHw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4CD330B0E;
-	Fri,  9 Jan 2026 10:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF79026738B
+	for <linux-ext4@vger.kernel.org>; Fri,  9 Jan 2026 10:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767954847; cv=none; b=C7g3qs+Gyl4wMoc2n49wem17F96y4eGjv6Rrd5XYWzKxfShrxppDVJUQwmZsqEXKC29V6Yg08Kv0U27X/c12WoVoJgDd5BfEEL8rDgnJbNAXL/bolpavxeCUxavg880RWvNO9n4aB+WMayqw3nqvCKCiBzu4A1xNnszLMVVntfY=
+	t=1767956053; cv=none; b=ThmpccCuWbX7/WXuCSuNFdFSSlHL60v1xnH8lTEPk3WPZs+wFHh3oj2lckAEMQNCOd9iZNALsh4onPUKf5zrIXp+mdI33cSbg+pji74GXmpLT2SDASboG7JFSZJpzrAlS3U/73uNu+zgKMtHzmI1vn6Qj7M5XkRyiD3gdc43r1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767954847; c=relaxed/simple;
-	bh=4yidhpVrLttkP1Yv0UturrZunK9twHG3UONxSxi1kL8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ho8MR/NLMU8X211cbRSZRkhcr0EUNi9tuv0vhvuCFLPQs1f8rysz3HJcpw6+PKYEWobhXHMYjj+m8PfHB+v3yE85AUtXt7Zob+bWLvB33xHAuVwrZXYYALgXO/482FFRSYRkAA8Mdya/qDhohj/W2JLFoGYf8jUtMnJfoE13flU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dndRR328YzYQv6P;
-	Fri,  9 Jan 2026 18:33:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8A8614057D;
-	Fri,  9 Jan 2026 18:34:00 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP4 (Coremail) with SMTP id gCh0CgBXuPiW2WBpX7G2DA--.8776S3;
-	Fri, 09 Jan 2026 18:34:00 +0800 (CST)
-Message-ID: <f41e3837-93a6-495c-93cd-0ecccf3ca62d@huaweicloud.com>
-Date: Fri, 9 Jan 2026 18:33:58 +0800
+	s=arc-20240116; t=1767956053; c=relaxed/simple;
+	bh=dODP2s1RpHz0TsGaAIz1HLvIk72TE5ObnIcFd0nCOq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F3J0ZMOU5bbo22nZ+fTFAP+t4sdVqGk0lhVDA7VVG92cqmMQqyJgiaGN8yzxkY2s1GlUN8/9Tpkd68j2Q5AIkQK8nf9P39yGEHqKoNmpd2wfjFI9A5TYXNHDurvGqjaFqwl0Ja/i9/Hev8+bIvq/t6xj2rMVOXrPT1iSjW175Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ghpAxnj9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0VSoiq5q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x51bbXT6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yPVE+kHw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E345333840;
+	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767956038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q6sFjOHyDf1q86r/tiK5WdjlvI1ULy2c3u6u6Zgw9x4=;
+	b=ghpAxnj90BRUdDfGQZIS8FKfJMuIjEuk/s0opLx8TDMAveC1rw5f7lwdr2ISKUqZhStaLj
+	1LPry1axPr0TlGU2x1fErb9/lFfGVHj1Drv0Av4CzCZL9isTzLHo8Krntqr1AI+42ifYrr
+	s6AURX+e5/kHNUkkKnORgjCKnRdaMrg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767956038;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q6sFjOHyDf1q86r/tiK5WdjlvI1ULy2c3u6u6Zgw9x4=;
+	b=0VSoiq5q46DLyGviN661LKjO1GdESfaiMnZ9wgZaK5k5Brix7yleeW045W3KAS5apsDJxt
+	Kaqf+Xxo5fYRp3AA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=x51bbXT6;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yPVE+kHw
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767956037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q6sFjOHyDf1q86r/tiK5WdjlvI1ULy2c3u6u6Zgw9x4=;
+	b=x51bbXT68qYOQG/hNOyN0abL0+EpHIpnODOy+Sgolu/SET9OUcF/qWt+4VC5oKlHVKM7HJ
+	psd2PHDfqRzWAVXlJw0AemEIS6KzvF/dFK/3l3SPjd53KnMCBn4sudMCeXRvGI/mSQ5qJE
+	OVnjj1wlEtzbhiFOZkV97aw32Lzsg4Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767956037;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=q6sFjOHyDf1q86r/tiK5WdjlvI1ULy2c3u6u6Zgw9x4=;
+	b=yPVE+kHwC5qoAK4cnhjsPqkyp2+2t8szbHeBsIGoAjugUPnezaMsUamUFZzaTcbXeCuY2F
+	xFqNery5AloohXCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DABF63EA63;
+	Fri,  9 Jan 2026 10:53:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JS1jNUXeYGlHVwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 09 Jan 2026 10:53:57 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 93C68A0951; Fri,  9 Jan 2026 11:53:57 +0100 (CET)
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Baokun Li <libaokun1@huawei.com>,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH 0/2 v2] ext4: use mb_optimize_scan regardless of inode format
+Date: Fri,  9 Jan 2026 11:53:36 +0100
+Message-ID: <20260109105007.27673-1-jack@suse.cz>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] ext4: fix e4b bitmap inconsistency reports
-To: sunyongjian1@huawei.com, linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
- yangerkun@huawei.com, libaokun1@huawei.com, chengzhihao1@huawei.com
-References: <20260106090820.836242-1-sunyongjian@huaweicloud.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20260106090820.836242-1-sunyongjian@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBXuPiW2WBpX7G2DA--.8776S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw17JFy5Gw1DZFy5ur1fXrb_yoWrur1rpr
-	43Kw1DKFWrW3W3uw42ya4FgF10k348ur43Ca1fWr1fZFs0qa4IkFW7K3Z8WF45Jrs2yw1S
-	qw4j9ryDWa4DAF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Developer-Signature: v=1; a=openpgp-sha256; l=383; i=jack@suse.cz; h=from:subject:message-id; bh=dODP2s1RpHz0TsGaAIz1HLvIk72TE5ObnIcFd0nCOq0=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBpYN4vjJhLx55kA5xN9pNZn8iyXxMm8j+Jv5Lg5 KjuYyYE3w2JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaWDeLwAKCRCcnaoHP2RA 2SwTB/0RZPNa5GFev0MuSIjLaoH0ebAvYvpmA9BHnOb16Qd2fSYhovy8R1zZ+vFXKQcsPMtQZgK jPlrMYsnthNV2kqGca/IBXrk+VGnvKkcpi9DEnybx6ZDAIb/g+Oiq+g2odE11UO17NXpRaEvVea GRBpVOGPrY6dOLJ+GofE0bv5+XxsNp1KpvAVJzbv8amE0lIMe5ONJuYGFzp1XXpb206Q+e3u7XO NMWo2A5WRcdUYqjm48QHh76b5SWMNcCwVe617YrxaeLPv0OJemr3UzKPBkQ4UZA9uErJ95uq6xw EjniInh0DKSltP0lkMx0AoyPKx9c9zQ2qbTblh4eNqiZyBWF
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -3.01
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:mid];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E345333840
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
 
-On 1/6/2026 5:08 PM, Yongjian Sun wrote:
-> From: Yongjian Sun <sunyongjian1@huawei.com>
-> 
-> A bitmap inconsistency issue was observed during stress tests under
-> mixed huge-page workloads. Ext4 reported multiple e4b bitmap check
-> failures like:
-> 
-> ext4_mb_complex_scan_group:2508: group 350, 8179 free clusters as
-> per group info. But got 8192 blocks
-> 
-> Analysis and experimentation confirmed that the issue is caused by a
-> race condition between page migration and bitmap modification. Although
-> this timing window is extremely narrow, it is still hit in practice:
-> 
-> folio_lock                        ext4_mb_load_buddy
-> __migrate_folio
->   check ref count
->   folio_mc_copy                     __filemap_get_folio
->                                       folio_try_get(folio)
->                                   ......
->                                   mb_mark_used
->                                   ext4_mb_unload_buddy
->   __folio_migrate_mapping
->     folio_ref_freeze
-> folio_unlock
-> 
-> The root cause of this issue is that the fast path of load_buddy only
-> increments the folio's reference count, which is insufficient to prevent
-> concurrent folio migration. We observed that the folio migration process
-> acquires the folio lock. Therefore, we can determine whether to take the
-> fast path in load_buddy by checking the lock status. If the folio is
-> locked, we opt for the slow path (which acquires the lock) to close this
-> concurrency window.
-> 
-> Additionally, this change addresses the following issues:
-> 
-> When the DOUBLE_CHECK macro is enabled to inspect bitmap-related
-> issues, the following error may be triggered:
-> 
-> corruption in group 324 at byte 784(6272): f in copy != ff on
-> disk/prealloc
-> 
-> Analysis reveals that this is a false positive. There is a specific race
-> window where the bitmap and the group descriptor become momentarily
-> inconsistent, leading to this error report:
-> 
-> ext4_mb_load_buddy                   ext4_mb_load_buddy
->   __filemap_get_folio(create|lock)
->     folio_lock
->   ext4_mb_init_cache
->     folio_mark_uptodate
->                                      __filemap_get_folio(no lock)
->                                      ......
->                                      mb_mark_used
->                                        mb_mark_used_double
->   mb_cmp_bitmaps
->                                        mb_set_bits(e4b->bd_bitmap)
->   folio_unlock
-> 
-> The original logic assumed that since mb_cmp_bitmaps is called when the
-> bitmap is newly loaded from disk, the folio lock would be sufficient to
-> prevent concurrent access. However, this overlooks a specific race
-> condition: if another process attempts to load buddy and finds the folio
-> is already in an uptodate state, it will immediately begin using it without
-> holding folio lock.
-> 
-> Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+Hello,
 
-Well done! This is a problem that has been hidden for a long time.
+this patch series enables use of mballoc optimizations regardless of the inode
+format. See patch 2 for details.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Changes since v1:
+* Added patch to make sure mballoc doesn't select group with block numbers
+  greater than 2^32 for indirect block based inodes
 
-> ---
->  fs/ext4/mballoc.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 56d50fd3310b..de4cacb740b3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1706,16 +1706,17 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
->  
->  	/* Avoid locking the folio in the fast path ... */
->  	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
-> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-> +	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
-> +		/*
-> +		 * folio_test_locked is employed to detect ongoing folio
-> +		 * migrations, since concurrent migrations can lead to
-> +		 * bitmap inconsistency. And if we are not uptodate that
-> +		 * implies somebody just created the folio but is yet to
-> +		 * initialize it. We can drop the folio reference and
-> +		 * try to get the folio with lock in both cases to avoid
-> +		 * concurrency.
-> +		 */
->  		if (!IS_ERR(folio))
-> -			/*
-> -			 * drop the folio reference and try
-> -			 * to get the folio with lock. If we
-> -			 * are not uptodate that implies
-> -			 * somebody just created the folio but
-> -			 * is yet to initialize it. So
-> -			 * wait for it to initialize.
-> -			 */
->  			folio_put(folio);
->  		folio = __filemap_get_folio(inode->i_mapping, pnum,
->  				FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
-> @@ -1764,7 +1765,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
->  
->  	/* we need another folio for the buddy */
->  	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
-> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-> +	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
->  		if (!IS_ERR(folio))
->  			folio_put(folio);
->  		folio = __filemap_get_folio(inode->i_mapping, pnum,
+Previous versions:
+v1: https://lore.kernel.org/all/20260108160907.24892-2-jack@suse.cz/
 
+								Honza
 
