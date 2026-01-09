@@ -1,273 +1,368 @@
-Return-Path: <linux-ext4+bounces-12689-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12690-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E945D06DAD
-	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 03:33:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87CD8D06DB3
+	for <lists+linux-ext4@lfdr.de>; Fri, 09 Jan 2026 03:33:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 01A6030124CC
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 02:33:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8D8513016356
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Jan 2026 02:33:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112B4315D49;
-	Fri,  9 Jan 2026 02:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F109330FF32;
+	Fri,  9 Jan 2026 02:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VDDSZZYy";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="JTB9TBLu"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rz6tm/Y7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFB633987;
-	Fri,  9 Jan 2026 02:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767925979; cv=fail; b=sr2Xvnp/q8/2zqJ3FyMHNigTdgGJuXWFloSaqw90IVNsnX3eQk4rVvFMauRS2tDFxU/SQOJQ19KpMFOUAyH98YYgty+ilDJ4HinjQCP7H0ixpqn+K+lJ12TcCyNIad0sgDEM29wSJ2PAeH75Kgm3JpIvV5Wtsjf5slk2Mij4w0o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767925979; c=relaxed/simple;
-	bh=k49+2jjRK64r8mSOwlkScEZWKqJY9zJvwVG0b3Sazxk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=S+swIr20h2OPuEtX0VxQCktot7l0gxb6Z9dzyK/ZwWXcS6OQhqOCI4NKZq/mC1E9vwkcg6H54f9d9HdKT+yHTGXSwp1ekOEn+lrr645bZ892OgU3W2sPb+BIxFEUu7qWlF/DLRlC8rtSYys1PJIHbrluzhVVd8t18RyBZw8a3b0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VDDSZZYy; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=JTB9TBLu; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60920Xqm1887660;
-	Fri, 9 Jan 2026 02:32:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=W/FbAqnjn1BV35oE36
-	Z09Hm4pUWzdgjQomKqrjqVzLI=; b=VDDSZZYyyW44ZwF0swam4NPnzl8o/S8oka
-	ry1zkC2+7c7xpz2L1ysVcwP6NpiEEb2HAahbeCXE2+fTgqeM6ITzi4DEmbkUascK
-	tJDns1MhesuE/w1LvKtkk+QF87eHChSZMyTdqy0VTTUwJxRWuX0pXaw17KTqyAUl
-	cfnr0wj9NQh0Dw6z2PkX9cSmx2anb4Qros1dlKe5BrJqGJOleuZVyHnDoue7r4tC
-	MTpRbFuMRyBQubkg7ehU7NV0hIzD6p/PguFm0lmQFFfM4VOQZCnQyQYxw2Vzj9T5
-	feRPkuxFDVzpCbhjZeDtcWFZjjs3U3iaBtrr7YX9K5+iUFxNSwBA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bjncg06bq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Jan 2026 02:32:23 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 609102uE040098;
-	Fri, 9 Jan 2026 02:32:22 GMT
-Received: from sn4pr2101cu001.outbound.protection.outlook.com (mail-southcentralusazon11012030.outbound.protection.outlook.com [40.93.195.30])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4besjnv6ha-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 09 Jan 2026 02:32:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=HzpzhfEg6aLWGD5GcmSC6C+0rGVDseOROyajCHX/2PmgSssKNAJWyl1CvRBC4QtIhQFiOgTtmyFEz/3qSHxyFQazmxAtFMCbVGTUruvHLGWKPyJIX9KRD4RFVGl/wuoWuR/SE9pbhKFS9fMj5Ny2CjfPltFfrAOCPC7AF8eQBBObm9b5SQPO3mLia1pMj0IO9tAfmvSYVTV9OaxgJIy2Ppf+Mcs3AL4D2C6yEU1cjU26BaR1I3DWPgduBhGpiNxTJk7eedPyQbG1eUt5NBNYDkVvsZDfGQcVESfRq0MWdsLs9sCTIoPa1nfZenqC4B5aHRpcKxzjwuL+kVUsa1jJUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W/FbAqnjn1BV35oE36Z09Hm4pUWzdgjQomKqrjqVzLI=;
- b=eIxqae4Avg2NAbQ956rYbNs6DnyH2TBry5JN327klkhKbDS2ahPBlavI1QB+3ASJRuHkA7jCWJFS5xnNG5LYYJSei+vEbRwfrDdjLNOPrHBItWMY76pziQwwEc5t10WtK10/n9mcdW3XgsT1LCR/NDyir6Za98bsAn3nrWBsn7DlIsmHtDgz6S6NjjwzGA/ExLFzWYCJ/71S7ZC5Mo4eLfRnIpLu4nmzWD2Q1wcw+EcSLjBsXWGCwqucXSNV4hD8J0LCMRIjV6fshBXsSXHvcN3zcmbD9K/81hXNPWyCDEEhgnVCytw+4GADdq+K4YAp+fzRKPZk+FuOalOyblNwtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W/FbAqnjn1BV35oE36Z09Hm4pUWzdgjQomKqrjqVzLI=;
- b=JTB9TBLuud5entcni9IiE8IexVNW3B1Ipcqu7WvBA7+tH0v5LxFpmyOjT/PgaefMYrM5/aeQCdr33Bl8lksMyzMWLKa5KQVm/Rd41DwfKnR6kNoK8eGr/zyiSsC6LEB5McwWA/kqLqjPqwmoJ2BvgACw8z/JeP0rbcNrrFL92Go=
-Received: from IA1PR10MB7333.namprd10.prod.outlook.com (2603:10b6:208:3fa::10)
- by PH3PPFD7011BF84.namprd10.prod.outlook.com (2603:10b6:518:1::7c8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.2; Fri, 9 Jan
- 2026 02:32:19 +0000
-Received: from IA1PR10MB7333.namprd10.prod.outlook.com
- ([fe80::e8e9:f35e:8361:ec06]) by IA1PR10MB7333.namprd10.prod.outlook.com
- ([fe80::e8e9:f35e:8361:ec06%7]) with mapi id 15.20.9499.003; Fri, 9 Jan 2026
- 02:32:19 +0000
-Date: Fri, 9 Jan 2026 11:32:07 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Hao Li <hao.li@linux.dev>, akpm@linux-foundation.org, andreyknvl@gmail.com,
-        cl@gentwo.org, dvyukov@google.com, glider@google.com,
-        hannes@cmpxchg.org, linux-mm@kvack.org, mhocko@kernel.org,
-        muchun.song@linux.dev, rientjes@google.com, roman.gushchin@linux.dev,
-        ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, surenb@google.com,
-        vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH V5 8/8] mm/slab: place slabobj_ext metadata in unused
- space within s->size
-Message-ID: <aWBop9PG6s9WVp5D@hyeyoo>
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-9-harry.yoo@oracle.com>
- <fgx3lapibabra4x7tewx55nuvxz235ruvm3agpprjbdcmt3rc6@h54ln5tfdssz>
- <aV9tnLlsecX8ukMv@hyeyoo>
- <7uiizca4ejiqw6zegjwmou5va4kw7na7wivy4kxebrju7dsdwo@5brr7vhwf5oh>
- <aV-Kn8vfyL5mnlJv@hyeyoo>
- <30ecc144-ea2c-4259-afbf-3d96849aded2@suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30ecc144-ea2c-4259-afbf-3d96849aded2@suse.cz>
-X-ClientProxiedBy: SL2P216CA0153.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:35::8) To IA1PR10MB7333.namprd10.prod.outlook.com
- (2603:10b6:208:3fa::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7FB314D3F;
+	Fri,  9 Jan 2026 02:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767925996; cv=none; b=Bnqvkj0D+m9Sev4f55HBn0Ix0PKURGBJEjh++X6bJj/ptgEczkAqZ8TaRA8owchzLdAIpRBe1hayowNxa+p0Bzi5sH/h9FxLI0mQl+Xwnp2TMsChEN1nsryMxh9wD/cJP1gc1iWXvcEtd4oGCekpO81OyhM/gL8RfWqEojAqIno=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767925996; c=relaxed/simple;
+	bh=7eMBnHzRLsHF7DBZtwo0WNDK1KYq4R8gCG5AaNSfTPE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
+	 In-Reply-To:Content-Type; b=lCWgRbg9ndRp+hVcNs91u3TXgdgXg3GNLCzAAZPjVfb1kvHCzNBSEGhiRrNHdmq/rh1VRy9Ffu1Vo5w+p+4bXqvS16MPu2sYCGLgBV/H9FXWIz1Rzy0E8UgpD+2f/uB6bSag+uM0k+JU3BxXWu1P2SEPZRrlBH2PQPxfPzW614Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rz6tm/Y7; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=KSRkGyK0Gk2WEJvdetIehCWjcT4fhWMglREX8AieRsA=;
+	b=rz6tm/Y7fbfdezjiFWfrX2QxA5UEkeewUJXAF8Pd62BCtBqgpDekAZ0A2i3N/VRCDoNAvWGKa
+	Zz5XvIlLrT1WkG21VtuhYdxIB24QtLBwTedga8U2T/F1C/urA4wP73Xx4k825Fijai0B8YSy77+
+	JyoQBdqHV6Up1RVtcdwBkCw=
+Received: from mail.maildlp.com (unknown [172.19.162.144])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4dnQhv4VXcz1prKH;
+	Fri,  9 Jan 2026 10:29:51 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0AACB40538;
+	Fri,  9 Jan 2026 10:33:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 9 Jan
+ 2026 10:33:09 +0800
+Message-ID: <98b90711-a2bc-4bb9-bcb0-3a2632f83004@huawei.com>
+Date: Fri, 9 Jan 2026 10:33:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR10MB7333:EE_|PH3PPFD7011BF84:EE_
-X-MS-Office365-Filtering-Correlation-Id: c166a81c-392d-462f-cada-08de4f274f4c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|366016|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?nGqv1WoTBNuz1EQ2UWwQ33+MBpyYfIDYlX4MARX2FL7d5ceyIWz/i1WWTM1q?=
- =?us-ascii?Q?MmOejGrcWgnVj+OZVjKlBFNhv4mr4DBEs+Sx1c+VuRdW9zI+UKjAwN6vPt77?=
- =?us-ascii?Q?0THYuwbOMgjhrAKfaNLjX6Ek9xwsmLyphjbht+CcnlvAmiu4m64f+Ia3q863?=
- =?us-ascii?Q?5INwCVa6/YNhhSmDQVD8qo6MrDPs2gBh4gfSKWc06pPnX4D9GNJFhqBJxE+6?=
- =?us-ascii?Q?oShD8YcmgBlTaxiMPGqyL/ejN27Pt5GNdgXCk8JgcyT74lEPpIYUOtD2aYst?=
- =?us-ascii?Q?oiX9cGevn16MfCi676Cp9eClrIYkhdCxezrguUmBwCEBr/nYFhViZLKpQHVk?=
- =?us-ascii?Q?XL94yYi2MZ+ibCf5uamBL8A2qMUxBW/RU4nsTpVmZkYtkCxAjndGz2kWcoNi?=
- =?us-ascii?Q?vdytUJQI9R4s1sdIm6JpTJRjtu4hFDDzTdQWeep7wRA4YpJcn5U0JCaO5Qcv?=
- =?us-ascii?Q?2qmAb0v8atlrijiPAHM4MrcrCZMo05EN0Bd/Fg8WNQ6Gd9wse00cBMuUGIqC?=
- =?us-ascii?Q?WhVgzpryC/PlwxlJ8FhbiwwKoeYtZrbEf1/ahC6bcfjQ3tth9ogN5i27I6JR?=
- =?us-ascii?Q?RT1quYLEwaeMYr/30l6dNPlRgPIrOhuYh6QwEx/d+qqfo68xuxxexAFbZ2Q5?=
- =?us-ascii?Q?ik5XicSp2Qcr1tHFvhT82HxLqqiXTnFa3e0S2zlRe3ruEKkqAD46Ki7onxfZ?=
- =?us-ascii?Q?MV40mj8qcb2NnSZ4dKd0rX2y6XWeERDKciAIcq1mk2fGj2Yr8GTQMtnWNHQM?=
- =?us-ascii?Q?tMdpIuAU1PgimSES56uG05zr3G3hlBz+zQptjkC5irXmEynrpp4sU2F9JNUa?=
- =?us-ascii?Q?cHH3Gs3AOqO+gLDXU9ChPDDhym5AHEYWQ94jFjiGo8XZBDf7Lx3B076Uy8o5?=
- =?us-ascii?Q?DUZLYSHHQYVkOpikBjbX0WKQpJZ4xOYK8Tva/ojjHoDoDbcNoZV1JASS4nSr?=
- =?us-ascii?Q?XEkYVZQ9gmK1MXgZ1bie1LbOsPaVrd6wWSGpjDIfnZy657EHqJSdyt/f8eM2?=
- =?us-ascii?Q?Kt3IPDD/zDJE/y0O2nOXuNAqZOwnn3BJOPsWBmKC0iuskjfHtQRJH0hvgkbt?=
- =?us-ascii?Q?gCtrwmuQH0PqEXL7EO/xx7VgLwXQmrAkmHroCh90jt8ZNp8YtH6dd0G10ovc?=
- =?us-ascii?Q?F0bl4DQQVMFYmqzL/KPmhPEelLDc4WDrSendIc3dDhCAwC2bhKQXGH31ipeQ?=
- =?us-ascii?Q?ppaefD2NCHMcJ6+f0TJ8LDaAg99pHmu/L4TtgNkLH7f33JHki+9e7XAnqUkz?=
- =?us-ascii?Q?MPQhbpfV9cEhO/bSw84Sqqz6DAi61YKgF66aMOaqjmB7igf8ep7VPNG7I/Lz?=
- =?us-ascii?Q?/NVYM+NjhNaV9abZt+2KXt8pZmuayrBzT2jzNUTFuG8S9gnWCnxCcQIIeD4Z?=
- =?us-ascii?Q?B6p5hhB/NUXyUSakVCSb761T4rhqh+bFgbTzM7rvNvzr5yRIi4bQkIh4UYVq?=
- =?us-ascii?Q?ZG8Jj8Zutr5hzbeeMuqJ31arQxfnEfS7?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR10MB7333.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(366016)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?duALIIrD1i8Q+Ft19WxSDqC/h5Rqg303CnCRGdJOWFBcCEnRdJ3VL6OxXA+a?=
- =?us-ascii?Q?vuCpFldfzL81FRyRVTn2FGTEcyWr9r+C4OtRCi8ucK9wUwRBVxc/EpniaS34?=
- =?us-ascii?Q?BbLDH2pPydyYmtQUiXr9vSQT6zWZtKp/Hr5HujoSWNbj1pn8y9pvcyQDs8Kf?=
- =?us-ascii?Q?voPzFLcpiY8XOjsqxk7zhlszqgmqMw8l2hvXi5O99N4APE8LMAaj7Ix1jKt7?=
- =?us-ascii?Q?cGhI2gMQEk/qDqxPe7UgOU78saQApWLgxBm3JDsx1wfDJHW32TnI2tbaSf1t?=
- =?us-ascii?Q?ZZN1pvSLMjbvntj6912kRqGYp95G9j+ma+fp6S+p9Mp9XcNGATruZXLfj8Uk?=
- =?us-ascii?Q?0zmoBfAm2qKLuyqKRAXk8NKeBMsfFYGE1BtqM9qzMH60Mk2V6yqi+oIOEH92?=
- =?us-ascii?Q?osVW2CaCotcuOkeIHBhA/vuRo32jh5MuDNH7hPJtxD69UZR+25DKsYKhDH5V?=
- =?us-ascii?Q?q13Xxp3nWgyUcItoyR4AwVWsVhLhgqEiE3oqg19SLdWjE2U8Es4MreO3cGaC?=
- =?us-ascii?Q?mtH3DakDg90K/ufk1eQnN8szZIooj4elDonZoI5UHV9zvfIMgEorZKPkwX0h?=
- =?us-ascii?Q?jhmHdt6e0Y2LcAmsBrymwxrApxfNHevmMAKPyBeOIe8WNmyos9hrB7JZtsA7?=
- =?us-ascii?Q?3mvePoidlFwzd+/QrJSXCr7U4NWiLhcDjIzxER99hLPcvfs8R78JMKhBSv26?=
- =?us-ascii?Q?jya+4pEI7hKoRDCfGBqrZ8s+52iWOURUs1/Z1EVzAp8J5D4ez+I3TGR6/qzm?=
- =?us-ascii?Q?u0GqGLNA8ppQanUR4OBcIW3P4lZmEjoX3B+hZsAlQ+c33tlts1wU4R1kc5JO?=
- =?us-ascii?Q?dTDA6k615FpdghH/6N8IgyoXM9D7lZVCT81TXXsj4AYqg1i/bGrmMwUHn+mZ?=
- =?us-ascii?Q?aWzDhWzygdq/FG2rZVzuny8mfGDZ50PCl/06xsY6Oku1RUGSNT2SGxGTuCDq?=
- =?us-ascii?Q?IvoHOH6P1VUiofBbMaKOb2eQFdYZXaZATJ7OzohhvNA7rGvtpKBAewRdZmce?=
- =?us-ascii?Q?dGHF/cu1+bNjv7PXJ2i6yJ9gbkqJil6lCPlWdIEj6W4WV2qDpSMX9EKivUIM?=
- =?us-ascii?Q?GstBO1qb+4kkRwk9xUkB+sOQCxkNExzLLgZ4sCssFi3iqLP7Nv+AEJWuoNN2?=
- =?us-ascii?Q?L73VcnLvlDIKoyqmDZvUo49yvlZYkncuVNXu3LFW1U4QPwdmSGHQGKpl0C7h?=
- =?us-ascii?Q?XMa0BIUQvSHNPbRsZrp9nKeHpGKfEurnKP+PAxJVlBDUUSmjwN4pf/s9Z2V7?=
- =?us-ascii?Q?QyeiKmldyRU301u/hJktOfodV9YzXWjKSiZWfpM6Y6jUhpHe4CcI28nY1Brj?=
- =?us-ascii?Q?mJ625HtqdxbXclBdztWSwidRgALVNvwWY/iB3dbaT4VvFeBRY3yyVb3v3qro?=
- =?us-ascii?Q?aZ6GBam2GYmz4eWqcwlTpqLPYMRxOo5Y0A5KMYSNJ/fJXsFCHtgYPrB205nU?=
- =?us-ascii?Q?oAi1LyYsG+OIuSJsDfDhesUybQ+6fba+9JGM7erYHwuE5eLGsR8LKR59qDup?=
- =?us-ascii?Q?S5HWSUMJVd/wuOi292F15MfT7besVZ86RuOUojy85SWxsspfXH/dCJaUNfc2?=
- =?us-ascii?Q?P1/dgJOeLXJnt5rGDWxTg2PmGq1ekPd/zOTDI8eknp9HLVafflB/zab03XZ1?=
- =?us-ascii?Q?MVLlNI6lesTY6JkqqPSKxYUWug8iR2YCo1ltuPDG4hF7ev/woG62Lzr5EQbG?=
- =?us-ascii?Q?lR1nRIdiQ3xcX8463LTTI2W2eZtZwglVP7PgedJ9PIHzFZZ+lELte+0EbLnj?=
- =?us-ascii?Q?U49EVAuFwg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	2Zfo3vgvIQBGI3s/nUNQxHMuLE/Oc6Q0KbFgyzlskj8vWb6eXVVJ67ppw6jzzqp2Ej3qW+UT8rEZCUXIj5OPa5vc7uHaAVGK3nPr1YGLx3iDVDU4VHJsCEJGWpzRG6TiW6UJBMhRAxPyXSO/+XIqyi6ADCtR/JiMiQyxT2i+UYewPOVGOESiDFlcVr3Wwz57bLYGlBo/hZgsnPPItHZrX+AocGdAatHgUlO+DAu5cEWVeYrOho329LVqXjNapx8ZlJUZV+Bk+dQ+zCcFWDX25EToscQEGct20QFbK7hq8dfu58efFReJE0EHOvfoMUZE9M5pgQTN2ES4gsS8ru11za4bGZONAw3QtBk+Ev+pa7NyCjZ2iYXK6Nr+GTMHnYMsFUEUCQUifEpb1qbv+7r+zuujN7uqclXQtfyHaYPgbzKw6+kEg6LhcwbkNoipl1y4Ikf8z5tPEqVljW4XOl0jfHYkTMSc8Sy28OtZgwvCQwTtAaXA1gc7QckZpsITFGQAjSj2cKiZh4QRiMm/1qWL1KSSOh0bgZ1FW2M+2Bawvpg1+lbI45ygK6F+Yz7Xfnl8cNaBd4n4E4dsweufU7sLH2Z18jsFl4pHtwpRstXnbLM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c166a81c-392d-462f-cada-08de4f274f4c
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR10MB7333.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2026 02:32:19.0633
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QA9bNN34HBbLdVFn+8+DMsRsd8cMZaR0xCevGaZ8/UaUZcXrmMxcDKbc+xt7RLHrjMwnBWA9qvjfF0EgJlWF8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPFD7011BF84
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-09_01,2026-01-08_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 malwarescore=0 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2512120000 definitions=main-2601090015
-X-Proofpoint-GUID: CroXX1_pLqsWnEtkLj-cqbTPhWaY4OWZ
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTA5MDAxNSBTYWx0ZWRfX2eYrG1MEA7xp
- QrNRIsIUblToORamJC+73kyzaxH05V6kJBoQMjFcA3Mru3uZBIu4wleATa5TRrwdqOyQ0xUhQYX
- JAJIhab7yPK/iLFi38JZNfv8N3v2jZ+wzPK1FeRxeZn28c8GNd8JQdZMr1+p18pKLpqX2dkTxQD
- 7M4n7EYLT49eHtcfDIOkGgsvCXjqLJ0tyq18KunIdbqGfq5X1+5w1/CuvLY9M3IaTbOluXUIqLS
- gLtR59ucxrUI3bGm3ghKVVt14mzQRUMhVGQY3yZGoXdivvF0idZYnA1vET63SbissVBO3k/Aalr
- jtwmfiaMjsERdS5xSDC248DsZwDfmcN53gz3gA/T+XGjOggTucSfq3f0g0aG3lmM2/PaaFgZZfp
- OejHlTJTxyh5zRPHbTkApHYr4+drpY/bZda+19FaOwG67gZGttZ11DaFJqXhWjv3wBAN6ra1+9A
- 9/5t3wvh5aXQjWYoX50eiYAIoPNyNFcmwP5xq9fo=
-X-Authority-Analysis: v=2.4 cv=AYq83nXG c=1 sm=1 tr=0 ts=696068b7 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=vUbySO9Y5rIA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=YcNhsmij0pwKIfmHPIUA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:12109
-X-Proofpoint-ORIG-GUID: CroXX1_pLqsWnEtkLj-cqbTPhWaY4OWZ
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: fast commit: make s_fc_lock reclaim-safe
+Content-Language: en-GB
+To: Li Chen <me@linux.beauty>
+References: <20260106120621.440126-1-me@linux.beauty>
+CC: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+	<adilger.kernel@dilger.ca>, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20260106120621.440126-1-me@linux.beauty>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 
-On Thu, Jan 08, 2026 at 11:52:36AM +0100, Vlastimil Babka wrote:
-> On 1/8/26 11:44, Harry Yoo wrote:
-> > On Thu, Jan 08, 2026 at 05:52:27PM +0800, Hao Li wrote:
-> >> On Thu, Jan 08, 2026 at 05:41:00PM +0900, Harry Yoo wrote:
-> >> > On Thu, Jan 08, 2026 at 01:52:09PM +0800, Hao Li wrote:
-> >> > > On Mon, Jan 05, 2026 at 05:02:30PM +0900, Harry Yoo wrote:
-> >> > > > When a cache has high s->align value and s->object_size is not aligned
-> >> > > > to it, each object ends up with some unused space because of alignment.
-> >> > > > If this wasted space is big enough, we can use it to store the
-> >> > > > slabobj_ext metadata instead of wasting it.
-> >> > > 
-> >> > > Hi, Harry,
-> >> > 
-> >> > Hi Hao,
-> >> > 
-> >> > > When we save obj_ext in s->size space, it seems that slab_ksize() might
-> >> > > be missing the corresponding handling.
-> >> > 
-> >> > Oops.
-> >> > 
-> >> > > It still returns s->size, which could cause callers of slab_ksize()
-> >> > > to see unexpected data (i.e. obj_ext), or even overwrite the obj_ext data.
-> >> > 
-> >> > Yes indeed.
-> >> > Great point, thanks!
-> >> > 
-> >> > I'll fix it by checking if the slab has obj_exts within the object
-> >> > layout and returning s->object_size if so.
-> >> 
-> >> Makes sense - I think there's one more nuance worth capturing.
-> >> slab_ksize() seems to compute the maximum safe size by applying layout
-> >> constraints from most-restrictive to least-restrictive:
-> >> redzones/poison/KASAN clamp it to object_size, tail metadata
-> >> (SLAB_TYPESAFE_BY_RCU / SLAB_STORE_USER) clamps it to inuse, and only
-> >> when nothing metadata lives does it return s->size.
-> > 
-> > Waaaait, SLAB_TYPESAFE_BY_RCU isn't the only case where we put freelist
-> > pointer after the object.
-> > 
-> > What about caches with constructor?
-> > We do place it after object, but slab_ksize() may return s->size? 
-> 
-> I think the freelist pointer is fine because it's not used by allocated objects?
+On 2026-01-06 20:06, Li Chen wrote:
+> s_fc_lock can be acquired from inode eviction and thus is
+> reclaim unsafe. Since the fast commit path holds s_fc_lock while writing
+> the commit log, allocations under the lock can enter reclaim and invert
+> the lock order with fs_reclaim. Add ext4_fc_lock()/ext4_fc_unlock()
+> helpers which acquire s_fc_lock under memalloc_nofs_save()/restore()
+> context and use them everywhere so allocations under the lock cannot
+> recurse into filesystem reclaim.
+>
+> Fixes: 6593714d67ba ("ext4: hold s_fc_lock while during fast commit")
+> Signed-off-by: Li Chen <me@linux.beauty>
 
-Ah, right.
+Makes sense. Feel free to add:
 
-Nevermind. I was just confused while reading the code/comment.
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
 
-> Also ksize() should no longer be used to fill more of the object than that
-> was requested in the first place.
+> ---
+>
+> RFC->v1:  create helper functions for acquiring / releasing the lock as suggested by Jan Kara.
+>
+> RFC: https://patchwork.ozlabs.org/project/linux-ext4/patch/20251223131342.287864-1-me@linux.beauty/
+>
+>  fs/ext4/ext4.h        | 16 ++++++++++++++
+>  fs/ext4/fast_commit.c | 51 ++++++++++++++++++++++++-------------------
+>  2 files changed, 44 insertions(+), 23 deletions(-)
+>
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 57087da6c7be..933297251f66 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1771,6 +1771,10 @@ struct ext4_sb_info {
+>  	 * Main fast commit lock. This lock protects accesses to the
+>  	 * following fields:
+>  	 * ei->i_fc_list, s_fc_dentry_q, s_fc_q, s_fc_bytes, s_fc_bh.
+> +	 *
+> +	 * s_fc_lock can be taken from reclaim context (inode eviction) and is
+> +	 * thus reclaim unsafe. Use ext4_fc_lock()/ext4_fc_unlock() helpers
+> +	 * when acquiring / releasing the lock.
+>  	 */
+>  	struct mutex s_fc_lock;
+>  	struct buffer_head *s_fc_bh;
+> @@ -1815,6 +1819,18 @@ static inline void ext4_writepages_up_write(struct super_block *sb, int ctx)
+>  	percpu_up_write(&EXT4_SB(sb)->s_writepages_rwsem);
+>  }
+>  
+> +static inline int ext4_fc_lock(struct super_block *sb)
+> +{
+> +	mutex_lock(&EXT4_SB(sb)->s_fc_lock);
+> +	return memalloc_nofs_save();
+> +}
+> +
+> +static inline void ext4_fc_unlock(struct super_block *sb, int ctx)
+> +{
+> +	memalloc_nofs_restore(ctx);
+> +	mutex_unlock(&EXT4_SB(sb)->s_fc_lock);
+> +}
+> +
+>  static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
+>  {
+>  	return ino == EXT4_ROOT_INO ||
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 5727ff4e9273..2f28a089fc7e 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -231,16 +231,16 @@ static bool ext4_fc_disabled(struct super_block *sb)
+>  void ext4_fc_del(struct inode *inode)
+>  {
+>  	struct ext4_inode_info *ei = EXT4_I(inode);
+> -	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>  	struct ext4_fc_dentry_update *fc_dentry;
+>  	wait_queue_head_t *wq;
+> +	int alloc_ctx;
+>  
+>  	if (ext4_fc_disabled(inode->i_sb))
+>  		return;
+>  
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(inode->i_sb);
+>  	if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
+> -		mutex_unlock(&sbi->s_fc_lock);
+> +		ext4_fc_unlock(inode->i_sb, alloc_ctx);
+>  		return;
+>  	}
+>  
+> @@ -275,9 +275,9 @@ void ext4_fc_del(struct inode *inode)
+>  #endif
+>  		prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+>  		if (ext4_test_inode_state(inode, EXT4_STATE_FC_FLUSHING_DATA)) {
+> -			mutex_unlock(&sbi->s_fc_lock);
+> +			ext4_fc_unlock(inode->i_sb, alloc_ctx);
+>  			schedule();
+> -			mutex_lock(&sbi->s_fc_lock);
+> +			alloc_ctx = ext4_fc_lock(inode->i_sb);
+>  		}
+>  		finish_wait(wq, &wait.wq_entry);
+>  	}
+> @@ -288,7 +288,7 @@ void ext4_fc_del(struct inode *inode)
+>  	 * dentry create references, since it is not needed to log it anyways.
+>  	 */
+>  	if (list_empty(&ei->i_fc_dilist)) {
+> -		mutex_unlock(&sbi->s_fc_lock);
+> +		ext4_fc_unlock(inode->i_sb, alloc_ctx);
+>  		return;
+>  	}
+>  
+> @@ -298,7 +298,7 @@ void ext4_fc_del(struct inode *inode)
+>  	list_del_init(&fc_dentry->fcd_dilist);
+>  
+>  	WARN_ON(!list_empty(&ei->i_fc_dilist));
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(inode->i_sb, alloc_ctx);
+>  
+>  	release_dentry_name_snapshot(&fc_dentry->fcd_name);
+>  	kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
+> @@ -315,6 +315,7 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
+>  	tid_t tid;
+>  	bool has_transaction = true;
+>  	bool is_ineligible;
+> +	int alloc_ctx;
+>  
+>  	if (ext4_fc_disabled(sb))
+>  		return;
+> @@ -329,12 +330,12 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
+>  			has_transaction = false;
+>  		read_unlock(&sbi->s_journal->j_state_lock);
+>  	}
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	is_ineligible = ext4_test_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+>  	if (has_transaction && (!is_ineligible || tid_gt(tid, sbi->s_fc_ineligible_tid)))
+>  		sbi->s_fc_ineligible_tid = tid;
+>  	ext4_set_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  	WARN_ON(reason >= EXT4_FC_REASON_MAX);
+>  	sbi->s_fc_stats.fc_ineligible_reason_count[reason]++;
+>  }
+> @@ -358,6 +359,7 @@ static int ext4_fc_track_template(
+>  	struct ext4_inode_info *ei = EXT4_I(inode);
+>  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>  	tid_t tid = 0;
+> +	int alloc_ctx;
+>  	int ret;
+>  
+>  	tid = handle->h_transaction->t_tid;
+> @@ -373,14 +375,14 @@ static int ext4_fc_track_template(
+>  	if (!enqueue)
+>  		return ret;
+>  
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(inode->i_sb);
+>  	if (list_empty(&EXT4_I(inode)->i_fc_list))
+>  		list_add_tail(&EXT4_I(inode)->i_fc_list,
+>  				(sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+>  				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
+>  				&sbi->s_fc_q[FC_Q_STAGING] :
+>  				&sbi->s_fc_q[FC_Q_MAIN]);
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(inode->i_sb, alloc_ctx);
+>  
+>  	return ret;
+>  }
+> @@ -402,6 +404,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+>  	struct inode *dir = dentry->d_parent->d_inode;
+>  	struct super_block *sb = inode->i_sb;
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	int alloc_ctx;
+>  
+>  	spin_unlock(&ei->i_fc_lock);
+>  
+> @@ -425,7 +428,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+>  	take_dentry_name_snapshot(&node->fcd_name, dentry);
+>  	INIT_LIST_HEAD(&node->fcd_dilist);
+>  	INIT_LIST_HEAD(&node->fcd_list);
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
+>  		sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
+>  		list_add_tail(&node->fcd_list,
+> @@ -446,7 +449,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
+>  		WARN_ON(!list_empty(&ei->i_fc_dilist));
+>  		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
+>  	}
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  	spin_lock(&ei->i_fc_lock);
+>  
+>  	return 0;
+> @@ -1051,18 +1054,19 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	struct blk_plug plug;
+>  	int ret = 0;
+>  	u32 crc = 0;
+> +	int alloc_ctx;
+>  
+>  	/*
+>  	 * Step 1: Mark all inodes on s_fc_q[MAIN] with
+>  	 * EXT4_STATE_FC_FLUSHING_DATA. This prevents these inodes from being
+>  	 * freed until the data flush is over.
+>  	 */
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+>  		ext4_set_inode_state(&iter->vfs_inode,
+>  				     EXT4_STATE_FC_FLUSHING_DATA);
+>  	}
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  
+>  	/* Step 2: Flush data for all the eligible inodes. */
+>  	ret = ext4_fc_flush_data(journal);
+> @@ -1072,7 +1076,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	 * any error from step 2. This ensures that waiters waiting on
+>  	 * EXT4_STATE_FC_FLUSHING_DATA can resume.
+>  	 */
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+>  		ext4_clear_inode_state(&iter->vfs_inode,
+>  				       EXT4_STATE_FC_FLUSHING_DATA);
+> @@ -1089,7 +1093,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	 * prepare_to_wait() in ext4_fc_del().
+>  	 */
+>  	smp_mb();
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  
+>  	/*
+>  	 * If we encountered error in Step 2, return it now after clearing
+> @@ -1106,12 +1110,12 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	 * previous handles are now drained. We now mark the inodes on the
+>  	 * commit queue as being committed.
+>  	 */
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
+>  		ext4_set_inode_state(&iter->vfs_inode,
+>  				     EXT4_STATE_FC_COMMITTING);
+>  	}
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  	jbd2_journal_unlock_updates(journal);
+>  
+>  	/*
+> @@ -1122,6 +1126,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  		blkdev_issue_flush(journal->j_fs_dev);
+>  
+>  	blk_start_plug(&plug);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	/* Step 6: Write fast commit blocks to disk. */
+>  	if (sbi->s_fc_bytes == 0) {
+>  		/*
+> @@ -1139,7 +1144,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	}
+>  
+>  	/* Step 6.2: Now write all the dentry updates. */
+> -	mutex_lock(&sbi->s_fc_lock);
+>  	ret = ext4_fc_commit_dentry_updates(journal, &crc);
+>  	if (ret)
+>  		goto out;
+> @@ -1161,7 +1165,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>  	ret = ext4_fc_write_tail(sb, crc);
+>  
+>  out:
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  	blk_finish_plug(&plug);
+>  	return ret;
+>  }
+> @@ -1295,6 +1299,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>  	struct ext4_inode_info *ei;
+>  	struct ext4_fc_dentry_update *fc_dentry;
+> +	int alloc_ctx;
+>  
+>  	if (full && sbi->s_fc_bh)
+>  		sbi->s_fc_bh = NULL;
+> @@ -1302,7 +1307,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+>  	trace_ext4_fc_cleanup(journal, full, tid);
+>  	jbd2_fc_release_bufs(journal);
+>  
+> -	mutex_lock(&sbi->s_fc_lock);
+> +	alloc_ctx = ext4_fc_lock(sb);
+>  	while (!list_empty(&sbi->s_fc_q[FC_Q_MAIN])) {
+>  		ei = list_first_entry(&sbi->s_fc_q[FC_Q_MAIN],
+>  					struct ext4_inode_info,
+> @@ -1361,7 +1366,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+>  
+>  	if (full)
+>  		sbi->s_fc_bytes = 0;
+> -	mutex_unlock(&sbi->s_fc_lock);
+> +	ext4_fc_unlock(sb, alloc_ctx);
+>  	trace_ext4_fc_stats(sb);
+>  }
+>  
 
-since v6.1, yeah.
 
--- 
-Cheers,
-Harry / Hyeonggon
 
