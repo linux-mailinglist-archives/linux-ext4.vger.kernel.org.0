@@ -1,157 +1,203 @@
-Return-Path: <linux-ext4+bounces-12739-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12740-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 795FCD15787
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 22:43:50 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FF1CD157DB
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 22:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BB8B8300968F
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 21:43:49 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EE517300A524
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 21:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA26343D7B;
-	Mon, 12 Jan 2026 21:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147A93446AD;
+	Mon, 12 Jan 2026 21:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ha2II4nY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eZaj3bw2";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z9w/IMki"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBD3342525
-	for <linux-ext4@vger.kernel.org>; Mon, 12 Jan 2026 21:43:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545F83446A4
+	for <linux-ext4@vger.kernel.org>; Mon, 12 Jan 2026 21:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768254228; cv=none; b=LoJHK0DRQWWcTIkFoVZHUpc62qvfDDVMjK6sSrfZFHVhLiezwcF6Osrpyyyff0VMdk7qSh9wRYEvdfRdHz33jtMJzcre88N6MYzw64w+3QOW3jgGHauoLELYc9l8qq3m1CQ+OV3LgIRTxWLtD1NTpojNVxmACmRz6zuoKFo0SPo=
+	t=1768254690; cv=none; b=AH59fnh2X1oZSkvCIhC5Z5pd3juGqqf9qUxoWApRTIxp4skGayTYQ6KJ/XS9uNWc7tlwQxn3xk2VlcifsERhaOJnPUU1WCXANGdXbGSx2z2uA2FxqUh2yfot2RvkIr2oGGQp5rAs3pSE6q9D1YohW2lXBe0X/5Ztyey7uLtQQl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768254228; c=relaxed/simple;
-	bh=58E0h/b6o9dHKR8rRXLMUueE2qtgFm4P/nvejTVp0B4=;
+	s=arc-20240116; t=1768254690; c=relaxed/simple;
+	bh=TXs7PPk1XpD3PbNMDGbvon5nP0IW/mjZS0LoOHcZP8g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rx+7LAxJk8xRcHQ+a07iAO0IChs9oIqV8MLVusWt98vUvD4ltu3kKaTJ67N92Oq86/GkoGfnj2xoOD3Gkf8y5cwSLzAJ6qqWGPjYc/itbtFU17zKVmn2gEN5jFYS1KqLCPpb25VbHzXC8GMAPo5QVKlFHzgbvFWji4pJnRLNwuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ha2II4nY; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768254227; x=1799790227;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=58E0h/b6o9dHKR8rRXLMUueE2qtgFm4P/nvejTVp0B4=;
-  b=ha2II4nYlISW1lUAKJQdCUwjrIEleNDV6MiY4osyvJumnyJSaFFDXK8G
-   /VCbNho9cirp/3WBB/U0uy+HNxFcYiBv7ULTDlWkL7AW7mP2E6LQL5r+i
-   NX0LTN9LKqdFkAUyd/3jhPLx9YNFw7NtDClV+hiol08t4BYFp9eOhvgT9
-   QO4Rgn1m32rVM3sebtGsBO0voJFRN0bio2FnMBIUfGysrqCLmvK4eyiEM
-   gbi/oP27hPghCJUYNrWhc4iqM0G0+xqxldCEUXXG6bABI4L5j0mQrydAh
-   6aNAGv9eaeeK8H3+qaS5jSUyEAOcWTRlLtwgWdymeC8Tn1fZynEbE8JGr
-   Q==;
-X-CSE-ConnectionGUID: ati5c4IrTnCYwajssJz4Zw==
-X-CSE-MsgGUID: gPBlldcjRMOiiAyUl/Rgfw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11669"; a="69586656"
-X-IronPort-AV: E=Sophos;i="6.21,222,1763452800"; 
-   d="scan'208";a="69586656"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2026 13:43:46 -0800
-X-CSE-ConnectionGUID: rQS+mfM6T4Gn6t5GmsNyFQ==
-X-CSE-MsgGUID: tHn0vppdTf+hhEk4vnd55g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,222,1763452800"; 
-   d="scan'208";a="208672357"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 12 Jan 2026 13:43:45 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vfPhO-00000000Dto-1T9l;
-	Mon, 12 Jan 2026 21:43:42 +0000
-Date: Tue, 13 Jan 2026 05:43:10 +0800
-From: kernel test robot <lkp@intel.com>
-To: Brian Foster <bfoster@redhat.com>, linux-ext4@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH v2] ext4: fix dirtyclusters double decrement on fs
- shutdown
-Message-ID: <202601130527.WKPDXmMv-lkp@intel.com>
-References: <20260112143652.8085-1-bfoster@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CgnBjLjErfEPbl6gt146D1bsb/y+WKC+E8/YkxzCPNOxMoUlMOKQqekG+yx1ZrklnsTmz3VP1Ens6amTanqHy+lINSerOacY/2ZTxYhE2i/qQp5M9SC6sIr4BD4FS9kgughn+Fomphd1YFrhR6t6/3/+Awr0zRt8+hIrKgF5M5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eZaj3bw2; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z9w/IMki; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1768254688;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lG/xt+Zo6w++4JbumRD15X/stpwb03QCR9/DiPk31F0=;
+	b=eZaj3bw24G7DvHQNXsm7JszImfrwQtUFcyxzzvz6kWhoeos5jKhpDhpJEQlUSwuEI4lU8X
+	am/c2/O/+ZybafqUDdireL52krMZ9GHPho7zsab+M5TJLY+lnEmrASNXGInKE0yqd//Mw8
+	RtssjvCr7Yw3Fb/q9PS3mv0G2odQV/o=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-83-brWzDQDMP729gZ-EVN8rbw-1; Mon, 12 Jan 2026 16:51:27 -0500
+X-MC-Unique: brWzDQDMP729gZ-EVN8rbw-1
+X-Mimecast-MFC-AGG-ID: brWzDQDMP729gZ-EVN8rbw_1768254686
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8b2dbd36752so1774530285a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Jan 2026 13:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1768254686; x=1768859486; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lG/xt+Zo6w++4JbumRD15X/stpwb03QCR9/DiPk31F0=;
+        b=Z9w/IMki4n0AAkkjKcJxoanCsImqMeAEZFQEAsP7uvYzPJpS2pzMOBqWfzWydFKAR7
+         V0PBjwMtXSliAyL7KmXzZelgE3hsJFmXtOqDcT2/I/I9D57+32kbLB++js5BLhdxT9fm
+         MQcjG0o60VzQ+8CSX1p6K5y7BNOMZ7Tgay/sR5m2l6OQ18pMUU+UIgY62sOJT1b+yKtG
+         Igfl7GxQNodkF8NNrcYFnBxxr7duElUnMjPMCSOI9F3mIPaBf0EfB8EEUs/aNt/uMrVZ
+         5iBby+Oz8aXqybDXn5jdFGJbelYGTTmLu7sXx9DHcCLDd5oam9VgRJAYUy5DEtb1Tpxr
+         Lbag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768254686; x=1768859486;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lG/xt+Zo6w++4JbumRD15X/stpwb03QCR9/DiPk31F0=;
+        b=lKEat6frx/kjLJm7Z7JK+fWD+uaoEO9fpKm/0ITSHAMQw3sW9AxCq1jpgrle3/8K/j
+         +DI9kyiNUhElCteoyWwQO2QroIUYmduDMStbQ9yMoyDv95HRRyH7ZP4e/f8URhdw/ghn
+         AAGjqmaHBdZSkwLe8P03te/1VfTc10X58bg03YQ1H0Yr9eOMkJSQsyeejzpNmQ4/rFGN
+         YM2ofHJJPQhTox3URc+tapc1YWGzSWvgKoEito5q3i1OPfUNIPd0W6SWWj+BQWGDKJLJ
+         5plFqiyrZb4atHJP8UQ+Lez3YnVF6myLWoYbcdIAQosa9ANpxicCIkGZoRNezULUU5dE
+         22EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNoIFEslfbxf94dBx+r7JeZqykqcFyv/sQrQnJyYHJtrbPCPaWR1ucaLzhWFX57PbigGIQs9cWWet9@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywym96VRuuFI1Y/S73y3tcAiIq9JAwkdaAQaDnuV3PxIY3S5mxt
+	DXSnCg+Aj4L2//oxUOYPav76pcbkq2amqWga8Bl4P+JZaYdS9MIBbP6yUNGUobeH6XZbBwa7fGt
+	owkOrBjtJo7WM7jN8hCl4RJRFrykbmTwGuYBu3IoeRHT9cVutD0CdEJ5EsjmB3mrh47aSL70=
+X-Gm-Gg: AY/fxX7g18OzA2XdLs55ANwH0dYFuiTPOn+53E/ZkuspN6kCwUZwBkqWlMmLuz+Xi+6
+	O8QMy6dTgxhdqCcMTsh55INl9nA3wYrxSoq097EG/QLnfQH5du9imsBb8ouFSUohwpFckG2r7Z+
+	3HB73i/Jy/l9eIabXSaaKmda1XHDR3jrpO3QsmNN83on2BaN+REfGlLq5IV+JOUwdMreL92zyJZ
+	mpS9qh0JuDwY/8h1gCax7SbNp2eYH3nXLz5JBrAOe0nGVQvdbOj48qA3FnVwsZfw/knF8G5CfMS
+	0Sjb2ja5wLIosvAh702se6dEzk2fHXPkHKtHcThuaQ5zPKW+NwlPByJBmukfqGxdG4nzxoqiqE4
+	ZqaNt52On
+X-Received: by 2002:a05:620a:7101:b0:8b2:eb66:c64 with SMTP id af79cd13be357-8c38938daaemr2617949985a.29.1768254686484;
+        Mon, 12 Jan 2026 13:51:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGCkpe49S++VqEffSBOBVXTkUb2yNggyXQirptPBh8ES7ItwAnLFAB24ZEcsyfb77ysP4HDOw==
+X-Received: by 2002:a05:620a:7101:b0:8b2:eb66:c64 with SMTP id af79cd13be357-8c38938daaemr2617947385a.29.1768254686087;
+        Mon, 12 Jan 2026 13:51:26 -0800 (PST)
+Received: from redhat.com ([2600:382:771e:5aa5:103f:e4ff:d734:7cd4])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f51ceb5sm1676840685a.35.2026.01.12.13.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jan 2026 13:51:25 -0800 (PST)
+Date: Mon, 12 Jan 2026 16:51:22 -0500
+From: Brian Masney <bmasney@redhat.com>
+To: david.laight.linux@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Christian Brauner <brauner@kernel.org>, Kees Cook <kees@kernel.org>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH 30/44] fs: use min() or umin() instead of min_t()
+Message-ID: <aWVs2gVB418WiMVa@redhat.com>
+References: <20251119224140.8616-1-david.laight.linux@gmail.com>
+ <20251119224140.8616-31-david.laight.linux@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260112143652.8085-1-bfoster@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251119224140.8616-31-david.laight.linux@gmail.com>
+User-Agent: Mutt/2.2.14 (2025-02-20)
 
-Hi Brian,
+Hi David,
 
-kernel test robot noticed the following build errors:
+On Wed, Nov 19, 2025 at 10:41:26PM +0000, david.laight.linux@gmail.com wrote:
+> From: David Laight <david.laight.linux@gmail.com>
+> 
+> min_t(unsigned int, a, b) casts an 'unsigned long' to 'unsigned int'.
+> Use min(a, b) instead as it promotes any 'unsigned int' to 'unsigned long'
+> and so cannot discard significant bits.
+> 
+> A couple of places need umin() because of loops like:
+> 	nfolios = DIV_ROUND_UP(ret + start, PAGE_SIZE);
+> 
+> 	for (i = 0; i < nfolios; i++) {
+> 		struct folio *folio = page_folio(pages[i]);
+> 		...
+> 		unsigned int len = umin(ret, PAGE_SIZE - start);
+> 		...
+> 		ret -= len;
+> 		...
+> 	}
+> where the compiler doesn't track things well enough to know that
+> 'ret' is never negative.
+> 
+> The alternate loop:
+>         for (i = 0; ret > 0; i++) {
+>                 struct folio *folio = page_folio(pages[i]);
+>                 ...
+>                 unsigned int len = min(ret, PAGE_SIZE - start);
+>                 ...
+>                 ret -= len;
+>                 ...
+>         }
+> would be equivalent and doesn't need 'nfolios'.
+> 
+> Most of the 'unsigned long' actually come from PAGE_SIZE.
+> 
+> Detected by an extra check added to min_t().
+> 
+> Signed-off-by: David Laight <david.laight.linux@gmail.com>
 
-[auto build test ERROR on tytso-ext4/dev]
-[also build test ERROR on linus/master v6.19-rc5 next-20260109]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+When doing a mips cross compile from an arm64 host
+(via ARCH=mips CROSS_COMPILE=mips64-linux-gnu- make), the following
+build error occurs in linux-next and goes away when I revert this
+commit.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Brian-Foster/ext4-fix-dirtyclusters-double-decrement-on-fs-shutdown/20260112-225259
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-patch link:    https://lore.kernel.org/r/20260112143652.8085-1-bfoster%40redhat.com
-patch subject: [PATCH v2] ext4: fix dirtyclusters double decrement on fs shutdown
-config: arm64-randconfig-002-20260113 (https://download.01.org/0day-ci/archive/20260113/202601130527.WKPDXmMv-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 9b8addffa70cee5b2acc5454712d9cf78ce45710)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260113/202601130527.WKPDXmMv-lkp@intel.com/reproduce)
+In file included from <command-line>:                                                                                               
+In function ‘fuse_wr_pages’,                                                                                                        
+    inlined from ‘fuse_perform_write’ at fs/fuse/file.c:1347:27:                                                                    
+././include/linux/compiler_types.h:667:45: error: call to ‘__compiletime_assert_405’ declared with attribute error: min(((pos + len 
+- 1) >> 12) - (pos >> 12) + 1, max_pages) signedness error                                                                          
+  667 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)                                             
+      |                                             ^                                                                               
+././include/linux/compiler_types.h:648:25: note: in definition of macro ‘__compiletime_assert’                                      
+  648 |                         prefix ## suffix();                             \                                                   
+      |                         ^~~~~~                                                                                              
+././include/linux/compiler_types.h:667:9: note: in expansion of macro ‘_compiletime_assert’                                         
+  667 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)                                             
+      |         ^~~~~~~~~~~~~~~~~~~
+./include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+./include/linux/minmax.h:93:9: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+   93 |         BUILD_BUG_ON_MSG(!__types_ok(ux, uy),           \
+      |         ^~~~~~~~~~~~~~~~
+./include/linux/minmax.h:98:9: note: in expansion of macro ‘__careful_cmp_once’
+   98 |         __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
+      |         ^~~~~~~~~~~~~~~~~~
+./include/linux/minmax.h:105:25: note: in expansion of macro ‘__careful_cmp’
+  105 | #define min(x, y)       __careful_cmp(min, x, y)
+      |                         ^~~~~~~~~~~~~
+fs/fuse/file.c:1326:16: note: in expansion of macro ‘min’
+ 1326 |         return min(((pos + len - 1) >> PAGE_SHIFT) - (pos >> PAGE_SHIFT) + 1,
+      |                ^~~
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601130527.WKPDXmMv-lkp@intel.com/
+This is on a cento-stream-10 host running
+gcc version 14.3.1 20250617 (Red Hat 14.3.1-2) (GCC). I didn't look into
+this in detail, and I'm not entirely sure what the correct fix here
+should be.
 
-All errors (new ones prefixed by >>):
+Brian
 
-   In file included from fs/ext4/mballoc.c:7185:
->> fs/ext4/mballoc-test.c:570:46: error: too many arguments to function call, expected 2, have 3
-     570 |         ret = ext4_mb_mark_diskspace_used(ac, NULL, 0);
-         |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~           ^
-   fs/ext4/mballoc.c:4188:1: note: 'ext4_mb_mark_diskspace_used' declared here
-    4188 | ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac, handle_t *handle)
-         | ^                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 error generated.
-
-
-vim +570 fs/ext4/mballoc-test.c
-
-6c5e0c9c21456f Kemeng Shi 2024-01-03  548  
-2b81493f8eb6fc Kemeng Shi 2024-01-03  549  static void
-2b81493f8eb6fc Kemeng Shi 2024-01-03  550  test_mark_diskspace_used_range(struct kunit *test,
-2b81493f8eb6fc Kemeng Shi 2024-01-03  551  			       struct ext4_allocation_context *ac,
-2b81493f8eb6fc Kemeng Shi 2024-01-03  552  			       ext4_grpblk_t start,
-2b81493f8eb6fc Kemeng Shi 2024-01-03  553  			       ext4_grpblk_t len)
-2b81493f8eb6fc Kemeng Shi 2024-01-03  554  {
-2b81493f8eb6fc Kemeng Shi 2024-01-03  555  	struct super_block *sb = (struct super_block *)test->priv;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  556  	int ret;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  557  	void *bitmap;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  558  	ext4_grpblk_t i, max;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  559  
-2b81493f8eb6fc Kemeng Shi 2024-01-03  560  	/* ext4_mb_mark_diskspace_used will BUG if len is 0 */
-2b81493f8eb6fc Kemeng Shi 2024-01-03  561  	if (len == 0)
-2b81493f8eb6fc Kemeng Shi 2024-01-03  562  		return;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  563  
-2b81493f8eb6fc Kemeng Shi 2024-01-03  564  	ac->ac_b_ex.fe_group = TEST_GOAL_GROUP;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  565  	ac->ac_b_ex.fe_start = start;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  566  	ac->ac_b_ex.fe_len = len;
-2b81493f8eb6fc Kemeng Shi 2024-01-03  567  
-2b81493f8eb6fc Kemeng Shi 2024-01-03  568  	bitmap = mbt_ctx_bitmap(sb, TEST_GOAL_GROUP);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  569  	memset(bitmap, 0, sb->s_blocksize);
-2b81493f8eb6fc Kemeng Shi 2024-01-03 @570  	ret = ext4_mb_mark_diskspace_used(ac, NULL, 0);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  571  	KUNIT_ASSERT_EQ(test, ret, 0);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  572  
-2b81493f8eb6fc Kemeng Shi 2024-01-03  573  	max = EXT4_CLUSTERS_PER_GROUP(sb);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  574  	i = mb_find_next_bit(bitmap, max, 0);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  575  	KUNIT_ASSERT_EQ(test, i, start);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  576  	i = mb_find_next_zero_bit(bitmap, max, i + 1);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  577  	KUNIT_ASSERT_EQ(test, i, start + len);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  578  	i = mb_find_next_bit(bitmap, max, i + 1);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  579  	KUNIT_ASSERT_EQ(test, max, i);
-2b81493f8eb6fc Kemeng Shi 2024-01-03  580  }
-2b81493f8eb6fc Kemeng Shi 2024-01-03  581  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
