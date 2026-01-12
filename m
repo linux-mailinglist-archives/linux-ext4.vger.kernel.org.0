@@ -1,484 +1,174 @@
-Return-Path: <linux-ext4+bounces-12713-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12714-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA8BD11990
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 10:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF44D11A15
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 10:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7BF7630AB510
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 09:42:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B3BB6308AC2F
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Jan 2026 09:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2F334A79D;
-	Mon, 12 Jan 2026 09:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BF5274B32;
+	Mon, 12 Jan 2026 09:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IHYjrP23"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kovjAz4K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BE234A3B0;
-	Mon, 12 Jan 2026 09:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B05F274B59;
+	Mon, 12 Jan 2026 09:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768210943; cv=none; b=rdp2H9P0lth5uWT1xT29+1bIPiU8aQatmWjFXBiKSAXWhPpPpNk4vUmf4EJ9GkY9hHWpzxmfgeKKW0/ue9gW2SJFhtiCWzp9heT0DxYXykTGZv8AUOzbQB0MW8RaUMeo9VsvUzerPzMXS53YQhKeC9JhAy0ajnrNGGYlOqsm90Y=
+	t=1768211376; cv=none; b=MOTvxBI1YuyjQ6gvfX+4HVhe72CbP4yt4MYLF43g1zK/WDZng64na/lIgWu0mFuymgPzvUt7S67Ml5M7UpkgZB5lKBpxX8yif40N176YBrF9ZzFdqzZhsq/1awhIvyuD++KttDb8aT+8fYob3fMHrHrEsVAmU/hqyub/+BI6xtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768210943; c=relaxed/simple;
-	bh=as9QwHISbfsc9B8H7OSYTqpm6uLrlonF8xwEzXJRCNk=;
+	s=arc-20240116; t=1768211376; c=relaxed/simple;
+	bh=m8zAICgnxs6xkW3AmfrwI3a0ispTdY6AQGss0vAXdME=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cmtOFcLywl6XVbppx5xC5vpzkjl2jmyCNKFy9C+p9CHKc6Dj7GHY5ZBerUqVSz7khdWDVgaYrqJrOnQ9M9Rbb7Xnomgn23YnPjsCd+Js0ddg8OHwJsoqTdBZRtvKK/wCvajxKCQ1EN/kZGz5vjmP8jsLnj2XdmcWjxVhf3mbbkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IHYjrP23; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60C902La029019;
-	Mon, 12 Jan 2026 09:42:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=6ICrV+eItCTB5BZcPfFNyOEakQHbfM
-	Wem7t+PQ7gBr0=; b=IHYjrP236iRoLkgSW7wizVFfhAGn9XEhAOxPKxivpc7E12
-	U57EKOA/OyOMY67OPl+Qm9OfIbczjUUqrezc113c58MnAwzfF7vD4T/HTIs4mE2I
-	shpfpgRxnNZ2HmVDPnDGWToADZxoAChlFAV9SgqXRu6MAZ2PzG00V9Cfa1o+Ndpw
-	Uxow61XauaHtLAxVNuxXoJYnvQfQZWlp3IaHhIVAnTXp+iGhRAR5Fde2IQuyfTOD
-	bcHcKvFyb4SP2I3UNEKH2Zvd+rlWWtOxupn/TUFWc16F4uC4J6TqA6vCkoHS21/O
-	2CtA4ahjlfac/eKaFsBUxPiMZBr7AvKkDDctHDVg==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkedsp43d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 09:42:01 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 60C9g1O1016574;
-	Mon, 12 Jan 2026 09:42:01 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4bkedsp43b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 09:42:01 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60C9KrMp002511;
-	Mon, 12 Jan 2026 09:42:00 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4bm13sdbxj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 12 Jan 2026 09:42:00 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60C9fwSv61669718
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 12 Jan 2026 09:41:58 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 89A8420040;
-	Mon, 12 Jan 2026 09:41:58 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E24882004B;
-	Mon, 12 Jan 2026 09:41:56 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.158])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 12 Jan 2026 09:41:56 +0000 (GMT)
-Date: Mon, 12 Jan 2026 15:11:54 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>, Jan Kara <jack@suse.cz>,
-        libaokun1@huawei.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] ext4: Refactor split and convert extents
-Message-ID: <aWTB4iF9urpWvRh9@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <cover.1767528171.git.ojaswin@linux.ibm.com>
- <8c318aa0eeb0c5c4ad0b5f620de3a7f4df596b82.1767528171.git.ojaswin@linux.ibm.com>
- <e93751dc-bc58-4808-b36c-40618b510d20@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3NGPeSk7a6CvIe4nVvFvvSnbK5NVJaYkh+JHB1QwFtdQCPgilSDFlMkOl6W2KzB/eGVQH7f3OmakECiQ7Q618apQJurEN+dJAbZkhpCEvsrOZoErmuj5UE8GOKObjGF+OnoSvzUZOexu3kkKoaEBN3gxKdvi8+UtRLI9qsGb6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kovjAz4K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD38C116D0;
+	Mon, 12 Jan 2026 09:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768211375;
+	bh=m8zAICgnxs6xkW3AmfrwI3a0ispTdY6AQGss0vAXdME=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kovjAz4KC5mAD7YrC6t2czYMjBWRcZIetUzNRdlwl4Z1rGgyp9glYOLbnOZypWAbx
+	 YcmUJCp6E8w+KmTy2i5WzHpX9fHwe2RpJgFtTNA95cnxyqlkjOQ7JUeU62APvVqkZH
+	 Y3/3WTlqh+tsw7Ls6NjRbDo/fUnqsYd/eTTthVLhPJ/V7Q9k3YIeMunOn+RktLYgES
+	 ul3EQIBMmxhQ+r6sMjogrCPwB0I4vKTgz3PxtAbmBEyff/p4uJORPrLFe5LDSB0Hni
+	 RZIrOX4UDngsOGqfziwhf24VBmArYe5xbo5TLnA7nB4zBdXfiNr6kFAgXt4Ej7biQ5
+	 RxoAJIZnapRSw==
+Date: Mon, 12 Jan 2026 10:49:16 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
+	Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>, 
+	Anders Larsen <al@alarsen.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, Gao Xiang <xiang@kernel.org>, 
+	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, 
+	Dave Kleikamp <shaggy@kernel.org>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+	Viacheslav Dubeyko <slava@dubeyko.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, Mike Marshall <hubcap@omnibond.com>, 
+	Martin Brandenburg <martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Phillip Lougher <phillip@squashfs.org.uk>, Carlos Maiolino <cem@kernel.org>, 
+	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Namjae Jeon <linkinjeon@kernel.org>, 
+	Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
+	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
+	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev, 
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-mm@kvack.org, gfs2@lists.linux.dev, 
+	linux-doc@vger.kernel.org, v9fs@lists.linux.dev, ceph-devel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
+Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
+ lease support
+Message-ID: <20260112-gemeldet-gelitten-7d48bae7ef3f@brauner>
+References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
+ <m3mywef74xhcakianlrovrnaadnhzhfqjfusulkcnyioforfml@j2xnk7dzkmv4>
+ <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
+ <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e93751dc-bc58-4808-b36c-40618b510d20@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEyMDA3MiBTYWx0ZWRfX1bZzMUY61Fg6
- HbXFF6b0VCCvA1ChhbKaBlm7ynsqRi5w7opu2OOgp/y5dU29NYRA3iP1TZHFYRAFxxj/m8GAxJt
- Kcabu1s5BNZzpzyJuNInI1SfXNg6gc6N5QEaiaWiDySXLtS0lhb1lQA+TRoFEL40Gd7wb/9OEhM
- na2KnfdHg1qsH5VIAPbpVM2pK8CNXG9X/YAiFNsPNiktP4M7uUN9yIWL0XtSKt1JUSDa9i3WnKN
- NiYP4Vc+7930YtGYXBcprZ8E/2xoh5Q89JFUiamhXVU4j5ic7W5VMHrjnLMSYat+2zHWlb74wOw
- BUrMcYrBkkFXJaHa1UV03e4W8KkpwISoWvld0/lVHgSIcJ8qYC4uACc5OkxilNgk1xxxwMPF3nW
- DR023tRICazQQxeWn7LJ6kJW2u0xIrudtK5frVoogj3nsEl2zKW+29PZGwDBxEMb9DxHAs5AyMe
- E5Sxb9b20xiV/U7tv4A==
-X-Proofpoint-GUID: MmtgRCy1yCHTe88dt1VisZ_0XJWd5zuA
-X-Authority-Analysis: v=2.4 cv=WLJyn3sR c=1 sm=1 tr=0 ts=6964c1e9 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=6Vay1634Jt8UHRyxsy8A:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-ORIG-GUID: s5VIECvfopuUe_Fotxwcxh1s7ed3dW11
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-12_02,2026-01-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0 malwarescore=0 phishscore=0 suspectscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2512120000
- definitions=main-2601120072
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
 
-On Thu, Jan 08, 2026 at 08:34:51PM +0800, Zhang Yi wrote:
-> On 1/4/2026 8:19 PM, Ojaswin Mujoo wrote:
-> > ext4_split_convert_extents() has been historically prone to subtle
-> > bugs and inconsistent behavior due to the way all the various flags
-> > interact with the extent split and conversion process. For example,
-> > callers like ext4_convert_unwritten_extents_endio() and
-> > convert_initialized_extents() needed to open code extent conversion
-> > despite passing CONVERT or CONVERT_UNWRITTEN flags because
-> > ext4_split_convert_extents() wasn't performing the conversion.
-> > 
-> > Hence, refactor ext4_split_convert_extents() to clearly enforce the
-> > semantics of each flag. The major changes here are:
-> > 
-> >  * Clearly separate the split and convert process:
-> >    * ext4_split_extent() and ext4_split_extent_at() are now only
-> >      responsible to perform the split.
-> >    * ext4_split_convert_extents() is now responsible to perform extent
-> >      conversion after calling ext4_split_extent() for splitting.
-> >    * This helps get rid of all the MARK_UNWRIT* flags.
-> > 
-> >  * Clearly enforce the semantics of flags passed to
-> >    ext4_split_convert_extents():
-> > 
-> >    * EXT4_GET_BLOCKS_CONVERT: Will convert the split extent to written
-> >    * EXT4_GET_BLOCKS_CONVERT_UNWRITTEN: Will convert the split extent to
-> >      unwritten
-> >    * Passing neither of the above means we only want a split.
-> >    * Modify all callers to enforce the above semantics.
-> > 
-> >  * Use ext4_split_convert_extents() instead of ext4_split_extents()
-> >  * in ext4_ext_convert_to_initialized() for uniformity.
-> > 
-> >  * Cleanup all callers open coding the conversion logic.
-> >  * Further, modify kuniy tests to pass flags based on the new semantics.
-> > 
-> > From an end user point of view, we should not see any changes in
-> > behavior of ext4.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+On Fri, Jan 09, 2026 at 07:52:57PM +0100, Amir Goldstein wrote:
+> On Thu, Jan 8, 2026 at 7:57 PM Jeff Layton <jlayton@kernel.org> wrote:
+> >
+> > On Thu, 2026-01-08 at 18:40 +0100, Jan Kara wrote:
+> > > On Thu 08-01-26 12:12:55, Jeff Layton wrote:
+> > > > Yesterday, I sent patches to fix how directory delegation support is
+> > > > handled on filesystems where the should be disabled [1]. That set is
+> > > > appropriate for v6.19. For v7.0, I want to make lease support be more
+> > > > opt-in, rather than opt-out:
+> > > >
+> > > > For historical reasons, when ->setlease() file_operation is set to NULL,
+> > > > the default is to use the kernel-internal lease implementation. This
+> > > > means that if you want to disable them, you need to explicitly set the
+> > > > ->setlease() file_operation to simple_nosetlease() or the equivalent.
+> > > >
+> > > > This has caused a number of problems over the years as some filesystems
+> > > > have inadvertantly allowed leases to be acquired simply by having left
+> > > > it set to NULL. It would be better if filesystems had to opt-in to lease
+> > > > support, particularly with the advent of directory delegations.
+> > > >
+> > > > This series has sets the ->setlease() operation in a pile of existing
+> > > > local filesystems to generic_setlease() and then changes
+> > > > kernel_setlease() to return -EINVAL when the setlease() operation is not
+> > > > set.
+> > > >
+> > > > With this change, new filesystems will need to explicitly set the
+> > > > ->setlease() operations in order to provide lease and delegation
+> > > > support.
+> > > >
+> > > > I mainly focused on filesystems that are NFS exportable, since NFS and
+> > > > SMB are the main users of file leases, and they tend to end up exporting
+> > > > the same filesystem types. Let me know if I've missed any.
+> > >
+> > > So, what about kernfs and fuse? They seem to be exportable and don't have
+> > > .setlease set...
+> > >
+> >
+> > Yes, FUSE needs this too. I'll add a patch for that.
+> >
+> > As far as kernfs goes: AIUI, that's basically what sysfs and resctrl
+> > are built on. Do we really expect people to set leases there?
+> >
+> > I guess it's technically a regression since you could set them on those
+> > sorts of files earlier, but people don't usually export kernfs based
+> > filesystems via NFS or SMB, and that seems like something that could be
+> > used to make mischief.
+> >
+> > AFAICT, kernfs_export_ops is mostly to support open_by_handle_at(). See
+> > commit aa8188253474 ("kernfs: add exportfs operations").
+> >
+> > One idea: we could add a wrapper around generic_setlease() for
+> > filesystems like this that will do a WARN_ONCE() and then call
+> > generic_setlease(). That would keep leases working on them but we might
+> > get some reports that would tell us who's setting leases on these files
+> > and why.
 > 
-> Some comments below.
+> IMO, you are being too cautious, but whatever.
 > 
-> > ---
-> >  fs/ext4/extents-test.c |  12 +-
-> >  fs/ext4/extents.c      | 299 +++++++++++++++++++----------------------
-> >  2 files changed, 145 insertions(+), 166 deletions(-)
-> > 
+> It is not accurate that kernfs filesystems are NFS exportable in general.
+> Only cgroupfs has KERNFS_ROOT_SUPPORT_EXPORTOP.
 > 
-> [..]
+> If any application is using leases on cgroup files, it must be some
+> very advanced runtime (i.e. systemd), so we should know about the
+> regression sooner rather than later.
 > 
-> > @@ -3820,6 +3786,26 @@ ext4_ext_convert_to_initialized(handle_t *handle, struct inode *inode,
-> >  	return ERR_PTR(err);
-> >  }
-> >  
-> > +static bool ext4_ext_needs_conv(struct inode *inode, struct ext4_ext_path *path,
-> > +				int flags)
-> > +{
-> > +	struct ext4_extent *ex;
-> > +	bool is_unwrit;
-> > +	int depth;
-> > +
-> > +	depth = ext_depth(inode);
-> > +	ex = path[depth].p_ext;
-> > +	is_unwrit = ext4_ext_is_unwritten(ex);
-> > +
-> > +	if (is_unwrit && (flags & EXT4_GET_BLOCKS_CONVERT))
-> > +		return true;
-> > +
-> > +	if (!is_unwrit && (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
-> > +		return true;
-> > +
-> > +	return false;
-> > +}
-> > +
-> >  /*
-> >   * This function is called by ext4_ext_map_blocks() from
-> >   * ext4_get_blocks_dio_write() when DIO to write
-> > @@ -3856,7 +3842,9 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
-> >  	ext4_lblk_t ee_block;
-> >  	struct ext4_extent *ex;
-> >  	unsigned int ee_len;
-> > -	int split_flag = 0, depth;
-> > +	int split_flag = 0, depth, err = 0;
-> > +	bool did_zeroout = false;
-> > +	bool needs_conv = ext4_ext_needs_conv(inode, path, flags);
+> There are also the recently added nsfs and pidfs export_operations.
 > 
-> As I described in Patch 05, there is currently no situation where
-> splitting occurs without conversion, so I don't think we need this check.
-> Is it right?
- 
- Hey Yi,
+> I have a recollection about wanting to be explicit about not allowing
+> those to be exportable to NFS (nsfs specifically), but I can't see where
+> and if that restriction was done.
+> 
+> Christian? Do you remember?
 
-Yes I can get rid of this.
-
-> 
-> >  
-> >  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
-> >  		  (unsigned long long)map->m_lblk, map->m_len);
-> > @@ -3870,19 +3858,81 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
-> >  	ee_block = le32_to_cpu(ex->ee_block);
-> >  	ee_len = ext4_ext_get_actual_len(ex);
-> >  
-> > -	if (flags & (EXT4_GET_BLOCKS_UNWRIT_EXT |
-> > -			    EXT4_GET_BLOCKS_CONVERT)) {
-> > +	/* No split needed */
-> > +	if (ee_block == map->m_lblk && ee_len == map->m_len)
-> > +		goto convert;
-> > +
-> > +	/*
-> > +	 * We don't use zeroout fallback for written to unwritten conversion as
-> > +	 * it is not as critical as endio and it might take unusually long.
-> > +	 * Also, it is only safe to convert extent to initialized via explicit
-> > +	 * zeroout only if extent is fully inside i_size or new_size.
-> > +	 */
-> > +	if (!(flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN))
-> > +		split_flag |= ee_block + ee_len <= eof_block ?
-> > +				      EXT4_EXT_MAY_ZEROOUT :
-> > +				      0;
-> > +
-> > +	/*
-> > +	 * pass SPLIT_NOMERGE explicitly so we don't end up merging extents we
-> > +	 * just split.
-> > +	 */
-> > +	path = ext4_split_extent(handle, inode, path, map, split_flag,
-> > +				 flags | EXT4_GET_BLOCKS_SPLIT_NOMERGE,
-> > +				 allocated, &did_zeroout);
-> > +
-> > +convert:
-> > +	/*
-> > +	 * We don't need a conversion if:
-> > +	 * 1. There was an error in split.
-> > +	 * 2. We split via zeroout.
-> > +	 * 3. None of the convert flags were passed.
-> > +	 */
-> > +	if (IS_ERR(path) || did_zeroout || !needs_conv)
-> > +		return path;
-> > +
-> > +	path = ext4_find_extent(inode, map->m_lblk, path, flags);
-> > +	if (IS_ERR(path))
-> > +		return path;
-> > +
-> > +	depth = ext_depth(inode);
-> > +	ex = path[depth].p_ext;
-> > +
-> > +	err = ext4_ext_get_access(handle, inode, path + depth);
-> > +	if (err)
-> > +		goto err;
-> > +
-> > +	if (flags & EXT4_GET_BLOCKS_CONVERT)
-> > +		ext4_ext_mark_initialized(ex);
-> > +	else if (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)
-> > +		ext4_ext_mark_unwritten(ex);
-> > +
-> > +	if (!(flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE))
-> >  		/*
-> > -		 * It is safe to convert extent to initialized via explicit
-> > -		 * zeroout only if extent is fully inside i_size or new_size.
-> > +		 * note: ext4_ext_correct_indexes() isn't needed here because
-> > +		 * borders are not changed
-> >  		 */
-> > -		split_flag |= ee_block + ee_len <= eof_block ?
-> > -			      EXT4_EXT_MAY_ZEROOUT : 0;
-> > -		split_flag |= EXT4_EXT_MARK_UNWRIT2;
-> > +		ext4_ext_try_to_merge(handle, inode, path, ex);
-> > +
-> > +	err = ext4_ext_dirty(handle, inode, path + depth);
-> > +	if (err)
-> > +		goto err;
-> > +
-> > +	/* Lets update the extent status tree after conversion */
-> > +	ext4_es_insert_extent(inode, le32_to_cpu(ex->ee_block),
-> > +			      ext4_ext_get_actual_len(ex), ext4_ext_pblock(ex),
-> > +			      ext4_ext_is_unwritten(ex) ?
-> > +				      EXTENT_STATUS_UNWRITTEN :
-> > +				      EXTENT_STATUS_WRITTEN,
-> > +			      false);
-> 
-> I think the did_zeroout case also should update the extent status tree (and
-> it should be better to be added in the previous patch). Otherwise, this
-> would lead to residual stale unwritten extents in the zeroed range.
-> 
-> We should be careful about the extent status tree. I'd suggest that pay
-> close attention to the following error output when running tests,
-> 
->  EXT4-fs warning (device pmem2s): ext4_es_cache_extent:1079: inode #718: comm 108573.fsstress: ES cache extent failed: add [55,22,12260,0x1] conflict with existing [75,2,12280,0x2]
-
-Yes I did see this line during testing earlier but caching it like above
-fixed all the of em. Yes I did seem to miss caching for the zeroout
-case. The thing is that as long as nocache is not passed we usually end
-up caching it correctly in one of the ext4_find_extent() calls and I
-guess that's why I might have missed it.
-
-Also, I think I should also check for NOCACHE flag here before
-caching it here right, since many caller pass the NOCACHE flag.
-
-I've also added es_cache support to kunit tests so hopefully we will
-catch any issues there. Will add these changes in v2.
-
-Regards,
-ojaswin
-
-> 
-> or directly add a WARN_ON_ONCE(1) at the end of ext4_es_cache_extent().
-> There may be other problems related to the stale extents that could
-> arise.
-> 
-> Thanks,
-> Yi.
-> 
-> > +
-> > +err:
-> > +	if (err) {
-> > +		ext4_free_ext_path(path);
-> > +		return ERR_PTR(err);
-> >  	}
-> > -	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
-> > -	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
-> > -				 allocated);
-> > +
-> > +	return path;
-> >  }
-> >  
-> >  static struct ext4_ext_path *
-> > @@ -3894,7 +3944,6 @@ ext4_convert_unwritten_extents_endio(handle_t *handle, struct inode *inode,
-> >  	ext4_lblk_t ee_block;
-> >  	unsigned int ee_len;
-> >  	int depth;
-> > -	int err = 0;
-> >  
-> >  	depth = ext_depth(inode);
-> >  	ex = path[depth].p_ext;
-> > @@ -3904,41 +3953,8 @@ ext4_convert_unwritten_extents_endio(handle_t *handle, struct inode *inode,
-> >  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
-> >  		  (unsigned long long)ee_block, ee_len);
-> >  
-> > -	if (ee_block != map->m_lblk || ee_len > map->m_len) {
-> > -		path = ext4_split_convert_extents(handle, inode, map, path,
-> > -						  flags, NULL);
-> > -		if (IS_ERR(path))
-> > -			return path;
-> > -
-> > -		path = ext4_find_extent(inode, map->m_lblk, path, 0);
-> > -		if (IS_ERR(path))
-> > -			return path;
-> > -		depth = ext_depth(inode);
-> > -		ex = path[depth].p_ext;
-> > -	}
-> > -
-> > -	err = ext4_ext_get_access(handle, inode, path + depth);
-> > -	if (err)
-> > -		goto errout;
-> > -	/* first mark the extent as initialized */
-> > -	ext4_ext_mark_initialized(ex);
-> > -
-> > -	/* note: ext4_ext_correct_indexes() isn't needed here because
-> > -	 * borders are not changed
-> > -	 */
-> > -	ext4_ext_try_to_merge(handle, inode, path, ex);
-> > -
-> > -	/* Mark modified extent as dirty */
-> > -	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-> > -	if (err)
-> > -		goto errout;
-> > -
-> > -	ext4_ext_show_leaf(inode, path);
-> > -	return path;
-> > -
-> > -errout:
-> > -	ext4_free_ext_path(path);
-> > -	return ERR_PTR(err);
-> > +	return ext4_split_convert_extents(handle, inode, map, path, flags,
-> > +					  NULL);
-> >  }
-> >  
-> >  static struct ext4_ext_path *
-> > @@ -3952,7 +3968,6 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
-> >  	ext4_lblk_t ee_block;
-> >  	unsigned int ee_len;
-> >  	int depth;
-> > -	int err = 0;
-> >  
-> >  	/*
-> >  	 * Make sure that the extent is no bigger than we support with
-> > @@ -3969,40 +3984,12 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
-> >  	ext_debug(inode, "logical block %llu, max_blocks %u\n",
-> >  		  (unsigned long long)ee_block, ee_len);
-> >  
-> > -	if (ee_block != map->m_lblk || ee_len > map->m_len) {
-> > -		path = ext4_split_convert_extents(handle, inode, map, path,
-> > -				flags | EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
-> > -		if (IS_ERR(path))
-> > -			return path;
-> > -
-> > -		path = ext4_find_extent(inode, map->m_lblk, path, 0);
-> > -		if (IS_ERR(path))
-> > -			return path;
-> > -		depth = ext_depth(inode);
-> > -		ex = path[depth].p_ext;
-> > -		if (!ex) {
-> > -			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
-> > -					 (unsigned long) map->m_lblk);
-> > -			err = -EFSCORRUPTED;
-> > -			goto errout;
-> > -		}
-> > -	}
-> > -
-> > -	err = ext4_ext_get_access(handle, inode, path + depth);
-> > -	if (err)
-> > -		goto errout;
-> > -	/* first mark the extent as unwritten */
-> > -	ext4_ext_mark_unwritten(ex);
-> > -
-> > -	/* note: ext4_ext_correct_indexes() isn't needed here because
-> > -	 * borders are not changed
-> > -	 */
-> > -	ext4_ext_try_to_merge(handle, inode, path, ex);
-> > +	path = ext4_split_convert_extents(
-> > +		handle, inode, map, path,
-> > +		flags | EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
-> > +	if (IS_ERR(path))
-> > +		return path;
-> >  
-> > -	/* Mark modified extent as dirty */
-> > -	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-> > -	if (err)
-> > -		goto errout;
-> >  	ext4_ext_show_leaf(inode, path);
-> >  
-> >  	ext4_update_inode_fsync_trans(handle, inode, 1);
-> > @@ -4012,10 +3999,6 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
-> >  		*allocated = map->m_len;
-> >  	map->m_len = *allocated;
-> >  	return path;
-> > -
-> > -errout:
-> > -	ext4_free_ext_path(path);
-> > -	return ERR_PTR(err);
-> >  }
-> >  
-> >  static struct ext4_ext_path *
-> > @@ -5649,7 +5632,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
-> >  	struct ext4_extent *extent;
-> >  	ext4_lblk_t start_lblk, len_lblk, ee_start_lblk = 0;
-> >  	unsigned int credits, ee_len;
-> > -	int ret, depth, split_flag = 0;
-> > +	int ret, depth;
-> >  	loff_t start;
-> >  
-> >  	trace_ext4_insert_range(inode, offset, len);
-> > @@ -5720,12 +5703,8 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
-> >  		 */
-> >  		if ((start_lblk > ee_start_lblk) &&
-> >  				(start_lblk < (ee_start_lblk + ee_len))) {
-> > -			if (ext4_ext_is_unwritten(extent))
-> > -				split_flag = EXT4_EXT_MARK_UNWRIT1 |
-> > -					EXT4_EXT_MARK_UNWRIT2;
-> >  			path = ext4_split_extent_at(handle, inode, path,
-> > -					start_lblk, split_flag,
-> > -					EXT4_EX_NOCACHE |
-> > +					start_lblk, EXT4_EX_NOCACHE |
-> >  					EXT4_GET_BLOCKS_SPLIT_NOMERGE |
-> >  					EXT4_GET_BLOCKS_METADATA_NOFAIL);
-> >  		}
-> 
+I don't think it does.
 
