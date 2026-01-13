@@ -1,193 +1,373 @@
-Return-Path: <linux-ext4+bounces-12767-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12768-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44DAD17BB0
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 10:42:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78F36D185D2
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 12:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9426330089A4
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 09:42:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2DF1F316C1FD
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 11:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497E138171E;
-	Tue, 13 Jan 2026 09:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B7138E126;
+	Tue, 13 Jan 2026 11:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AATCChff"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nN6MMGMs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4540D310777
-	for <linux-ext4@vger.kernel.org>; Tue, 13 Jan 2026 09:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B9B38B7B1
+	for <linux-ext4@vger.kernel.org>; Tue, 13 Jan 2026 11:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768297353; cv=none; b=I9kvtNPz1zBk1EqYffwT6jO6SzLxB3FNgjdCDApkhon027E/B3EDAP9DGCSkIaZDzse4scTv9Dz7rEAxJEPIjeHZ1QGTyivvZUkgnnFGmP6rwzPqU9RYCTzBu6/z/Y6wE8jCnAlUZ+nWnLY0fI8H7nq3lLIffJhHWy0sA4Wze5g=
+	t=1768302235; cv=none; b=og5Pt53WX1LhMzeTCOvEkZe9121nPVI45hfDWkzCqKspmXkjCS0rWpn6ix3X3VzOpgg60V2rfXjJiTHfJbuR9YykMFIBJytRfBSrXxIjaY8dWknPVU0aJ6knz7LPcefqz7rcbbt9jMPHv2NsLW41Dn+gzavOR69Rkwxa2FxQo10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768297353; c=relaxed/simple;
-	bh=jsTQpeqf//7r5JEUYZk3rsuws1lH6BKGLO8ueWv8/Ak=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CgxlZIDPjJRL2+EB/N9igzSNIhESqpFwDP+6v4bRVgZQ0KY26YoL6J5HULPiTA1HbVZyLXD8SKY+9iklv3cKdJIc/nAMO8+OSjvcEDi3nbW+pM55IAZJFgsYfF+zAEIq08d5AGtD14u1clX5bidCYe4bMV7xB28LWYIFcsfHMP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AATCChff; arc=none smtp.client-ip=209.85.221.50
+	s=arc-20240116; t=1768302235; c=relaxed/simple;
+	bh=GOvkA9ym2haRJ7rSmdC68mW+NnCwyKF6uappndPGnv8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QCvBjUbO3fJCesENcR9sR8tKsNuntsoKln02fRPhmhjJ7mRzvbDtuBNGlCKSLPAHNCbFY8v9SE5F0fXPJ+icTi4DBicdWhkG9Rc1W3hDTdd3B0Q2R1D/b6QR3uTC2GdQRGNq6JKzlUahavapGHbTDZYikvAqOYlsURAoH1VY1M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nN6MMGMs; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-42fb4eeb482so4201744f8f.0
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Jan 2026 01:42:30 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6536e4d25e1so458924a12.1
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Jan 2026 03:03:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768297349; x=1768902149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qWi0gxImcfe6sPFx7hTgeNf8sv4DbP5sxUz/myXx3jk=;
-        b=AATCChffCjft4duhkcdXSrluLr9HUREMOTCWhpwSLUSCwO3ltkm0pmcL4w1IV0FG3p
-         Ht+0RfeR4pfmGLH4qIUypGB4vCSo9o+PET4FJX9EvaAi/pgt6kuSOUzQnJXIEGCy9k43
-         Rcv8REBI0/LIxwYk6tDI0y7ok08FToqE03KAIFz8s8b+G2ObtG1DULtJlSlHi/YTYg5v
-         YwqDXnZuyBCT3Gc5no2dngt6g7k+3mduiahF37Cd/3FUOymS6jg2zHCbRw5WGWT6jZEd
-         gvQr5aX2Usg6mx5TVURufHqY8ewpDlRkXYpnJAxh/tqzA3kr01NeI///rJnknfHkpIzK
-         5UiA==
+        d=gmail.com; s=20230601; t=1768302230; x=1768907030; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1yKl/Pgo7Raivop2OmRTYwMbcW+Kn23aOzS6HQ4S0N8=;
+        b=nN6MMGMsY4+YnodqJJrV6Jdg8tDEi7C5dMQ7zTn/qpbzoZ5ps2oxcoLvDvLH/p703Q
+         KtniUbvq1O9YuxdfUboJoxIkw6Pwt00M/EPJgkc5yHODKcm56YN0rVeTg4iJi8rGrMRf
+         JZyaN7vCW5HxVjStPU/3CA65at0FydI80IE45PjfBzrhLtauDwRPIRC8o6YPNBcZDbwz
+         r9wuwRK8q3FVjJftt91QI6+Yh+7BLuOs3usGCsKS0/MfmCFHGXbHie4T6TLQZaU4LXnH
+         ukKu5g+LvSt/+OIpy8PNYS8p6GETBzzSU3w7xeMSMrJe48ZQ9Gzd6IMcqhCJNc7ibJzH
+         dKag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768297349; x=1768902149;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qWi0gxImcfe6sPFx7hTgeNf8sv4DbP5sxUz/myXx3jk=;
-        b=JUgJTZ21VHOT9DgB/9uE0Ukgwca8CWaLiO6vEra969nNOQnClp5hUnvh9KIBYE2a+Y
-         T+XkdIl8b3yN2F4RLb0nfvrmg8vFnK7wGgmehZ3xKnICwdOFGhxf3nI5KLP3asyHdt2n
-         OiMdgbhUL8ZRtrnlHP38SJsggU+V+E+lJB8zDZa8mkBY1gUSO5p2kqm2qCto7tcSFCFJ
-         ha0aTVQxFj9FhibR5Kx/cESAPKXtgajAeqZBPSV6aE5yQsat3qqwwEGOhl4x5oe+wmqW
-         NWzm5IPNiVaDVzctFlhGnvtvt/GYskT+AxTkMZQowasp3r4W1YnHdJYg457JWmQ7Vx8r
-         lhdA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPhPfBvsh0Uyfpt+eeLlpuoYUUjtFEJ+LR+ROZqwot57/3uWfV7MhysphA8KR1zXkILR8KpF4ieMo8@vger.kernel.org
-X-Gm-Message-State: AOJu0YxumnDGs6EKlC5iLZrrcM3TwhqVy5ZM7HiVF8xHC5+YsAc1AkXl
-	fme/yRcG3rK+s1qv1SiN6kjzWcm2R/8DvRnwYj+uob2oJ+jenli3/U2A
-X-Gm-Gg: AY/fxX4jdX8qhFq6Ht49/znVI9FUvYoEkfBIriRz1NmVh/8eMxIoy70BoqOxhFRTNn6
-	gW3TI3hKGiNfx0I3OvWLr0gBwMcEUCo7fsxYNIGHZP9epnWPs9xgS3/yoGk9rW5xdnATtiLRuaP
-	1Pug4TABMkPaGFzBOPnY0ivVriqv2HS1FWN3UJk1bBFW6mde4Rkd4wZWRf3RisttO0jCv6cdvFL
-	pdkoE5g89EUXhyqGJP2B6FRY/Il5obs/P9uEc15y/MnQG48rNOahHZ5QOvyJGOvI/zhrdPX3q0D
-	WVDzuZY1sgLwE7UFR9DKNtAY3qt2okDxQYGUuESdKglo4owmKBvKKXRRQ8MzYMjEX+hegmHRFqo
-	+12GPrxvpwgE91hKTGJof2XvN/b13yrsQNh+Z7Pel5SdChKdGVMCe0jAwVRc2kmL2cQI+owQTA1
-	yIeKG4p9GZrgiQcpijBBe76E+H74oCTZCPdMDmy1Q9sJo2fMleYA9Z
-X-Google-Smtp-Source: AGHT+IGCluKpScy5UmgAEwir80+RNqkqkTWiXHqvvRnvopn9jhUBxHczRPNLOdlhz4XUibpj8zHkVw==
-X-Received: by 2002:a05:6000:178a:b0:430:f449:5f18 with SMTP id ffacd0b85a97d-432c37644b4mr26662191f8f.46.1768297348421;
-        Tue, 13 Jan 2026 01:42:28 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5dfa07sm43196646f8f.25.2026.01.13.01.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 01:42:28 -0800 (PST)
-Date: Tue, 13 Jan 2026 09:42:26 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: Brian Masney <bmasney@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, Alexander Viro
- <viro@zeniv.linux.org.uk>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Christian Brauner <brauner@kernel.org>, Kees Cook <kees@kernel.org>, Miklos
- Szeredi <miklos@szeredi.hu>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
- Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 30/44] fs: use min() or umin() instead of min_t()
-Message-ID: <20260113094226.144973b2@pumpkin>
-In-Reply-To: <aWVs2gVB418WiMVa@redhat.com>
-References: <20251119224140.8616-1-david.laight.linux@gmail.com>
-	<20251119224140.8616-31-david.laight.linux@gmail.com>
-	<aWVs2gVB418WiMVa@redhat.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        d=1e100.net; s=20230601; t=1768302230; x=1768907030;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1yKl/Pgo7Raivop2OmRTYwMbcW+Kn23aOzS6HQ4S0N8=;
+        b=NMP6wMnuPAckSKP+2CBaZ+uuhpQ2h+PNKf7Lc88RVFY3YbbXtP9V0elHUF4fikB4nG
+         Mc6Sqqhn6l7C7nyeWymiU4D50NVHCAJub6t9V39/SP8ql0qCzLIF7MzR5+NR7Myxcyhe
+         QHLP0uFy20xpGFAOGYRVhhruxZgve87PLh8i/D1WtqrMfiTEtIs4RSmxYHP/57NDQ3NA
+         Ju09KC3HgBX3ZTo/73QjwAc73Pw++MB9sdMNg20ofM6EpaZWpoUEyRbiKO2HLIm9xY1x
+         fzlSYrHXs+JrXjB6XWdklRb/6AbyYBfYllxpC2c5J9QNcNhTXnOViefIhmibiF4f7O1w
+         P8jg==
+X-Forwarded-Encrypted: i=1; AJvYcCVd933xkjwyRmAllM6harXAoDoJuojLi64qNyonumJ1txk1xTtuTSQrwq1S4zdN81+23bfK+FcA85Cn@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPhq/YXK8sQ4ICULnLoo+6awnG0P8xt3b8PxwwW4tm9ye5O1dF
+	MSMBRAjhvbKiNCXQ1B85E2tlbXjw13NOL+W5S3frMV1ai6dZE/vVbHi0e6Cy6YZ5/qke/1ovo9t
+	DiyHDbNNQYIc1B6cvlFtY/868UffSXa0=
+X-Gm-Gg: AY/fxX5O3wgc3gmvZCEzeKNjNScdYeb2QsYj8pWBs49jpCUsIt3CjvlcCdl6KKCRZFg
+	rb8Gnafy7+ANJzTmqIVtkrrOs+35F998e5hNgvkeK64aGbypyQxCTb7n3adKbileY5+JO9kKuwt
+	bQZRYOj9S+0iIfgIPce/+J4f7nd7Y0/aUnfF4Udd1m99LKK086kWuk7Kszm1mY58XMjLxmyMc9m
+	zI4UhoJ7AlUwm9xHIc0CzpusqTiqglQkCKEtgX7jHGDM0prEXpqLC4e4GokFwnFlVpjXPl9+H+s
+	df4Kv4JGH187vt2WJ3HMx2SwGkxRdhAhymmOeZrX
+X-Google-Smtp-Source: AGHT+IGHaEgIcl6O956q/oR3KprTKLrAIzwQWNnZW6GHFV/gOuiO6RLC6EZuQAaL35CmbUpNO9gUAoXWjlG3/ZomGCY=
+X-Received: by 2002:a05:6402:2110:b0:64d:170:79a3 with SMTP id
+ 4fb4d7f45d1cf-65097e59bfemr21502908a12.20.1768302229797; Tue, 13 Jan 2026
+ 03:03:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
+ <m3mywef74xhcakianlrovrnaadnhzhfqjfusulkcnyioforfml@j2xnk7dzkmv4>
+ <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
+ <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
+ <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
+ <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com> <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
+ <20260113-mondlicht-raven-82fc4eb70e9d@brauner>
+In-Reply-To: <20260113-mondlicht-raven-82fc4eb70e9d@brauner>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 13 Jan 2026 12:03:37 +0100
+X-Gm-Features: AZwV_QgaTvXrJUOdIQ16Jho9rlbp9FwpQ0OxyPEQ1mLXrbEA1iJpt9y0FKtnu9k
+Message-ID: <CAOQ4uxhkaGFtQRzTj2xaf2GJucoAY5CGiyUjB=8YA2zTbOtFvw@mail.gmail.com>
+Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
+ lease support
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, 
+	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
+	Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>, Anders Larsen <al@alarsen.net>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
+	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
+	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Phillip Lougher <phillip@squashfs.org.uk>, 
+	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
+	Yuezhang Mo <yuezhang.mo@sony.com>, Alexander Aring <alex.aring@gmail.com>, 
+	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
+	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
+	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
+	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
+Content-Type: multipart/mixed; boundary="0000000000004374d1064842f2b9"
+
+--0000000000004374d1064842f2b9
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 Jan 2026 16:51:22 -0500
-Brian Masney <bmasney@redhat.com> wrote:
+On Tue, Jan 13, 2026 at 9:54=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> On Mon, Jan 12, 2026 at 09:50:20AM -0500, Jeff Layton wrote:
+> > On Mon, 2026-01-12 at 09:31 -0500, Chuck Lever wrote:
+> > > On 1/12/26 8:34 AM, Jeff Layton wrote:
+> > > > On Fri, 2026-01-09 at 19:52 +0100, Amir Goldstein wrote:
+> > > > > On Thu, Jan 8, 2026 at 7:57=E2=80=AFPM Jeff Layton <jlayton@kerne=
+l.org> wrote:
+> > > > > >
+> > > > > > On Thu, 2026-01-08 at 18:40 +0100, Jan Kara wrote:
+> > > > > > > On Thu 08-01-26 12:12:55, Jeff Layton wrote:
+> > > > > > > > Yesterday, I sent patches to fix how directory delegation s=
+upport is
+> > > > > > > > handled on filesystems where the should be disabled [1]. Th=
+at set is
+> > > > > > > > appropriate for v6.19. For v7.0, I want to make lease suppo=
+rt be more
+> > > > > > > > opt-in, rather than opt-out:
+> > > > > > > >
+> > > > > > > > For historical reasons, when ->setlease() file_operation is=
+ set to NULL,
+> > > > > > > > the default is to use the kernel-internal lease implementat=
+ion. This
+> > > > > > > > means that if you want to disable them, you need to explici=
+tly set the
+> > > > > > > > ->setlease() file_operation to simple_nosetlease() or the e=
+quivalent.
+> > > > > > > >
+> > > > > > > > This has caused a number of problems over the years as some=
+ filesystems
+> > > > > > > > have inadvertantly allowed leases to be acquired simply by =
+having left
+> > > > > > > > it set to NULL. It would be better if filesystems had to op=
+t-in to lease
+> > > > > > > > support, particularly with the advent of directory delegati=
+ons.
+> > > > > > > >
+> > > > > > > > This series has sets the ->setlease() operation in a pile o=
+f existing
+> > > > > > > > local filesystems to generic_setlease() and then changes
+> > > > > > > > kernel_setlease() to return -EINVAL when the setlease() ope=
+ration is not
+> > > > > > > > set.
+> > > > > > > >
+> > > > > > > > With this change, new filesystems will need to explicitly s=
+et the
+> > > > > > > > ->setlease() operations in order to provide lease and deleg=
+ation
+> > > > > > > > support.
+> > > > > > > >
+> > > > > > > > I mainly focused on filesystems that are NFS exportable, si=
+nce NFS and
+> > > > > > > > SMB are the main users of file leases, and they tend to end=
+ up exporting
+> > > > > > > > the same filesystem types. Let me know if I've missed any.
+> > > > > > >
+> > > > > > > So, what about kernfs and fuse? They seem to be exportable an=
+d don't have
+> > > > > > > .setlease set...
+> > > > > > >
+> > > > > >
+> > > > > > Yes, FUSE needs this too. I'll add a patch for that.
+> > > > > >
+> > > > > > As far as kernfs goes: AIUI, that's basically what sysfs and re=
+sctrl
+> > > > > > are built on. Do we really expect people to set leases there?
+> > > > > >
+> > > > > > I guess it's technically a regression since you could set them =
+on those
+> > > > > > sorts of files earlier, but people don't usually export kernfs =
+based
+> > > > > > filesystems via NFS or SMB, and that seems like something that =
+could be
+> > > > > > used to make mischief.
+> > > > > >
+> > > > > > AFAICT, kernfs_export_ops is mostly to support open_by_handle_a=
+t(). See
+> > > > > > commit aa8188253474 ("kernfs: add exportfs operations").
+> > > > > >
+> > > > > > One idea: we could add a wrapper around generic_setlease() for
+> > > > > > filesystems like this that will do a WARN_ONCE() and then call
+> > > > > > generic_setlease(). That would keep leases working on them but =
+we might
+> > > > > > get some reports that would tell us who's setting leases on the=
+se files
+> > > > > > and why.
+> > > > >
+> > > > > IMO, you are being too cautious, but whatever.
+> > > > >
+> > > > > It is not accurate that kernfs filesystems are NFS exportable in =
+general.
+> > > > > Only cgroupfs has KERNFS_ROOT_SUPPORT_EXPORTOP.
+> > > > >
+> > > > > If any application is using leases on cgroup files, it must be so=
+me
+> > > > > very advanced runtime (i.e. systemd), so we should know about the
+> > > > > regression sooner rather than later.
+> > > > >
+> > > >
+> > > > I think so too. For now, I think I'll not bother with the WARN_ONCE=
+().
+> > > > Let's just leave kernfs out of the set until someone presents a rea=
+l
+> > > > use-case.
+> > > >
+> > > > > There are also the recently added nsfs and pidfs export_operation=
+s.
+> > > > >
+> > > > > I have a recollection about wanting to be explicit about not allo=
+wing
+> > > > > those to be exportable to NFS (nsfs specifically), but I can't se=
+e where
+> > > > > and if that restriction was done.
+> > > > >
+> > > > > Christian? Do you remember?
+> > > > >
+> > > >
+> > > > (cc'ing Chuck)
+> > > >
+> > > > FWIW, you can currently export and mount /sys/fs/cgroup via NFS. Th=
+e
+> > > > directory doesn't show up when you try to get to it via NFSv4, but =
+you
+> > > > can mount it using v3 and READDIR works. The files are all empty wh=
+en
+> > > > you try to read them. I didn't try to do any writes.
+> > > >
+> > > > Should we add a mechanism to prevent exporting these sorts of
+> > > > filesystems?
+> > > >
+> > > > Even better would be to make nfsd exporting explicitly opt-in. What=
+ if
+> > > > we were to add a EXPORT_OP_NFSD flag that explicitly allows filesys=
+tems
+> > > > to opt-in to NFS exporting, and check for that in __fh_verify()? We=
+'d
+> > > > have to add it to a bunch of existing filesystems, but that's fairl=
+y
+> > > > simple to do with an LLM.
+> > >
+> > > What's the active harm in exporting /sys/fs/cgroup ? It has to be don=
+e
+> > > explicitly via /etc/exports, so this is under the NFS server admin's
+> > > control. Is it an attack surface?
+> > >
+> >
+> > Potentially?
+> >
+> > I don't see any active harm with exporting cgroupfs. It doesn't work
+> > right via nfsd, but it's not crashing the box or anything.
+> >
+> > At one time, those were only defined by filesystems that wanted to
+> > allow NFS export. Now we've grown them on filesystems that just want to
+> > provide filehandles for open_by_handle_at() and the like. nfsd doesn't
+> > care though: if the fs has export operations, it'll happily use them.
+> >
+> > Having an explicit "I want to allow nfsd" flag see ms like it might
+> > save us some headaches in the future when other filesystems add export
+> > ops for this sort of filehandle use.
+>
+> So we are re-hashing a discussion we had a few months ago (Amir was
+> involved at least).
+>
+> I don't think we want to expose cgroupfs via NFS that's super weird.
+> It's like remote partial resource management and it would be very
+> strange if a remote process suddenly would be able to move things around
+> in the cgroup tree. So I would prefer to not do this.
+>
+> So my preference would be to really sever file handles from the export
+> mechanism so that we can allow stuff like pidfs and nsfs and cgroupfs to
+> use file handles via name_to_handle_at() and open_by_handle_at() without
+> making them exportable.
+>
+> Somehow I thought that Amir had already done that work a while ago but
+> maybe it was really just about name_to_handle_at() and not also
+> open_by_handle_at()...
 
-> Hi David,
->=20
-> On Wed, Nov 19, 2025 at 10:41:26PM +0000, david.laight.linux@gmail.com wr=
-ote:
-> > From: David Laight <david.laight.linux@gmail.com>
-> >=20
-> > min_t(unsigned int, a, b) casts an 'unsigned long' to 'unsigned int'.
-> > Use min(a, b) instead as it promotes any 'unsigned int' to 'unsigned lo=
-ng'
-> > and so cannot discard significant bits.
-> >=20
-> > A couple of places need umin() because of loops like:
-> > 	nfolios =3D DIV_ROUND_UP(ret + start, PAGE_SIZE);
-> >=20
-> > 	for (i =3D 0; i < nfolios; i++) {
-> > 		struct folio *folio =3D page_folio(pages[i]);
-> > 		...
-> > 		unsigned int len =3D umin(ret, PAGE_SIZE - start);
-> > 		...
-> > 		ret -=3D len;
-> > 		...
-> > 	}
-> > where the compiler doesn't track things well enough to know that
-> > 'ret' is never negative.
-> >=20
-> > The alternate loop:
-> >         for (i =3D 0; ret > 0; i++) {
-> >                 struct folio *folio =3D page_folio(pages[i]);
-> >                 ...
-> >                 unsigned int len =3D min(ret, PAGE_SIZE - start);
-> >                 ...
-> >                 ret -=3D len;
-> >                 ...
-> >         }
-> > would be equivalent and doesn't need 'nfolios'.
-> >=20
-> > Most of the 'unsigned long' actually come from PAGE_SIZE.
-> >=20
-> > Detected by an extra check added to min_t().
-> >=20
-> > Signed-off-by: David Laight <david.laight.linux@gmail.com> =20
->=20
-> When doing a mips cross compile from an arm64 host
-> (via ARCH=3Dmips CROSS_COMPILE=3Dmips64-linux-gnu- make), the following
-> build error occurs in linux-next and goes away when I revert this
-> commit.
+I don't recall doing anything except talking ;)
 
-I've looked at this one before.
-I think there is another patch lurking to fix it.
+How about something like this to safeguard against exporting
+the new pidfs/nsfs.
 
-> In file included from <command-line>:                                    =
-                                                          =20
-> In function =E2=80=98fuse_wr_pages=E2=80=99,                             =
-                                                                          =
-=20
->     inlined from =E2=80=98fuse_perform_write=E2=80=99 at fs/fuse/file.c:1=
-347:27:                                                                   =
-=20
-> ././include/linux/compiler_types.h:667:45: error: call to =E2=80=98__comp=
-iletime_assert_405=E2=80=99 declared with attribute error: min(((pos + len=
-=20
-> - 1) >> 12) - (pos >> 12) + 1, max_pages) signedness error               =
-                                                          =20
-...
-> fs/fuse/file.c:1326:16: note: in expansion of macro =E2=80=98min=E2=80=99
->  1326 |         return min(((pos + len - 1) >> PAGE_SHIFT) - (pos >> PAGE=
-_SHIFT) + 1,
-				max_pages);
+Regarding cgroupfs, we could either use a EXPORT_OP_ flag
+or maybe it should have a custom open/permission as well?
 
-'len' is 'unsigned long' and the expression is unsigned on 64bit.
-But 'pos' is s64 so the expression is signed on 32bit.
-IIRC the final version might have been (equivalent to):
-	len +=3D pos & (PAGE_SIZE - 1);
-	return min(DIV_ROUND_UP(len, PAGE_SIZE), max_pages);
-which generates much better code as well (no 64bit maths).
-I don't think len can overflow, read/write are limited to INT_MAX - PAGE_SI=
-ZE
-bytes in the syscall interface.
+Thanks,
+Amir.
 
-	David
+--0000000000004374d1064842f2b9
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-nfsd-do-not-allow-exporting-of-special-kernel-filesy.patch"
+Content-Disposition: attachment; 
+	filename="0001-nfsd-do-not-allow-exporting-of-special-kernel-filesy.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_mkchdddy0>
+X-Attachment-Id: f_mkchdddy0
 
->=20
-> This is on a cento-stream-10 host running
-> gcc version 14.3.1 20250617 (Red Hat 14.3.1-2) (GCC). I didn't look into
-> this in detail, and I'm not entirely sure what the correct fix here
-> should be.
->=20
-> Brian
->=20
-
+RnJvbSBiYTRjYjhlZTBiYzIwYWZhNzRiZDY4OWVjY2FmMTFiOGQ2MDYyMTNhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgpE
+YXRlOiBUdWUsIDEzIEphbiAyMDI2IDExOjQzOjU1ICswMTAwClN1YmplY3Q6IFtSRkNdW1BBVENI
+XSBuZnNkOiBkbyBub3QgYWxsb3cgZXhwb3J0aW5nIG9mIHNwZWNpYWwga2VybmVsIGZpbGVzeXN0
+ZW1zCgpwaWRmcyBhbmQgbnNmcyByZWNlbnRseSBnYWluZWQgc3VwcG9ydCBmb3IgZW5jb2RlL2Rl
+Y29kZSBvZiBmaWxlIGhhbmRsZXMKdmlhIG5hbWVfdG9faGFuZGxlX2F0KDIpL29wYW5fYnlfaGFu
+ZGxlX2F0KDIpLgoKVGhlc2Ugc3BlY2lhbCBrZXJuZWwgZmlsZXN5c3RlbXMgaGF2ZSBjdXN0b20g
+LT5vcGVuKCkgYW5kIC0+cGVybWlzc2lvbigpCmV4cG9ydCBtZXRob2RzLCB3aGljaCBuZnNkIGRv
+ZXMgbm90IHJlc3BlY3QgYW5kIGl0IHdhcyBuZXZlciBtZWFudCB0byBiZQp1c2VkIGZvciBleHBv
+cnRpbmcgdGhvc2UgZmlsZXN5c3RlbXMgYnkgbmZzZC4KClRoZXJlZm9yZSwgZG8gbm90IGFsbG93
+IG5mc2QgdG8gZXhwb3J0IGZpbGVzeXN0ZW1zIHdpdGggY3VzdG9tIC0+b3BlbigpCm9yIC0+cGVy
+bWlzc2lvbigpIG1ldGhvZHMuCgpGaXhlczogYjNjYWJhOGY3YTM0YSAoInBpZGZzOiBpbXBsZW1l
+bnQgZmlsZSBoYW5kbGUgc3VwcG9ydCIpCkZpeGVzOiA1MjIyNDcwYjJmYmIzICgibnNmczogc3Vw
+cG9ydCBmaWxlIGhhbmRsZXMiKQpTaWduZWQtb2ZmLWJ5OiBBbWlyIEdvbGRzdGVpbiA8YW1pcjcz
+aWxAZ21haWwuY29tPgotLS0KIGZzL25mc2QvZXhwb3J0LmMgICAgICAgICB8IDUgKysrLS0KIGlu
+Y2x1ZGUvbGludXgvZXhwb3J0ZnMuaCB8IDkgKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDEy
+IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZnMvbmZzZC9leHBv
+cnQuYyBiL2ZzL25mc2QvZXhwb3J0LmMKaW5kZXggMmExNDk5ZjJhZDE5Ni4uOTJhYzhjYjBiZGVj
+ZCAxMDA2NDQKLS0tIGEvZnMvbmZzZC9leHBvcnQuYworKysgYi9mcy9uZnNkL2V4cG9ydC5jCkBA
+IC00MzcsOCArNDM3LDkgQEAgc3RhdGljIGludCBjaGVja19leHBvcnQoY29uc3Qgc3RydWN0IHBh
+dGggKnBhdGgsIGludCAqZmxhZ3MsIHVuc2lnbmVkIGNoYXIgKnV1aWQKIAkJcmV0dXJuIC1FSU5W
+QUw7CiAJfQogCi0JaWYgKCFleHBvcnRmc19jYW5fZGVjb2RlX2ZoKGlub2RlLT5pX3NiLT5zX2V4
+cG9ydF9vcCkpIHsKLQkJZHByaW50aygiZXhwX2V4cG9ydDogZXhwb3J0IG9mIGludmFsaWQgZnMg
+dHlwZS5cbiIpOworCWlmICghZXhwb3J0ZnNfbWF5X25mc19leHBvcnQoaW5vZGUtPmlfc2ItPnNf
+ZXhwb3J0X29wKSkgeworCQlkcHJpbnRrKCJleHBfZXhwb3J0OiBleHBvcnQgb2YgaW52YWxpZCBm
+cyB0eXBlICglcykuXG4iLAorCQkJaW5vZGUtPmlfc2ItPnNfdHlwZS0+bmFtZSk7CiAJCXJldHVy
+biAtRUlOVkFMOwogCX0KIApkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9leHBvcnRmcy5oIGIv
+aW5jbHVkZS9saW51eC9leHBvcnRmcy5oCmluZGV4IGYwY2YyNzE0ZWM1MmQuLjNlYzc4MDgwMmMx
+NGUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvZXhwb3J0ZnMuaAorKysgYi9pbmNsdWRlL2xp
+bnV4L2V4cG9ydGZzLmgKQEAgLTMxNyw2ICszMTcsMTUgQEAgc3RhdGljIGlubGluZSBib29sIGV4
+cG9ydGZzX2Nhbl9kZWNvZGVfZmgoY29uc3Qgc3RydWN0IGV4cG9ydF9vcGVyYXRpb25zICpub3Ap
+CiAJcmV0dXJuIG5vcCAmJiBub3AtPmZoX3RvX2RlbnRyeTsKIH0KIAorc3RhdGljIGlubGluZSBi
+b29sIGV4cG9ydGZzX21heV9uZnNfZXhwb3J0KGNvbnN0IHN0cnVjdCBleHBvcnRfb3BlcmF0aW9u
+cyAqbm9wKQoreworCS8qCisJICogRG8gbm90IGFsbG93IGV4cG9ydGluZyB0byBORlMgZmlsZXN5
+c3RlbXMgd2l0aCBjdXN0b20gLT5vcGVuKCkgYW5kCisJICogLT5wZXJtaXNzaW9uKCkgb3BzLCB3
+aGljaCBuZnNkIGRvZXMgbm90IHJlc3BlY3QgKGUuZy4gcGlkZnMsIG5zZnMpLgorCSAqLworCXJl
+dHVybiBleHBvcnRmc19jYW5fZGVjb2RlX2ZoKG5vcCkgJiYgIW5vcC0+b3BlbiAmJiAhbm9wLT5w
+ZXJtaXNzaW9uOworfQorCiBzdGF0aWMgaW5saW5lIGJvb2wgZXhwb3J0ZnNfY2FuX2VuY29kZV9m
+aChjb25zdCBzdHJ1Y3QgZXhwb3J0X29wZXJhdGlvbnMgKm5vcCwKIAkJCQkJICBpbnQgZmhfZmxh
+Z3MpCiB7Ci0tIAoyLjUyLjAKCg==
+--0000000000004374d1064842f2b9--
 
