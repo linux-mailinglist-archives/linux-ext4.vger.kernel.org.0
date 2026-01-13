@@ -1,108 +1,103 @@
-Return-Path: <linux-ext4+bounces-12765-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12766-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B34DAD176D4
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 09:58:40 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD749D1778F
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 10:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E2BB43002B96
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 08:58:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B52A630089A6
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 09:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3653806B8;
-	Tue, 13 Jan 2026 08:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BC43815EA;
+	Tue, 13 Jan 2026 09:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TaduiMnp"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CnYA8E2G"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6C43128AE;
-	Tue, 13 Jan 2026 08:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196B33815C5;
+	Tue, 13 Jan 2026 09:05:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768294716; cv=none; b=XYvUXGcTiK554oAO4lxW8zE5gk5gHszykjmrrLj/B0I+Hy1+2FZgEWxwZA/yqLScbrRp7IIJbNNw0iJV9qYY+nIIZJNH0qdlhRuwvehaqDJMuOd85zkcDIRF6ObN4NTESvEOWiaVThINaTW/cVvV87Qta8v+g0dHv4MFrlQv9Jk=
+	t=1768295105; cv=none; b=kXfxl1LfTnznGS2RJCoOGO/MC4bJWLETrTkBWEewkqKIuCAqXP2NImTvm+abelTN9PQ07IZHbbsV7HsE8KmRbBJ0Z4xtwQ7zcnK7enLqq9jUdOiRuc0jroPLPc0U+IMmOgWg4B0BhrPK14cTbD8XWRSCtmXhx+5L6G9uNT+C4FQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768294716; c=relaxed/simple;
-	bh=V0lPzn6kjF9luU67P+V3gLXM71Kj7taU4Pd0q0Ba/8I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uTEdH5CrOZvBwQopxqU4sABt4ycG4qBvrIAM4/4ctUIImU+eyPz44BZGD/ba4P6bEKy/alRbEeN7emm2Xfr33TdbOclKW2I8ObsVPhJC2peiKWtaGTYtZQW1qY5YMSg+0V1gZer/ogAsCFHnAW2Zi7T1nednegEYQE90zrSrSkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TaduiMnp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8991EC116C6;
-	Tue, 13 Jan 2026 08:58:33 +0000 (UTC)
+	s=arc-20240116; t=1768295105; c=relaxed/simple;
+	bh=JI/qrCCxv4pysbre1tzQVlevGeAvi+n57KXP24R0MJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GqJsw86YNVunkbbTqeKCrHQ3LvMHjKjvSsmFsOT0yBIL9cF/xestaVLWaZ9F1ZYPhHGeC9j+ByDxNPgmhed3dUeUa2q1NLKbSss1eFBMt5AGkgc63A8oCmaltBvkqhf8ujDkI1SHdk1uU1fSOyU7uyo7ZtlH5Kesa0dXCDJCpmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CnYA8E2G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 590E3C116C6;
+	Tue, 13 Jan 2026 09:04:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768294716;
-	bh=V0lPzn6kjF9luU67P+V3gLXM71Kj7taU4Pd0q0Ba/8I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TaduiMnpFkWny3b2YLxjW57cFvY/g5OFjPzd5BvaUiWiy3q9NLnPZAnpXG+4Gi3jZ
-	 z93uc0PXEBR4Mv8avBvc1N1/Fiut2tLXYdldycU+Qz02qTET9eQk/ItO+bDLH+Y05R
-	 ZeXx0H8fmloCFtVYEaxRXdGy38hxyFA0mLIFRFLPtA+hzmU5n3rWuzsh6ceJDW6lAw
-	 EmmdULq0l54SPUEkdhA4Lnin6iGw+ThAg+ggcxGvpiOm0Q40lqubbO+O+G/Cnu8vaC
-	 Ld67n0NDELTF+iWk+mkX9bq1wkkfGmzyuZtOgntzONxIh55dGOPnGa/SD9wBAIN1m8
-	 qfbt+3Q3R1mQw==
+	s=k20201202; t=1768295104;
+	bh=JI/qrCCxv4pysbre1tzQVlevGeAvi+n57KXP24R0MJ8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CnYA8E2Gu31DQPhrYzsWX1t22ob14451gLqFOUSl/SinV1rCBAzfiU2sahsoSGqOJ
+	 VBY02ntXi5Q5SDRV6HiepZptbFX8F8AdQP9xqgFf93/WwlkU+hWr0R4I5VjLMPKGGh
+	 U63jcqRtJja7FTR60WIPOokx5BkhnvnMPEzZ6j/MWTva/UYy8Ec6zsUGcxVJ8qBV3d
+	 J0Pn7u7oEcRus23vOvWhgT6/IhNmgT+6zo1fnbZqkL3DArx+SuMnTVPWXLBOzp6o8n
+	 DGLZDjd1epIDdLleBOrWoaUzY0JtB4p/+CMsY57fIDfjqu7TMsTaI0xiwXgeHkL3Uq
+	 h5R7PZE9FG1xQ==
+Date: Tue, 13 Jan 2026 10:04:56 +0100
 From: Christian Brauner <brauner@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-api@vger.kernel.org,
-	jack@suse.cz,
-	hch@lst.de,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	gabriel@krisman.be,
-	amir73il@gmail.com,
-	Gao Xiang <xiang@kernel.org>
-Subject: Re: [PATCHSET v5] fs: generic file IO error reporting
-Date: Tue, 13 Jan 2026 09:58:29 +0100
-Message-ID: <20260113-ortsbegehung-erklettern-a8cde9472f0d@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <176826402528.3490369.2415315475116356277.stgit@frogsfrogsfrogs>
-References: <176826402528.3490369.2415315475116356277.stgit@frogsfrogsfrogs>
+To: Chuck Lever <cel@kernel.org>
+Cc: vira@so61.smtp.subspace.kernel.org, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org,
+	sj1557.seo@samsung.com, yuezhang.mo@sony.com,
+	almaz.alexandrovich@paragon-software.com, slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de, frank.li@vivo.com, tytso@mit.edu,
+	adilger.kernel@dilger.ca, cem@kernel.org, sfrench@samba.org,
+	pc@manguebit.org, ronniesahlberg@gmail.com, sprasad@microsoft.com,
+	trondmy@kernel.org, anna@kernel.org, jaegeuk@kernel.org,
+	chao@kernel.org, hansg@kernel.org, senozhatsky@chromium.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v3 00/16] Exposing case folding behavior
+Message-ID: <20260113-vorort-pudding-ef90f426d5cf@brauner>
+References: <20260112174629.3729358-1-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1787; i=brauner@kernel.org; h=from:subject:message-id; bh=V0lPzn6kjF9luU67P+V3gLXM71Kj7taU4Pd0q0Ba/8I=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSmcZo1vI/9eP5ArLrUz/d6tyUbLVZVL1Na7R8T+G3H9 jV1nG/YOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbi1c/wP21NrubuU3JbRMU9 p4WrlRpHXzI66qec98StoJvxlZ18KsNfsaOvns/bYPE+w5LdqvqmfNf6sqR3rzOPC908tuXhtHO ynAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260112174629.3729358-1-cel@kernel.org>
 
-On Mon, 12 Jan 2026 16:31:03 -0800, Darrick J. Wong wrote:
-> This patchset adds some generic helpers so that filesystems can report
-> errors to fsnotify in a standard way.  Then it adapts iomap to use the
-> generic helpers so that any iomap-enabled filesystem can report I/O
-> errors through this mechanism as well.  Finally, it makes XFS report
-> metadata errors through this mechanism in much the same way that ext4
-> does now.
+On Mon, Jan 12, 2026 at 12:46:13PM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
 > 
-> [...]
+> Following on from
+> 
+> https://lore.kernel.org/linux-nfs/20251021-zypressen-bazillus-545a44af57fd@brauner/T/#m0ba197d75b7921d994cf284f3cef3a62abb11aaa
+> 
+> I'm attempting to implement enough support in the Linux VFS to
+> enable file services like NFSD and ksmbd (and user space
+> equivalents) to provide the actual status of case folding support
+> in local file systems. The default behavior for local file systems
+> not explicitly supported in this series is to reflect the usual
+> POSIX behaviors:
+> 
+>   case-insensitive = false
+>   case-preserving = true
+> 
+> The case-insensitivity and case-preserving booleans can be consumed
+> immediately by NFSD. These two booleans have been part of the NFSv3
+> and NFSv4 protocols for decades, in order to support NFS clients on
+> non-POSIX systems.
+> 
+> Support for user space file servers is why this series exposes case
+> folding information via a user-space API. I don't know of any other
+> category of user-space application that requires access to case
+> folding info.
 
-Applied to the vfs-7.0.fserror branch of the vfs/vfs.git tree.
-Patches in the vfs-7.0.fserror branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-7.0.fserror
-
-[1/6] uapi: promote EFSCORRUPTED and EUCLEAN to errno.h
-      https://git.kernel.org/vfs/vfs/c/602544773763
-[2/6] fs: report filesystem and file I/O errors to fsnotify
-      https://git.kernel.org/vfs/vfs/c/21945e6cb516
-[3/6] iomap: report file I/O errors to the VFS
-      https://git.kernel.org/vfs/vfs/c/a9d573ee88af
-[4/6] xfs: report fs metadata errors via fsnotify
-      https://git.kernel.org/vfs/vfs/c/efd87a100729
-[5/6] xfs: translate fsdax media errors into file "data lost" errors when convenient
-      https://git.kernel.org/vfs/vfs/c/94503211d2fd
-[6/6] ext4: convert to new fserror helpers
-      https://git.kernel.org/vfs/vfs/c/81d2e13a57c9
+This all looks good to me.
+Just one question: This reads like you are exposing the new file attr
+bits via userspace but I can only see changes to the kernel internal
+headers not the uapi headers. So are you intentionally not exposing this
+as a new uapi extension to file attr or is this an accident?
 
