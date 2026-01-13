@@ -1,171 +1,172 @@
-Return-Path: <linux-ext4+bounces-12749-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12750-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 679ACD16182
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 01:56:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3368ED1628C
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 02:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DC5A6300B371
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 00:56:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 73D4F302920A
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Jan 2026 01:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F320241690;
-	Tue, 13 Jan 2026 00:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9132326ED46;
+	Tue, 13 Jan 2026 01:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b="WfoIGKbX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dKsZg0+u"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A9E163;
-	Tue, 13 Jan 2026 00:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E9F21E0AD;
+	Tue, 13 Jan 2026 01:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768265777; cv=none; b=N728ILEF08uX9vPZaplhtA1V7KqrqknBKWSXS4Wf4U68f0xPstwSu1OvLSaEwc+4GqGReWCNLOWNxYh5NsTcnBN7hA3Mh63SEqNOy/fAKVY9WFpPLH/77u9QjSEl4aMBRB0guUqOxD8X4tyL9+H9BCfaCMud6qxchLU0JuGi2uo=
+	t=1768267594; cv=none; b=Qa+Le30D1i7h5i8mvgRptwx/1HNuPx3LWvzsL8J7Rn5jTjisfRPJSZm7HJFX7MYarUu8KJtnFJY5oxjUpB13GWdw70mMHK8tPbPoO0gfluHxDTXZl1yOLue+HpC8vexBLH+URKvNoHyLfqG3Qqq7Qizqwia5JbQeOGZ67xJaQpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768265777; c=relaxed/simple;
-	bh=Kggmb77ytihcHf5+lXA+EufCWEeNLjUfEizYBi03TlY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Q/g4sRqfo7x5bVYpW1Tb86ajAtdbWdB2rqUKS08LdpxtvFgUYO68uJHm2CxRn6zoKFwe32wEeTH07m0FZEtGwTfFvG80/BnrPEnALYbjgVCo8LMqKkzodKa7Lg98jxohztpA3/cK4Nf7mRZU1CK9wGkp+V2Wa6IOinL0F0Tom2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be; spf=pass smtp.mailfrom=krisman.be; dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b=WfoIGKbX; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=krisman.be
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B7D51FD10;
-	Tue, 13 Jan 2026 00:56:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
-	t=1768265772;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OXN6T25nFixjXVaPmXBjazSh+YbeQOL9dYmGzZAoTWo=;
-	b=WfoIGKbX65JVPViitXXL2+5q6iAu39k2qW6Mq5vtQuD4+LK0FUvGJj96NcR/8GbJC2XBLj
-	VfQNTP2JMhWNPFip4eYU4FChsb+ofQgup4SSL1s28khxIyYJ9qXlZ+cWyECQlb2TquTNn3
-	ji3jaqHgsQE5OAq91bPqyU69ZFeME+pU9NaZ4P+v+CcfV40O1+RK/Mz48wdBEfV5QwjpX8
-	XXPFJPbYmbQSv+NFSxWlgnhoPE4vZ7tCCdIJUVxwKngNF/2VU+qgaVO/ZLYq9qcJwwqHD8
-	9Hyf2ViqNtwqQN1Ty0e/mI3oGECmI/VlIuLgY5nyZGAPjdbajvvQVv8fCL4gwg==
-From: Gabriel Krisman Bertazi <gabriel@krisman.be>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: brauner@kernel.org,  hch@lst.de,  jack@suse.cz,
-  linux-xfs@vger.kernel.org,  linux-ext4@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org,  amir73il@gmail.com
+	s=arc-20240116; t=1768267594; c=relaxed/simple;
+	bh=Nr4KtDhNg+4h7ThlqYwwAuYEUz+4/IpDCPVtQ0J2rsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LzC3RaqGtQH3QF6eRvC47BsTDd0vHuAXBimWzbEmo1zfQUS/kxXXuCV3/8ou7rGS1jRtX5KCMIObUUjBtQwBLMxNWPUXGTEHx8YGQ1t5aVmScgAIuQLJRgAtdRrxvTBJLl1pIf4gUHIsgy7OKdMLJFxjZ9BeF3YI48ugGzFGWxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dKsZg0+u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA9DCC116D0;
+	Tue, 13 Jan 2026 01:26:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768267593;
+	bh=Nr4KtDhNg+4h7ThlqYwwAuYEUz+4/IpDCPVtQ0J2rsw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dKsZg0+uHK5ChrSoz4JoG7ahcII2uaGofEK8IKQw/ELANP7OV45BibFym926ujuGX
+	 FZ9KwuV/Oaotl6u16CAgZDDDU6SF00IrcdY35Noa/4xhiTD3ItGHmRc3VcxzkVkT1d
+	 kxezTs7x4ZIloeLYJyKugWV8qNvz/exxND6hJS1E19ESIhWTNOx10yy79bxmw9rNyW
+	 9pjMfJYVsyjY/uTmE2zX1JZqOBF7/orWaDK6mWBbxNPhUDU4WGdNNCWrBZSeUw5kDX
+	 VhqDbm+re4KpXOhtz+P8eM+UvkpDpV7NLrwyKIzmlH4g+5P5U6djD91J70ee4wgrSz
+	 Jp6FnzNwR9QYg==
+Date: Mon, 12 Jan 2026 17:26:33 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Gabriel Krisman Bertazi <gabriel@krisman.be>
+Cc: brauner@kernel.org, hch@lst.de, jack@suse.cz, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	amir73il@gmail.com
 Subject: Re: [PATCH 6/6] ext4: convert to new fserror helpers
-In-Reply-To: <176826402693.3490369.5875002879192895558.stgit@frogsfrogsfrogs>
-	(Darrick J. Wong's message of "Mon, 12 Jan 2026 16:32:27 -0800")
+Message-ID: <20260113012633.GT15551@frogsfrogsfrogs>
 References: <176826402528.3490369.2415315475116356277.stgit@frogsfrogsfrogs>
-	<176826402693.3490369.5875002879192895558.stgit@frogsfrogsfrogs>
-Date: Mon, 12 Jan 2026 19:56:09 -0500
-Message-ID: <87zf6i2uvq.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+ <176826402693.3490369.5875002879192895558.stgit@frogsfrogsfrogs>
+ <87zf6i2uvq.fsf@mailhost.krisman.be>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gabriel@krisman.be
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudekleegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufgjfhffkfgfgggtsehttdertddtredtnecuhfhrohhmpefirggsrhhivghlucfmrhhishhmrghnuceuvghrthgriihiuceoghgrsghrihgvlheskhhrihhsmhgrnhdrsggvqeenucggtffrrghtthgvrhhnpeffgfevieeuvdfgudeviedvjeevfedvkedvgffhhffhfeethedvveefhfeuudfgteenucfkphepuddtjedrudejuddrudeftddrvdefvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedutdejrddujedurddufedtrddvfedvpdhhvghloheplhhotggrlhhhohhsthdpmhgrihhlfhhrohhmpehgrggsrhhivghlsehkrhhishhmrghnrdgsvgdpqhhiugepudeujeffheduhfffuddtpdhmohguvgepshhmthhpohhuthdpnhgspghrtghpthhtohepkedprhgtphhtthhopegujhifohhngheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghrrghunhgvrheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthhtohepjhgrtghksehsuhhsvgdrtgiipdhrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdpr
- hgtphhtthhopehlihhnuhigqdgvgihtgeesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zf6i2uvq.fsf@mailhost.krisman.be>
 
-"Darrick J. Wong" <djwong@kernel.org> writes:
+On Mon, Jan 12, 2026 at 07:56:09PM -0500, Gabriel Krisman Bertazi wrote:
+> "Darrick J. Wong" <djwong@kernel.org> writes:
+> 
+> > From: Darrick J. Wong <djwong@kernel.org>
+> >
+> > Use the new fserror functions to report metadata errors to fsnotify.
+> > Note that ext4 inconsistently passes around negative and positive error
+> > numbers all over the codebase, so we force them all to negative for
+> > consistency in what we report to fserror, and fserror ensures that only
+> > positive error numbers are passed to fanotify, per the fanotify(7)
+> > manpage.
+> >
+> > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/ioctl.c |    2 ++
+> >  fs/ext4/super.c |   13 +++++++++----
+> >  2 files changed, 11 insertions(+), 4 deletions(-)
+> >
+> >
+> > diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> > index 7ce0fc40aec2fb..ea26cd03d3ce28 100644
+> > --- a/fs/ext4/ioctl.c
+> > +++ b/fs/ext4/ioctl.c
+> > @@ -26,6 +26,7 @@
+> >  #include <linux/fsmap.h>
+> >  #include "fsmap.h"
+> >  #include <trace/events/ext4.h>
+> > +#include <linux/fserror.h>
+> >  
+> >  typedef void ext4_update_sb_callback(struct ext4_sb_info *sbi,
+> >  				     struct ext4_super_block *es,
+> > @@ -844,6 +845,7 @@ int ext4_force_shutdown(struct super_block *sb, u32 flags)
+> >  		return -EINVAL;
+> >  	}
+> >  	clear_opt(sb, DISCARD);
+> > +	fserror_report_shutdown(sb, GFP_KERNEL);
+> >  	return 0;
+> >  }
+> >  
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 87205660c5d026..a6241ffb8639c3 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -48,6 +48,7 @@
+> >  #include <linux/fsnotify.h>
+> >  #include <linux/fs_context.h>
+> >  #include <linux/fs_parser.h>
+> > +#include <linux/fserror.h>
+> >  
+> >  #include "ext4.h"
+> >  #include "ext4_extents.h"	/* Needed for trace points definition */
+> > @@ -824,7 +825,8 @@ void __ext4_error(struct super_block *sb, const char *function,
+> >  		       sb->s_id, function, line, current->comm, &vaf);
+> >  		va_end(args);
+> >  	}
+> > -	fsnotify_sb_error(sb, NULL, error ? error : EFSCORRUPTED);
+> > +	fserror_report_metadata(sb, error ? -abs(error) : -EFSCORRUPTED,
+> > +				GFP_ATOMIC);
+> >  
+> >  	ext4_handle_error(sb, force_ro, error, 0, block, function, line);
+> >  }
+> > @@ -856,7 +858,9 @@ void __ext4_error_inode(struct inode *inode, const char *function,
+> >  			       current->comm, &vaf);
+> >  		va_end(args);
+> >  	}
+> > -	fsnotify_sb_error(inode->i_sb, inode, error ? error : EFSCORRUPTED);
+> > +	fserror_report_file_metadata(inode,
+> > +				     error ? -abs(error) : -EFSCORRUPTED,
+> > +				     GFP_ATOMIC);
+> >  
+> >  	ext4_handle_error(inode->i_sb, false, error, inode->i_ino, block,
+> >  			  function, line);
+> > @@ -896,7 +900,7 @@ void __ext4_error_file(struct file *file, const char *function,
+> >  			       current->comm, path, &vaf);
+> >  		va_end(args);
+> >  	}
+> > -	fsnotify_sb_error(inode->i_sb, inode, EFSCORRUPTED);
+> > +	fserror_report_file_metadata(inode, -EFSCORRUPTED, GFP_ATOMIC);
+> >  
+> >  	ext4_handle_error(inode->i_sb, false, EFSCORRUPTED, inode->i_ino, block,
+> >  			  function, line);
+> > @@ -965,7 +969,8 @@ void __ext4_std_error(struct super_block *sb, const char *function,
+> >  		printk(KERN_CRIT "EXT4-fs error (device %s) in %s:%d: %s\n",
+> >  		       sb->s_id, function, line, errstr);
+> >  	}
+> > -	fsnotify_sb_error(sb, NULL, errno ? errno : EFSCORRUPTED);
+> > +	fserror_report_metadata(sb, errno ? -abs(errno) : -EFSCORRUPTED,
+> > +				GFP_ATOMIC);
+> >  
+> >  	ext4_handle_error(sb, false, -errno, 0, 0, function, line);
+> >  }
+> >
+> 
+> Perhaps also delete fsnotify_sb_error after this patch since it is now
+> implemented by fserror_worker and, if I follow correctly, we don't want
+> it to be called without the shutdown protection mechanism.
 
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> Use the new fserror functions to report metadata errors to fsnotify.
-> Note that ext4 inconsistently passes around negative and positive error
-> numbers all over the codebase, so we force them all to negative for
-> consistency in what we report to fserror, and fserror ensures that only
-> positive error numbers are passed to fanotify, per the fanotify(7)
-> manpage.
->
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/ioctl.c |    2 ++
->  fs/ext4/super.c |   13 +++++++++----
->  2 files changed, 11 insertions(+), 4 deletions(-)
->
->
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 7ce0fc40aec2fb..ea26cd03d3ce28 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -26,6 +26,7 @@
->  #include <linux/fsmap.h>
->  #include "fsmap.h"
->  #include <trace/events/ext4.h>
-> +#include <linux/fserror.h>
->  
->  typedef void ext4_update_sb_callback(struct ext4_sb_info *sbi,
->  				     struct ext4_super_block *es,
-> @@ -844,6 +845,7 @@ int ext4_force_shutdown(struct super_block *sb, u32 flags)
->  		return -EINVAL;
->  	}
->  	clear_opt(sb, DISCARD);
-> +	fserror_report_shutdown(sb, GFP_KERNEL);
->  	return 0;
->  }
->  
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 87205660c5d026..a6241ffb8639c3 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -48,6 +48,7 @@
->  #include <linux/fsnotify.h>
->  #include <linux/fs_context.h>
->  #include <linux/fs_parser.h>
-> +#include <linux/fserror.h>
->  
->  #include "ext4.h"
->  #include "ext4_extents.h"	/* Needed for trace points definition */
-> @@ -824,7 +825,8 @@ void __ext4_error(struct super_block *sb, const char *function,
->  		       sb->s_id, function, line, current->comm, &vaf);
->  		va_end(args);
->  	}
-> -	fsnotify_sb_error(sb, NULL, error ? error : EFSCORRUPTED);
-> +	fserror_report_metadata(sb, error ? -abs(error) : -EFSCORRUPTED,
-> +				GFP_ATOMIC);
->  
->  	ext4_handle_error(sb, force_ro, error, 0, block, function, line);
->  }
-> @@ -856,7 +858,9 @@ void __ext4_error_inode(struct inode *inode, const char *function,
->  			       current->comm, &vaf);
->  		va_end(args);
->  	}
-> -	fsnotify_sb_error(inode->i_sb, inode, error ? error : EFSCORRUPTED);
-> +	fserror_report_file_metadata(inode,
-> +				     error ? -abs(error) : -EFSCORRUPTED,
-> +				     GFP_ATOMIC);
->  
->  	ext4_handle_error(inode->i_sb, false, error, inode->i_ino, block,
->  			  function, line);
-> @@ -896,7 +900,7 @@ void __ext4_error_file(struct file *file, const char *function,
->  			       current->comm, path, &vaf);
->  		va_end(args);
->  	}
-> -	fsnotify_sb_error(inode->i_sb, inode, EFSCORRUPTED);
-> +	fserror_report_file_metadata(inode, -EFSCORRUPTED, GFP_ATOMIC);
->  
->  	ext4_handle_error(inode->i_sb, false, EFSCORRUPTED, inode->i_ino, block,
->  			  function, line);
-> @@ -965,7 +969,8 @@ void __ext4_std_error(struct super_block *sb, const char *function,
->  		printk(KERN_CRIT "EXT4-fs error (device %s) in %s:%d: %s\n",
->  		       sb->s_id, function, line, errstr);
->  	}
-> -	fsnotify_sb_error(sb, NULL, errno ? errno : EFSCORRUPTED);
-> +	fserror_report_metadata(sb, errno ? -abs(errno) : -EFSCORRUPTED,
-> +				GFP_ATOMIC);
->  
->  	ext4_handle_error(sb, false, -errno, 0, 0, function, line);
->  }
->
+<nod> I was planning to ask Linus if I could do that as a treewide
+cleanup at the end of the whichever merge window integrates this, just
+in case someone else adds a fsnotify_sb_error call to their filesystem
+during that same merge window.
 
-Perhaps also delete fsnotify_sb_error after this patch since it is now
-implemented by fserror_worker and, if I follow correctly, we don't want
-it to be called without the shutdown protection mechanism.
+--D
 
--- 
-Gabriel Krisman Bertazi
+> -- 
+> Gabriel Krisman Bertazi
+> 
 
