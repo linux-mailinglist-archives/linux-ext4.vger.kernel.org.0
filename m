@@ -1,231 +1,233 @@
-Return-Path: <linux-ext4+bounces-12810-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12811-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4129DD1F57F
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jan 2026 15:16:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB01D1F6C1
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jan 2026 15:29:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BD8503090DF0
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jan 2026 14:14:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8464B30081B5
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Jan 2026 14:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E09C2D6E7C;
-	Wed, 14 Jan 2026 14:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753C52E0914;
+	Wed, 14 Jan 2026 14:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ATDvkPvs"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oOcb1eLo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57DB62D6E73
-	for <linux-ext4@vger.kernel.org>; Wed, 14 Jan 2026 14:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153FF280331;
+	Wed, 14 Jan 2026 14:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768400072; cv=none; b=DWIFNkZMiU61Q23fmwLSPJ6ZolntYLhUFubvh/Jlz1wIMjW9ggf7/kPcZSyzmlhEMEzZmmYODQT+xiu655Or1mW5lLgSaKJe8+hwrvxlGIplWgSJj6EkndJbAORh/As6sDZlzotFLPxUnE8Pk25DG0UTEi4yJODFYbjw1EUb8tg=
+	t=1768400945; cv=none; b=l0KL2Y1ROfKsUJWW6dFQ53DIX4jK+0FmNyfjLDqXdZ04eNvDyZJpHcWAs3rrb1HGkia8zAQfkAJbtumwyr2pXCqkAm6uOJ7JXkfCLRdDd8hqKv4pabCWmz/lOqFkwsxKlgBsxpQnI6TJXctZHGvnfMbrpOLWFAKiL6KTcF2+TWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768400072; c=relaxed/simple;
-	bh=EVxOIndNclLVBz66EPG+/56lwGCRWQUQFbefqx9zJEA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y5kzTQ0/N63bYYmoMCQH4QJKN94H8hYV2JmmaGFKf9FNLqddQm2hk9lCtcslo0qCtI1ED0PVA0E4ubhkCqiIYStBrlh4WxS02hD6LqaM5y4Rva1aUx7etcSpmts3hkg4TBc46qpfZTKLiZICmrTKgbeWYAvKkKozhfXvUE1V6xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ATDvkPvs; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-64b608ffca7so13667628a12.3
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Jan 2026 06:14:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768400067; x=1769004867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LXI/JsxBbKF9LcEy7WQN83dkdhDN53l6d1BjVlfpBx8=;
-        b=ATDvkPvsgMJyP3EIhSx+waeN9em7laMQLBeBB3nIO+P3DLVzV5+OaA+5w7ya7SWhN8
-         wxwHQhvJgPAWmt6bUYWUHbmYg+0uA+NXPZ27hecPI96gQRzBbIIMHPS88+NAz+S2onWh
-         IITOWoxVIC/1im6BVMkfcl6YB9fPp9i7tIlNEeE+z1DHFBYIlBTQXnVMON5eCvNh29i2
-         gui/dtbkxpTqMyfBpOA8f7X1MzRlvBCgmW/njxfFa4ST5kIbk7NQ8bL7m07qTToF/Mmq
-         kPMZz0eQcj4/Yi8GH6Zjk8I6SVs2qWA0kbfAyllVjXHX6l8TuerIvVK9OcJa+huOZOJx
-         fxlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768400067; x=1769004867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=LXI/JsxBbKF9LcEy7WQN83dkdhDN53l6d1BjVlfpBx8=;
-        b=NUrjEyr3c5G4XyP/ZHGOEKPkZMJZoHgOxp+JYsm6U+9xECOC3sT95352req+GcCbBk
-         VJcVrxU2RR95mZnjxnTQIg7J6cpilnGYXG8qIygsDsjCh3vUuLyKKkEB3CX8NaP2+4Yj
-         O9woo+96nHvQa4aB+OSmlQ/HrJozW+EO/giwulbLtWp4VaUj8JAMAPzWGFvC1v0dQte2
-         /IAj8ec2kKgUs0O3NGi4unthrbLZF4Yzr6etKd9hTXWp7+A9djIBCfj2kBmfyxtyPRhn
-         oKhpCciPbMeVvfvt0oeXwe+CUjzfPxcLB+FMh9LNCstY+oGjOa6gJB+jtCQBXLqr5rAB
-         w7Ew==
-X-Forwarded-Encrypted: i=1; AJvYcCUrNPNbkWdWU8BitaqZ4mdw70/vOaHMDI6kALbwf+WY+QHA1tptVm22uxiQlrlN7lFPWa7Vu01M00Gk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7nn7W5QR7HzUdSJlpC0tHJjaGBzyDeJL21NK3PU26AlPJnibS
-	/wz9Q/xXSynFnfZ0KsGqIUAHeh/fYDm4lgcbz6Sks8b37tmhRaO1bCbKdF3IgA/kOUXenm6eMs1
-	ME9LvB4lFIa8zX+lQq9hw1A90YsRfIak=
-X-Gm-Gg: AY/fxX56Sbx4OMC8qvryc4PxuYa/Knxc3a27Z+yrrpPdnpiIXVFVspk65ruDBa34HI9
-	jfTAULCBd0udTyBY2p3Wgdojs7OGoMBE0pgOB3DKc74i8+nw3L88IwH3CNvZ8aj11Hiv7r7g/tm
-	JI7lNhwgTm/hjblRPQdG8qmr+1xQL7i9m67/OyA7lOk89loclAZQGmWtA3dzAUB9IEqEpFPBHXO
-	jS8GyLUdrhNYToWdkdEDKNFzSvdJH8KiszfzYde+m7B5+VJlGI75FcKD4duQvU90Z2immZAA6So
-	xD9BSbAtTx8xFujD5QV6oZ2QOot1eg==
-X-Received: by 2002:a05:6402:210c:b0:64b:42a6:3946 with SMTP id
- 4fb4d7f45d1cf-653ec10b2c1mr2391600a12.7.1768400066360; Wed, 14 Jan 2026
- 06:14:26 -0800 (PST)
+	s=arc-20240116; t=1768400945; c=relaxed/simple;
+	bh=lG4dAfkVc8RtTo/QiqdyMm8AEyoqFXxos9P3jbZVgMU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pD63JiyE4Lv9mSt/FnH7A97+/iTZaZ5Xt9B63w1Z82emm5AqnQZm02VUctDuGcL+wpTYAr/PSfZ7oet0g56D6Tob5LHC61czXOewIE16m+aGEtiirr/2krOdCQeF5E4s+OHiZS+VTzPFUNFr5a0oA21WET+IqdHUqcBXeWQLYkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oOcb1eLo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 847DDC4CEF7;
+	Wed, 14 Jan 2026 14:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768400944;
+	bh=lG4dAfkVc8RtTo/QiqdyMm8AEyoqFXxos9P3jbZVgMU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oOcb1eLoFA29/NdZIGcLa8fT0tcT+hmajcwbpxx/gLhTctESeAKQ++wCgmr7K56T1
+	 lbzMBShoUEscWtddNyAy3fAysiy4FcdV9TyUbEZxb5FNktoXUe8XvhAhnU4QKhWkrA
+	 yclq6pTcuNQ/mgRfZp3rbErQHWmRxzRFYdMeduS6MKz2XXrQudTwNgzUAQURcKO1eU
+	 LevwmvQG+ei6MIDKNo4CJEP9saopuQGCtHVhXj39ftcRAHA+hWrUk5gM9oi/IZS2rj
+	 0P9PhIwZJPsRhC+rN2o8rn8oXNc+qjpOR1AFloAIvYoUXiUjhvTwcAe9hF8gReVlpq
+	 sL8KIsJeB1dtQ==
+From: Chuck Lever <cel@kernel.org>
+To: vira@web.codeaurora.org, Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Cc: <linux-fsdevel@vger.kernel.org>,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	<linux-nfs@vger.kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net,
+	hirofumi@mail.parknet.co.jp,
+	linkinjeon@kernel.org,
+	sj1557.seo@samsung.com,
+	yuezhang.mo@sony.com,
+	almaz.alexandrovich@paragon-software.com,
+	slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de,
+	frank.li@vivo.com,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	cem@kernel.org,
+	sfrench@samba.org,
+	pc@manguebit.org,
+	ronniesahlberg@gmail.com,
+	sprasad@microsoft.com,
+	trondmy@kernel.org,
+	anna@kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	hansg@kernel.org,
+	senozhatsky@chromium.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH v4 00/16] Exposing case folding behavior
+Date: Wed, 14 Jan 2026 09:28:43 -0500
+Message-ID: <20260114142900.3945054-1-cel@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
- <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
- <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
- <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com> <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
- <20260113-mondlicht-raven-82fc4eb70e9d@brauner> <aWZcoyQLvbJKUxDU@infradead.org>
- <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
- <aWc3mwBNs8LNFN4W@infradead.org> <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
- <aWeUv2UUJ_NdgozS@infradead.org> <c40862cd65a059ad45fa88f5473722ea5c5f70a5.camel@kernel.org>
-In-Reply-To: <c40862cd65a059ad45fa88f5473722ea5c5f70a5.camel@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 14 Jan 2026 15:14:13 +0100
-X-Gm-Features: AZwV_QgcgdaBnds1gv_V4-TD2P8OEmx8uWYCKQoKmrAoITMmwNZxXsYhEeLI48A
-Message-ID: <CAOQ4uxhDwR7dteLaqURX+9CooGM1hA7PL6KnVmSwX11ZdKxZTA@mail.gmail.com>
-Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
- lease support
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Christian Brauner <brauner@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
-	Yuezhang Mo <yuezhang.mo@sony.com>, Alexander Aring <alex.aring@gmail.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
-	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
-	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 14, 2026 at 2:41=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> On Wed, 2026-01-14 at 05:06 -0800, Christoph Hellwig wrote:
-> > On Wed, Jan 14, 2026 at 10:34:04AM +0100, Amir Goldstein wrote:
-> > > On Wed, Jan 14, 2026 at 7:28=E2=80=AFAM Christoph Hellwig <hch@infrad=
-ead.org> wrote:
-> > > >
-> > > > On Tue, Jan 13, 2026 at 12:06:42PM -0500, Jeff Layton wrote:
-> > > > > Fair point, but it's not that hard to conceive of a situation whe=
-re
-> > > > > someone inadvertantly exports cgroupfs or some similar filesystem=
-:
-> > > >
-> > > > Sure.  But how is this worse than accidentally exporting private da=
-ta
-> > > > or any other misconfiguration?
-> > > >
-> > >
-> > > My POV is that it is less about security (as your question implies), =
-and
-> > > more about correctness.
-> >
-> > I was just replying to Jeff.
-> >
-> > > The special thing about NFS export, as opposed to, say, ksmbd, is
-> > > open by file handle, IOW, the export_operations.
-> > >
-> > > I perceive this as a very strange and undesired situation when NFS
-> > > file handles do not behave as persistent file handles.
-> >
-> > That is not just very strange, but actually broken (discounting the
-> > obscure volatile file handles features not implemented in Linux NFS
-> > and NFSD).  And the export ops always worked under the assumption
-> > that these file handles are indeed persistent.  If they're not we
-> > do have a problem.
-> >
-> > >
-> > > cgroupfs, pidfs, nsfs, all gained open_by_handle_at() capability for
-> > > a known reason, which was NOT NFS export.
-> > >
-> > > If the author of open_by_handle_at() support (i.e. brauner) does not
-> > > wish to imply that those fs should be exported to NFS, why object?
-> >
-> > Because "want to export" is a stupid category.
-> >
-> > OTOH "NFS exporting doesn't actually properly work because someone
-> > overloaded export_ops with different semantics" is a valid category.
-> >
->
-> cgroupfs definitely doesn't behave as expected when exported via NFS.
-> The files aren't readable, at least. I'd also be surprised if the
-> filehandles were stable across a reboot, which is sort of necessary for
-> proper operation. I didn't test writing, but who knows whether that
-> might also just not work, crash the box, or do something else entirely.
->
-> I imagine this is the case for all sorts of filesystems like /proc,
-> /sys, etc. Those aren't exportable today (to my knowledge), but we're
-> growing export_operations across a wide range of fs's these days.
->
-> I'd prefer that we require someone to take the deliberate step to say
-> "yes, allow nfsd to access this type of filesystem".
->
-> > > We could have the opt-in/out of NFS export fixes per EXPORT_OP_
-> > > flags and we could even think of allowing admin to make this decision
-> > > per vfsmount (e.g. for cgroupfs).
-> > >
-> > > In any case, I fail to see how objecting to the possibility of NFS ex=
-port
-> > > opt-out serves anyone.
-> >
-> > You're still think of it the wrong way.  If we do have file systems
-> > that break the original exportfs semantics we need to fix that, and
-> > something like a "stable handles" flag will work well for that.  But
-> > a totally arbitrary "is exportable" flag is total nonsense.
->
+From: Chuck Lever <chuck.lever@oracle.com>
 
-Very well then.
-How about EXPORT_OP_PERSISTENT_HANDLES?
+Following on from
 
-This terminology is from the NFS protocol spec and it is also used
-to describe the same trait in SMB protocol.
+https://lore.kernel.org/linux-nfs/20251021-zypressen-bazillus-545a44af57fd@brauner/T/#m0ba197d75b7921d994cf284f3cef3a62abb11aaa
 
-> The problem there is that we very much do want to keep tmpfs
-> exportable, but it doesn't have stable handles (per-se).
+I'm attempting to implement enough support in the Linux VFS to
+enable file services like NFSD and ksmbd (and user space
+equivalents) to provide the actual status of case folding support
+in local file systems. The default behavior for local file systems
+not explicitly supported in this series is to reflect the usual
+POSIX behaviors:
 
-Thinking out loud -
-It would be misguided to declare tmpfs as
-EXPORT_OP_PERSISTENT_HANDLES
-and regressing exports of tmpfs will surely not go unnoticed.
+  case-insensitive = false
+  case-nonpreserving = false
 
-How about adding an exportfs option "persistent_handles",
-use it as default IFF neither options fsid=3D, uuid=3D are used,
-so that at least when exporting tmpfs, exportfs -v will show
-"no_persistent_handles" explicitly?
+The case-insensitivity and case-nonpreserving booleans can be
+consumed immediately by NFSD. These two attributes have been part of
+the NFSv3 and NFSv4 protocols for decades, in order to support NFS
+client implementations on non-POSIX systems.
 
-Thanks,
-Amir.
+Support for user space file servers is why this series exposes case
+folding information via a user-space API. I don't know of any other
+category of user-space application that requires access to case
+folding info.
+
+
+The Linux NFS community has a growing interest in supporting NFS
+clients on Windows and MacOS platforms, where file name behavior does
+not align with traditional POSIX semantics.
+
+One example of a Windows-based NFS client is [1]. This client
+implementation explicitly requires servers to report
+FATTR4_WORD0_CASE_INSENSITIVE = TRUE for proper operation, a hard
+requirement for Windows client interoperability because Windows
+applications expect case-insensitive behavior. When an NFS client
+knows the server is case-insensitive, it can avoid issuing multiple
+LOOKUP/READDIR requests to search for case variants, and applications
+like Win32 programs work correctly without manual workarounds or
+code changes.
+
+Even the Linux client can take advantage of this information. Trond
+merged patches 4 years ago [2] that introduce support for case
+insensitivity, in support of the Hammerspace NFS server. In
+particular, when a client detects a case-insensitive NFS share,
+negative dentry caching must be disabled (a lookup for "FILE.TXT"
+failing shouldn't cache a negative entry when "file.txt" exists)
+and directory change invalidation must clear all cached case-folded
+file name variants.
+
+Hammerspace servers and several other NFS server implementations
+operate in multi-protocol environments, where a single file service
+instance caters to both NFS and SMB clients. In those cases, things
+work more smoothly for everyone when the NFS client can see and adapt
+to the case folding behavior that SMB users rely on and expect. NFSD
+needs to support the case-insensitivity and case-nonpreserving
+booleans properly in order to participate as a first-class citizen
+in such environments.
+
+[1] https://github.com/kofemann/ms-nfs41-client
+
+[2] https://patchwork.kernel.org/project/linux-nfs/cover/20211217203658.439352-1-trondmy@kernel.org/
+
+---
+
+Changes since v3:
+- Change fa->case_preserving to fa_case_nonpreserving
+- VFAT is case preserving
+- Make new fields available to user space
+
+Changes since v2:
+- Remove unicode labels
+- Replace vfs_get_case_info
+- Add support for several more local file system implementations
+- Add support for in-kernel SMB server
+
+Changes since RFC:
+- Use file_getattr instead of statx
+- Postpone exposing Unicode version until later
+- Support NTFS and ext4 in addition to FAT
+- Support NFSv4 fattr4 in addition to NFSv3 PATHCONF
+
+
+Chuck Lever (16):
+  fs: Add case sensitivity info to file_kattr
+  fat: Implement fileattr_get for case sensitivity
+  exfat: Implement fileattr_get for case sensitivity
+  ntfs3: Implement fileattr_get for case sensitivity
+  hfs: Implement fileattr_get for case sensitivity
+  hfsplus: Report case sensitivity in fileattr_get
+  ext4: Report case sensitivity in fileattr_get
+  xfs: Report case sensitivity in fileattr_get
+  cifs: Implement fileattr_get for case sensitivity
+  nfs: Implement fileattr_get for case sensitivity
+  f2fs: Add case sensitivity reporting to fileattr_get
+  vboxsf: Implement fileattr_get for case sensitivity
+  isofs: Implement fileattr_get for case sensitivity
+  nfsd: Report export case-folding via NFSv3 PATHCONF
+  nfsd: Implement NFSv4 FATTR4_CASE_INSENSITIVE and
+    FATTR4_CASE_PRESERVING
+  ksmbd: Report filesystem case sensitivity via FS_ATTRIBUTE_INFORMATION
+
+ fs/exfat/exfat_fs.h      |  2 ++
+ fs/exfat/file.c          | 16 ++++++++++++++--
+ fs/exfat/namei.c         |  1 +
+ fs/ext4/ioctl.c          |  6 ++++++
+ fs/f2fs/file.c           |  6 ++++++
+ fs/fat/fat.h             |  3 +++
+ fs/fat/file.c            | 19 +++++++++++++++++++
+ fs/fat/namei_msdos.c     |  1 +
+ fs/fat/namei_vfat.c      |  1 +
+ fs/file_attr.c           | 14 ++++++++++++++
+ fs/hfs/dir.c             |  1 +
+ fs/hfs/hfs_fs.h          |  2 ++
+ fs/hfs/inode.c           | 12 ++++++++++++
+ fs/hfsplus/inode.c       |  7 +++++++
+ fs/isofs/dir.c           | 11 +++++++++++
+ fs/nfs/client.c          |  9 +++++++--
+ fs/nfs/inode.c           | 18 ++++++++++++++++++
+ fs/nfs/internal.h        |  3 +++
+ fs/nfs/nfs3proc.c        |  2 ++
+ fs/nfs/nfs3xdr.c         |  7 +++++--
+ fs/nfs/nfs4proc.c        |  2 ++
+ fs/nfs/proc.c            |  3 +++
+ fs/nfs/symlink.c         |  3 +++
+ fs/nfsd/nfs3proc.c       | 18 ++++++++++--------
+ fs/nfsd/nfs4xdr.c        | 30 ++++++++++++++++++++++++++----
+ fs/nfsd/vfs.c            | 25 +++++++++++++++++++++++++
+ fs/nfsd/vfs.h            |  2 ++
+ fs/ntfs3/file.c          | 22 ++++++++++++++++++++++
+ fs/ntfs3/inode.c         |  1 +
+ fs/ntfs3/namei.c         |  2 ++
+ fs/ntfs3/ntfs_fs.h       |  1 +
+ fs/smb/client/cifsfs.c   | 18 ++++++++++++++++++
+ fs/smb/server/smb2pdu.c  | 25 +++++++++++++++++++------
+ fs/vboxsf/dir.c          |  1 +
+ fs/vboxsf/file.c         |  6 ++++--
+ fs/vboxsf/super.c        |  4 ++++
+ fs/vboxsf/utils.c        | 30 ++++++++++++++++++++++++++++++
+ fs/vboxsf/vfsmod.h       |  6 ++++++
+ fs/xfs/xfs_ioctl.c       |  6 ++++++
+ include/linux/fileattr.h |  3 +++
+ include/linux/nfs_xdr.h  |  2 ++
+ include/uapi/linux/fs.h  | 12 +++++++++++-
+ 42 files changed, 336 insertions(+), 27 deletions(-)
+
+-- 
+2.52.0
+
 
