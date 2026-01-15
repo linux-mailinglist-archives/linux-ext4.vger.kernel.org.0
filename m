@@ -1,130 +1,176 @@
-Return-Path: <linux-ext4+bounces-12851-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12852-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50572D23250
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jan 2026 09:32:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D68D4D2337C
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jan 2026 09:43:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B613D30254A0
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jan 2026 08:30:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B331930251A3
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Jan 2026 08:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF4C328263;
-	Thu, 15 Jan 2026 08:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1E033A9DA;
+	Thu, 15 Jan 2026 08:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q12ytVWR"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="c+60rQr7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A4F333441;
-	Thu, 15 Jan 2026 08:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8488B330B2E;
+	Thu, 15 Jan 2026 08:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768465788; cv=none; b=MujFx1E0rDryzhljzYmp4SO+3S8i3KqcPehcUD4I2hceyORt45eRWLdpX8oQQYTLTHbmty1YZX/pYxaq+/DW1QscgPGbPYDvuWMM5CNtX/1HDjNsGpGF00EQm6A2cXAZzVu1V9ELY1Xf8VrX2IeWB4ncFqTflpgsNrAn6Kf+jlY=
+	t=1768466014; cv=none; b=OaGmKuIAjiVDhBoB/6KdUISjBgoA44eWGG4YJyZ85MsznRlZ7DOCvO44CuWn9Gqv9srYoTvvdBZ1zZ54JB0uBtMG7qAciwt73DAL3dXFhu7AaQXNo86ykAYuu+OQvrtbe4ZNHEZQESrwjT4ae+2mMSIOLtz9vQs7MPeZ2qTWw0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768465788; c=relaxed/simple;
-	bh=R14DaZGFpUHZtfwpnZ4r6zV65WrZFacicwafJAAUhi4=;
+	s=arc-20240116; t=1768466014; c=relaxed/simple;
+	bh=oLbUH2DPO45fSX51Lz273E+gwrE4TYXAmwzWRgKxagE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FbBNphbWeM9ZX+rviXn5W4KYlHhs6GCDmnylsdoHYkgTvDOuLggG9U2HTRA2OfkfAveqfkjkJmF8dXjC8S4x1qpsEVioQpy2VJde05ce3toAXAcKFhMNV1C8AgO7Q+lk5Jw8XI4adBn+C7RduhLOdG6bVBcQ9/ir+vl0e5Qa5NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q12ytVWR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565A2C116D0;
-	Thu, 15 Jan 2026 08:29:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768465787;
-	bh=R14DaZGFpUHZtfwpnZ4r6zV65WrZFacicwafJAAUhi4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q12ytVWRB/0h7GDBzmyz96GYbtpCYfuDB6mEovp08L88s5lkn+FSy9Ht+kimtsdnN
-	 mi4/mmYSNPdJspu5E/BB0NNx79CBCacFyIEG32pUQD855YoYv46vW5EgzWLWJf0ytI
-	 KNY0KrjzCnkLgU5cpZHiGEGJmZiNjGwLLE8i7g84cV1btC11xxx335cRe2pbfv1Yhy
-	 zmc6dMQgcYXcQdEmgUM8rDh/I53s7XQPHjjsynnoAp/7hUcTmPxKX6xcE5KfQb8vgj
-	 kCmTFroVDvF5ZfhlerkVmeLgGqOwQ6n3cPnrGi6lH87Yqy9xwOZGlG0+cUosUv1j+o
-	 qsBojF262UC2Q==
-Date: Thu, 15 Jan 2026 09:29:37 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Chuck Lever <cel@kernel.org>, Jan Kara <jack@suse.cz>, 
-	vira@imap.suse.de, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
-	Yuezhang Mo <yuezhang.mo@sony.com>, almaz.alexandrovich@paragon-software.com, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, glaubitz@physik.fu-berlin.de, frank.li@vivo.com, 
-	Theodore Tso <tytso@mit.edu>, adilger.kernel@dilger.ca, Carlos Maiolino <cem@kernel.org>, 
-	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Hans de Goede <hansg@kernel.org>, 
-	senozhatsky@chromium.org, Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH v4 01/16] fs: Add case sensitivity info to file_kattr
-Message-ID: <20260115-mitgift-crashtest-35039325f65c@brauner>
-References: <20260114142900.3945054-1-cel@kernel.org>
- <20260114142900.3945054-2-cel@kernel.org>
- <3kq2tbdcoxxw3y2gseg7vtnhnze5ee536fu4rnsn22yjrpsmb4@fpfueqqiji5q>
- <7b6aa90f-79dc-443a-8e5f-3c9b88892271@app.fastmail.com>
- <20260114200130.GJ15551@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oE4DcCVvskeMkzzPMqouUqsG7F50mRMZRdYSp0FgQ+S/9+6gHE89h+oIs2lWuRLh/fSeIgfPIdu+t1NTPU0ci++IdZQVkyadHTC9LsxrJWblCv0jC1vvNFPtQpehQYnNwxW50c1b4+HsVnvGihsC8593hZljqm9xv2pFM1KEvvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=c+60rQr7; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ggIby7ZJJhhdPb6y5rH3a2GAOEpyxb4btFDkRofMARo=; b=c+60rQr76h1PsKAd5LgZT9hsxs
+	aNKhr+6hZylxOZstJG/1DgKDn3jLBV6CLqh93j+WnurQG7htCVWPbVvx6tOOUVmORqsU2McpPOkHx
+	u9JemdngkpC4GOWQM49sG2cFmQXbWsrsABlaLCyNQvNPEl+M5kVweygSwI21MwVsu9pML78e/uHxP
+	vmIIVXx4fyMCNx3hPFAoWaY/UvrDQx3Aoog9gQ+mt7L4rBcvXKQQLFteJUrzRcG5+ThbjMMlIeFyn
+	n6rc9wHtWg+gNCftYd7qw5Q1lztuERemrK6iJ3CvqvoWgP9e6ucBOBNhWhZlZCMCcpDFLJa8qwA8J
+	WF22tmyA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vgImu-0000000C08y-0V2p;
+	Thu, 15 Jan 2026 08:33:04 +0000
+Date: Thu, 15 Jan 2026 00:33:04 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Phillip Lougher <phillip@squashfs.org.uk>,
+	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
+	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
+ lease support
+Message-ID: <aWimQEokuib7fXjY@infradead.org>
+References: <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
+ <20260113-mondlicht-raven-82fc4eb70e9d@brauner>
+ <aWZcoyQLvbJKUxDU@infradead.org>
+ <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
+ <aWc3mwBNs8LNFN4W@infradead.org>
+ <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
+ <aWeUv2UUJ_NdgozS@infradead.org>
+ <20260114-klarstellen-blamieren-0b7d40182800@brauner>
+ <aWiMaMwI6nYGX9Bq@infradead.org>
+ <20260115-inspektion-kochbuch-505d8f94829e@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260114200130.GJ15551@frogsfrogsfrogs>
+In-Reply-To: <20260115-inspektion-kochbuch-505d8f94829e@brauner>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Jan 14, 2026 at 12:01:30PM -0800, Darrick J. Wong wrote:
-> On Wed, Jan 14, 2026 at 02:01:14PM -0500, Chuck Lever wrote:
+On Thu, Jan 15, 2026 at 09:14:06AM +0100, Christian Brauner wrote:
+> On Wed, Jan 14, 2026 at 10:42:48PM -0800, Christoph Hellwig wrote:
+> > On Wed, Jan 14, 2026 at 04:20:13PM +0100, Christian Brauner wrote:
+> > > > You're still think of it the wrong way.  If we do have file systems
+> > > > that break the original exportfs semantics we need to fix that, and
+> > > > something like a "stable handles" flag will work well for that.  But
+> > > > a totally arbitrary "is exportable" flag is total nonsense.
+> > > 
+> > > File handles can legitimately be conceptualized independently of
+> > > exporting a filesystem. If we wanted to tear those concepts apart
+> > > implementation wise we could.
+> > > 
+> > > It is complete nonsense to expect the kernel to support exporting any
+> > > arbitrary internal filesystem or to not support file handles at all.
 > > 
-> > 
-> > On Wed, Jan 14, 2026, at 1:11 PM, Jan Kara wrote:
-> > > On Wed 14-01-26 09:28:44, Chuck Lever wrote:
-> > >> From: Chuck Lever <chuck.lever@oracle.com>
-> > >> 
-> > >> Enable upper layers such as NFSD to retrieve case sensitivity
-> > >> information from file systems by adding case_insensitive and
-> > >> case_nonpreserving boolean fields to struct file_kattr.
-> > >> 
-> > >> These fields default to false (POSIX semantics: case-sensitive and
-> > >> case-preserving), allowing filesystems to set them only when
-> > >> behavior differs from the default.
-> > >> 
-> > >> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> > > ...
-> > >> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> > >> index 66ca526cf786..07286d34b48b 100644
-> > >> --- a/include/uapi/linux/fs.h
-> > >> +++ b/include/uapi/linux/fs.h
-> > >> @@ -229,10 +229,20 @@ struct file_attr {
-> > >>  	__u32 fa_nextents;	/* nextents field value (get)   */
-> > >>  	__u32 fa_projid;	/* project identifier (get/set) */
-> > >>  	__u32 fa_cowextsize;	/* CoW extsize field value (get/set) */
-> > >> +	/* VER1 additions: */
-> > >> +	__u32 fa_case_behavior;	/* case sensitivity (get) */
-> > >> +	__u32 fa_reserved;
-> > >>  };
-> > >>  
-> > >>  #define FILE_ATTR_SIZE_VER0 24
-> > >> -#define FILE_ATTR_SIZE_LATEST FILE_ATTR_SIZE_VER0
-> > >> +#define FILE_ATTR_SIZE_VER1 32
-> > >> +#define FILE_ATTR_SIZE_LATEST FILE_ATTR_SIZE_VER1
-> > >> +
-> > >> +/*
-> > >> + * Case sensitivity flags for fa_case_behavior
-> > >> + */
-> > >> +#define FS_CASE_INSENSITIVE	0x00000001	/* case-insensitive lookups */
-> > >> +#define FS_CASE_NONPRESERVING	0x00000002	/* case not preserved */
-> > >
-> > > This is a matter of taste so not sure what others think about it but
-> > > file_attr already have fa_xflags field and there is already one flag which
-> > > doesn't directly correspond to on-disk representation (FS_XFLAG_HASATTR) so
-> > > we could also put the two new flags in there... I have hard time imagining
-> > > fa_case_behavior would grow past the two flags you've introduced so u32
-> > > seems a bit wasteful.
-> > 
-> > No problem. I'll wait for additional guidance on this.
+> > You are going even further down the path of entirely missing the point
+> > (or the two points by now).
 > 
-> Sounds like a better use of space in struct file_attr than adding
-> another pair of u32.
+> You're arguing for the sake of arguing imho. You're getting exactly what
+> we're all saying as evidenced by the last paragraph in your mail: it is
+> entirely what this whole thing is about.
 
-Fine by me as well.
+I can't even parse what you mean.  And no, I hate these stupid
+arguments, and I have much better things to do than dragging this on.
+
+> > If a file systems meets all technical requirements of being nfsd
+> > exportable and the users asks for it, it is not our job to make an
+> > arbitrary policy decision to say no.
+> 
+> This is an entirely irrelevant point because we're talking about
+> cgroupfs, nsfs, and pidfs. And they don't meet this criteria. cgroupfs
+> is a _local resource management filesystem_ why would we ever want to
+> support exporting it over the network. It allows to break the local
+> delegation model as I've explained. cgroupfs shows _local processes_. So
+> a server will see completely nonsensical PID identifiers listed in
+> cgroup files and it can fsck around with processes in a remote system.
+
+None of that is a technical argument.  The lack of stable file handles
+would be one, and I think we came to the conclusion yesterday that
+this is the case.
+
 
