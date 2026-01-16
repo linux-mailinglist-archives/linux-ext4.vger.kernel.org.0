@@ -1,90 +1,90 @@
-Return-Path: <linux-ext4+bounces-12922-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12923-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23FED2FD6C
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jan 2026 11:49:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8338D2FDE5
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jan 2026 11:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 81A7130443E5
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jan 2026 10:47:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0B57F30DB59B
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Jan 2026 10:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B94F36166C;
-	Fri, 16 Jan 2026 10:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3187A361DD7;
+	Fri, 16 Jan 2026 10:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ftw/w48A";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/0mnXymQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="frIxeSzQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dwpCAVNy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NAigHHJe";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wAaeVaZX";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vqd1Y4ym";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7Gjt5tLm"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A08361DDB
-	for <linux-ext4@vger.kernel.org>; Fri, 16 Jan 2026 10:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9FA36212A
+	for <linux-ext4@vger.kernel.org>; Fri, 16 Jan 2026 10:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768560451; cv=none; b=R6B5azY/4yBPB0WngKJg2gf3Mk5tai1iKT7Rx4SKVCJK4/M3vBf93qisqU+Qt1Ys6GSLm6AaoxYjKOebgj970QclclNJuVQLwfgGiraQQVQ7qsjRRVgWMiVM05lpXfitRE7K+RKXB3fikw6O2/4OPBAqcrcqfsRuAlCc9IZSB/8=
+	t=1768560472; cv=none; b=X8UZ15SDv4qvNUTdg0t+54wxqyWe8lAGRHHQkPwMmNwyKmfQrGzktN3uZec81KrvFVxnn3T69it0fL9T0FgkF/+wKM2IkMn+avcjcBYOA/qRbF/S4AZzcKvNlzjQBsAoEhdxRbpZHGzqY2GUQiAwIvg0ErmQ4k1stD4/DQxVM28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768560451; c=relaxed/simple;
-	bh=DjRH4tdWjasBlqBKlHEm9raSUNBOOzmmP0s71v2tVcY=;
+	s=arc-20240116; t=1768560472; c=relaxed/simple;
+	bh=BcfSQoUfnOKx1gw7bM0uAcUQneOOqT5tHEsUtad9umU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kAwNGStOLW/zER9lv18Pf5LnLlwhsG1gKrJdUBE/ob3LYoy38FqI02l67h3yGO46AjW4oyqpBFrLUxXJUGYQvWegjC4RivAVgsYEibUskbec20cH/mQZkUuHe3SvUIzg42bJ9rSqGV01JFL0ATxleC0jG8CfSxd420GCe81GLa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ftw/w48A; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/0mnXymQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=frIxeSzQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dwpCAVNy; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=WOhizm93NoUGBB+7QsI1DbtPmxmbWBHQigefi5NrFS5ZPtFEGVlvUnRsRlDuM2fRYIHMqgPWfHgQjQ659RWYWZ6y5XPTBXYI4veX3VW/oy+/trYXncyvP+n3SDDbU+QqVFV+gUmQ2NcgshCvQbXDzcfsQy2yGWShUHy5rzPOMgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NAigHHJe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wAaeVaZX; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vqd1Y4ym; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7Gjt5tLm; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EBA7B336B7;
-	Fri, 16 Jan 2026 10:47:27 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ED862336BB;
+	Fri, 16 Jan 2026 10:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560448; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768560469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=Ftw/w48AH2FIze8c5NCpGY+5XO/vnHkjGCmtVV9PTeJB6y2k7VTfqEVHahDLJnyaun4vrT
-	jZwEXiGVCIwZUyt3JbbArZXWmWmE5e5aZEA1Gruu+xovaSyAFw4iXisViVzre8n7BBI/TR
-	X0JT5TV78n0RM2yYJOHbOFg0cunt5rE=
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=NAigHHJefgDlX6mRySbG7B5iCmL36aEduQNmXj2EvsoYBrU7/VTo8/WNZrc+jBxVmYwek3
+	innlofjWnNur4gO64jxDUWQVk3pm53xXSuys1aTGTWpFtvR1Xd4ONEVhhk+B034xGJPlVB
+	qicHNvV2T2n+PsShv1UvN/CV4roIDw8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560448;
+	s=susede2_ed25519; t=1768560469;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=/0mnXymQoI/apVzzXrkGOFLQrtf7ARYoukgV2ygH5/30E/hcAH6PZ8LZ8kwGADlW1g3sJT
-	6D8IQPk6mXId1oDA==
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=wAaeVaZXVSmCCp/Ci8z3PCyFT3ubSWVNcMQNxpoFpxosJZqqzSMYJQTVEe91z3AbyBwRES
+	hgYeQWFl3/XVwuCg==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1768560468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=frIxeSzQ/Sn0lCTi7j17sGGXl1aOMVE0U7TByP3vJZtDJo6LTJ4j1tE0IxFqsKA7odTwBR
-	C2YmkhpTjbM0xO3zZwY82DqEBwpfkJ6DHghWCwFZQUSk1XfXJKSf8N7QSgwjh1HaJ/qJqx
-	0uyqQrfO7kNPryyOdRpPtlgIncvCx7s=
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=Vqd1Y4ymZFbiTB3W7/+krX5l7W5sxL7aNuHpBkJYaPRDypTZKpWZDKux+L+iC/0RWALCc4
+	Wl+guT58YT9lXH7G1B0VaMoNprxzvexhqTpUZyuh7OzKnAPdgG0Xbfk0EUDTxkORMoIq4Q
+	yoxjYuhlhqs/kbTHf/h7VyrYgdeD378=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560447;
+	s=susede2_ed25519; t=1768560468;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2lMC4dV45oi1mlY5BXp8fQKt2SNPdaLd6Ilt8JO+JmQ=;
-	b=dwpCAVNy6xYGIa8InmMC9wYC/wopqf9bX8n1IQP7Qq8ge+SoZz58kPcPs56ct1Y9Ojg7M7
-	NFyQwfHt+iwi9xCg==
+	bh=Sxv0JM+Kl8CyBCRTXuvFgjvy4sy6WbuKYSBt+sEG264=;
+	b=7Gjt5tLmv8pwoPI4+tAhdd+IkW9SPQOahLPixnGtYy+H9R2r0zQYbKm8w1G8zq15sjbdtX
+	okoOuMG52JxjWaBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E104F3EA65;
-	Fri, 16 Jan 2026 10:47:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E32663EA65;
+	Fri, 16 Jan 2026 10:47:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Pq3tNj8XamkaDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 16 Jan 2026 10:47:27 +0000
+	id p4hxN1QXamm9DAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 16 Jan 2026 10:47:48 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A8D37A091D; Fri, 16 Jan 2026 11:47:27 +0100 (CET)
-Date: Fri, 16 Jan 2026 11:47:27 +0100
+	id A1819A091D; Fri, 16 Jan 2026 11:47:48 +0100 (CET)
+Date: Fri, 16 Jan 2026 11:47:48 +0100
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Christian Brauner <brauner@kernel.org>, 
@@ -119,11 +119,11 @@ Cc: Christian Brauner <brauner@kernel.org>,
 	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
 	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
 	linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 02/29] tmpfs: add EXPORT_OP_STABLE_HANDLES flag to export
+Subject: Re: [PATCH 18/29] ocfs2: add EXPORT_OP_STABLE_HANDLES flag to export
  operations
-Message-ID: <epeo3w56c33kgxtx7jj6xyjl2gq3n67y6eqq4jlxfvg2qrgjod@3fn2xqpb66bw>
+Message-ID: <7ez6obuswq26r3fi5es44rv25motvmcc7iuv7mpj7s2cnb4i4i@di4z7eug36t7>
 References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
- <20260115-exportfs-nfsd-v1-2-8e80160e3c0c@kernel.org>
+ <20260115-exportfs-nfsd-v1-18-8e80160e3c0c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -132,7 +132,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260115-exportfs-nfsd-v1-2-8e80160e3c0c@kernel.org>
+In-Reply-To: <20260115-exportfs-nfsd-v1-18-8e80160e3c0c@kernel.org>
 X-Spamd-Result: default: False [-2.30 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -156,13 +156,13 @@ X-Spamd-Result: default: False [-2.30 / 50.00];
 	RCPT_COUNT_GT_50(0.00)[74];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
 X-Spam-Flag: NO
 X-Spam-Score: -2.30
 X-Spam-Level: 
 
-On Thu 15-01-26 12:47:33, Jeff Layton wrote:
-> Add the EXPORT_OP_STABLE_HANDLES flag to tmpfs export operations to indicate
+On Thu 15-01-26 12:47:49, Jeff Layton wrote:
+> Add the EXPORT_OP_STABLE_HANDLES flag to ocfs2 export operations to indicate
 > that this filesystem can be exported via NFS.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
@@ -174,21 +174,19 @@ Reviewed-by: Jan Kara <jack@suse.cz>
 								Honza
 
 > ---
->  mm/shmem.c | 1 +
+>  fs/ocfs2/export.c | 1 +
 >  1 file changed, 1 insertion(+)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index ec6c01378e9d2bd47db9d7506e4d6a565e092185..c64c4410b4fd9961599a5ea768b469d8184e713e 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -4477,6 +4477,7 @@ static const struct export_operations shmem_export_ops = {
->  	.get_parent     = shmem_get_parent,
->  	.encode_fh      = shmem_encode_fh,
->  	.fh_to_dentry	= shmem_fh_to_dentry,
+> diff --git a/fs/ocfs2/export.c b/fs/ocfs2/export.c
+> index b95724b767e150e991ae4b8ea5d0505c1ae95984..77d82ff994c86037c14fbf7a1d9706f1dd2b87ac 100644
+> --- a/fs/ocfs2/export.c
+> +++ b/fs/ocfs2/export.c
+> @@ -280,4 +280,5 @@ const struct export_operations ocfs2_export_ops = {
+>  	.fh_to_dentry	= ocfs2_fh_to_dentry,
+>  	.fh_to_parent	= ocfs2_fh_to_parent,
+>  	.get_parent	= ocfs2_get_parent,
 > +	.flags		= EXPORT_OP_STABLE_HANDLES,
 >  };
->  
->  enum shmem_param {
 > 
 > -- 
 > 2.52.0
