@@ -1,165 +1,214 @@
-Return-Path: <linux-ext4+bounces-12964-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12965-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EB7D39A66
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Jan 2026 23:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5A4DD39B4B
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 00:24:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 74FDD3009100
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Jan 2026 22:10:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3D039300E7CC
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Jan 2026 23:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823AC30C603;
-	Sun, 18 Jan 2026 22:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67AE31AA9E;
+	Sun, 18 Jan 2026 23:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ntRH91mc"
+	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="Dmw+pxT+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IGTmerXN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from flow-a6-smtp.messagingengine.com (flow-a6-smtp.messagingengine.com [103.168.172.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C2730BF6D
-	for <linux-ext4@vger.kernel.org>; Sun, 18 Jan 2026 22:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A0D531A065;
+	Sun, 18 Jan 2026 23:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768774230; cv=none; b=lkZzcqRjhjwQXA5h5Iqx0jpxXjzHVGn5nY2TUibWJ+MCfpSbHwez+V0GnJocXVfvm5OpuS9nCXMliBHI5XwAWNw8+GSjCpv8pLkKNqgtTXtr9ztocjSOwj+QZr5wiiPvoLBZg2KhoBusc9KnQVuSYz+dcpPWUyXKzcIw6Wp/d7U=
+	t=1768778620; cv=none; b=ang6xPz7J1j/n6rwW37DbJtMyTdusZHDAnHnG0zH2rhMbd+OPLsfVxknsy7BA0Mrs1VQelI4ZEex3OC0/qbr323ogqLxh7vnHsDLv3MPUp3xrQDpXF2MInf1MCZtBLLWzpSPa3CW4+7maVb4yhlotdEN4bBIAFfoIDvaXzm7BNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768774230; c=relaxed/simple;
-	bh=X4a3Irmj+vX1hCyAXSnVDpj/jz8naUG5TnZN3hNxXTk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=RMl9jo6JkXjXk1nWtpLR2gdC+1L+ZQ6uLUDSR+nzKD9+MBplTI8wU1cwp9QbCTXPTxpYT/EAuLrswRs9VDHzKPGgecWn6seZ2kl9IpgEAamn4KH/ldJC0MyaZ6kv0E9d4jNWHz7YVyljo2l60eX/wnhEoA8Fa/bXC3LSNpGjL1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ntRH91mc; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768774226; x=1800310226;
-  h=date:from:to:cc:subject:message-id;
-  bh=X4a3Irmj+vX1hCyAXSnVDpj/jz8naUG5TnZN3hNxXTk=;
-  b=ntRH91mcP5bgUXzbFutKXXDVo3DKUNRVl8Z/epp4H3ZMZH5OAGafM5v8
-   4MmxCOmHNFfB+XDnZIDaiOyIxhz0nCnTrFJz1kxDufB3RTxPCBiEq1qKe
-   +z9ZaCXMmjCkYWeNdwhPozw6+7QVAQhMAj+DhzybN12N0vFVN/H+lC9AT
-   hv68OJFBrXcexbS2xO31CJVHCY0QsALIgsFEmkLlORxo/JT1DEHz0rDu3
-   w+tbExQLqoG3TBcWmPTxQH7Uvois314eKHHssDDxMU3vdWZqoEleq90DC
-   mKPpxR+9SBFgi3araTBGPVS3ZDGZQgOPZoSe/2nDOCv/Sm2Z9dx3/z4Ve
-   g==;
-X-CSE-ConnectionGUID: lqtUctcKRRqJWrUp4f1TYA==
-X-CSE-MsgGUID: EsJKD676TQyhkVv7Sm008g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11675"; a="69904177"
-X-IronPort-AV: E=Sophos;i="6.21,236,1763452800"; 
-   d="scan'208";a="69904177"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2026 14:10:25 -0800
-X-CSE-ConnectionGUID: JtwhbvIEQ9qZI5MivBRe5w==
-X-CSE-MsgGUID: qZhVGQm/RRSvQEeCvTNTHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,236,1763452800"; 
-   d="scan'208";a="210568373"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 18 Jan 2026 14:10:24 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vhayU-00000000NFz-270E;
-	Sun, 18 Jan 2026 22:10:22 +0000
-Date: Mon, 19 Jan 2026 06:09:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-ext4@vger.kernel.org,
- "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Subject: [tytso-ext4:dev 25/37] fs/ext4/extents-test.c:299:19:
- warning: format '%ld' expects argument of type 'long int', but argument 4 has
- type 'int'
-Message-ID: <202601190600.xYVh1uKf-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1768778620; c=relaxed/simple;
+	bh=kQYT0dhmcYLmmCpMOddqhdpNEHl1L6rhEo00nl7FDLA=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=Q4hllinH8AVISxbeP7Qsj5mj99CkV38KbR6xqtAv4YiLZjtIOwoxVDfFNqm8d+vuiKWeWBFManBJ/5ZxSO3bCoN/kDQKAH6uKupZZ+ImC7OT3YRoKNITIIFniUWZ7VMa791fsXb4nHd+JmTyRsnGaCQddGXhgzlXXHjg4OffO6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=Dmw+pxT+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IGTmerXN; arc=none smtp.client-ip=103.168.172.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailflow.phl.internal (Postfix) with ESMTP id 044C21380091;
+	Sun, 18 Jan 2026 18:23:37 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Sun, 18 Jan 2026 18:23:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
+	1768778616; x=1768785816; bh=cLWfoPH86LevLJ5dEarcfR/PsriG4IfSU/3
+	wyLJz+qM=; b=Dmw+pxT+mC6s44HDc9ViDXhGQeEmMpmNYRhtbA86QNG09PG/Ljt
+	hV85ad3/pbmWWoao3arxAaxDpjTC5inzso+nDbFp9L/ocC8FvAlBD0K6BSqaNtKf
+	C3km6dpzlK9Qvfbi4RlAOZVQRcgXUx6BbC4NNZXExiSaEBKuKkrscbvke30TKEj0
+	X3c26YUO2IvjIKJetsMrJSw+w98guonRsqk3c5wy7tRYCBiBKWCThYgKRu77I56g
+	W/jQbAZlq9qtSmpdQFd+C0/rLGEaY2+/6NIHoLbGsxK4GkDCFlahWHWTEoSSJrS/
+	k5ZW9JDwUgtzyYMplQwMaStWlBzRHOxECQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768778616; x=
+	1768785816; bh=cLWfoPH86LevLJ5dEarcfR/PsriG4IfSU/3wyLJz+qM=; b=I
+	GTmerXNj37QbHVnwq2oYiiWRj3dNMRiwAfGv/vxfYmuPEFFfJjUyW8ruiPn+ZUTw
+	y96Ysjc5jkE+PfgCaUfHrNzF77vJ+CHZGj8ZZyFQniCqqNBHAWqccBt7S/bU1BV3
+	Xnstc4VvhfH6RZxhRpoHiUxWSmJT21A47932/vgOnE5bxUOTfBJmpqxFnE86OITm
+	uIg7MLSy3DGOcBFTzEd5fbzcCQYBFRkQDDO9qGFEXh5IfaJ//ctGtwtYx+/A3prw
+	KJ8U8PGheh+G3smkjCFKvnDL2ddcVu2iicAyBab5Q6myVEkn0CxZuzyjCejBBwJF
+	S/bm6s4tkRpP23BkNvcHg==
+X-ME-Sender: <xms:dGttaT6YTMF6Fa6OlzcaAnM6fKqB4-4u0PRgZNSqPeyFmRns3uNnWw>
+    <xme:dGttaZPm2B1Iaa5cFSjo7JQ9nDmVsbYtDSTRFdNHBicQ-lkECLbL66rkbZK2MZehf
+    _rCs8HRq47ygqgxsOGTs2CMA0vWt7_AzG555MqfdnDHw6XZXQ>
+X-ME-Received: <xmr:dGttaV5f0odFoTqo9Cm-3bXwUWdDQe8OS_nESoDmZC33EUUTmsf8jTlPE6SJiNhWOG4bTHrmA205RC8BAhr3cbUxrYEQhQL_108cgTPUPoLg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeeitddtucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurheptgfgggfhvfevufgjfhffkfhrsehtqhertddttdejnecuhfhrohhmpefpvghilheu
+    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
+    epvdeuteelkeejkeevteetvedtkeegleduieeftdeftefgtddtleejgfelgfevffeinecu
+    ffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehnvghilhgssehofihnmhgrihhlrdhnvghtpdhnsggp
+    rhgtphhtthhopeejfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepvhhirhhose
+    iivghnihhvrdhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopehguhhotghhuhhnhhgr
+    ihesvhhivhhordgtohhmpdhrtghpthhtoheplhhinhhugidqgihfshesvhhgvghrrdhkvg
+    hrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhunhhiohhnfhhssehvghgvrhdr
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqnhhilhhfshesvhhgvghrrd
+    hkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhnfhhssehvghgvrhdrkhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghr
+    rdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgvgihtgeesvhhgvghrrd
+    hkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:dGttaek4FCMZRAxWF6ejfvNQASS42yuMJmNL6Qr_VSzT2alP2kiMEQ>
+    <xmx:dGttacMnrF3MIVkqtagaBM_OFbr4viUT9Quj4YPA_rDrR6FZMQe15g>
+    <xmx:dGttaRUgcJhZGcX_B2l09umj3yAF-qAbVHXccqpyubd6rn2m6D7nYA>
+    <xmx:dGttaVutjkDk_cSqIw9p5HdrWWt8-J_WTU_-yJ8LgZsJLx3q9gD8ew>
+    <xmx:eGttab3JlD-dDEAYvGFUDpoqKXPgn7EN1IPurNldS43-2K0UKJSizYjm>
+Feedback-ID: iab3e480c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 18 Jan 2026 18:23:15 -0500 (EST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: NeilBrown <neilb@ownmail.net>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Amir Goldstein" <amir73il@gmail.com>,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <okorniev@redhat.com>,
+ "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+ "Hugh Dickins" <hughd@google.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
+ "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
+ "Sandeep Dhavale" <dhavale@google.com>,
+ "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
+ "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
+ "Alex Markuze" <amarkuze@redhat.com>,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
+ "David Sterba" <dsterba@suse.com>,
+ "Luis de Bethencourt" <luisbg@kernel.org>,
+ "Salah Triki" <salah.triki@gmail.com>,
+ "Phillip Lougher" <phillip@squashfs.org.uk>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Bharath SM" <bharathsm@microsoft.com>,
+ "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Mike Marshall" <hubcap@omnibond.com>,
+ "Martin Brandenburg" <martin@omnibond.com>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>,
+ "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+ "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Jaegeuk Kim" <jaegeuk@kernel.org>,
+ "Christoph Hellwig" <hch@infradead.org>, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-unionfs@vger.kernel.org, devel@lists.orangefs.org,
+ ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev,
+ linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
+ linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+In-reply-to: <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
+Date: Mon, 19 Jan 2026 10:23:13 +1100
+Message-id: <176877859306.16766.15009835437490907207@noble.neil.brown.name>
+Reply-To: NeilBrown <neil@brown.name>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-head:   11f1ff3cc21a8e9ca9f509a664de5975469ec561
-commit: 16bbdb54f49e58d51dbf2217bab9ed424172ea9a [25/37] ext4: kunit tests for extent splitting and conversion
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20260119/202601190600.xYVh1uKf-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260119/202601190600.xYVh1uKf-lkp@intel.com/reproduce)
+On Fri, 16 Jan 2026, Jeff Layton wrote:
+> On Thu, 2026-01-15 at 19:17 +0100, Amir Goldstein wrote:
+> > On Thu, Jan 15, 2026 at 6:48=E2=80=AFPM Jeff Layton <jlayton@kernel.org> =
+wrote:
+> > >=20
+> > > In recent years, a number of filesystems that can't present stable
+> > > filehandles have grown struct export_operations. They've mostly done
+> > > this for local use-cases (enabling open_by_handle_at() and the like).
+> > > Unfortunately, having export_operations is generally sufficient to make
+> > > a filesystem be considered exportable via nfsd, but that requires that
+> > > the server present stable filehandles.
+> >=20
+> > Where does the term "stable file handles" come from? and what does it mea=
+n?
+> > Why not "persistent handles", which is described in NFS and SMB specs?
+> >=20
+> > Not to mention that EXPORT_OP_PERSISTENT_HANDLES was Acked
+> > by both Christoph and Christian:
+> >=20
+> > https://lore.kernel.org/linux-fsdevel/20260115-rundgang-leihgabe-12018e93=
+c00c@brauner/
+> >=20
+> > Am I missing anything?
+> >=20
+>=20
+> This was Chuck's suggested name. His point was that STABLE means that
+> the FH's don't change during the lifetime of the file.
+>=20
+> I don't much care about the flag name, so if everyone likes PERSISTENT
+> better I'll roll with that.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601190600.xYVh1uKf-lkp@intel.com/
+I don't like PERSISTENT.
+I'd rather call a spade a spade.
 
-All warnings (new ones prefixed by >>):
+  EXPORT_OP_SUPPORTS_NFS_EXPORT
+or
+  EXPORT_OP_NOT_NFS_COMPATIBLE
 
-   In file included from include/asm-generic/bug.h:31,
-                    from arch/m68k/include/asm/bug.h:32,
-                    from include/linux/bug.h:5,
-                    from include/linux/random.h:6,
-                    from include/linux/nodemask.h:94,
-                    from include/linux/list_lru.h:12,
-                    from include/linux/fs/super_types.h:7,
-                    from include/linux/fs/super.h:5,
-                    from include/linux/fs.h:5,
-                    from fs/ext4/extents.c:20:
-   fs/ext4/extents-test.c: In function 'check_buffer':
-   include/linux/kern_levels.h:5:25: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'int' [-Wformat=]
-       5 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
-         |                         ^~~~~~
-   include/linux/printk.h:484:25: note: in definition of macro 'printk_index_wrap'
-     484 |                 _p_func(_fmt, ##__VA_ARGS__);                           \
-         |                         ^~~~
-   include/kunit/test.h:661:17: note: in expansion of macro 'printk'
-     661 |                 printk(lvl fmt, ##__VA_ARGS__);                         \
-         |                 ^~~~~~
-   fs/ext4/extents-test.c:298:9: note: in expansion of macro 'kunit_log'
-     298 |         kunit_log(KERN_ALERT, kunit_get_current_test(),
-         |         ^~~~~~~~~
-   include/linux/kern_levels.h:9:25: note: in expansion of macro 'KERN_SOH'
-       9 | #define KERN_ALERT      KERN_SOH "1"    /* action must be taken immediately */
-         |                         ^~~~~~~~
-   fs/ext4/extents-test.c:298:19: note: in expansion of macro 'KERN_ALERT'
-     298 |         kunit_log(KERN_ALERT, kunit_get_current_test(),
-         |                   ^~~~~~~~~~
-   In file included from include/kunit/static_stub.h:18,
-                    from fs/ext4/extents.c:35:
->> fs/ext4/extents-test.c:299:19: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'int' [-Wformat=]
-     299 |                   "# %s: wrong char found at offset %ld (expected:%d got:%d)", __func__,
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     300 |                   ((char *)ret - buf), c, *((char *)ret));
-         |                   ~~~~~~~~~~~~~~~~~~~
-         |                                |
-         |                                int
-   include/kunit/test.h:662:57: note: in definition of macro 'kunit_log'
-     662 |                 kunit_log_append((test_or_suite)->log,  fmt,            \
-         |                                                         ^~~
-   In file included from fs/ext4/extents.c:6200:
-   fs/ext4/extents-test.c:299:55: note: format string is defined here
-     299 |                   "# %s: wrong char found at offset %ld (expected:%d got:%d)", __func__,
-         |                                                     ~~^
-         |                                                       |
-         |                                                       long int
-         |                                                     %d
+The issue here is NFS export and indirection doesn't bring any benefits.
+
+NeilBrown
 
 
-vim +299 fs/ext4/extents-test.c
+>=20
+> Also, on the ovl patch: will fix...
+>=20
+> Thanks for the review!
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+>=20
 
-   286	
-   287	/*
-   288	 * Return 1 if all bytes in the buf equal to c, else return the offset of first mismatch
-   289	 */
-   290	static int check_buffer(char *buf, int c, int size)
-   291	{
-   292		void *ret = NULL;
-   293	
-   294		ret = memchr_inv(buf, c, size);
-   295		if (ret  == NULL)
-   296			return 0;
-   297	
-   298		kunit_log(KERN_ALERT, kunit_get_current_test(),
- > 299			  "# %s: wrong char found at offset %ld (expected:%d got:%d)", __func__,
-   300			  ((char *)ret - buf), c, *((char *)ret));
-   301		return 1;
-   302	}
-   303	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
