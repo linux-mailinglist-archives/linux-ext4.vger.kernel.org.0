@@ -1,130 +1,182 @@
-Return-Path: <linux-ext4+bounces-12983-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-12984-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D2C5D3A1D7
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 09:40:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58948D3A264
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 10:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D86163009244
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 08:40:38 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 12082301B644
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 09:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DED3469E7;
-	Mon, 19 Jan 2026 08:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83A9352C2F;
+	Mon, 19 Jan 2026 09:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UuxGl/Kv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pqm1FT36";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2qBvuQr+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pqm1FT36";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2qBvuQr+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62A5342144
-	for <linux-ext4@vger.kernel.org>; Mon, 19 Jan 2026 08:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D2833ADB9
+	for <linux-ext4@vger.kernel.org>; Mon, 19 Jan 2026 09:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768812025; cv=none; b=Yb340m/ihj0AfuVeXR24nI3+cBbfeNP85UlifyZNXqlSgi5DBaRJ9pxZAIJniL9/3Agns4SW5YeWNYvUclqg27NdtWE2cegCMzf98cIuh+6O1obe43CiOpGt9aLFo5agMbm9BoOsX84t8tx1YzdEkc4JjxSRWn3vAKVjPxT3FZ4=
+	t=1768813561; cv=none; b=TFVaxeo+L7EFKOxwXpSVoejZOIME6FM45H731FIUr+JbOSyEsF4lV+9ZjEkjlGBiJGdAv4ghXiszUd1Mrn+PdsPc3OWMz0MS4JOU7fG3ygk/8z3TiUcjSLFEVbF5RzmJtPcU3AFqoD9/lzgXY/VkHg6xY7SN7A64j0kiP/J71cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768812025; c=relaxed/simple;
-	bh=KJoYOa5K18nqNKCWxkYAOdRPH4EyPY3p5tSvazTt+nc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=am2vNO66X6jdqmjBYBWzsWfHjLArs2mfNCpzbI8Xfl34nUHBF4NPrfk4nPjnMS1twhHnA6As3gK1BdqEz2mfJQowR4l3v2MDT4y9bnnwno/PgdNAIwZyEcYtkovALHPhuT0A/aildFLoPDi7yYA/gZg3qenxoybX43sa4ER/Sog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UuxGl/Kv; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-382fa663249so39093571fa.0
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Jan 2026 00:40:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768812015; x=1769416815; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJoYOa5K18nqNKCWxkYAOdRPH4EyPY3p5tSvazTt+nc=;
-        b=UuxGl/Kv2qbGAjCEuVUsVj/4oQWOPGu5XmvQpfk1Drz9vatodzGETG9e+31hfYmt3n
-         ShdJ9cGy+7c9CgwMx4qNCOsEOk9b7rrbcW9sllSEaJR/ulmbCFLctH/tiveRVhVmQJZj
-         ZrQS/De/lTOaQvMCUNZ46O3ZwPI2hOtJTSCk476OkZmTVTYeDoCcH0QcYd74HbrVYGP5
-         dRxjA25g4F4+RYExRaQ85YPkw0VdL1A/Nqoc3cVOU/36LCP0N30pJwOygCxiPuv4wfnm
-         BmbGAhPj2faOMfQG3X54EB1BGuZFqNEdx1RUYWOLd+pHmqzJSVSsnNIpi2nsXvu5e3ka
-         PSZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768812015; x=1769416815;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KJoYOa5K18nqNKCWxkYAOdRPH4EyPY3p5tSvazTt+nc=;
-        b=j6EqBua00s0b9YVCWP34jyFJgqko6H/puhOGKZaabxA2OLwB8eyhllEYC58H0OtyLQ
-         ZHlFrsl81CWdHXbeNRBR4zNplVkKFVYnJZvnE0h/bQMEBzS33z/2LephgnQ7OyLNn+C5
-         sXmKzRDVDIbVYETxSBKFgZQ+eXNEKsTC/w9DsvfQ277fdU5guY5S53nmBPWX2mGeKUF0
-         z1tRRDiEd5PjCTyAu0eAGQgbC2QyTcrtGLuleBUYx2QBe8h/XRP0IiCknVrjJSzpy7Mj
-         88tlAURQQMObdHm8ktOswP5JeX9pa7ZHKZqWJVQGtFahBwNi0duRsZ55zjiWAd6gHfMl
-         /Umg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdHHj5D3jxMws2IMu/Bb8uTvOQ9+JKMimhZlJzdiOb99IsmIwhRUZQZ/DaLd6VtSOScMSiHmL1I2FF@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEM470XbN4ekr4XM3++R3Olspy4LtVywpngcR0n5eRCgVs9Y73
-	WPZCt9qjZqoMTibVcAC8HUNHpjck63UXVGnAMo3VFywZkxOl16HcpY3e4hhmrdGajZXOiME8kpb
-	9HUkueFl10bNBRttsM7fdmoL8KNlbwYw=
-X-Gm-Gg: AY/fxX7HXgQf3izOYCehVWphDCZNFIwcVM5r1CO39yrpPAlm2rDpqVGDQ4Y7rpj3Jg9
-	O3UvRA1mB/12mQ5BHmr6498+w4ZZLZLJeQXUX9Xb2Kddu5Mrn1VYKQEHAw5sMTZggn7942nSjmF
-	1Ab+RpdvrgZMmZcbC4f67n0uDv+31oNhetsyCTTGvr7cCqXscFjQxpWo5ROv62dhzvQQ1IthdMH
-	lgmHOHA8KnJeIXhnTdwC7NQ0uCUvP7nmAdQzth3hgM5QyDc9+PiyS5wNe1EZJqwqECXA8OE
-X-Received: by 2002:a05:651c:31d3:b0:37b:9ab6:a071 with SMTP id
- 38308e7fff4ca-383842a1f56mr38777111fa.28.1768812014411; Mon, 19 Jan 2026
- 00:40:14 -0800 (PST)
+	s=arc-20240116; t=1768813561; c=relaxed/simple;
+	bh=Z3MQ82CKvB/0Dcy3eWdwcjOOizGJHCIltkTjKhfKLLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VawziVEBYhCSBrbT8WZAI+KYBILYivXtpDZgULuzaxiL/3st+7jZYmTiAcPe4Xn2wo1at0MU7EEJyxqP90iXapWPs7qN9Xpa3UHo3x4Occw8L4rYxPSDHCyekYpiaedw7OACQRQKtsoS9ZTxjpPObBem9C8QIRafeeMeq8LKzZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pqm1FT36; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2qBvuQr+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pqm1FT36; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2qBvuQr+; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AAEEB5BD21;
+	Mon, 19 Jan 2026 09:05:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768813556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WV7bGoR2PRO6j4igxWjiYheWWlYULse5GUTsUYL8BDk=;
+	b=pqm1FT36/jm6jURdU2bqiIqexQSvOfmfk8LpRJfM36fns+qDwJ+Bg6bgf4NGPPbKGdsi3M
+	VtZHH3Td34t18FkNA03XtaX6NgiqhiZdlcj/0XhtZT+6ST64FEImwouEw0TAwBjhBJPR6m
+	0wt3rJBWJaZFCUfhi3E6x0PFg/T6nsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768813556;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WV7bGoR2PRO6j4igxWjiYheWWlYULse5GUTsUYL8BDk=;
+	b=2qBvuQr+goPfaZg7KcDtjGzpWjwhz0o/abKRUT0ku2GkTCi9ZLDZ8J4N+yMb4BZ/jgPkMh
+	qozwGmwu1O0GnAAw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pqm1FT36;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2qBvuQr+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768813556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WV7bGoR2PRO6j4igxWjiYheWWlYULse5GUTsUYL8BDk=;
+	b=pqm1FT36/jm6jURdU2bqiIqexQSvOfmfk8LpRJfM36fns+qDwJ+Bg6bgf4NGPPbKGdsi3M
+	VtZHH3Td34t18FkNA03XtaX6NgiqhiZdlcj/0XhtZT+6ST64FEImwouEw0TAwBjhBJPR6m
+	0wt3rJBWJaZFCUfhi3E6x0PFg/T6nsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768813556;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WV7bGoR2PRO6j4igxWjiYheWWlYULse5GUTsUYL8BDk=;
+	b=2qBvuQr+goPfaZg7KcDtjGzpWjwhz0o/abKRUT0ku2GkTCi9ZLDZ8J4N+yMb4BZ/jgPkMh
+	qozwGmwu1O0GnAAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FB4A3EA63;
+	Mon, 19 Jan 2026 09:05:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MD76JvTzbWnZOwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 19 Jan 2026 09:05:56 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 67C91A0A29; Mon, 19 Jan 2026 10:05:56 +0100 (CET)
+Date: Mon, 19 Jan 2026 10:05:56 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Andrey Albershteyn <aalbersh@redhat.com>, linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: [PATCH 3/6] fs,fsverity: handle fsverity in generic_file_open
+Message-ID: <tn4evey6q4ktzfu4vd2fmaz5j233cigw2grnyvzc4cnholsolb@z44vyuenknkl>
+References: <20260119062250.3998674-1-hch@lst.de>
+ <20260119062250.3998674-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org> <20260115-exportfs-nfsd-v1-20-8e80160e3c0c@kernel.org>
-In-Reply-To: <20260115-exportfs-nfsd-v1-20-8e80160e3c0c@kernel.org>
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Mon, 19 Jan 2026 17:39:57 +0900
-X-Gm-Features: AZwV_QgvoiJk-4c_7XszNQLNhAbjR94vrEkk8toY4eDKXl6u9TqMllUY3n06aqo
-Message-ID: <CAKFNMomS-8MMAjy8yuFwzuLBuQQA8r7gPJeJh1ci6RvVc9u4EA@mail.gmail.com>
-Subject: Re: [PATCH 20/29] nilfs2: add EXPORT_OP_STABLE_HANDLES flag to export operations
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Amir Goldstein <amir73il@gmail.com>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, 
-	Carlos Maiolino <cem@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Phillip Lougher <phillip@squashfs.org.uk>, Steve French <sfrench@samba.org>, 
-	Paulo Alcantara <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Mike Marshall <hubcap@omnibond.com>, 
-	Martin Brandenburg <martin@omnibond.com>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
-	linux-xfs@vger.kernel.org, ceph-devel@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-unionfs@vger.kernel.org, 
-	devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, 
-	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
-	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
-	linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260119062250.3998674-4-hch@lst.de>
+X-Spam-Score: -4.01
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_THREE(0.00)[3];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: AAEEB5BD21
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
 
-On Fri, Jan 16, 2026 at 2:50=E2=80=AFAM Jeff Layton wrote:
->
-> Add the EXPORT_OP_STABLE_HANDLES flag to nilfs2 export operations to indi=
-cate
-> that this filesystem can be exported via NFS.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Mon 19-01-26 07:22:44, Christoph Hellwig wrote:
+> Call into fsverity_file_open from generic_file_open instead of requiring
+> the file system to handle it explicitly.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+...
+> -int generic_file_open(struct inode * inode, struct file * filp)
+> +int generic_file_open(struct inode *inode, struct file *filp)
+>  {
+>  	if (!(filp->f_flags & O_LARGEFILE) && i_size_read(inode) > MAX_NON_LFS)
+>  		return -EOVERFLOW;
+> +	if (IS_ENABLED(CONFIG_FS_VERITY) && IS_VERITY(inode)) {
+> +		if (filp->f_mode & FMODE_WRITE)
+> +			return -EPERM;
+> +		return fsverity_file_open(inode, filp);
+> +	}
 
-Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Why do you check f_mode here when fsverity_file_open() checks for it as
+well?
 
-Thanks,
-Ryusuke Konishi
+> -int __fsverity_file_open(struct inode *inode, struct file *filp)
+> +/*
+> + * When opening a verity file, deny the open if it is for writing.  Otherwise,
+> + * set up the inode's verity info if not already done.
+> + *
+> + * When combined with fscrypt, this must be called after fscrypt_file_open().
+> + * Otherwise, we won't have the key set up to decrypt the verity metadata.
+> + */
+> +int fsverity_file_open(struct inode *inode, struct file *filp)
+>  {
+>  	if (filp->f_mode & FMODE_WRITE)
+>  		return -EPERM;
+>  	return ensure_verity_info(inode);
+>  }
+> -EXPORT_SYMBOL_GPL(__fsverity_file_open);
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
