@@ -1,136 +1,241 @@
-Return-Path: <linux-ext4+bounces-13063-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13064-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33022D3B7DF
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 21:01:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0546BD3B8CE
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 21:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3911E305E455
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 20:00:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CF7FF30464C3
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Jan 2026 20:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038CA2DB78A;
-	Mon, 19 Jan 2026 20:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7862F99AD;
+	Mon, 19 Jan 2026 20:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PkKWgeLG"
+	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="Lc0EYW6i";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ext14fYh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from flow-b3-smtp.messagingengine.com (flow-b3-smtp.messagingengine.com [202.12.124.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3886D16A395;
-	Mon, 19 Jan 2026 20:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890632E4257;
+	Mon, 19 Jan 2026 20:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768852854; cv=none; b=diMgkMDsGgLvdUxlJbW2aobrfxoIftptaijkXnN9TBPZBEKPb7CYcWXvAas0L2fDSpkl9ij0PzubPXepOgrBAgV1jY9agv6xkcbMjMCKcIuzD2ZC1MjU67xcXA8ni/C8M2eQFOgnqaGB8TyCnl/yrFgky0amIEm5PDecsDn+kdM=
+	t=1768855564; cv=none; b=l3H0vaOTNLgktKViwk6vLL8ktTyFrqQe6LHY9Ti/T6T3rafJuzqR/pDMn9Ts/2PQvhlpAK3mU7u10jJ9Jca6oakwbu7lmGxtfAPUl/kesbn1f5wA7mG5SPyj+qVodnJmJD699JvyKKCOmG6+thTICReoNHwPdeZg3VRSI6x126g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768852854; c=relaxed/simple;
-	bh=BqkcSD9fWqlhrwz3aObG4sEFqK5z8A2c8MZ1+Xcp/uU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jaEcDdqfNJxXjXIqSA65C4cYSJzCmX3NjdpJLelFjXk+CQc2ZTsrk+RNdOJUNIiplWWBs52JqzbhoO7lg7rcCeLRoPEf1UXattevrOZ8ax0z0ZkpY1a48y9rjHeW0aMRk2rdSDlEEj53xeyUl0HcPSYa7dqFJrfCypvncRewk84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PkKWgeLG; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FRKiCSA7rKWJel5+3BbX0cg/N3+Hr+jXkHWboVk9B18=; b=PkKWgeLGDbX9229PwsBfHnNC6a
-	ZROjbZ37Pu5RNnsaags+fn2KGYNRtGURT3Yq5twxJPoK5wMdWmchHOvhQlfZt1P20IV8EgAP/hx3G
-	ti6u8FqNn8o9ukls4Okp+XGa60zPjLmljUjTpdwweu1/af3IsRxrczqc9kSR0s3pld+FYJUEbtt3o
-	s+/pHjiU1na8EvCU77e7YSAW8VvnquMWFGWuaXgCYu6G8Cm5VG0gGhl9/e6xYDgjG4Arb3qs5HhnT
-	dmD6zT7a0lOMeAfQjo+drREd0Aen4TUdsje40EyK1i4GHDjZTw9J0iiccD208K6+AltBGN0+JJr9A
-	SN6zcziQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vhvQe-0000000DlZy-0U4y;
-	Mon, 19 Jan 2026 20:00:48 +0000
-Date: Mon, 19 Jan 2026 20:00:47 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	"Darrick J. Wong" <djwong@kernel.org>, fsverity@lists.linux.dev,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	aalbersh@kernel.org, david@fromorbit.com, tytso@mit.edu,
-	linux-ext4@vger.kernel.org, jaegeuk@kernel.org, chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: fsverity metadata offset, was: Re: [PATCH v2 0/23] fs-verity
- support for XFS with post EOF merkle tree
-Message-ID: <aW6NbyQgCMnjkFZ8@casper.infradead.org>
-References: <cover.1768229271.patch-series@thinky>
- <aWZ0nJNVTnyuFTmM@casper.infradead.org>
- <op5poqkjoachiv2qfwizunoeg7h6w5x2rxdvbs4vhryr3aywbt@cul2yevayijl>
- <aWci_1Uu5XndYNkG@casper.infradead.org>
- <20260114061536.GG15551@frogsfrogsfrogs>
- <5z5r6jizgxqz5axvzwbdmtkadehgdf7semqy2oxsfytmzzu6ik@zfvhexcp3fz2>
- <6r24wj3o3gctl3vz4n3tdrfjx5ftkybdjmmye2hejdcdl6qseh@c2yvpd5d4ocf>
- <20260119063349.GA643@lst.de>
- <20260119193242.GB13800@sol>
+	s=arc-20240116; t=1768855564; c=relaxed/simple;
+	bh=Nu+u8xIi1n/SDoC4CO0WUQIjg6M4bP4ZH6PEVt+Ooxc=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=NTFmOJbkyPmsjQRAoNByD7E5r9X+BYShOEneXXvHDkfqEOsQDwpwZTEjqyZSkFhaLMNUlEx2voccNaO59YLPrJfER2GnHzcs1lBGrqAXmXd/RgiPbI27/h2L2XdOs74S51A8I/Ljdiq+uqMB7Hhln3nfu/w0yLgqhYioNgk0ZxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=Lc0EYW6i; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ext14fYh; arc=none smtp.client-ip=202.12.124.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.stl.internal (Postfix) with ESMTP id C9DA613010D8;
+	Mon, 19 Jan 2026 15:45:59 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Mon, 19 Jan 2026 15:46:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
+	1768855559; x=1768862759; bh=v4LtkcerTNcKdHBuxb989VhIuXJUmGOFYwT
+	3m9zCWpQ=; b=Lc0EYW6ibUUqVQJUKzaim23Euwd0BGgFRXe5DALzfEojg7VN6rT
+	B6DiPIhAD3IC7M+5XEsbPahQ32cVgcxSRShqrzfxc+w2dQttIp0GWIrdUpX55qw0
+	1YJfvLNEex4MDg629sJRt0DIagYZ7O2YgHGEWRwCbzJK6pewaTBy/LwbN/3UuIrH
+	D1X+l3ArslIHe9m6/MxEM+BHkwyONj/QBcgvUoddEjQn2rtqiXm8XIlcaUBBGYcG
+	L51CiT0gWDAG38s7mrfim3JvqvUewVVj4jdamfv/vGEC6XVs37En7pvh86V+RKx9
+	u1Btsigj5UNDPW1ltBPZUH8SSA1nKU+SOjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768855559; x=
+	1768862759; bh=v4LtkcerTNcKdHBuxb989VhIuXJUmGOFYwT3m9zCWpQ=; b=e
+	xt14fYhTflITcl6YnaiRNNIPiieIuY3T2ekw4mgpmY/v/o1D6Rm9og97ySUxlRr7
+	FuBeLtlEdjDnDlXWSfPcQ5AbZapLP6oLiXJHFrRkIH0gKfaYLMLYjIQO36N4L42d
+	r+sxyuyT+2Dw0f4nF6Lb5U2/7dD8/gO1shUXevXTcOuhLj1lVMOynN4dkejCogfQ
+	7OuzydzQDyp0GPeNwjKBxultpJ+adDUHRpRjZpvqCu+f30BBcE9P8TFFL51mFFSd
+	5nqf/ngi6HPQpjIzif8UMR8pgDgY3x6Ww4kDrS1yWA5BVy+Nd5cITHqHPkkjbEzT
+	FALc3wWKIrn/NhNHGyWNw==
+X-ME-Sender: <xms:BJhuaSbEzFcWy9Pk6146wE82fhYm_CxjTiFHqGZKgwA0vYGamqcSmg>
+    <xme:BJhuaSwoBnyfk0eKn4-Aohsxi2pWCriN6dRenPPaxnkZL7_MsdqbsQlFS_j1eycjJ
+    snQClQFRDDxmckQGHACK4fSLzS3RfNjJQu9JuQvNfYNBDMQpQ>
+X-ME-Received: <xmr:BJhuaSJdRJMi7-ZpoAEIl9nJ6TzUD9unJMV7r6q_QrUGstq03Bv3pQ2jFX3ElyETlEyXOOSz_dMOZCxbyCO3448TMs1hLaDXJLozABR1b4SI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeekheehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurheptgfgggfhvfevufgjfhffkfhrsehtqhertddttdejnecuhfhrohhmpefpvghilheu
+    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
+    epleejtdefgeeukeeiteduveehudevfeffvedutefgteduhfegvdfgtdeigeeuudejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepjedvpdhmohguvgepshhmthhp
+    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
+    hrtghpthhtohepghhuohgthhhunhhhrghisehvihhvohdrtghomhdprhgtphhtthhopehl
+    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
+    hugidquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
+    ihhnuhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
+    hnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:BJhuaSBO9clKpBY1c8tqtIkxX8-Yutqel2bbB8TbvrqddamOXX7Ykg>
+    <xmx:BJhuaRhuOPQDyCA_KFYnfcdaAOzKUXr3io07nJfde0jw7wudsjV9Bg>
+    <xmx:BJhuade95jkbwLWPmv5m35H6i7zd7TYoRjmUJ2fQMpOWq-IJ6QyQ1w>
+    <xmx:BJhuaelSBffgMjviuHAjgSaIv0cuzLl42YuUELeDiPJYohFPRx_JkA>
+    <xmx:B5huacYgAtwv-dw4ucg_ORya8hJwBFrWvyIGFRHLnxavffYq8g3321NH>
+Feedback-ID: iab3e480c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 19 Jan 2026 15:45:39 -0500 (EST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260119193242.GB13800@sol>
+From: NeilBrown <neilb@ownmail.net>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Christoph Hellwig" <hch@infradead.org>,
+ "Jeff Layton" <jlayton@kernel.org>,
+ "Amir Goldstein" <amir73il@gmail.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <okorniev@redhat.com>,
+ "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+ "Hugh Dickins" <hughd@google.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
+ "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
+ "Sandeep Dhavale" <dhavale@google.com>,
+ "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
+ "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
+ "Alex Markuze" <amarkuze@redhat.com>,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
+ "David Sterba" <dsterba@suse.com>,
+ "Luis de Bethencourt" <luisbg@kernel.org>,
+ "Salah Triki" <salah.triki@gmail.com>,
+ "Phillip Lougher" <phillip@squashfs.org.uk>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Bharath SM" <bharathsm@microsoft.com>,
+ "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Mike Marshall" <hubcap@omnibond.com>,
+ "Martin Brandenburg" <martin@omnibond.com>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>,
+ "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+ "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Jaegeuk Kim" <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+ devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
+ ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
+ jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+In-reply-to: <20260119-kanufahren-meerjungfrau-775048806544@brauner>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>,
+ <176877859306.16766.15009835437490907207@noble.neil.brown.name>,
+ <aW3SAKIr_QsnEE5Q@infradead.org>,
+ <176880736225.16766.4203157325432990313@noble.neil.brown.name>,
+ <20260119-kanufahren-meerjungfrau-775048806544@brauner>
+Date: Tue, 20 Jan 2026 07:45:35 +1100
+Message-id: <176885553525.16766.291581709413217562@noble.neil.brown.name>
+Reply-To: NeilBrown <neil@brown.name>
 
-On Mon, Jan 19, 2026 at 11:32:42AM -0800, Eric Biggers wrote:
-> On Mon, Jan 19, 2026 at 07:33:49AM +0100, Christoph Hellwig wrote:
-> > While looking at fsverity I'd like to understand the choise of offset
-> > in ext4 and f2fs, and wonder about an issue.
-> > 
-> > Both ext4 and f2fs round up the inode size to the next 64k boundary
-> > and place the metadata there.  Both use the 65536 magic number for that
-> > instead of a well documented constant unfortunately.
-> > 
-> > I assume this was picked to align up to the largest reasonable page
-> > size?  Unfortunately for that:
-> > 
-> >  a) not all architectures are reasonable.  As Darrick pointed out
-> >     hexagon seems to support page size up to 1MiB.  While I don't know
-> >     if they exist in real life, powerpc supports up to 256kiB pages,
-> >     and I know they are used for real in various embedded settings
-> >  b) with large folio support in the page cache, the folios used to
-> >     map files can be much larger than the base page size, with all
-> >     the same issues as a larger page size
-> > 
-> > So assuming that fsverity is trying to avoid the issue of a page/folio
-> > that covers both data and fsverity metadata, how does it copy with that?
-> > Do we need to disable fsverity on > 64k page size and disable large
-> > folios on fsverity files?  The latter would mean writing back all cached
-> > data first as well.
-> > 
-> > And going forward, should we have a v2 format that fixes this?  For that
-> > we'd still need a maximum folio size of course.   And of course I'd like
-> > to get all these things right from the start in XFS, while still being as
-> > similar as possible to ext4/f2fs.
-> 
-> Yes, if I recall correctly it was intended to be the "largest reasonable
-> page size".  It looks like PAGE_SIZE > 65536 can't work as-is, so indeed
-> we should disable fsverity support in that configuration.
+On Mon, 19 Jan 2026, Christian Brauner wrote:
+> On Mon, Jan 19, 2026 at 06:22:42PM +1100, NeilBrown wrote:
+> > On Mon, 19 Jan 2026, Christoph Hellwig wrote:
+> > > On Mon, Jan 19, 2026 at 10:23:13AM +1100, NeilBrown wrote:
+> > > > > This was Chuck's suggested name. His point was that STABLE means th=
+at
+> > > > > the FH's don't change during the lifetime of the file.
+> > > > >=20
+> > > > > I don't much care about the flag name, so if everyone likes PERSIST=
+ENT
+> > > > > better I'll roll with that.
+> > > >=20
+> > > > I don't like PERSISTENT.
+> > > > I'd rather call a spade a spade.
+> > > >=20
+> > > >   EXPORT_OP_SUPPORTS_NFS_EXPORT
+> > > > or
+> > > >   EXPORT_OP_NOT_NFS_COMPATIBLE
+> > > >=20
+> > > > The issue here is NFS export and indirection doesn't bring any benefi=
+ts.
+> > >=20
+> > > No, it absolutely is not.  And the whole concept of calling something
+> > > after the initial or main use is a recipe for a mess.
+> >=20
+> > We are calling it for it's only use.  If there was ever another use, we
+> > could change the name if that made sense.  It is not a public name, it
+> > is easy to change.
+> >=20
+> > >=20
+> > > Pick a name that conveys what the flag is about, and document those
+> > > semantics well.  This flag is about the fact that for a given file,
+> > > as long as that file exists in the file system the handle is stable.
+> > > Both stable and persistent are suitable for that, nfs is everything
+> > > but.
+> >=20
+> > My understanding is that kernfs would not get the flag.
+> > kernfs filehandles do not change as long as the file exist.
+> > But this is not sufficient for the files to be usefully exported.
+> >=20
+> > I suspect kernfs does re-use filehandles relatively soon after the
+> > file/object has been destroyed.  Maybe that is the real problem here:
+> > filehandle reuse, not filehandle stability.
+> >=20
+> > Jeff: could you please give details (and preserve them in future cover
+> > letters) of which filesystems are known to have problems and what
+> > exactly those problems are?
+> >=20
+> > >=20
+> > > Remember nfs also support volatile file handles, and other applications
+> > > might rely on this (I know of quite a few user space applications that
+> > > do, but they are kinda hardwired to xfs anyway).
+> >=20
+> > The NFS protocol supports volatile file handles.  knfsd does not.
+> > So maybe
+> >   EXPORT_OP_NOT_NFSD_COMPATIBLE
+> > might be better.  or EXPORT_OP_NOT_LINUX_NFSD_COMPATIBLE.
+> > (I prefer opt-out rather than opt-in because nfsd export was the
+> > original purpose of export_operations, but it isn't something
+> > I would fight for)
+>=20
+> I prefer one of the variants you proposed here but I don't particularly
+> care. It's not a hill worth dying on. So if Christoph insists on the
+> other name then I say let's just go with it.
+>=20
 
-I don't think anybody will weep for lack of fsverity support in these
-weirdo large PAGE_SIZE configurations.
+This sounds like you are recommending that we give in to bullying.
+I would rather the decision be made based on the facts of the case, not
+the opinions that are stated most bluntly.
 
-> I don't think large folios are quite as problematic.
-> ext4_read_merkle_tree_page() and f2fs_read_merkle_tree_page() read a
-> folio and return the appropriate page in it, and fs/verity/verify.c
-> operates on the page.  If it's a page in the folio that spans EOF, I
-> think everything will actually still work, except userspace will be able
-> to see Merkle tree data after a 64K boundary past EOF if the file is
-> mmapped using huge pages.
-> 
-> The mmap issue isn't great, but I'm not sure how much it matters,
-> especially when the zeroes do still go up to a 64K boundary.
+I actually think that what Christoph wants is actually quite different
+from what Jeff wants, and maybe two flags are needed.  But I don't yet
+have a clear understanding of what Christoph wants, so I cannot be sure.
 
-We actually refuse to map pages after EOF.  See filemap_map_pages()
-
-        if ((file_end >= folio_next_index(folio) || shmem_mapping(mapping)) &&
-            filemap_map_pmd(vmf, folio, start_pgoff)) {
-                ret = VM_FAULT_NOPAGE;
-                goto out;
-        }
-
-along with the other treatment of end_pgoff.
+NeilBrown
 
 
