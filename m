@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-13109-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13110-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YLRmL5ZgcGkVXwAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13109-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 06:13:58 +0100
+	id OLzgFpOScGkaYgAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13110-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 09:47:15 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6528F51641
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 06:13:58 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F02F53D13
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 09:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 26B818C7592
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jan 2026 13:20:52 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C5D708C9ADB
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Jan 2026 13:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43939426EA4;
-	Tue, 20 Jan 2026 13:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B675742981B;
+	Tue, 20 Jan 2026 13:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BtzWd0dX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HArzV8jG"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858B741B348;
-	Tue, 20 Jan 2026 13:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216BC3E95A2;
+	Tue, 20 Jan 2026 13:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768915214; cv=none; b=Eh/AjaLNnT+6zQT3mhPW9cIweb+ulVyWzNzCeFBedMEc5sTujVs6f/2OY441cD4D4Ocm0EesXo59kV7pTXx7Wm6KHwQi2RL+J07YIrY/6SB8Srx0PAwuM8gmi/giP5qGs4KV/3YOTnzzNuOv1qfXN8YFQ4BBargla8e8Vd+r5gg=
+	t=1768915313; cv=none; b=ijciMhk0l/W9WfWeTDwUS3E5ASCI7eJiODXHbm3QO/ah9tCNdV6N0ZrUOqXUT57lbIyJCJKkqhe6y2y+j9BokpdKQUtmLuDZV9nCmwN5cHvcVjjtCL6UIBd29fbCxvupjWsZylfSb2uWCwAK83lkN3flsCDIrMpKcfE9Gg6XpU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768915214; c=relaxed/simple;
-	bh=2q4hi60bazvcilbJNiRaJ1JXOg/rrf7FitaJTcVDTb8=;
+	s=arc-20240116; t=1768915313; c=relaxed/simple;
+	bh=f2qFmDHnAGeH2DQsfDbKX6ov0cXKUQc3FlYWkzQ0G+o=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WAe0IaTOevkhvmCCPGLG7Zgc4iTQNvh1wf6w1FcWjQnRbxSY2SH/Ei/mzZKiOPwXHEP2/HOv/cs2xZ1OK6efEUogShJoxMIQzzcVNI3IQVeIbcep14FXR/Nv0xe9ZG93fcRrDollV7sSFSsWPDYokcW4KbZEOdSeNje4ojfRW1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BtzWd0dX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672F2C16AAE;
-	Tue, 20 Jan 2026 13:20:07 +0000 (UTC)
+	 Content-Type:MIME-Version; b=mWwZyO/aNboCMBxd9Dm4h+ov31mEUnWndOuPvA6jRYPMT/84hH/1KNlQ/jya86aEMVUROzB/5D93kVUbbgBHg6Vo3z99ckPxfkT4KDKZL2v4DAyal88PRb4ndegHI80cwFcd0kgB/d2RNiD9+1M3hAos3kseHy5Rc6A7zWPOih4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HArzV8jG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CB2EC16AAE;
+	Tue, 20 Jan 2026 13:21:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768915214;
-	bh=2q4hi60bazvcilbJNiRaJ1JXOg/rrf7FitaJTcVDTb8=;
+	s=k20201202; t=1768915312;
+	bh=f2qFmDHnAGeH2DQsfDbKX6ov0cXKUQc3FlYWkzQ0G+o=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=BtzWd0dX8xBjfl+Rd+agDtCA43l7AAkFA/UsKIDl9a7o4TBkTAytTBAuUr0Qyuh75
-	 2N7fm3ZAHeK0SWNrzZRWqfSRMDMMqT3mpkwnv7lmITCL2CwjeO/xepTD7gyE7YHLl2
-	 gM+m3vW5GHY1o82g5ze5dgIN3bLPNkibscKkg0isZRuq/GGlvGiuzt3eWvg3a5Pl2D
-	 7Xay7ZOUmajqckfhjbuheztwcouRty0bEYtF4WcXwaAwtOWOwNnr8WWChOTQqMKgHX
-	 B428QQ2/IOEF+hZbWNjI/5dC68aGe6BBGOTCHedvnLkRZD6kmneMW0MiewKug88TR0
-	 XdKyqpB0lgjYQ==
-Message-ID: <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
+	b=HArzV8jGiJF9EjuBcuhlJs4TShV4NxERmXFPUT+J8+gfAJ4DE490qIALJ076bILOb
+	 e408+yivjAyOomjEdqgF7pCaN/qMG9T58VsCZ+YqBNrLJMz+X7GC3/EKUmI1086fJz
+	 MjiZ9qewu5a5y2wbA741RboftmNGOHR283JnbrHlWH2I1F6Ud3GfwTl2MLTVOi85M3
+	 vu6PPer10vwGTgfXrjWnVB6g2DP0q2XLjum5hcNA35pe4SEs/CtQqpZE1o1MPwISke
+	 0OB6jpokJJJ+B9F86zTx8EgeG2ymAYs0Cvj1uS+q0lVb6LwtO5ZRJTXF9J9DnnB/xd
+	 V7CI25VZpkgCg==
+Message-ID: <a4c6b9cb5617fdea92739e85ff1a29da1ac14f30.camel@kernel.org>
+Subject: Re: [PATCH v2 02/31] exportfs: add new EXPORT_OP_STABLE_HANDLES flag
 From: Jeff Layton <jlayton@kernel.org>
 To: Christoph Hellwig <hch@infradead.org>
 Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro	
@@ -91,11 +91,11 @@ Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro
 	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
 	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
 	linux-doc@vger.kernel.org
-Date: Tue, 20 Jan 2026 08:20:06 -0500
-In-Reply-To: <aW8yV6v8ZDiynOUm@infradead.org>
+Date: Tue, 20 Jan 2026 08:21:45 -0500
+In-Reply-To: <aW8ztQ-RbhxwzMk7@infradead.org>
 References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
-	 <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
-	 <aW8yV6v8ZDiynOUm@infradead.org>
+	 <20260119-exportfs-nfsd-v2-2-d93368f903bd@kernel.org>
+	 <aW8ztQ-RbhxwzMk7@infradead.org>
 Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
  n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
@@ -187,16 +187,16 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,infradead.org,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13109-lists,linux-ext4=lfdr.de];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,infradead.org,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13110-lists,linux-ext4=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	MIME_TRACE(0.00)[0:+];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-ext4@vger.kernel.org];
@@ -204,29 +204,50 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	RCPT_COUNT_GT_50(0.00)[77];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 6528F51641
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 0F02F53D13
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, 2026-01-19 at 23:44 -0800, Christoph Hellwig wrote:
-> On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
-> > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Some
-> > +    filesystems cannot properly support file locking as implemented by
-> > +    nfsd. A case in point is reexport of NFS itself, which can't be do=
-ne
-> > +    safely without coordinating the grace period handling. Other clust=
-ered
-> > +    and networked filesystems can be problematic here as well.
+On Mon, 2026-01-19 at 23:50 -0800, Christoph Hellwig wrote:
+> On Mon, Jan 19, 2026 at 11:26:19AM -0500, Jeff Layton wrote:
+> > +  EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that=
+ are
+> > +    stable across the lifetime of a file. This is a hard requirement f=
+or export
+> > +    via nfsd. Any filesystem that is eligible to be exported via nfsd =
+must
+> > +    indicate this guarantee by setting this flag. Most disk-based file=
+systems
+> > +    can do this naturally. Pseudofilesystems that are for local report=
+ing and
+> > +    control (e.g. kernfs, pidfs, nsfs) usually can't support this.
 >=20
-> I'm not sure this is very useful.  It really needs to document what
-> locking semantics nfs expects, because otherwise no reader will know
-> if they set this or not.
+> Suggested rewording, taking some of the ideas from Dave Chinners earlier
+> comments into account:
+>=20
+>   EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that ar=
+e
+>     stable across the lifetime of a file.  A file in this context is an
+>     instantiated inode reachable by one or more file names, or still open=
+ after
+>     the last name has been unlinked.  Reuses of the same on-disk inode st=
+ructure
+>     are considered new files and must provide different file handles from=
+ the
+>     previous incarnation.  Most file systems designed to store user data
+>     naturally provide this capability.  Pseudofilesystems that are for lo=
+cal
+>     reporting and control (e.g. kernfs, pidfs, nsfs) usually can't suppor=
+t this.
+>=20
+>     This flags is a hard requirement for export via nfsd. Any filesystem =
+that
+>     is eligible to be exported via nfsd must indicate this guarantee by
+>     setting this flag.
 
-Fair point. I'll see if I can draft something better. Suggestions
-welcome.
+Thanks Christoph! I'll plan to adopt this for v3.
 --=20
 Jeff Layton <jlayton@kernel.org>
 
