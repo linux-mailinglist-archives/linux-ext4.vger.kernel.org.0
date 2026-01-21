@@ -1,109 +1,105 @@
-Return-Path: <linux-ext4+bounces-13160-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13161-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8BCEIBjAcGnIZgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13160-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 13:01:28 +0100
+	id MC/DGX7HcGkNZwAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13161-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 13:33:02 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE64566D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 13:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2588A56D3A
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 13:33:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BDC715A533C
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 11:56:49 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C2D4F4E631A
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 12:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC6140759F;
-	Wed, 21 Jan 2026 11:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A52D477E2B;
+	Wed, 21 Jan 2026 12:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7pt8lYK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q9uoWd/m"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93793D3496;
-	Wed, 21 Jan 2026 11:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE542BE047;
+	Wed, 21 Jan 2026 12:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768996591; cv=none; b=Cn28S/BT4p7k5Mj0YnQ2exklCNOCU9NqMz7a8HADJqMu9MOtDWPJsjRpVkAgTJeVkd6LZ7QVVvdASsoa+nwi/3EPRX0Z9ekSrcYiPn2dJist6hJjSCJ4Z6NizseKkCnjXjeDZKlANODAWr9FEGCdGcs3suW/G6DPglxhFIrYqg0=
+	t=1768998602; cv=none; b=mwsEn+BuqxAQFWH2kOtC7OVV/ql93RVB+ekEhPBf5kKJbIgc8xCUbGfX4nhv4rn/YeyyKB28ZGDmZWm3us7RTblkCuQ4+YaOJkEKiSNlLsDRrV9X+mKOJLsw0RddLDERwDVt4QfHoiMcTIfMUTQtjwcr26iccBocinwNm/UFhjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768996591; c=relaxed/simple;
-	bh=s/nN+L4tO0ReDIA8U1XnXBFUBSeAf8wqtBg+Qg7q5K4=;
+	s=arc-20240116; t=1768998602; c=relaxed/simple;
+	bh=qe7hU0xGsnAGodvdUT9CNao+ZWoECfunKCWawAqpg/Q=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PtUuTg+KZTCP5o6ILkJ4bcP1rrFUC2sJZDnwRkOOl3tJcE0fmRkJRLgeQMSjfra3INA4fXSR6Pp7h9UI8HzB7EfqelYGA6FTvXaQ4nPrVAjR5viV9453dOW4DtMpAa+mq+KvPNgl1K7c835DndQIf6yaRoeWymHfUfFB5Y41/0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o7pt8lYK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E66C2C116D0;
-	Wed, 21 Jan 2026 11:56:23 +0000 (UTC)
+	 Content-Type:MIME-Version; b=UQosEz8gT90v+aBnlcZAM7WHS4KrQvD9H7386JGzOzNfdBB8z8MqVwDFzQSRMB7KE8OpryfIlkkfXnzP0RC2TKyoRh5kJqTEvkT+vn0Aa50Ilp6fP+hOKVrudJGkUczbEjG5XV0bnviF0WuNuBo2lC7hWE4wUVdDZq2LgIKLQmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q9uoWd/m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E47A9C116D0;
+	Wed, 21 Jan 2026 12:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768996590;
-	bh=s/nN+L4tO0ReDIA8U1XnXBFUBSeAf8wqtBg+Qg7q5K4=;
+	s=k20201202; t=1768998601;
+	bh=qe7hU0xGsnAGodvdUT9CNao+ZWoECfunKCWawAqpg/Q=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=o7pt8lYKcUwkZvaQYgMOv1MWde4CBIVwy9O43WuDtOJkfnyhx+ILjgaeVDsOB+n90
-	 Wzv3lDFAv2Yi2u489yNATguHULfFyCtdbQQ6tXlpv4795y7peYcCGAUVncgMrN5p3a
-	 IxqDgkJQpFmkx63hA1fZV6u1Kcyew1+GSTlkgVnpzLn7uScpHcGW2vSaF60Q6y48CC
-	 Jfic/yn5QBazLrPcnDuzuXeiu5nFNS1Itu4mHSga96VVOMKQI0UziTWm+ljaiesjOU
-	 geoVzVwprwRYHhzxB9PrHzj9d6BcoiRGNR8Vk6s4aBGy7uWtGPTvI19A9Lm+XRweyG
-	 j8vwsVKIsxu9Q==
-Message-ID: <ccb32c576cc4ebf943d5ec35e3d7ba4ae8892acd.camel@kernel.org>
-Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
- nfsd export support
+	b=q9uoWd/mZkwY9bMKMRhLR6mrPvEq7golmPJri1qLVFxU7FgLbKwKjMh8KCVbS6vVh
+	 Sw+5u3+yN5GOs9jmEFKuOaZvtKszzfHvb+JSRJR+jf5bgYbaajUfqnIcVXPd4c5WpJ
+	 ZUnXyyq+sahNOTDp3HtrS1nPGlaFcL/9Wb6qX1fMk91QZrqHzbTe8WtY781KLi68/j
+	 KCIQ6XPkD3D1ZdLLE5XCUFZ+dguCZvRWJBXnxLHo4KuxUds6kpTLtZSOP6PcP6KvJb
+	 MmYA7JHgNa98Dh52swCV6GpFM09Ir/pZEQWLR43Go1/Jz4erVVxR4IY3Qh6j8YmkuI
+	 0XqHz72/SLhZw==
+Message-ID: <d8d68d1df6838c382799ce58345cfb5366585a8f.camel@kernel.org>
+Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
 From: Jeff Layton <jlayton@kernel.org>
 To: NeilBrown <neil@brown.name>
-Cc: Christian Brauner <brauner@kernel.org>, Christoph Hellwig	
- <hch@infradead.org>, Amir Goldstein <amir73il@gmail.com>, Alexander Viro	
- <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>, Olga
- Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom
- Talpey <tom@talpey.com>, Hugh Dickins	 <hughd@google.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Andrew Morton	
- <akpm@linux-foundation.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger	
- <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Gao Xiang
- <xiang@kernel.org>,  Chao Yu <chao@kernel.org>, Yue Hu
- <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,  Sandeep
- Dhavale <dhavale@google.com>, Hongbo Li <lihongbo22@huawei.com>, Chunhai
- Guo <guochunhai@vivo.com>,  Carlos Maiolino	 <cem@kernel.org>, Ilya Dryomov
- <idryomov@gmail.com>, Alex Markuze	 <amarkuze@redhat.com>, Viacheslav
- Dubeyko <slava@dubeyko.com>, Chris Mason	 <clm@fb.com>, David Sterba
- <dsterba@suse.com>, Luis de Bethencourt	 <luisbg@kernel.org>, Salah Triki
- <salah.triki@gmail.com>, Phillip Lougher	 <phillip@squashfs.org.uk>, Steve
- French <sfrench@samba.org>, Paulo Alcantara	 <pc@manguebit.org>, Ronnie
- Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N	
- <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, Miklos
- Szeredi	 <miklos@szeredi.hu>, Mike Marshall <hubcap@omnibond.com>, Martin
- Brandenburg	 <martin@omnibond.com>, Mark Fasheh <mark@fasheh.com>, Joel
- Becker	 <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Ryusuke
- Konishi <konishi.ryusuke@gmail.com>,  Trond Myklebust <trondmy@kernel.org>,
- Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, David
+Cc: Christoph Hellwig <hch@infradead.org>, Christian Brauner	
+ <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Chuck Lever
+	 <chuck.lever@oracle.com>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo
+	 <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Amir Goldstein	
+ <amir73il@gmail.com>, Hugh Dickins <hughd@google.com>, Baolin Wang	
+ <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>,
+  Theodore Ts'o	 <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Jan Kara	 <jack@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
+ <chao@kernel.org>, Yue Hu	 <zbestahu@gmail.com>, Jeffle Xu
+ <jefflexu@linux.alibaba.com>, Sandeep Dhavale	 <dhavale@google.com>, Hongbo
+ Li <lihongbo22@huawei.com>, Chunhai Guo	 <guochunhai@vivo.com>, Carlos
+ Maiolino <cem@kernel.org>, Ilya Dryomov	 <idryomov@gmail.com>, Alex Markuze
+ <amarkuze@redhat.com>, Viacheslav Dubeyko	 <slava@dubeyko.com>, Chris Mason
+ <clm@fb.com>, David Sterba <dsterba@suse.com>,  Luis de Bethencourt	
+ <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, Phillip Lougher	
+ <phillip@squashfs.org.uk>, Steve French <sfrench@samba.org>, Paulo
+ Alcantara	 <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+ Shyam Prasad N	 <sprasad@microsoft.com>, Bharath SM
+ <bharathsm@microsoft.com>, Miklos Szeredi	 <miklos@szeredi.hu>, Mike
+ Marshall <hubcap@omnibond.com>, Martin Brandenburg	 <martin@omnibond.com>,
+ Mark Fasheh <mark@fasheh.com>, Joel Becker	 <jlbec@evilplan.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>, Konstantin Komarov
+ <almaz.alexandrovich@paragon-software.com>, Ryusuke Konishi
+ <konishi.ryusuke@gmail.com>,  Trond Myklebust <trondmy@kernel.org>, Anna
+ Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, David
  Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Jan
  Kara <jack@suse.cz>,  Andreas Gruenbacher	 <agruenba@redhat.com>, OGAWA
  Hirofumi <hirofumi@mail.parknet.co.jp>, Jaegeuk Kim <jaegeuk@kernel.org>,
- linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Jonathan Corbet <corbet@lwn.net>, David Laight	
+ <david.laight.linux@gmail.com>, Dave Chinner <david@fromorbit.com>, 
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
  linux-ext4@vger.kernel.org, 	linux-erofs@lists.ozlabs.org,
  linux-xfs@vger.kernel.org, 	ceph-devel@vger.kernel.org,
  linux-btrfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
- linux-unionfs@vger.kernel.org, 	devel@lists.orangefs.org,
- ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, 
-	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net, 
-	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
-	linux-f2fs-devel@lists.sourceforge.net
-Date: Wed, 21 Jan 2026 06:56:22 -0500
-In-Reply-To: <176896790525.16766.11792073987699294594@noble.neil.brown.name>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
-	, <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
-	, <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
-	, <176877859306.16766.15009835437490907207@noble.neil.brown.name>
-	, <aW3SAKIr_QsnEE5Q@infradead.org>
-	, <176880736225.16766.4203157325432990313@noble.neil.brown.name>
-	, <20260119-kanufahren-meerjungfrau-775048806544@brauner>
-	, <176885553525.16766.291581709413217562@noble.neil.brown.name>
-	, <20260120-entmilitarisieren-wanken-afd04b910897@brauner>
-	, <176890211061.16766.16354247063052030403@noble.neil.brown.name>
-	, <20260120-hacken-revision-88209121ac2c@brauner>
-	, <a35ac736d9ebc6c92a6e7d61aeb5198234102442.camel@kernel.org>
-	 <176896790525.16766.11792073987699294594@noble.neil.brown.name>
+ samba-technical@lists.samba.org, 	linux-unionfs@vger.kernel.org,
+ devel@lists.orangefs.org, 	ocfs2-devel@lists.linux.dev,
+ ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
+	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
+	linux-doc@vger.kernel.org
+Date: Wed, 21 Jan 2026 07:29:52 -0500
+In-Reply-To: <176898948697.16766.1729756714812778707@noble.neil.brown.name>
+References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
+	, <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
+	, <aW8yV6v8ZDiynOUm@infradead.org>
+	, <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
+	, <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
+	, <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
+	 <176898948697.16766.1729756714812778707@noble.neil.brown.name>
 Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
  n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
@@ -197,9 +193,9 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,infradead.org,gmail.com,zeniv.linux.org.uk,oracle.com,redhat.com,talpey.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
+	FREEMAIL_CC(0.00)[infradead.org,kernel.org,zeniv.linux.org.uk,oracle.com,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13160-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13161-lists,linux-ext4=lfdr.de];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
@@ -209,269 +205,96 @@ X-Spamd-Result: default: False [-0.46 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[72];
+	RCPT_COUNT_GT_50(0.00)[77];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 3FE64566D4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,brown.name:email]
+X-Rspamd-Queue-Id: 2588A56D3A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 2026-01-21 at 14:58 +1100, NeilBrown wrote:
-> On Tue, 20 Jan 2026, Jeff Layton wrote:
-> > On Tue, 2026-01-20 at 11:31 +0100, Christian Brauner wrote:
-> > > On Tue, Jan 20, 2026 at 08:41:50PM +1100, NeilBrown wrote:
-> > > > On Tue, 20 Jan 2026, Christian Brauner wrote:
-> > > > > On Tue, Jan 20, 2026 at 07:45:35AM +1100, NeilBrown wrote:
-> > > > > > On Mon, 19 Jan 2026, Christian Brauner wrote:
-> > > > > > > On Mon, Jan 19, 2026 at 06:22:42PM +1100, NeilBrown wrote:
-> > > > > > > > On Mon, 19 Jan 2026, Christoph Hellwig wrote:
-> > > > > > > > > On Mon, Jan 19, 2026 at 10:23:13AM +1100, NeilBrown wrote=
-:
-> > > > > > > > > > > This was Chuck's suggested name. His point was that S=
-TABLE means that
-> > > > > > > > > > > the FH's don't change during the lifetime of the file=
-.
-> > > > > > > > > > >=20
-> > > > > > > > > > > I don't much care about the flag name, so if everyone=
- likes PERSISTENT
-> > > > > > > > > > > better I'll roll with that.
-> > > > > > > > > >=20
-> > > > > > > > > > I don't like PERSISTENT.
-> > > > > > > > > > I'd rather call a spade a spade.
-> > > > > > > > > >=20
-> > > > > > > > > >   EXPORT_OP_SUPPORTS_NFS_EXPORT
-> > > > > > > > > > or
-> > > > > > > > > >   EXPORT_OP_NOT_NFS_COMPATIBLE
-> > > > > > > > > >=20
-> > > > > > > > > > The issue here is NFS export and indirection doesn't br=
-ing any benefits.
-> > > > > > > > >=20
-> > > > > > > > > No, it absolutely is not.  And the whole concept of calli=
-ng something
-> > > > > > > > > after the initial or main use is a recipe for a mess.
-> > > > > > > >=20
-> > > > > > > > We are calling it for it's only use.  If there was ever ano=
-ther use, we
-> > > > > > > > could change the name if that made sense.  It is not a publ=
-ic name, it
-> > > > > > > > is easy to change.
-> > > > > > > >=20
-> > > > > > > > >=20
-> > > > > > > > > Pick a name that conveys what the flag is about, and docu=
-ment those
-> > > > > > > > > semantics well.  This flag is about the fact that for a g=
-iven file,
-> > > > > > > > > as long as that file exists in the file system the handle=
- is stable.
-> > > > > > > > > Both stable and persistent are suitable for that, nfs is =
-everything
-> > > > > > > > > but.
-> > > > > > > >=20
-> > > > > > > > My understanding is that kernfs would not get the flag.
-> > > > > > > > kernfs filehandles do not change as long as the file exist.
-> > > > > > > > But this is not sufficient for the files to be usefully exp=
-orted.
-> > > > > > > >=20
-> > > > > > > > I suspect kernfs does re-use filehandles relatively soon af=
-ter the
-> > > > > > > > file/object has been destroyed.  Maybe that is the real pro=
-blem here:
-> > > > > > > > filehandle reuse, not filehandle stability.
-> > > > > > > >=20
-> > > > > > > > Jeff: could you please give details (and preserve them in f=
-uture cover
-> > > > > > > > letters) of which filesystems are known to have problems an=
-d what
-> > > > > > > > exactly those problems are?
-> > > > > > > >=20
-> > > > > > > > >=20
-> > > > > > > > > Remember nfs also support volatile file handles, and othe=
-r applications
-> > > > > > > > > might rely on this (I know of quite a few user space appl=
-ications that
-> > > > > > > > > do, but they are kinda hardwired to xfs anyway).
-> > > > > > > >=20
-> > > > > > > > The NFS protocol supports volatile file handles.  knfsd doe=
-s not.
-> > > > > > > > So maybe
-> > > > > > > >   EXPORT_OP_NOT_NFSD_COMPATIBLE
-> > > > > > > > might be better.  or EXPORT_OP_NOT_LINUX_NFSD_COMPATIBLE.
-> > > > > > > > (I prefer opt-out rather than opt-in because nfsd export wa=
-s the
-> > > > > > > > original purpose of export_operations, but it isn't somethi=
+On Wed, 2026-01-21 at 20:58 +1100, NeilBrown wrote:
+> On Wed, 21 Jan 2026, Jeff Layton wrote:
+> > On Tue, 2026-01-20 at 09:12 -0500, Jeff Layton wrote:
+> > > On Tue, 2026-01-20 at 08:20 -0500, Jeff Layton wrote:
+> > > > On Mon, 2026-01-19 at 23:44 -0800, Christoph Hellwig wrote:
+> > > > > On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
+> > > > > > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem.=
+ Some
+> > > > > > +    filesystems cannot properly support file locking as implem=
+ented by
+> > > > > > +    nfsd. A case in point is reexport of NFS itself, which can=
+'t be done
+> > > > > > +    safely without coordinating the grace period handling. Oth=
+er clustered
+> > > > > > +    and networked filesystems can be problematic here as well.
+> > > > >=20
+> > > > > I'm not sure this is very useful.  It really needs to document wh=
+at
+> > > > > locking semantics nfs expects, because otherwise no reader will k=
+now
+> > > > > if they set this or not.
+> > > >=20
+> > > > Fair point. I'll see if I can draft something better. Suggestions
+> > > > welcome.
+> > >=20
+> > > How about this?
+> > >=20
+> > > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Files=
+ystems
+> > > +    that want to support locking over NFS must support POSIX file lo=
+cking
+> > > +    semantics and must handle lock recovery requests from clients af=
+ter a
+> > > +    reboot. Most local disk, RAM, or pseudo-filesystems use the gene=
+ric POSIX
+> > > +    locking support in the kernel and naturally provide this capabil=
+ity. Network
+> > > +    or clustered filesystems usually need special handling to do thi=
+s properly.
+> >=20
+> > Even better, I think?
+> >=20
+> > +
+> > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Filesys=
+tems
+> > +    that want to support locking over NFS must support POSIX file lock=
+ing
+> > +    semantics. When the server reboots, the clients will issue request=
+s to
+> > +    recover their locks, which nfsd will issue to the filesystem as ne=
+w lock
+> > +    requests. Those must succeed in order for lock recovery to work. M=
+ost
+> > +    local disk, RAM, or pseudo-filesystems use the generic POSIX locki=
 ng
-> > > > > > > > I would fight for)
-> > > > > > >=20
-> > > > > > > I prefer one of the variants you proposed here but I don't pa=
-rticularly
-> > > > > > > care. It's not a hill worth dying on. So if Christoph insists=
- on the
-> > > > > > > other name then I say let's just go with it.
-> > > > > > >=20
-> > > > > >=20
-> > > > > > This sounds like you are recommending that we give in to bullyi=
-ng.
-> > > > > > I would rather the decision be made based on the facts of the c=
-ase, not
-> > > > > > the opinions that are stated most bluntly.
-> > > > > >=20
-> > > > > > I actually think that what Christoph wants is actually quite di=
-fferent
-> > > > > > from what Jeff wants, and maybe two flags are needed.  But I do=
-n't yet
-> > > > > > have a clear understanding of what Christoph wants, so I cannot=
- be sure.
-> > > > >=20
-> > > > > I've tried to indirectly ask whether you would be willing to comp=
-romise
-> > > > > here or whether you want to insist on your alternative name. Appa=
-rently
-> > > > > that didn't come through.
-> > > >=20
-> > > > This would be the "not a hill worthy dying on" part of your stateme=
-nt.
-> > > > I think I see that implication now.
-> > > > But no, I don't think compromise is relevant.  I think the problem
-> > > > statement as originally given by Jeff is misleading, and people hav=
-e
-> > > > been misled to an incorrect name.
-> > > >=20
-> > > > >=20
-> > > > > I'm unclear what your goal is in suggesting that I recommend "we"=
- give
-> > > > > into bullying. All it achieved was to further derail this thread.
-> > > > >=20
-> > > >=20
-> > > > The "We" is the same as the "us" in "let's just go with it".
-> > > >=20
-> > > >=20
-> > > > > I also think it's not very helpful at v6 of the discussion to sta=
-rt
-> > > > > figuring out what the actual key rift between Jeff's and Christop=
-h's
-> > > > > position is. If you've figured it out and gotten an agreement and=
- this
-> > > > > is already in, send a follow-up series.
-> > > >=20
-> > > > v6?  v2 was posted today.  But maybe you are referring the some oth=
-er
-> > > > precursors.
-> > > >=20
-> > > > The introductory statement in v2 is
-> > > >=20
-> > > >    This patchset adds a flag that indicates whether the filesystem =
-supports
-> > > >    stable filehandles (i.e. that they don't change over the life of=
- the
-> > > >    file). It then makes any filesystem that doesn't set that flag
-> > > >    ineligible for nfsd export.
-> > > >=20
-> > > > Nobody else questioned the validity of that.  I do.
-> > > > No evidence was given that there are *any* filesystems that don't
-> > > > support stable filehandles.  The only filesystem mentioned is cgrou=
-ps
-> > > > and it DOES provide stable filehandles.
-> > >=20
-> >=20
-> > Across reboot? Not really.
+> > +    support in the kernel and naturally provide this capability. Netwo=
+rk or
+> > +    clustered filesystems usually need special handling to do this pro=
+perly.
+> > +    Set this flag on filesystems that can't guarantee the proper seman=
+tics
+> > +    (e.g. reexported NFS).
 >=20
-> Across reboot all the files are deleted and then new ones are created.
-> So there is nothing that needs to be stable.
->=20
-> >=20
-> > It's quite possible that we may end up with the same "id" numbers in
-> > cgroupfs on a new incarnation of the filesystem after a reboot. The
-> > files in there are not the same ones as the ones before, but their
-> > filehandles may match because kernfs doesn't factor in an i_generation
-> > number.
->=20
-> That is is about filehandle re-use, not about filehandle stability.
->=20
-> >=20
-> > Could we fix it by adding a random i_generation value or something?
-> > Possibly, but there really isn't a good use-case that I can see for
-> > allowing cgroupfs to be exported via nfsd. Best to disallow it until
-> > someone comes up with one.
->=20
-> 100% agree.
->=20
-> >=20
-> > > Oh yes we did. And this is a merry-go-round.
-> > >=20
-> > > It is very much fine for a filesystems to support file handles withou=
-t
-> > > wanting to support exporting via NFS. That is especially true for
-> > > in-kernel pseudo filesystems.
-> > >=20
-> > > As I've said before multiple times I want a way to allow filesystems
-> > > such as pidfs and nsfs to use file handles without supporting export.
-> > > Whatever that fscking flag is called at this point I fundamentally do=
-n't
-> > > care. And we are reliving the same arguments over and over.
-> > >=20
-> > > I will _hard NAK_ anything that starts mandating that export of
-> > > filesystems must be allowed simply because their file handles fit exp=
-ort
-> > > criteria. I do not care whether pidfs or nsfs file handles fit the bi=
-ll.
-> > > They will not be exported.
-> >=20
-> > I don't really care what we call the flag. I do care a little about
-> > what its semantics are, but the effect should be to ensure that fs
-> > maintainers make a conscious decision about whether nfsd export should
-> > be allowed on the filesystem.=C2=A0
->=20
-> Why do you need a conscious decision so much that you want to try to
-> force it.
-
-As I said before, filesystems are growing export_operations for other
-reasons than nfs export. I simply want to the fs maintainers to take a
-conscious step to say "yes, this should be available via nfsd if it's
-exported". Hopefully they'll also validate that it actually _works_
-too.
-
-> Of course we want conscious decisions and hope they are always made, but
-> trying to manipulate people to doing things often fails.  How sure are
-> you that fs developers won't just copy-paste some other implementation
-> and not think about the implications of the flag?
->
-> What is the down side?  What is the harm from allowing export (should the
-> admin attempt it)?
-> If there were serious security concerns - then sure, make it harder to
-> do the dangerous thing.
-> But if it is just "it doesn't make sense", then there is no harm in
-> letting people get away with not reading the documentation, and fixing
-> things later as complaints arrive.  That is generally how the process
-> works.
+> I think this is quite thorough, which it good ...  maybe too good :-) It
+> reminds me that for true NFS compatibility the fs shouldn't allow local
+> locks (or file opens!) until the grace period has passed.  I don't think
+> any local filesystems enforce that - it would have to be locks.c that
+> does I expect.  I doubt there would be much appetite for doing that
+> though.
 >=20
 
-Some of the more exotic filesystems could end up causing kernel panics
-or something if exported when they haven't been validated to actually
-work with nfsd. That's mostly FUD though -- I don't have any examples.
+Yeah, I don't see us ever doing that. It'd be a tricky chicken-and-egg
+problem, given the demand-driven way that the mountd upcalls work
+today. We don't even know that anything is exported until something
+asks for it.
 
-> But if you really really want to set this new flag on almost every
-> export_operations, can I ask that you please set it on EVERY export
-> operations, then allow maintainers to remove it as they see fit.
-> I think that approach would be much easier to review.
+> Reviewed-by: NeilBrown <neil@brown.name>
 >=20
 
-We could probably do that, but I think the main ones that excludes it
-are kernfs, pidfs and nsfs. ovl and fuse also have export ops in
-certain modes that exclude NFS access, so the flag was left off of
-those as well.
-
-> With your current series it is non-trivial to determine which
-> export_operations you have chosen not to set the flag on.  If you had
-> one patch that set it everywhere, then individual patches to remove it,
-> that would be a lot easier to review.
-
-Noted. At this point I'm debating whether to pursue this further, or
-just drop this for now until we can come to a better consensus. Maybe
-we need a discussion about this at LSF?
-
+Thanks!
 --=20
 Jeff Layton <jlayton@kernel.org>
 
