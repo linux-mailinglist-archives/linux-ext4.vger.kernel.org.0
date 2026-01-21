@@ -1,234 +1,349 @@
-Return-Path: <linux-ext4+bounces-13158-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13159-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CHO7FLCwcGmKZAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13158-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 11:55:44 +0100
+	id cOKxCoiucGmKZAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13159-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 11:46:32 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1E05593A
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 11:55:43 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDFFD55738
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 11:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 81E91904E7C
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 10:19:11 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BCD35649FE1
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Jan 2026 10:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0501A466B4B;
-	Wed, 21 Jan 2026 10:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D34E0364EAC;
+	Wed, 21 Jan 2026 10:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oyZr4bIa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hKGDT3RV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oyZr4bIa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hKGDT3RV"
+	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="kv5lmdgw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o4LwLi0F"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-b6-smtp.messagingengine.com (flow-b6-smtp.messagingengine.com [202.12.124.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4729C47A0C4
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Jan 2026 10:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60095389DE8;
+	Wed, 21 Jan 2026 10:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768990537; cv=none; b=aAu8KjEJO/QsHP6pEjsCaKSmNA1kmZ0uhL7NUEDmGHoDfIy8LjkM2mVy5yHq4gQdMCJVQoZGPHzOzYPy9dnZZXBWoO3p9o7D1YAb14xuHnfOaQcLCGQSyL0Y66S7Aa7tEEMPdmZFjIo9oJrH6PNLI8c+b8ag/dwpoaabqZw7bAw=
+	t=1768991684; cv=none; b=EyXHTR8PEW6TNW7D1iHrpTSgYngJnDsvJvLD7v4p0cHAmYJvT1Cdphm5uSV+VTARDKi/yBb0N8fHcqFHq/SMItzoxYeCiXYMTDSYLc2tzwvkxJ/BVcklVUmlD3YPXfkbEi5Y8kMDGliX29u9II6+IkMdl5PNneuTTZYBGKIz2KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768990537; c=relaxed/simple;
-	bh=FuM/jn/pLIo1tsEbZu2EXv1DBTqVWbRptLylqPwV49M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CkKQta75UIiPlCDsvfKipaqySbKt56CFMN+2wCMmdDoadyv21LA10k9xifF/5r/X3MPZ/F+JWC9ClWl4Mo8DOJIMWJYSZDHuB3Vw3XLM62GMY7GYqgp5dhRXKxBep0hrdfu8/zpHsoK8ZitpH1D/KCkQ/ja43p5+TDisOrb8pQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oyZr4bIa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hKGDT3RV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oyZr4bIa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hKGDT3RV; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 411673368B;
-	Wed, 21 Jan 2026 10:15:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768990531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aF2V3WhsKglhokc+vDCdyrArCDZRi7BaNs5JOgZNrVU=;
-	b=oyZr4bIa8xa6khQR+3eM1H61wEuW3Q0Mnyvw0c7ai3xakzeGQVGU/k5BpLu7zyxFGI53uU
-	/Md2kFXYwOpTYCKaVuK9vdlm7AYjoWJosUfSR6+QZ/KVddN/7n+GkQpROamRQAgf+irhFa
-	1efAhFd3urlGVtpZhRDELhC8i3q+sWw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768990531;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aF2V3WhsKglhokc+vDCdyrArCDZRi7BaNs5JOgZNrVU=;
-	b=hKGDT3RVd5aKhQJyzWkmDrePqUureFmqRjTuFORoR2dLuF3B2vhHl4w5CN1/YYvRUf4RLG
-	hO1E2Tf9swmlZDCQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oyZr4bIa;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hKGDT3RV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768990531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aF2V3WhsKglhokc+vDCdyrArCDZRi7BaNs5JOgZNrVU=;
-	b=oyZr4bIa8xa6khQR+3eM1H61wEuW3Q0Mnyvw0c7ai3xakzeGQVGU/k5BpLu7zyxFGI53uU
-	/Md2kFXYwOpTYCKaVuK9vdlm7AYjoWJosUfSR6+QZ/KVddN/7n+GkQpROamRQAgf+irhFa
-	1efAhFd3urlGVtpZhRDELhC8i3q+sWw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768990531;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aF2V3WhsKglhokc+vDCdyrArCDZRi7BaNs5JOgZNrVU=;
-	b=hKGDT3RVd5aKhQJyzWkmDrePqUureFmqRjTuFORoR2dLuF3B2vhHl4w5CN1/YYvRUf4RLG
-	hO1E2Tf9swmlZDCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34BC63EA63;
-	Wed, 21 Jan 2026 10:15:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sl/WDEOncGnVbAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 21 Jan 2026 10:15:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E2DBFA09E9; Wed, 21 Jan 2026 11:15:26 +0100 (CET)
-Date: Wed, 21 Jan 2026 11:15:26 +0100
-From: Jan Kara <jack@suse.cz>
-To: Chuck Lever <cel@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org, sj1557.seo@samsung.com, 
-	yuezhang.mo@sony.com, almaz.alexandrovich@paragon-software.com, slava@dubeyko.com, 
-	glaubitz@physik.fu-berlin.de, frank.li@vivo.com, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	cem@kernel.org, sfrench@samba.org, pc@manguebit.org, ronniesahlberg@gmail.com, 
-	sprasad@microsoft.com, trondmy@kernel.org, anna@kernel.org, jaegeuk@kernel.org, 
-	chao@kernel.org, hansg@kernel.org, senozhatsky@chromium.org, 
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH v6 01/16] fs: Add case sensitivity flags to file_kattr
-Message-ID: <avtj6ud7hb7qyya4ekj24lu2jwmirlqspxa4ptmhjrvuhrgfx6@ghzl2aqdokkg>
-References: <20260120142439.1821554-1-cel@kernel.org>
- <20260120142439.1821554-2-cel@kernel.org>
+	s=arc-20240116; t=1768991684; c=relaxed/simple;
+	bh=OpxePorkT1HNnxC5gOEOzsWXRMG94APImSoi26gHNmM=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=bhTDpL/pkogLc2CU6Goz7o/yg2MTCRSnWinI0jTwfEP0kap8c1P8WUc76oB5i8tpUAE0BasSG3mAKO7Bc6Fn02HYA5h3E/oe9KY5CUb0SQruf6kobR27YtuAMpc+mho+YorM/sE3pUzHNebpVTu+e9CkgDhWH+KRZEz5iigM+dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=kv5lmdgw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=o4LwLi0F; arc=none smtp.client-ip=202.12.124.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
+Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
+	by mailflow.stl.internal (Postfix) with ESMTP id 14B671300419;
+	Wed, 21 Jan 2026 05:34:30 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Wed, 21 Jan 2026 05:34:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
+	1768991669; x=1768998869; bh=K9j3jhKpFIpiUQJzHWR2x3eEHOIQSB6ye1v
+	rprKdmzg=; b=kv5lmdgwptpNtolMex40wHyYDtu1zR3kROgUgHa9dV4DF424TII
+	xz8dxcyqZv5vn+C5E7je63p/kUX6FA6DJv49ZG4TEvmE9CmQROcNdltD80UCq70F
+	67OKAnNM8oyAk8/zKVARKWIUXc/0rwj0A3HsU66MhxNwBVK6BifqALpBS3KNgyjp
+	P0XbAYs6phH+mnFqRoXC1mh9pnuNQ+fFEwhXXc1sSnndee26t3rwwjTbJtTESJ9H
+	fxgBNTVTQMWx/Tnp/sidQDM5zxfwLw4V6i5O5idHrafun9SF76YRjqhEkQ+5kNcK
+	HcmbYYUHLFntzBcrv0lywLVtTimlIcl+nQw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768991669; x=
+	1768998869; bh=K9j3jhKpFIpiUQJzHWR2x3eEHOIQSB6ye1vrprKdmzg=; b=o
+	4LwLi0FQ1jEf8fskqm7+L10I5i+E4UcJvDl06S22E2N6MVzowyCMRqm/bH1M2J1a
+	JDwioi/R98Kd4aywyn9uZLSOM7z8MArbO4E7czObG95qdFlOtvQuQeCk3G1ZaKic
+	Tehtuqj1UGP3Eb7Ucl15f9362hASG+CEClGzitcQtKQLQ9R6sDLQi76cFZsvhiXR
+	ga+keMqdKP1sZXq4AW8N7RVWcf1Wq1jiHpO0YXPueFkCr92lRvi0sx0LsAgnwX8p
+	AKZCnY9vD6dcgSVBcblBk6RRY3JRRT1CNgtvJrCkNeFsfbLaIXO8m2mpKZ7xfZXV
+	VHjPUcyIoRUMrrAPKWG+w==
+X-ME-Sender: <xms:sqtwaejzMMYRFV89Y0xjhbUY2Ux7NPR7lm9XvAv8w1i7kASo3nK0Zw>
+    <xme:sqtwacbJbsKb0ZWVMi2Ld61rpE_gwOTUmZUOuIFkObP6qtSchisKdfJNZxw0XqFd2
+    dpJMMfqKKl9ncf8qF50uKZThAPLp5_pMzEv9z25paWGdt3g-rQ>
+X-ME-Received: <xmr:sqtwabSH-RRobwNx5gak-6jfqjdFsk_YBqmqf4AohoRb2sCX2uoyp4QOYu7NMlajZX_Q1etTmNQaSqmVM8w660ms4W7YiwL8iGuB03vkYszh>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeeftdehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurheptgfgggfhvfevufgjfhffkfhrsehtjeertddttdejnecuhfhrohhmpefpvghilheu
+    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
+    epudetfefhudevhedvfeeufedvffekveekgfdtfefggfekheejgefhteeihffggfelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepjedvpdhmohguvgepshhmthhp
+    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
+    hrtghpthhtohepghhuohgthhhunhhhrghisehvihhvohdrtghomhdprhgtphhtthhopehl
+    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
+    hugidquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
+    ihhnuhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
+    hnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:sqtwaUqa76K57jmkll9tnYEPNFtkwAFRAIOxkmOCTcJg3wPstOKebw>
+    <xmx:sqtwafqX8Nkd7EHiHXFk0lbznDX828ETkTyNFowHaBS8I4Kgjb_iRQ>
+    <xmx:sqtwaRGfSRcbTn7ju_6NXus6mwh9CX54E07yQqtkZf6nvJqjRrtQ3A>
+    <xmx:sqtwaZtU8f1xqg3JxB6L05BW89l7H_7-dfzynjFDw6dcCKuLsBgwHQ>
+    <xmx:tatwaYpYIXr04Y4VvYfBrbHTBHEkDGuPdYscX8VKwQ1WEKpEcFWHhm0u>
+Feedback-ID: iab3e480c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 21 Jan 2026 05:34:08 -0500 (EST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260120142439.1821554-2-cel@kernel.org>
-X-Spam-Score: -4.01
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-0.96 / 15.00];
+From: NeilBrown <neilb@ownmail.net>
+To: "Christoph Hellwig" <hch@infradead.org>
+Cc: "Christoph Hellwig" <hch@infradead.org>,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Jeff Layton" <jlayton@kernel.org>,
+ "Amir Goldstein" <amir73il@gmail.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <okorniev@redhat.com>,
+ "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+ "Hugh Dickins" <hughd@google.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
+ "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
+ "Sandeep Dhavale" <dhavale@google.com>,
+ "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
+ "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
+ "Alex Markuze" <amarkuze@redhat.com>,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
+ "David Sterba" <dsterba@suse.com>,
+ "Luis de Bethencourt" <luisbg@kernel.org>,
+ "Salah Triki" <salah.triki@gmail.com>,
+ "Phillip Lougher" <phillip@squashfs.org.uk>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Bharath SM" <bharathsm@microsoft.com>,
+ "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Mike Marshall" <hubcap@omnibond.com>,
+ "Martin Brandenburg" <martin@omnibond.com>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>,
+ "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+ "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Jaegeuk Kim" <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+ devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
+ ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
+ jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+In-reply-to: <aXCg-MqXH0E6IuwS@infradead.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>,
+ <176877859306.16766.15009835437490907207@noble.neil.brown.name>,
+ <aW3SAKIr_QsnEE5Q@infradead.org>,
+ <176880736225.16766.4203157325432990313@noble.neil.brown.name>,
+ <20260119-kanufahren-meerjungfrau-775048806544@brauner>,
+ <176885553525.16766.291581709413217562@noble.neil.brown.name>,
+ <aW8w2SRyFnmA2uqk@infradead.org>,
+ <176890126683.16766.5241619788613840985@noble.neil.brown.name>,
+ <aXCg-MqXH0E6IuwS@infradead.org>
+Date: Wed, 21 Jan 2026 21:34:04 +1100
+Message-id: <176899164457.16766.16099772451425825775@noble.neil.brown.name>
+Reply-To: NeilBrown <neil@brown.name>
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_DKIM_ALLOW(-0.20)[ownmail.net:s=fm2,messagingengine.com:s=fm2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13158-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,oracle.com:email,suse.cz:dkim,suse.com:email];
-	DMARC_NA(0.00)[suse.cz];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,mit.edu,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	REPLYTO_DN_EQ_FROM_DN(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[ownmail.net,none];
+	TAGGED_FROM(0.00)[bounces-13159-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[infradead.org,kernel.org,gmail.com,zeniv.linux.org.uk,oracle.com,redhat.com,talpey.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
+	FREEMAIL_FROM(0.00)[ownmail.net];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[neilb@ownmail.net,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[ownmail.net:+,messagingengine.com:+];
+	RCPT_COUNT_GT_50(0.00)[73];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	HAS_REPLYTO(0.00)[neil@brown.name];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: DB1E05593A
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[brown.name:replyto,ownmail.net:dkim,messagingengine.com:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,noble.neil.brown.name:mid]
+X-Rspamd-Queue-Id: CDFFD55738
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue 20-01-26 09:24:24, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
+On Wed, 21 Jan 2026, Christoph Hellwig wrote:
+> On Tue, Jan 20, 2026 at 08:27:46PM +1100, NeilBrown wrote:
+> > > If you think NFS actually explains the semantics pretty well, please
+> > > explain that too, especially in forms that can be put into
+> > > documentation, including for the user ABI.
+> > 
+> > There are multiple issues here:
+> > 
+> >  - filehandle stability.  As far as I know all filesystems provide
+> >    stable filehandles when the "subtree_check" export option is not used.
 > 
-> Enable upper layers such as NFSD to retrieve case sensitivity
-> information from file systems by adding FS_XFLAG_CASEFOLD and
-> FS_XFLAG_CASENONPRESERVING flags.
-> 
-> Filesystems report case-insensitive or case-nonpreserving behavior
-> by setting these flags directly in fa->fsx_xflags. The default
-> (flags unset) indicates POSIX semantics: case-sensitive and
-> case-preserving. These flags are read-only; userspace cannot set
-> them via ioctl.
-> 
-> Relocate struct file_kattr initialization from fileattr_fill_xflags()
-> and fileattr_fill_flags() to vfs_fileattr_get() and the ioctl/syscall
-> call sites. This allows filesystem ->fileattr_get() callbacks to set
-> flags directly in fa->fsx_xflags before invoking the fill functions,
-> which previously would have zeroed those values. Callers that bypass
-> vfs_fileattr_get() must now zero-initialize the struct themselves.
-> 
-> Case sensitivity information is exported to userspace via the
-> fa_xflags field in the FS_IOC_FSGETXATTR ioctl and file_getattr()
-> system call.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  fs/file_attr.c           | 14 ++++++--------
->  fs/xfs/xfs_ioctl.c       |  2 +-
->  include/linux/fileattr.h |  3 ++-
->  include/uapi/linux/fs.h  |  2 ++
->  4 files changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/file_attr.c b/fs/file_attr.c
-> index 13cdb31a3e94..2700200c5b9c 100644
-> --- a/fs/file_attr.c
-> +++ b/fs/file_attr.c
-> @@ -15,12 +15,10 @@
->   * @fa:		fileattr pointer
->   * @xflags:	FS_XFLAG_* flags
->   *
-> - * Set ->fsx_xflags, ->fsx_valid and ->flags (translated xflags).  All
-> - * other fields are zeroed.
-> + * Set ->fsx_xflags, ->fsx_valid and ->flags (translated xflags).
->   */
->  void fileattr_fill_xflags(struct file_kattr *fa, u32 xflags)
->  {
-> -	memset(fa, 0, sizeof(*fa));
->  	fa->fsx_valid = true;
->  	fa->fsx_xflags = xflags;
->  	if (fa->fsx_xflags & FS_XFLAG_IMMUTABLE)
-> @@ -46,11 +44,9 @@ EXPORT_SYMBOL(fileattr_fill_xflags);
->   * @flags:	FS_*_FL flags
->   *
->   * Set ->flags, ->flags_valid and ->fsx_xflags (translated flags).
-> - * All other fields are zeroed.
->   */
->  void fileattr_fill_flags(struct file_kattr *fa, u32 flags)
->  {
-> -	memset(fa, 0, sizeof(*fa));
->  	fa->flags_valid = true;
->  	fa->flags = flags;
->  	if (fa->flags & FS_SYNC_FL)
-> @@ -84,6 +80,8 @@ int vfs_fileattr_get(struct dentry *dentry, struct file_kattr *fa)
->  	struct inode *inode = d_inode(dentry);
->  	int error;
->  
-> +	memset(fa, 0, sizeof(*fa));
-> +
+> That is news to me, but certainly interesting.  Does this include not
+> reusing the file handle for a new incarnation of the same thing?
 
-Umm, but ioctl_getflags() sets fa->flags_valid as a hint for
-->fileattr_get() handler and this will now zero-out that hint. So I agree
-that zeroing fa in fileattr_fill_{,x}flags() is a bit unexpected and moving
-it is desirable but it needs a bit more careful surgery.
+"stable" and "reuse" are quite distinct concepts in my mind.
+"a new incarnation of the same thing" is in my experience a new thing.
+  rmdir foo: mkdir foo
+on an empty directory will create a new incarnation of the same thing.
+But it will appear to be different in various ways.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Names, not file handles, are generally used for new incarnations of the
+same thing (again - in my experience).
+
+I cannot 100% guarantee that all fs's provide filehandle stability, but
+I am not aware of any, and none have been presented in this discussion.
+
+It is true that the NFSv4 spec claims to allow them but I find the
+details provided insufficient.
+They might be able to work reliably if the server provided a delegation, but
+without it I don't think they can be used reliably.  I'm certainly not
+aware of any attempt to support them in Linux client or server.
+(I know Trond doesn't like "connectable" file handles).
+
+> 
+> >    Certainly cgroupfs does.  So having an EXPORT_OP_STABLE_HANDLES
+> >    flag would mean it was set for every filesystem - unless there is
+> >    something else I'm not aware of.  That is certainly possible and I
+> >    hope someone will let me know if I'm missing something.
+> 
+> Well, if does not provide stable file handles with the subtree_check
+> export option, or more importantly with the CONNECTABLE flag passed
+> to encode_fh, which is the level we're operating on, it can't set the
+> flag.
+> 
+
+Hmmm...  I didn't know that open_by_handle_at() supported CONNECTABLE
+requests. That seems relatively recent.
+
+If CONNECTABLE is requested, then only directories get stable
+filehandles.
+If CONNECTABLE is not requested, then all filehandles should be stable.
+
+
+
+> >  - filehandle uniqueness.  This is somewhat important and if a
+> >    filesystem doesn't provide it, that should be considered a bug.  In a
+> >    different thread Christian has observed that there would be benefit
+> >    if pidfs and nsfs provided uniqueness across reboots.  It is quite
+> >    easy for a virtual filesystem to generate a 64 bit random number when
+> >    the fs is initialised, and include that in file handles.  Having a
+> >    EXPORT_OP_REUSES_HANDLES flag could mark filesystems that are still
+> >    buggy if that is thought to be useful.
+> 
+> Yes.
+> 
+> >  - GETATTR always reporting file size of 0.  This is the only concrete
+> >    symptom that Jeff has reported (that I have seen).  This  makes it
+> >    impossible to read files over NFS even if they have content.
+> >    Would EXPORT_OP_INACCURATE_SIZE be useful?
+> 
+> i_size = 0 for a regular file sounds like a genuine bug to me.  I'm
+> actually surprised anything works with that.
+
+Files in /proc are all size zero.
+Files in /sys seem to be all 4096 (or maybe PAGE_SIZE).
+Files in /sys/kernel/security are all size zero
+Files in /sys/fs/cgroup are all zero
+
+I agree it is weird, but it seems to work ...  though I do have a vague
+memory of something not working because it used a library function to
+read a file, and it needed to be fixed.  No details come to mind except
+that it was probably md related.
+
+As some of these virtual files can be different every time they are
+read, there is TOCTOU issue with trying to make the i_size accurately
+reflect the result of a subsequent read.  I think the cost of setting an
+accurate i_size even when it is possible is not seen as worth while.
+
+> 
+> >  - maintainer feature choice.  A maintainer may choose not to support
+> >    export over NFS because they feel that there is no value and the
+> >    possible support burden would not be worth it.
+> 
+> The maintainer has no way to disallow exporting through nfs.  They can
+> at best disallow exporting using the kernel nfs daemon if we provide
+> that facility.  But as I've argued multiple times, making arbitrary,
+> selective and very narrow choices about use cases without technical
+> backing for them (which then would be expressable as a flag like those
+> listed by you above) is really bad software development practice, and
+> not something that we usually do in the Linux kernel.
+
+True: once you make files available to people you cannot control what
+people will do with them.
+So maybe you are saying "what is so special about knfsd that it gets
+information that no-one else can get".  I cannot argue against that.
+
+> 
+> >    There may be locking
+> >    / lease / etc issues that further complicate things.  So it might be
+> >    reasonable for a maintainer to choose to forbid NFS export while
+> >    allowing local fhandle access. EXPORT_OP_NO_NFS_EXPORT.
+> 
+> We already have a EXPORT_OP_NOLOCKS flag to deal with this.
+> 
+> > 
+> > It took me a while to sift through the code/patches/comments and come to
+> > this understanding and I apologise if I wasn't as clear earlier.  But
+> > my intuition was always that file handle stability was never the real
+> > issue, and maintainer choice was.  Hence my rejection of the
+> > "STABLE_HANDLES" name.
+> 
+> Why do you keep ignoring the fat that the stable handles are really
+> important for anyone wanting to actually use them for their original
+> storage purpose, be that for knfsd, a userland nfs damon, or other
+> storage applications in userspace despite explaining this countless
+> times?
+> 
+
+It isn't that I don't think they are important.  It is that I think they
+are universally provided (when not connectable).
+If we add an EXPORT_OP_STABLE_FILEHANDLES flag, I believe we would need to
+set it on every export_operations structure.  So what would be the
+point?
+
+Thanks,
+NeilBrown
 
