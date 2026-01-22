@@ -1,112 +1,113 @@
-Return-Path: <linux-ext4+bounces-13178-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13179-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yLDpKdx5cWkvHwAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13178-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 02:14:04 +0100
+	id 0HhHMz+HcWk1IAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13179-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 03:11:11 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E566034F
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 02:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7918D60BBC
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 03:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3DD1B3C77CA
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 01:14:01 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4DE414422AB
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 02:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B84333F8CF;
-	Thu, 22 Jan 2026 01:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662BE34CFA1;
+	Thu, 22 Jan 2026 02:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDWWOFkF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aXr59vdq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C56315D25
-	for <linux-ext4@vger.kernel.org>; Thu, 22 Jan 2026 01:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABD31A9F88
+	for <linux-ext4@vger.kernel.org>; Thu, 22 Jan 2026 02:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.172
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769044433; cv=pass; b=b5yzJXQSwp/qi+6eza19NeCaFgYcHgiGts6P+5+j6aswaGjo/GUpyGIcyvasWvVI+DF1ajXJsEarK/Hb6wjORFOX/IES5LqDbv1ZfQwffu8z1rV7UTMF/lh4bOOVvH0iWBYh6Klzh68Yb3WtxbmvtGQ9xYSguo+19SV92xjXXV0=
+	t=1769047647; cv=pass; b=upt+CnsyTY3L2VkxacsHAqgQvAe1S8Sx7wRr2V0dB/s3AE7dMQVF/InUZIQ4XA9NB/CqhsZ3pYe4oHnZ7hhyn4RimK/Mkis8kGK0QQxrPzXO+d8vY3jY57pVmD5H0UNW2Ic8Q7KfDOxCmPiYVFwXSB0CD51u19pnkWZix+wZZ+o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769044433; c=relaxed/simple;
-	bh=tEX+D1g1lVttEi0BuWRhKIw4cU0gKmvwvXVwSVxX3cE=;
+	s=arc-20240116; t=1769047647; c=relaxed/simple;
+	bh=Y6ljLvg48i3b1N9KN1v1Rm5dqdMrOeodbfvOYAP28aw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MkW2kBkUZPZcl88lPQmgtY5NGCkpVH2tZzS1dz1iJPk6fBH406mvEN02Az6rFkIYgePZvrwqw0r5V+HT6kDAYprkbnqCWZnjeT3Z/3zxeQqVJ0gshX5pB7JlvW98hW+Qny78ajR6gFCdxrQATBy1gYN5jKDSgKRQHR03SsT8CBE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDWWOFkF; arc=pass smtp.client-ip=209.85.160.169
+	 To:Cc:Content-Type; b=PVleV6VQtnI9Azdz6zU5znHFFpxMQ/OtRI7OyNzFwvqH3WFtUm4x+vFMuHGD/B9OKcMhMHgpsZaqKTBOcJI4cl5tECi1eILi3fdXn1M65Hm/U6/BmNEIACVPLCYctPXza4jiANB+JJO226VN/O4r/JZnXIe9LdEuJg2DwQwq3QE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aXr59vdq; arc=pass smtp.client-ip=209.85.160.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5014b7de222so4946491cf.0
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Jan 2026 17:13:51 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769044430; cv=none;
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-5014b7de222so5380751cf.0
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Jan 2026 18:07:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769047644; cv=none;
         d=google.com; s=arc-20240605;
-        b=LSFc0FJx7ie7WX1bwf7IjbkmleoNOlUiYSOVLe2aY37eEifevxxTsfn0DTxPOhKiOh
-         Fj0lr+dV+IO8W07RrYUooTw5H+JcOoe+2gyqVxbfc2SnRkujZutghQWSZv3/e6FSpygi
-         2xyeoVrxXuPuXe1wkY/XYOBXSKLE8WvGJIwpLHZfNuO+j0ypAj8rzwM5whNxVHRi6DEk
-         rPWHo4JT/OQ0CR5h1bQISgaBgNHSFnyqx7fGdU9xgZ0xxeYiBoJzE+vi29Iy5XUFEmeS
-         e5Gw43nuFe3PZJmLeeqnFl0JMKxapmtumJ/zXP439jVgFRjYPPb/W4JkGALd72FVCZtG
-         9Q1Q==
+        b=REkhz0rZMFoNkZ+dlO7Wu7ENMRJG+bOlXxL9NiFSK8UMTlR8MI7onMiMt3ykZYMU3x
+         L9wnzHs+G+4SlGU+PxcSh5Pb4bUnF3DMI0F1FdMjBMuhAySv4CIwrpsiS5HMdKnkQrtY
+         jFdUBGhrOZICNnHCgTkALP8keXNhgZZFV7tr/+k+tElz+Y7hRx9AH5Kp6M6p0zrBpIzg
+         nsTvrTWdILHBSVHPXhcS7lr/nI8yUE1WISGk6DokppYQ7HfM0Jjpt1tCST1kCpMjITOb
+         MXHXsgXrXgZ8WpVVmNg+4/TY1lJnsd7d9g9O0tECtHuzVtN5jmglk8ecy3rAkySceGeK
+         lfyg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
-        fh=+kdl7YkGRQrQ3ng4xFCzFpWWiKFlSYy1xiveFyYmXeU=;
-        b=ie/D13mTBgrG6jbZsagbt29nkTxwNXTl6TFLRrLeFCDUpTROMwzNjmgAcf8vHlTfX8
-         ApCJ4JJm9KUWXPsYGd1MI5kEWLrEWfVpyjJuqCYUQv08OB/zUdF/GFK9G/Nfm/o0J3DU
-         iXrmIrny/5aSdDwl2XiYTa2o++tYRCTAxoXBuMBf8alkVJszTKz973KSToJhL2xsrTdP
-         aZMVDrFyFoUCRGnWaBl4rfc0GtHH1TosTB8ySWiXmNksUuRUb1Bd/sLy4tZUCvaOT+A7
-         o7WGp9eK8ROEdoyU0Sm1lxZoZ80Hcf0qRg9qLrlZ14R0CcSNyH5GhJWZOVxjQzPeUcRJ
-         buaQ==;
+        bh=+8rdTk3hQrnZKOFpAO7QycwSQJVKoagcpHPwKaebE6o=;
+        fh=ne1Y56ipOCjqOYX+W6C8zWDstNiOEWqDL4fj8N8dLdg=;
+        b=L3oPQJ0HE29J2ZrHFxkpcCXn43tqElpivnfLQ0pr0v6Bbw5xm+kERSW+CmXnd0Gs01
+         QPRJkiXhrlc+AY+AEpeIPlQGJ0k/rk+PLcftqdDRQ1STzAch7x/bv4LfJTJ5PuBc8/2p
+         bGHcV2q5o2TFDMDSPftsEwbC9L8R9HfUxIBxVZY6CkByPOd9RtQesyowmzQHafOz42fP
+         PJKItmoYMeCNwWuuzo+LpsTJGEoLwieIK1UtgrY5R0pQp48waMU+J5HStuSsdTIeuaPb
+         1IjZplC+E5rkxgbO1G7EGB9q6lBUhnScKKKS+EH8TWEngNhYBkCb+MHim6s+A4gK5ouu
+         p18g==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769044430; x=1769649230; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1769047644; x=1769652444; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
-        b=aDWWOFkFL1NVfBLblQcT+DiwoKGx7PtqvODWHzC6iOAhSsOKR7+vj3LQBjvJfOB8bh
-         HSPBbFAewlBJznrgvkvZgunOSSkEsbhQoQTpeI8U/fqm/piSgATJ7vHE6sFMlc1R30jf
-         W+WWyHyXYZK6If5fqECwrXBmqgmrVJn8Mb7izNh++U385czIy8naBQ247H3l7Sp+Crar
-         krZKN54NZmx9uB5dqWxznvCrHdSr6HN8hr9+2RH84BJO8/kwige3tjT513eF0nDGHPap
-         bjxW1uZ8T/LzbtCieEPwX7Nk0ITGZe1J3ys21is3VA4fPgD2bj1dFEasKXyAIWuji2I7
-         oJVg==
+        bh=+8rdTk3hQrnZKOFpAO7QycwSQJVKoagcpHPwKaebE6o=;
+        b=aXr59vdqmKzUcmY2tFjQJg3qSjDJ0IADTaRFqXU+Zzr3+fASeKBPjxrR80T0pUNC0O
+         Z7RZ5V3fku2ZGmSegjgk5+KHwuergZ3oikL24vAxz8bjeStcmpekBkV5uUfAk41gMqrX
+         cOR/h8blgy6+cJT4p74HDpws3bJj4ZY/JJTlk27yFe/yFbATKzj1tmyaRXtyC4/2vnCl
+         zK1sQ2j3OlNwgitXuNasx+a18Eq9G08y3rHdtLrNO9PRxE2hZ+8DivuQlNqNQ6ziq5lA
+         dvRoFUIbhFQIAdf1/62/mMTernRdX/ASllxlWRqO22ZhWasrYAboNdRyfVILb1eiw76v
+         xjdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769044430; x=1769649230;
+        d=1e100.net; s=20230601; t=1769047644; x=1769652444;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
-        b=AnOURCAvDlK425zxO/T0q1wMyJmb8ANXar3DW1/b0kYqdc7YPjD869tpTjctM2nYpq
-         Oa0DJJEOkG29fzZLVk4q3WHjq4YfMIfR7xzfq2AFtG5xDHB0//9bM8v3/nOEB7K9qtxM
-         BwRBbfrghD339ip5Jc1ZpbZYLjgGNxFF/aYRuqjqSXjHK8EZdCkNpVfx0MNbWrgfOWZx
-         nOlLMSQyvVShxZrNBv2P7uRoB0Jrr9QQXp9G3MPD2Yf8Ha/WBIFOLDHAgVAIVCBd+uJv
-         zN3c5CZSHiYtcIyN9j7YpISW9CCOZ0WyU8Oa7ggCERdYB/ftSTBThlaEOavjRX0aASM7
-         jfAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPG+xJWcehEmxlsnLJOg86JkHZu+Pnf/0zyL0hG80YH45+7IAe94gtH7Cj2QCM5lY3uRhfTTpJ/YgD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzhLD6yNwQVNKQYJ9/v5luQwh7/eFVnKlOKiJXTiye+vVEnEOb/
-	DfbDq51hhDgKnvIJT44Q7mZQv32KXD5gYplgQLZ3hwE3DIx6HoePaQX22NjZFgDiWCoH41Pz7tl
-	28+oEUS8aHNq2+HPHVca47GnEn0+6ie8=
-X-Gm-Gg: AZuq6aKNb9+Yd2Ci23hFDxmzzXl38lf5nhcrgWMfNnrMG0aDw2vAOSgtCCOzwD7JuKL
-	Akn6X/7wXKSwUV8ETnK9VrIefBqQbqm6fFzRcDJ/ZOJ/y2wpd7H7iivcSXUL6k2cJsd5B2DHm1o
-	rWzE7B9yCqbVajaBohYi6w5T+1J6JsKIMP+giWrx+Xag4NvOnG+0t3ZmARpgeXPvrDfq2O85Dpa
-	ignb+QjdMMKhA3DF6d9lZcmztSqX8rsNxfyJWXLjAOLKV9C6Pk0pyL25hEM5U+MANZ23w==
-X-Received: by 2002:a05:622a:1794:b0:4ee:2423:d538 with SMTP id
- d75a77b69052e-502a168803fmr228499071cf.18.1769044430101; Wed, 21 Jan 2026
- 17:13:50 -0800 (PST)
+        bh=+8rdTk3hQrnZKOFpAO7QycwSQJVKoagcpHPwKaebE6o=;
+        b=pDGqHvZBvZxz7cHt01vKgT9sCpSeZ5lHcfOcANmV9dCCkHlNEMplWQyyPDzqpAKKHO
+         rzjk4Sne4jEbJcIl7Wm1iLZaoDaKuNrZlXHnA8ysc9rIGVhlQAif2xtnhlQbdr96SvNT
+         NxCJI5eYMouHrm7MOn8KSBMtOlFbd4mJEbq64hbDaSO/v9ErKuMh7XjbUicSnoMvyVA7
+         2B99216McGpCtGxgFXKLwKBn4YiALuGjP3/aKY4ip/Z2UWJxUtm7MSK79iBb3Y6bHsHp
+         oFo0aF6JBvqAG8HikQ2PCjKArdL3gruUlyS1AJfkEDcUrOG7/08sZtHuW7h+fYAh4Um/
+         mMiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUNG+EGnHoEUVjc7jjNm8E2JNbGeGJFQKjkRBlvs8f1XmIS7AMtBDTYPxyEo/KPJy0lKC0FtpEQ9GSR@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHmFBj/aGfFwUpd/zxzB/sbKPJgAq/Cn12gaBOuYZ3f4sbPlL6
+	dwQk65JkfQ+3c07DAYqxJDtb4SagfIEfo7CJrmRr7xA/arMNomt+lja5bqqaLgOIikiMlpS/M6s
+	oNQCH6gF1h4rPKKF/uxQBK8VO0DwqP2Q=
+X-Gm-Gg: AZuq6aLH/m5IiHR0KIaBu754jsw4/ezCrJGA5vGqqMu6XNAz5MDhta5HhtSVZCmKMvd
+	YXmYNbC37DoFEPXJRdaKHWsZCvkRayQOv5xYm/TTn481/9iLbDhPbdIChpVfROojVk7OT5DsTrU
+	aZB9sH80facbAyiJ6rV0xOvTTD0Gi1Wg4Gz6mXb/CAJfXU++92OJUtWpDCfd7RcyUfLlq/4nEbG
+	kqlwTOJLDdZu0PakLPO2FC6FPQYahvXabHUQGoWGbXlI3Gc9ngnUmIDzE+fuKbOySmRIg==
+X-Received: by 2002:ac8:5dc9:0:b0:4ee:2984:7d93 with SMTP id
+ d75a77b69052e-502a1652b7cmr228472581cf.17.1769047644168; Wed, 21 Jan 2026
+ 18:07:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs> <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
-In-Reply-To: <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
+References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs> <176169810568.1424854.4073875923015322741.stgit@frogsfrogsfrogs>
+In-Reply-To: <176169810568.1424854.4073875923015322741.stgit@frogsfrogsfrogs>
 From: Joanne Koong <joannelkoong@gmail.com>
-Date: Wed, 21 Jan 2026 17:13:39 -0800
-X-Gm-Features: AZwV_QiqZjPmBSaXwec1w5MBMkCKu72_zyL1vctkxBiIMbpDclr05tDNS-CMOA8
-Message-ID: <CAJnrk1ZDeYytdjuCdg6-O-PGjcmwS33LOnfFT_YY9SPE=x=Qxw@mail.gmail.com>
-Subject: Re: [PATCH 07/31] fuse: create a per-inode flag for toggling iomap
+Date: Wed, 21 Jan 2026 18:07:12 -0800
+X-Gm-Features: AZwV_QgoK3RTteN4i0D884plVDnteDhgPN2E7eEuueAfxxEN0Wwf3HfnKt32BqU
+Message-ID: <CAJnrk1Y8Fi7ZgY15WDtKZ1kVAsh-kzfNbEOvHKNwCxtA6iWzWA@mail.gmail.com>
+Subject: Re: [PATCH 10/31] fuse: implement basic iomap reporting such as
+ FIEMAP and SEEK_{DATA,HOLE}
 To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
 	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
@@ -120,7 +121,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13178-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13179-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -140,268 +141,214 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:helo,ams.mirrors.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 94E566034F
+X-Rspamd-Queue-Id: 7918D60BBC
 X-Rspamd-Action: no action
 
-On Tue, Oct 28, 2025 at 5:46=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
+On Tue, Oct 28, 2025 at 5:47=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
  wrote:
 >
 > From: Darrick J. Wong <djwong@kernel.org>
 >
-> Create a per-inode flag to control whether or not this inode actually
-> uses iomap.  This is required for non-regular files because iomap
-> doesn't apply there; and enables fuse filesystems to provide some
-> non-iomap files if desired.
+> Implement the basic file mapping reporting functions like FIEMAP, BMAP,
+> and SEEK_DATA/HOLE.
 >
 > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-
-The logic in this makes sense to me, left just a few comments below.
-
-Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
-
 > ---
->  fs/fuse/fuse_i.h          |   17 ++++++++++++++++
->  include/uapi/linux/fuse.h |    3 +++
->  fs/fuse/file.c            |    1 +
->  fs/fuse/file_iomap.c      |   49 +++++++++++++++++++++++++++++++++++++++=
-++++++
->  fs/fuse/inode.c           |   26 ++++++++++++++++++------
->  5 files changed, 90 insertions(+), 6 deletions(-)
+>  fs/fuse/fuse_i.h     |    8 ++++++
+>  fs/fuse/dir.c        |    1 +
+>  fs/fuse/file.c       |   13 ++++++++++
+>  fs/fuse/file_iomap.c |   68 ++++++++++++++++++++++++++++++++++++++++++++=
++++++-
+>  4 files changed, 89 insertions(+), 1 deletion(-)
 >
 >
 > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 839d4f2ada4656..c7aeb324fe599e 100644
+> index c7aeb324fe599e..6fe8aa1845b98d 100644
 > --- a/fs/fuse/fuse_i.h
 > +++ b/fs/fuse/fuse_i.h
-> @@ -257,6 +257,8 @@ enum {
->          * or the fuse server has an exclusive "lease" on distributed fs
->          */
->         FUSE_I_EXCLUSIVE,
-> +       /* Use iomap for this inode */
-> +       FUSE_I_IOMAP,
->  };
+> @@ -1730,6 +1730,11 @@ static inline bool fuse_inode_has_iomap(const stru=
+ct inode *inode)
 >
->  struct fuse_conn;
-> @@ -1717,11 +1719,26 @@ extern const struct fuse_backing_ops fuse_iomap_b=
-acking_ops;
->
->  void fuse_iomap_mount(struct fuse_mount *fm);
->  void fuse_iomap_unmount(struct fuse_mount *fm);
+>         return test_bit(FUSE_I_IOMAP, &fi->state);
+>  }
 > +
-> +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)=
-;
-> +void fuse_iomap_init_nonreg_inode(struct inode *inode, unsigned attr_fla=
-gs);
-> +void fuse_iomap_evict_inode(struct inode *inode);
-> +
-> +static inline bool fuse_inode_has_iomap(const struct inode *inode)
-> +{
-> +       const struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       return test_bit(FUSE_I_IOMAP, &fi->state);
-> +}
+> +int fuse_iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fi=
+einfo,
+> +                     u64 start, u64 length);
+> +loff_t fuse_iomap_lseek(struct file *file, loff_t offset, int whence);
+> +sector_t fuse_iomap_bmap(struct address_space *mapping, sector_t block);
 >  #else
 >  # define fuse_iomap_enabled(...)               (false)
 >  # define fuse_has_iomap(...)                   (false)
->  # define fuse_iomap_mount(...)                 ((void)0)
->  # define fuse_iomap_unmount(...)               ((void)0)
-> +# define fuse_iomap_init_reg_inode(...)                ((void)0)
-> +# define fuse_iomap_init_nonreg_inode(...)     ((void)0)
-> +# define fuse_iomap_evict_inode(...)           ((void)0)
-> +# define fuse_inode_has_iomap(...)             (false)
+> @@ -1739,6 +1744,9 @@ static inline bool fuse_inode_has_iomap(const struc=
+t inode *inode)
+>  # define fuse_iomap_init_nonreg_inode(...)     ((void)0)
+>  # define fuse_iomap_evict_inode(...)           ((void)0)
+>  # define fuse_inode_has_iomap(...)             (false)
+> +# define fuse_iomap_fiemap                     NULL
+> +# define fuse_iomap_lseek(...)                 (-ENOSYS)
+> +# define fuse_iomap_bmap(...)                  (-ENOSYS)
 >  #endif
 >
 >  #endif /* _FS_FUSE_I_H */
-> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> index e571f8ceecbfad..e949bfe022c3b0 100644
-> --- a/include/uapi/linux/fuse.h
-> +++ b/include/uapi/linux/fuse.h
-> @@ -243,6 +243,7 @@
->   *
->   *  7.99
->   *  - add FUSE_IOMAP and iomap_{begin,end,ioend} for regular file operat=
-ions
-> + *  - add FUSE_ATTR_IOMAP to enable iomap for specific inodes
->   */
+> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+> index 18eb1bb192bb58..bafc386f2f4d3a 100644
+> --- a/fs/fuse/dir.c
+> +++ b/fs/fuse/dir.c
+> @@ -2296,6 +2296,7 @@ static const struct inode_operations fuse_common_in=
+ode_operations =3D {
+>         .set_acl        =3D fuse_set_acl,
+>         .fileattr_get   =3D fuse_fileattr_get,
+>         .fileattr_set   =3D fuse_fileattr_set,
+> +       .fiemap         =3D fuse_iomap_fiemap,
+>  };
 >
->  #ifndef _LINUX_FUSE_H
-> @@ -583,9 +584,11 @@ struct fuse_file_lock {
->   *
->   * FUSE_ATTR_SUBMOUNT: Object is a submount root
->   * FUSE_ATTR_DAX: Enable DAX for this file in per inode DAX mode
-> + * FUSE_ATTR_IOMAP: Use iomap for this inode
->   */
->  #define FUSE_ATTR_SUBMOUNT      (1 << 0)
->  #define FUSE_ATTR_DAX          (1 << 1)
-> +#define FUSE_ATTR_IOMAP                (1 << 2)
->
->  /**
->   * Open flags
+>  static const struct inode_operations fuse_symlink_inode_operations =3D {
 > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index f1ef77a0be05bb..42c85c19f3b13b 100644
+> index bd9c208a46c78d..8a981f41b1dbd0 100644
 > --- a/fs/fuse/file.c
 > +++ b/fs/fuse/file.c
-> @@ -3135,6 +3135,7 @@ void fuse_init_file_inode(struct inode *inode, unsi=
-gned int flags)
->         init_waitqueue_head(&fi->page_waitq);
->         init_waitqueue_head(&fi->direct_io_waitq);
+> @@ -2512,6 +2512,12 @@ static sector_t fuse_bmap(struct address_space *ma=
+pping, sector_t block)
+>         struct fuse_bmap_out outarg;
+>         int err;
 >
-> +       fuse_iomap_init_reg_inode(inode, flags);
+> +       if (fuse_inode_has_iomap(inode)) {
+> +               sector_t alt_sec =3D fuse_iomap_bmap(mapping, block);
+> +               if (alt_sec > 0)
+> +                       return alt_sec;
+> +       }
+> +
+>         if (!inode->i_sb->s_bdev || fm->fc->no_bmap)
+>                 return 0;
+>
+> @@ -2547,6 +2553,13 @@ static loff_t fuse_lseek(struct file *file, loff_t=
+ offset, int whence)
+>         struct fuse_lseek_out outarg;
+>         int err;
+>
+> +       if (fuse_inode_has_iomap(inode)) {
+> +               loff_t alt_pos =3D fuse_iomap_lseek(file, offset, whence)=
+;
+> +
+> +               if (alt_pos >=3D 0 || (alt_pos < 0 && alt_pos !=3D -ENOSY=
+S))
 
-imo it's a bit confusing to have this here when the rest of the
-fuse_iomap_init_nonreg_inode() calls happen inside the switch case
-statement. Maybe it makes sense to have this inside the switch case
-like the fuse_iomap_init_nonreg_inode() calls, or alternatively move
-the fuse_iomap_init_nonreg_inode() calls into their corresponding
-helpers (eg fuse_init_dir(), etc.), so that it's consistent?
+I don't think you technically need the "alt_pos < 0" part here since
+the  "alt_pos >=3D 0 ||" part already accounts for that
 
->         if (IS_ENABLED(CONFIG_FUSE_DAX))
->                 fuse_dax_inode_init(inode, flags);
->  }
+> +                       return alt_pos;
+> +       }
+> +
+>         if (fm->fc->no_lseek)
+>                 goto fallback;
+>
 > diff --git a/fs/fuse/file_iomap.c b/fs/fuse/file_iomap.c
-> index 1b9e1bf2f799a3..fc0d5f135bacf9 100644
+> index 66a7b8faa31ac2..ce64e7c4860ef8 100644
 > --- a/fs/fuse/file_iomap.c
 > +++ b/fs/fuse/file_iomap.c
-> @@ -635,3 +635,52 @@ void fuse_iomap_unmount(struct fuse_mount *fm)
->         fuse_flush_requests_and_wait(fc);
->         fuse_send_destroy(fm);
->  }
-> +
-> +static inline void fuse_inode_set_iomap(struct inode *inode)
-> +{
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       set_bit(FUSE_I_IOMAP, &fi->state);
-> +}
-> +
-> +static inline void fuse_inode_clear_iomap(struct inode *inode)
-> +{
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       clear_bit(FUSE_I_IOMAP, &fi->state);
-> +}
-> +
-> +void fuse_iomap_init_nonreg_inode(struct inode *inode, unsigned attr_fla=
-gs)
-> +{
-> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       ASSERT(!S_ISREG(inode->i_mode));
-> +
-> +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP))
-> +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> +}
-> +
-> +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)
-> +{
-> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       ASSERT(S_ISREG(inode->i_mode));
-> +
-> +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP)) {
-> +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> +               fuse_inode_set_iomap(inode);
-> +       }
-> +}
-> +
-> +void fuse_iomap_evict_inode(struct inode *inode)
-> +{
-> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
-> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +
-> +       if (fuse_inode_has_iomap(inode))
-
-If I'm understanding this correctly, a fuse inode can't have
-FUSE_I_IOMAP set on it if conn>iomap is not enabled, correct? Maybe it
-makes sense to just return if (!conn->iomap) at the very beginning, to
-make that more clear?
-
-> +               fuse_inode_clear_iomap(inode);
-> +       if (conn->iomap && fuse_inode_is_exclusive(inode))
-> +               clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> +}
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index 271356fa3be3ea..9b9e7b2dd0d928 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -196,6 +196,8 @@ static void fuse_evict_inode(struct inode *inode)
->                 WARN_ON(!list_empty(&fi->write_files));
->                 WARN_ON(!list_empty(&fi->queued_writes));
->         }
-> +
-> +       fuse_iomap_evict_inode(inode);
+> @@ -4,6 +4,7 @@
+>   * Author: Darrick J. Wong <djwong@kernel.org>
+>   */
+>  #include <linux/iomap.h>
+> +#include <linux/fiemap.h>
+>  #include "fuse_i.h"
+>  #include "fuse_trace.h"
+>  #include "iomap_i.h"
+> @@ -561,7 +562,7 @@ static int fuse_iomap_end(struct inode *inode, loff_t=
+ pos, loff_t count,
+>         return err;
 >  }
 >
->  static int fuse_reconfigure(struct fs_context *fsc)
-> @@ -428,20 +430,32 @@ static void fuse_init_inode(struct inode *inode, st=
-ruct fuse_attr *attr,
->         inode->i_size =3D attr->size;
->         inode_set_mtime(inode, attr->mtime, attr->mtimensec);
->         inode_set_ctime(inode, attr->ctime, attr->ctimensec);
-> -       if (S_ISREG(inode->i_mode)) {
-> +       switch (inode->i_mode & S_IFMT) {
-> +       case S_IFREG:
->                 fuse_init_common(inode);
->                 fuse_init_file_inode(inode, attr->flags);
-> -       } else if (S_ISDIR(inode->i_mode))
+> -const struct iomap_ops fuse_iomap_ops =3D {
+> +static const struct iomap_ops fuse_iomap_ops =3D {
+>         .iomap_begin            =3D fuse_iomap_begin,
+>         .iomap_end              =3D fuse_iomap_end,
+>  };
+> @@ -690,3 +691,68 @@ void fuse_iomap_evict_inode(struct inode *inode)
+>         if (conn->iomap && fuse_inode_is_exclusive(inode))
+>                 clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
+>  }
+> +
+> +int fuse_iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fi=
+einfo,
+> +                     u64 start, u64 count)
+> +{
+> +       struct fuse_conn *fc =3D get_fuse_conn(inode);
+> +       int error;
+> +
+> +       /*
+> +        * We are called directly from the vfs so we need to check per-in=
+ode
+> +        * support here explicitly.
+> +        */
+> +       if (!fuse_inode_has_iomap(inode))
+> +               return -EOPNOTSUPP;
+> +
+> +       if (fieinfo->fi_flags & FIEMAP_FLAG_XATTR)
+
+I don't see where FIEMAP_FLAG_SYNC and FIEMAP_FLAG_CACHE are supported
+either, should these return -EOPNOTSUPP if they're set as well?
+
+> +               return -EOPNOTSUPP;
+> +
+> +       if (fuse_is_bad(inode))
+> +               return -EIO;
+> +
+> +       if (!fuse_allow_current_process(fc))
+> +               return -EACCES;
+> +
+> +       inode_lock_shared(inode);
+> +       error =3D iomap_fiemap(inode, fieinfo, start, count, &fuse_iomap_=
+ops);
+> +       inode_unlock_shared(inode);
+> +
+> +       return error;
+> +}
+> +
+> +sector_t fuse_iomap_bmap(struct address_space *mapping, sector_t block)
+> +{
+> +       ASSERT(fuse_inode_has_iomap(mapping->host));
+> +
+> +       return iomap_bmap(mapping, block, &fuse_iomap_ops);
+> +}
+> +
+> +loff_t fuse_iomap_lseek(struct file *file, loff_t offset, int whence)
+> +{
+> +       struct inode *inode =3D file->f_mapping->host;
+> +       struct fuse_conn *fc =3D get_fuse_conn(inode);
+> +
+> +       ASSERT(fuse_inode_has_iomap(inode));
+> +
+> +       if (fuse_is_bad(inode))
+> +               return -EIO;
+> +
+> +       if (!fuse_allow_current_process(fc))
+> +               return -EACCES;
+> +
+> +       switch (whence) {
+> +       case SEEK_HOLE:
+> +               offset =3D iomap_seek_hole(inode, offset, &fuse_iomap_ops=
+);
 > +               break;
-> +       case S_IFDIR:
->                 fuse_init_dir(inode);
-> -       else if (S_ISLNK(inode->i_mode))
-> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
-> +               break;
-> +       case S_IFLNK:
->                 fuse_init_symlink(inode);
-> -       else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
-> -                S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
-> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
-> +               break;
-> +       case S_IFCHR:
-> +       case S_IFBLK:
-> +       case S_IFIFO:
-> +       case S_IFSOCK:
->                 fuse_init_common(inode);
->                 init_special_inode(inode, inode->i_mode,
->                                    new_decode_dev(attr->rdev));
-> -       } else
-> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
+> +       case SEEK_DATA:
+> +               offset =3D iomap_seek_data(inode, offset, &fuse_iomap_ops=
+);
 > +               break;
 > +       default:
->                 BUG();
 
-Just thinking out loud here and curious to hear whether you like this
-idea or not: another option is calling
-
-if (conn->iomap)
-    fuse_iomap_init_inode();
-
-at the end, where fuse_iomap_init_inode() would be something like:
-
-void fuse_iomap_init_inode(struct inode *inode, unsigned attr_flags)
-{
-    struct fuse_inode *fi =3D get_fuse_inode(inode);
-
-    if (attr_flags & FUSE_ATTR_IOMAP)
-          set_bit(FUSE_I_EXCLUSIVE, &fi->state);
-
-    if (S_ISREG(inode->i_mode))
-            fuse_inode_set_iomap(inode);
-}
-
-which seems simpler to me than having both
-fuse_iomap_init_nonreg_inode() and fuse_iomap_init_reg_inode()
-function and invoking it per i_mode case.
+Does it make sense to have the default case just call generic_file_llseek()=
+?
 
 Thanks,
 Joanne
 
-> +               break;
+> +               return -ENOSYS;
 > +       }
->         /*
->          * Ensure that we don't cache acls for daemons without FUSE_POSIX=
-_ACL
->          * so they see the exact same behavior as before.
+> +
+> +       if (offset < 0)
+> +               return offset;
+> +       return vfs_setpos(file, offset, inode->i_sb->s_maxbytes);
+> +}
 >
 
