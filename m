@@ -1,295 +1,407 @@
-Return-Path: <linux-ext4+bounces-13177-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13178-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ONUZMwxycWkPHAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13177-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 01:40:44 +0100
+	id yLDpKdx5cWkvHwAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13178-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 02:14:04 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7DA5FFC2
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 01:40:44 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E566034F
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 02:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CB8434F44E1
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 00:40:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3DD1B3C77CA
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 01:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0822FF158;
-	Thu, 22 Jan 2026 00:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B84333F8CF;
+	Thu, 22 Jan 2026 01:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4vIhkbw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDWWOFkF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA492F49FD;
-	Thu, 22 Jan 2026 00:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769042428; cv=none; b=k9OL7QQjPm2rSFilMhY6HBrl3Zq7RYk/tC5VnvQP93TYEtY65bw/07IwYvFX44wejoJ7fHmZqYrajsIYoJbMHkH5lu4N1I9UT2mXNKzvNxsf6EqK5dawamq5Ut/nV1q+9Z1wVp2nOUl2oKmpARi8EnZmU98FRaGdHZnIFhrZLgY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769042428; c=relaxed/simple;
-	bh=wL2tzw4xmEyxKZgDlMMG2UqCQj1lK0Mdm3KHjA3w0Zk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UvA7lweuj14BxMmMFtzg/mIxLarOqguCovm0iAHIq8j72UYERdSMooovb/OcyFIkRSunyNn2ynPHn8RTRSDT5NCEgaeZOTs/vXGqAzEGeFbUDU3XisOTDYJJf5acU7n7DjO4XqD3IsWWBYL47fnAePiMpBCDovGBzwt/AC3HzqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4vIhkbw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8FFAC4CEF1;
-	Thu, 22 Jan 2026 00:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769042427;
-	bh=wL2tzw4xmEyxKZgDlMMG2UqCQj1lK0Mdm3KHjA3w0Zk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n4vIhkbwpTf/ZeEuryuSSvhp0hiWyBoyWNAINRKUCuzYb30ErM1HIk1qzYwUvNzP2
-	 S38gvAAd8j2OetF2NdW8r8pV4u3F0HuXkLGjGnos4k87Rjfhdsi+kj+DxZQkH4sC0C
-	 4/quqzH4DkFbBI+YnsiD1pcLGZaZSCbuEyJIZGGRMghZL7yhUuerRqwQTi+D3nhwSQ
-	 2Eq8j9SMyIypMBC0xw6GhJJw3IGfPlfo4Q6eYwETk5ndUp/A8IFMfrz7ym9C/XA4oh
-	 14H0vnneF1b0snYxvGWATA2S48WAuUpHCww+hccbsJ0LTJSNPNcf/U1ZM5C5dGLLBo
-	 vZwk09couui1Q==
-Date: Wed, 21 Jan 2026 16:40:27 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Joanne Koong <joannelkoong@gmail.com>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 03/31] fuse: make debugging configurable at runtime
-Message-ID: <20260122004027.GM5966@frogsfrogsfrogs>
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <176169810415.1424854.10373764649459618752.stgit@frogsfrogsfrogs>
- <CAJnrk1ZUbuAER90xbagWnBZ9dWKkdUAqVRa1vmZ5BtL_o=TnnA@mail.gmail.com>
- <20260122000227.GK5966@frogsfrogsfrogs>
- <CAJnrk1Z_M4XP7dApmuLA9Na+7+9OO0he9EcaZJrubTrHKKUk8w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C56315D25
+	for <linux-ext4@vger.kernel.org>; Thu, 22 Jan 2026 01:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.169
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769044433; cv=pass; b=b5yzJXQSwp/qi+6eza19NeCaFgYcHgiGts6P+5+j6aswaGjo/GUpyGIcyvasWvVI+DF1ajXJsEarK/Hb6wjORFOX/IES5LqDbv1ZfQwffu8z1rV7UTMF/lh4bOOVvH0iWBYh6Klzh68Yb3WtxbmvtGQ9xYSguo+19SV92xjXXV0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769044433; c=relaxed/simple;
+	bh=tEX+D1g1lVttEi0BuWRhKIw4cU0gKmvwvXVwSVxX3cE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MkW2kBkUZPZcl88lPQmgtY5NGCkpVH2tZzS1dz1iJPk6fBH406mvEN02Az6rFkIYgePZvrwqw0r5V+HT6kDAYprkbnqCWZnjeT3Z/3zxeQqVJ0gshX5pB7JlvW98hW+Qny78ajR6gFCdxrQATBy1gYN5jKDSgKRQHR03SsT8CBE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDWWOFkF; arc=pass smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5014b7de222so4946491cf.0
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Jan 2026 17:13:51 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769044430; cv=none;
+        d=google.com; s=arc-20240605;
+        b=LSFc0FJx7ie7WX1bwf7IjbkmleoNOlUiYSOVLe2aY37eEifevxxTsfn0DTxPOhKiOh
+         Fj0lr+dV+IO8W07RrYUooTw5H+JcOoe+2gyqVxbfc2SnRkujZutghQWSZv3/e6FSpygi
+         2xyeoVrxXuPuXe1wkY/XYOBXSKLE8WvGJIwpLHZfNuO+j0ypAj8rzwM5whNxVHRi6DEk
+         rPWHo4JT/OQ0CR5h1bQISgaBgNHSFnyqx7fGdU9xgZ0xxeYiBoJzE+vi29Iy5XUFEmeS
+         e5Gw43nuFe3PZJmLeeqnFl0JMKxapmtumJ/zXP439jVgFRjYPPb/W4JkGALd72FVCZtG
+         9Q1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
+        fh=+kdl7YkGRQrQ3ng4xFCzFpWWiKFlSYy1xiveFyYmXeU=;
+        b=ie/D13mTBgrG6jbZsagbt29nkTxwNXTl6TFLRrLeFCDUpTROMwzNjmgAcf8vHlTfX8
+         ApCJ4JJm9KUWXPsYGd1MI5kEWLrEWfVpyjJuqCYUQv08OB/zUdF/GFK9G/Nfm/o0J3DU
+         iXrmIrny/5aSdDwl2XiYTa2o++tYRCTAxoXBuMBf8alkVJszTKz973KSToJhL2xsrTdP
+         aZMVDrFyFoUCRGnWaBl4rfc0GtHH1TosTB8ySWiXmNksUuRUb1Bd/sLy4tZUCvaOT+A7
+         o7WGp9eK8ROEdoyU0Sm1lxZoZ80Hcf0qRg9qLrlZ14R0CcSNyH5GhJWZOVxjQzPeUcRJ
+         buaQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769044430; x=1769649230; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
+        b=aDWWOFkFL1NVfBLblQcT+DiwoKGx7PtqvODWHzC6iOAhSsOKR7+vj3LQBjvJfOB8bh
+         HSPBbFAewlBJznrgvkvZgunOSSkEsbhQoQTpeI8U/fqm/piSgATJ7vHE6sFMlc1R30jf
+         W+WWyHyXYZK6If5fqECwrXBmqgmrVJn8Mb7izNh++U385czIy8naBQ247H3l7Sp+Crar
+         krZKN54NZmx9uB5dqWxznvCrHdSr6HN8hr9+2RH84BJO8/kwige3tjT513eF0nDGHPap
+         bjxW1uZ8T/LzbtCieEPwX7Nk0ITGZe1J3ys21is3VA4fPgD2bj1dFEasKXyAIWuji2I7
+         oJVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769044430; x=1769649230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/EqnRS4anw5ImavbzkbEqaZ3insgdpNqwRLJTI8ASjI=;
+        b=AnOURCAvDlK425zxO/T0q1wMyJmb8ANXar3DW1/b0kYqdc7YPjD869tpTjctM2nYpq
+         Oa0DJJEOkG29fzZLVk4q3WHjq4YfMIfR7xzfq2AFtG5xDHB0//9bM8v3/nOEB7K9qtxM
+         BwRBbfrghD339ip5Jc1ZpbZYLjgGNxFF/aYRuqjqSXjHK8EZdCkNpVfx0MNbWrgfOWZx
+         nOlLMSQyvVShxZrNBv2P7uRoB0Jrr9QQXp9G3MPD2Yf8Ha/WBIFOLDHAgVAIVCBd+uJv
+         zN3c5CZSHiYtcIyN9j7YpISW9CCOZ0WyU8Oa7ggCERdYB/ftSTBThlaEOavjRX0aASM7
+         jfAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPG+xJWcehEmxlsnLJOg86JkHZu+Pnf/0zyL0hG80YH45+7IAe94gtH7Cj2QCM5lY3uRhfTTpJ/YgD@vger.kernel.org
+X-Gm-Message-State: AOJu0YzhLD6yNwQVNKQYJ9/v5luQwh7/eFVnKlOKiJXTiye+vVEnEOb/
+	DfbDq51hhDgKnvIJT44Q7mZQv32KXD5gYplgQLZ3hwE3DIx6HoePaQX22NjZFgDiWCoH41Pz7tl
+	28+oEUS8aHNq2+HPHVca47GnEn0+6ie8=
+X-Gm-Gg: AZuq6aKNb9+Yd2Ci23hFDxmzzXl38lf5nhcrgWMfNnrMG0aDw2vAOSgtCCOzwD7JuKL
+	Akn6X/7wXKSwUV8ETnK9VrIefBqQbqm6fFzRcDJ/ZOJ/y2wpd7H7iivcSXUL6k2cJsd5B2DHm1o
+	rWzE7B9yCqbVajaBohYi6w5T+1J6JsKIMP+giWrx+Xag4NvOnG+0t3ZmARpgeXPvrDfq2O85Dpa
+	ignb+QjdMMKhA3DF6d9lZcmztSqX8rsNxfyJWXLjAOLKV9C6Pk0pyL25hEM5U+MANZ23w==
+X-Received: by 2002:a05:622a:1794:b0:4ee:2423:d538 with SMTP id
+ d75a77b69052e-502a168803fmr228499071cf.18.1769044430101; Wed, 21 Jan 2026
+ 17:13:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1Z_M4XP7dApmuLA9Na+7+9OO0he9EcaZJrubTrHKKUk8w@mail.gmail.com>
+References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs> <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
+In-Reply-To: <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
+From: Joanne Koong <joannelkoong@gmail.com>
+Date: Wed, 21 Jan 2026 17:13:39 -0800
+X-Gm-Features: AZwV_QiqZjPmBSaXwec1w5MBMkCKu72_zyL1vctkxBiIMbpDclr05tDNS-CMOA8
+Message-ID: <CAJnrk1ZDeYytdjuCdg6-O-PGjcmwS33LOnfFT_YY9SPE=x=Qxw@mail.gmail.com>
+Subject: Re: [PATCH 07/31] fuse: create a per-inode flag for toggling iomap
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-1.96 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13178-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13177-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[joannelkoong@gmail.com,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Rspamd-Queue-Id: 8A7DA5FFC2
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:helo,ams.mirrors.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 94E566034F
 X-Rspamd-Action: no action
 
-On Wed, Jan 21, 2026 at 04:23:08PM -0800, Joanne Koong wrote:
-> On Wed, Jan 21, 2026 at 4:02 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Wed, Jan 21, 2026 at 03:42:04PM -0800, Joanne Koong wrote:
-> > > On Tue, Oct 28, 2025 at 5:45 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > >
-> > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > >
-> > > > Use static keys so that we can configure debugging assertions and dmesg
-> > > > warnings at runtime.  By default this is turned off so the cost is
-> > > > merely scanning a nop sled.  However, fuse server developers can turn
-> > > > it on for their debugging systems.
-> > > >
-> > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > > > ---
-> > > >  fs/fuse/fuse_i.h     |    8 +++++
-> > > >  fs/fuse/iomap_i.h    |   16 ++++++++--
-> > > >  fs/fuse/Kconfig      |   15 +++++++++
-> > > >  fs/fuse/file_iomap.c |   81 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> > > >  fs/fuse/inode.c      |    7 ++++
-> > > >  5 files changed, 124 insertions(+), 3 deletions(-)
-> > > >
-> > > >
-> > > > diff --git a/fs/fuse/file_iomap.c b/fs/fuse/file_iomap.c
-> > > > index a88f5d8d2bce15..b6fc70068c5542 100644
-> > > > --- a/fs/fuse/file_iomap.c
-> > > > +++ b/fs/fuse/file_iomap.c
-> > > > @@ -8,6 +8,12 @@
-> > > >  #include "fuse_trace.h"
-> > > >  #include "iomap_i.h"
-> > > >
-> > > > +#if IS_ENABLED(CONFIG_FUSE_IOMAP_DEBUG_DEFAULT)
-> > > > +DEFINE_STATIC_KEY_TRUE(fuse_iomap_debug);
-> > > > +#else
-> > > > +DEFINE_STATIC_KEY_FALSE(fuse_iomap_debug);
-> > > > +#endif
-> > > > +
-> > > >  static bool __read_mostly enable_iomap =
-> > > >  #if IS_ENABLED(CONFIG_FUSE_IOMAP_BY_DEFAULT)
-> > > >         true;
-> > > > @@ -17,6 +23,81 @@ static bool __read_mostly enable_iomap =
-> > > >  module_param(enable_iomap, bool, 0644);
-> > > >  MODULE_PARM_DESC(enable_iomap, "Enable file I/O through iomap");
-> > > >
-> > > > +#if IS_ENABLED(CONFIG_FUSE_IOMAP_DEBUG)
-> > > > +static struct kobject *iomap_kobj;
-> > > > +
-> > > > +static ssize_t fuse_iomap_debug_show(struct kobject *kobject,
-> > > > +                                    struct kobj_attribute *a, char *buf)
-> > > > +{
-> > > > +       return sysfs_emit(buf, "%d\n", !!static_key_enabled(&fuse_iomap_debug));
-> > > > +}
-> > > > +
-> > > > +static ssize_t fuse_iomap_debug_store(struct kobject *kobject,
-> > > > +                                     struct kobj_attribute *a,
-> > > > +                                     const char *buf, size_t count)
-> > > > +{
-> > > > +       int ret;
-> > > > +       int val;
-> > > > +
-> > > > +       ret = kstrtoint(buf, 0, &val);
-> > > > +       if (ret)
-> > > > +               return ret;
-> > > > +
-> > > > +       if (val < 0 || val > 1)
-> > > > +               return -EINVAL;
-> > > > +
-> > > > +       if (val)
-> > > > +               static_branch_enable(&fuse_iomap_debug);
-> > > > +       else
-> > > > +               static_branch_disable(&fuse_iomap_debug);
-> > > > +
-> > > > +       return count;
-> > > > +}
-> > > > +
-> > > > +#define __INIT_KOBJ_ATTR(_name, _mode, _show, _store)                  \
-> > > > +{                                                                      \
-> > > > +       .attr   = { .name = __stringify(_name), .mode = _mode },        \
-> > > > +       .show   = _show,                                                \
-> > > > +       .store  = _store,                                               \
-> > > > +}
-> > > > +
-> > > > +#define FUSE_ATTR_RW(_name, _show, _store)                     \
-> > > > +       static struct kobj_attribute fuse_attr_##_name =        \
-> > > > +                       __INIT_KOBJ_ATTR(_name, 0644, _show, _store)
-> > > > +
-> > > > +#define FUSE_ATTR_PTR(_name)                                   \
-> > > > +       (&fuse_attr_##_name.attr)
-> > > > +
-> > > > +FUSE_ATTR_RW(debug, fuse_iomap_debug_show, fuse_iomap_debug_store);
-> > > > +
-> > > > +static const struct attribute *fuse_iomap_attrs[] = {
-> > > > +       FUSE_ATTR_PTR(debug),
-> > > > +       NULL,
-> > > > +};
-> > > > +
-> > > > +int fuse_iomap_sysfs_init(struct kobject *fuse_kobj)
-> > > > +{
-> > > > +       int error;
-> > > > +
-> > > > +       iomap_kobj = kobject_create_and_add("iomap", fuse_kobj);
-> > > > +       if (!iomap_kobj)
-> > > > +               return -ENOMEM;
-> > > > +
-> > > > +       error = sysfs_create_files(iomap_kobj, fuse_iomap_attrs);
-> > > > +       if (error) {
-> > > > +               kobject_put(iomap_kobj);
-> > > > +               return error;
-> > > > +       }
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +void fuse_iomap_sysfs_cleanup(struct kobject *fuse_kobj)
-> > > > +{
-> > >
-> > > Is sysfs_remove_files() also needed here?
-> >
-> > kobject_put is supposed to tear down the attrs that sysfs_create_files
-> > attaches to iomap_kobj.  Though you're right to be suspicious -- there
-> > are a lot of places that explicitly call sysfs_remove_files to undo
-> > sysfs_create_files; and also a lot of places that just let kobject_put
-> > do the dirty work.
-> 
-> Makes sense, thanks for the context.
-> >
-> > > > +       kobject_put(iomap_kobj);
-> > > > +}
-> > > > +#endif /* IS_ENABLED(CONFIG_FUSE_IOMAP_DEBUG) */
-> > > > +
-> > > >  bool fuse_iomap_enabled(void)
-> > > >  {
-> > > >         /* Don't let anyone touch iomap until the end of the patchset. */
-> > > > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> > > > index 1eea8dc6e723c6..eec711302a4a13 100644
-> > > > --- a/fs/fuse/inode.c
-> > > > +++ b/fs/fuse/inode.c
-> > > > @@ -2277,8 +2277,14 @@ static int fuse_sysfs_init(void)
-> > > >         if (err)
-> > > >                 goto out_fuse_unregister;
-> > > >
-> > > > +       err = fuse_iomap_sysfs_init(fuse_kobj);
-> > > > +       if (err)
-> > > > +               goto out_fuse_connections;
-> > > > +
-> > > >         return 0;
-> > > >
-> > > > + out_fuse_connections:
-> > > > +       sysfs_remove_mount_point(fuse_kobj, "connections");
-> > > >   out_fuse_unregister:
-> > > >         kobject_put(fuse_kobj);
-> > > >   out_err:
-> > > > @@ -2287,6 +2293,7 @@ static int fuse_sysfs_init(void)
-> > > >
-> > > >  static void fuse_sysfs_cleanup(void)
-> > > >  {
-> > > > +       fuse_iomap_sysfs_cleanup(fuse_kobj);
-> > > >         sysfs_remove_mount_point(fuse_kobj, "connections");
-> > > >         kobject_put(fuse_kobj);
-> > > >  }
-> > > >
-> > > Could you explain why it's better that this goes through sysfs than
-> > > through a module param?
-> >
-> > You can dynamically enable debugging on a production system.  I (by
-> > which I really mean the support org) wishes they could do that with XFS.
-> >
-> > Module parameters don't come with setter functions so you can't call
-> > static_branch_{enable,disable} when the parameter value updates.
-> >
-> 
-> Ohh I thought the "module_param_cb()" stuff does let you do that and
-> can be dynamically enabled/disabled as well? I mostly ask because it
-> feels like it'd be nicer from a user POV if all the config stuff (eg
-> enable uring, enable iomap, etc.) is in one place.
+On Tue, Oct 28, 2025 at 5:46=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
+ wrote:
+>
+> From: Darrick J. Wong <djwong@kernel.org>
+>
+> Create a per-inode flag to control whether or not this inode actually
+> uses iomap.  This is required for non-regular files because iomap
+> doesn't apply there; and enables fuse filesystems to provide some
+> non-iomap files if desired.
+>
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-TIL today.
+The logic in this makes sense to me, left just a few comments below.
 
-HAH well that's been there since 2.6.0.  Silly me, that's been there
-forever.
+Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
 
-I'll switch it to a magic module parameter that has a setter.  Much
-easier than thinking about /anything/ related to sysfs.
+> ---
+>  fs/fuse/fuse_i.h          |   17 ++++++++++++++++
+>  include/uapi/linux/fuse.h |    3 +++
+>  fs/fuse/file.c            |    1 +
+>  fs/fuse/file_iomap.c      |   49 +++++++++++++++++++++++++++++++++++++++=
+++++++
+>  fs/fuse/inode.c           |   26 ++++++++++++++++++------
+>  5 files changed, 90 insertions(+), 6 deletions(-)
+>
+>
+> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+> index 839d4f2ada4656..c7aeb324fe599e 100644
+> --- a/fs/fuse/fuse_i.h
+> +++ b/fs/fuse/fuse_i.h
+> @@ -257,6 +257,8 @@ enum {
+>          * or the fuse server has an exclusive "lease" on distributed fs
+>          */
+>         FUSE_I_EXCLUSIVE,
+> +       /* Use iomap for this inode */
+> +       FUSE_I_IOMAP,
+>  };
+>
+>  struct fuse_conn;
+> @@ -1717,11 +1719,26 @@ extern const struct fuse_backing_ops fuse_iomap_b=
+acking_ops;
+>
+>  void fuse_iomap_mount(struct fuse_mount *fm);
+>  void fuse_iomap_unmount(struct fuse_mount *fm);
+> +
+> +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)=
+;
+> +void fuse_iomap_init_nonreg_inode(struct inode *inode, unsigned attr_fla=
+gs);
+> +void fuse_iomap_evict_inode(struct inode *inode);
+> +
+> +static inline bool fuse_inode_has_iomap(const struct inode *inode)
+> +{
+> +       const struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       return test_bit(FUSE_I_IOMAP, &fi->state);
+> +}
+>  #else
+>  # define fuse_iomap_enabled(...)               (false)
+>  # define fuse_has_iomap(...)                   (false)
+>  # define fuse_iomap_mount(...)                 ((void)0)
+>  # define fuse_iomap_unmount(...)               ((void)0)
+> +# define fuse_iomap_init_reg_inode(...)                ((void)0)
+> +# define fuse_iomap_init_nonreg_inode(...)     ((void)0)
+> +# define fuse_iomap_evict_inode(...)           ((void)0)
+> +# define fuse_inode_has_iomap(...)             (false)
+>  #endif
+>
+>  #endif /* _FS_FUSE_I_H */
+> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> index e571f8ceecbfad..e949bfe022c3b0 100644
+> --- a/include/uapi/linux/fuse.h
+> +++ b/include/uapi/linux/fuse.h
+> @@ -243,6 +243,7 @@
+>   *
+>   *  7.99
+>   *  - add FUSE_IOMAP and iomap_{begin,end,ioend} for regular file operat=
+ions
+> + *  - add FUSE_ATTR_IOMAP to enable iomap for specific inodes
+>   */
+>
+>  #ifndef _LINUX_FUSE_H
+> @@ -583,9 +584,11 @@ struct fuse_file_lock {
+>   *
+>   * FUSE_ATTR_SUBMOUNT: Object is a submount root
+>   * FUSE_ATTR_DAX: Enable DAX for this file in per inode DAX mode
+> + * FUSE_ATTR_IOMAP: Use iomap for this inode
+>   */
+>  #define FUSE_ATTR_SUBMOUNT      (1 << 0)
+>  #define FUSE_ATTR_DAX          (1 << 1)
+> +#define FUSE_ATTR_IOMAP                (1 << 2)
+>
+>  /**
+>   * Open flags
+> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> index f1ef77a0be05bb..42c85c19f3b13b 100644
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@ -3135,6 +3135,7 @@ void fuse_init_file_inode(struct inode *inode, unsi=
+gned int flags)
+>         init_waitqueue_head(&fi->page_waitq);
+>         init_waitqueue_head(&fi->direct_io_waitq);
+>
+> +       fuse_iomap_init_reg_inode(inode, flags);
 
---D
+imo it's a bit confusing to have this here when the rest of the
+fuse_iomap_init_nonreg_inode() calls happen inside the switch case
+statement. Maybe it makes sense to have this inside the switch case
+like the fuse_iomap_init_nonreg_inode() calls, or alternatively move
+the fuse_iomap_init_nonreg_inode() calls into their corresponding
+helpers (eg fuse_init_dir(), etc.), so that it's consistent?
 
-> Thanks,
-> Joanne
-> 
-> > --D
-> >
-> > > Thanks,
-> > > Joanne
+>         if (IS_ENABLED(CONFIG_FUSE_DAX))
+>                 fuse_dax_inode_init(inode, flags);
+>  }
+> diff --git a/fs/fuse/file_iomap.c b/fs/fuse/file_iomap.c
+> index 1b9e1bf2f799a3..fc0d5f135bacf9 100644
+> --- a/fs/fuse/file_iomap.c
+> +++ b/fs/fuse/file_iomap.c
+> @@ -635,3 +635,52 @@ void fuse_iomap_unmount(struct fuse_mount *fm)
+>         fuse_flush_requests_and_wait(fc);
+>         fuse_send_destroy(fm);
+>  }
+> +
+> +static inline void fuse_inode_set_iomap(struct inode *inode)
+> +{
+> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       set_bit(FUSE_I_IOMAP, &fi->state);
+> +}
+> +
+> +static inline void fuse_inode_clear_iomap(struct inode *inode)
+> +{
+> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       clear_bit(FUSE_I_IOMAP, &fi->state);
+> +}
+> +
+> +void fuse_iomap_init_nonreg_inode(struct inode *inode, unsigned attr_fla=
+gs)
+> +{
+> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
+> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       ASSERT(!S_ISREG(inode->i_mode));
+> +
+> +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP))
+> +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
+> +}
+> +
+> +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)
+> +{
+> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
+> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       ASSERT(S_ISREG(inode->i_mode));
+> +
+> +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP)) {
+> +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
+> +               fuse_inode_set_iomap(inode);
+> +       }
+> +}
+> +
+> +void fuse_iomap_evict_inode(struct inode *inode)
+> +{
+> +       struct fuse_conn *conn =3D get_fuse_conn(inode);
+> +       struct fuse_inode *fi =3D get_fuse_inode(inode);
+> +
+> +       if (fuse_inode_has_iomap(inode))
+
+If I'm understanding this correctly, a fuse inode can't have
+FUSE_I_IOMAP set on it if conn>iomap is not enabled, correct? Maybe it
+makes sense to just return if (!conn->iomap) at the very beginning, to
+make that more clear?
+
+> +               fuse_inode_clear_iomap(inode);
+> +       if (conn->iomap && fuse_inode_is_exclusive(inode))
+> +               clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
+> +}
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index 271356fa3be3ea..9b9e7b2dd0d928 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -196,6 +196,8 @@ static void fuse_evict_inode(struct inode *inode)
+>                 WARN_ON(!list_empty(&fi->write_files));
+>                 WARN_ON(!list_empty(&fi->queued_writes));
+>         }
+> +
+> +       fuse_iomap_evict_inode(inode);
+>  }
+>
+>  static int fuse_reconfigure(struct fs_context *fsc)
+> @@ -428,20 +430,32 @@ static void fuse_init_inode(struct inode *inode, st=
+ruct fuse_attr *attr,
+>         inode->i_size =3D attr->size;
+>         inode_set_mtime(inode, attr->mtime, attr->mtimensec);
+>         inode_set_ctime(inode, attr->ctime, attr->ctimensec);
+> -       if (S_ISREG(inode->i_mode)) {
+> +       switch (inode->i_mode & S_IFMT) {
+> +       case S_IFREG:
+>                 fuse_init_common(inode);
+>                 fuse_init_file_inode(inode, attr->flags);
+> -       } else if (S_ISDIR(inode->i_mode))
+> +               break;
+> +       case S_IFDIR:
+>                 fuse_init_dir(inode);
+> -       else if (S_ISLNK(inode->i_mode))
+> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
+> +               break;
+> +       case S_IFLNK:
+>                 fuse_init_symlink(inode);
+> -       else if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
+> -                S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
+> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
+> +               break;
+> +       case S_IFCHR:
+> +       case S_IFBLK:
+> +       case S_IFIFO:
+> +       case S_IFSOCK:
+>                 fuse_init_common(inode);
+>                 init_special_inode(inode, inode->i_mode,
+>                                    new_decode_dev(attr->rdev));
+> -       } else
+> +               fuse_iomap_init_nonreg_inode(inode, attr->flags);
+> +               break;
+> +       default:
+>                 BUG();
+
+Just thinking out loud here and curious to hear whether you like this
+idea or not: another option is calling
+
+if (conn->iomap)
+    fuse_iomap_init_inode();
+
+at the end, where fuse_iomap_init_inode() would be something like:
+
+void fuse_iomap_init_inode(struct inode *inode, unsigned attr_flags)
+{
+    struct fuse_inode *fi =3D get_fuse_inode(inode);
+
+    if (attr_flags & FUSE_ATTR_IOMAP)
+          set_bit(FUSE_I_EXCLUSIVE, &fi->state);
+
+    if (S_ISREG(inode->i_mode))
+            fuse_inode_set_iomap(inode);
+}
+
+which seems simpler to me than having both
+fuse_iomap_init_nonreg_inode() and fuse_iomap_init_reg_inode()
+function and invoking it per i_mode case.
+
+Thanks,
+Joanne
+
+> +               break;
+> +       }
+>         /*
+>          * Ensure that we don't cache acls for daemons without FUSE_POSIX=
+_ACL
+>          * so they see the exact same behavior as before.
+>
 
