@@ -1,91 +1,100 @@
-Return-Path: <linux-ext4+bounces-13244-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13245-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oFWJAz+lcmmMoQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13244-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 23:31:27 +0100
+	id qERfLFLAcmmxpAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13245-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 01:26:58 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7924D6E2C6
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 23:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 289006EC3D
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 01:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6B0EA3015D04
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Jan 2026 22:31:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D3B4330160F0
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 00:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0D52FC02F;
-	Thu, 22 Jan 2026 22:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EC131961A;
+	Fri, 23 Jan 2026 00:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QFYBBIDy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgUZWjFj"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3353385AE;
-	Thu, 22 Jan 2026 22:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336012BE7D2;
+	Fri, 23 Jan 2026 00:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769121081; cv=none; b=c8OTuhDGA4QFlsW+vvD+QKZqiMA+etpExojcvHfKEeoEQCmJ7FXnICtkz2CjgudZINoqHw2U0CvAaTKZ4xdo29oARTrm8oncwcnMJlP7lFhfbe7fc2EHBy5uRVaL/8XK+i4IodnMCBG8E8qRp05xoFNYKBJZGqC/B6n0bBLf92g=
+	t=1769128008; cv=none; b=G1HRtP9PyNMF4vMqzKi86y9rm63yu78pI1PhVdedtL7guJdRxAYjyvzvpQna11tEofLiylyB634YBtWRvA09HPIX9wGaehaSLuppstuf3rmnOvrcFW+2swWG3Swwji/4ZdL7hu1seDAgXsI0PuTmzRCNjcdhkFvImLGZXixXEM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769121081; c=relaxed/simple;
-	bh=4l0pCC1i/jydXwVQt8Aoc+8uBYuGmYvOewbjQikryIo=;
+	s=arc-20240116; t=1769128008; c=relaxed/simple;
+	bh=YfAXxf1cY4mpxIHAXBxlEMPMeobd0tAG5Xh8cUgRe68=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I5F2XdpYhv/6ke8Q//Pv0aBZW1MpjaEKr3wiFyKtypdypK2+JFLSoP73zb9cSiwza3urVvsdQ5on/K0r6mdp+1/ilAzBQcGDIEUD0lhViMjLfsu4zaUblAvyLOV92gfQXhdiwhciuIJtUMuS0JZGdHUKI4GvZkBLwlNGOVJRfws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QFYBBIDy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49638C116C6;
-	Thu, 22 Jan 2026 22:31:20 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=slVTnW6cgtkCXYdSERI0lgIzfbvgP10OU8xm6LBxYLvnNLt/jEnAU55dmpQ4S+hCLPbgK1DYPtQ69ievZ+Bf+JCtKkrk4AgbepBoSRovG5ISa/kr+3/prY7UGzX5lKn2q9njaNKM4djlzeIdMtwd0NY5GrHef46g4EPCGgC9yCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgUZWjFj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FF66C116C6;
+	Fri, 23 Jan 2026 00:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769121080;
-	bh=4l0pCC1i/jydXwVQt8Aoc+8uBYuGmYvOewbjQikryIo=;
+	s=k20201202; t=1769128007;
+	bh=YfAXxf1cY4mpxIHAXBxlEMPMeobd0tAG5Xh8cUgRe68=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QFYBBIDyhsvyAjHq0OR2+vM0Zfs22GJOK3rhFTDg9qCcej766oQW50YdU4mBdHAQq
-	 qEG6wjz5Zg80DqHXw0kdOS3olKztSohHHUXy10+9UKENiwNkwJQCANCehsJ+3Ga8TC
-	 GVYpRG3hQGE43YiAC+2F2vWLPSuzsV5ryse5vud7odOVKzuq2Ngt9p6WZ7YxihkALA
-	 1ZyFCqy7845jkD9/MaRRaHx4ai1HfZ7wcEtBSesblA91EvVL07SvbB4i0twHPyBWns
-	 uIbreoP8qN3G+iUSxfmtC9tl+hXiPEd/a35QPo+ZQjcJHavdfu8Nr2gzvGp4Vv2iVO
-	 NpeX1WGsENqcQ==
-Date: Thu, 22 Jan 2026 14:31:19 -0800
+	b=sgUZWjFj8UxZ2ChZk6Og6wlP6cNdN3AVy1A3DaINVBfqqudi37G6Ax/h9H4aHnttZ
+	 VxxaqJkeguW43TyDiwz3QIb9/AwLqHYIJFQ2S3SUMkcnHV7u1il9CeCyhadfCXIO2W
+	 kXCIyEp1UPZusG031b3IWNGqsu/SWAwGjgCP558+XHHMvjhFAsn7A6EsNE0GmPyjF6
+	 zg280RvYUHGuhiLYpjOvN4WzN3vB2Mm0o0ph9ZdFEi3YMumUc8b0Y2wwVHk37JjNVm
+	 ZrqO6h+yfpWNbWwLGr/XNyxxcAiOqN8b4Flkim1K+Ijqq9bS3unUlg/xh+pZaGgUL3
+	 VP2yHzSNVOjGQ==
+Date: Thu, 22 Jan 2026 16:26:46 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Joanne Koong <joannelkoong@gmail.com>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 10/31] fuse: implement basic iomap reporting such as
- FIEMAP and SEEK_{DATA,HOLE}
-Message-ID: <20260122223119.GB5900@frogsfrogsfrogs>
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <176169810568.1424854.4073875923015322741.stgit@frogsfrogsfrogs>
- <CAJnrk1Y8Fi7ZgY15WDtKZ1kVAsh-kzfNbEOvHKNwCxtA6iWzWA@mail.gmail.com>
+To: Chuck Lever <cel@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, hirofumi@mail.parknet.co.jp,
+	linkinjeon@kernel.org, sj1557.seo@samsung.com, yuezhang.mo@sony.com,
+	almaz.alexandrovich@paragon-software.com, slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de, frank.li@vivo.com, tytso@mit.edu,
+	adilger.kernel@dilger.ca, cem@kernel.org, sfrench@samba.org,
+	pc@manguebit.org, ronniesahlberg@gmail.com, sprasad@microsoft.com,
+	trondmy@kernel.org, anna@kernel.org, jaegeuk@kernel.org,
+	chao@kernel.org, hansg@kernel.org, senozhatsky@chromium.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v7 01/16] fs: Add case sensitivity flags to file_kattr
+Message-ID: <20260123002646.GL5945@frogsfrogsfrogs>
+References: <20260122160311.1117669-1-cel@kernel.org>
+ <20260122160311.1117669-2-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1Y8Fi7ZgY15WDtKZ1kVAsh-kzfNbEOvHKNwCxtA6iWzWA@mail.gmail.com>
+In-Reply-To: <20260122160311.1117669-2-cel@kernel.org>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13245-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13244-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,mit.edu,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
+	RCPT_COUNT_TWELVE(0.00)[33];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.976];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
@@ -93,219 +102,154 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7924D6E2C6
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email]
+X-Rspamd-Queue-Id: 289006EC3D
 X-Rspamd-Action: no action
 
-On Wed, Jan 21, 2026 at 06:07:12PM -0800, Joanne Koong wrote:
-> On Tue, Oct 28, 2025 at 5:47 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > From: Darrick J. Wong <djwong@kernel.org>
-> >
-> > Implement the basic file mapping reporting functions like FIEMAP, BMAP,
-> > and SEEK_DATA/HOLE.
-> >
-> > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > ---
-> >  fs/fuse/fuse_i.h     |    8 ++++++
-> >  fs/fuse/dir.c        |    1 +
-> >  fs/fuse/file.c       |   13 ++++++++++
-> >  fs/fuse/file_iomap.c |   68 +++++++++++++++++++++++++++++++++++++++++++++++++-
-> >  4 files changed, 89 insertions(+), 1 deletion(-)
-> >
-> >
-> > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> > index c7aeb324fe599e..6fe8aa1845b98d 100644
-> > --- a/fs/fuse/fuse_i.h
-> > +++ b/fs/fuse/fuse_i.h
-> > @@ -1730,6 +1730,11 @@ static inline bool fuse_inode_has_iomap(const struct inode *inode)
-> >
-> >         return test_bit(FUSE_I_IOMAP, &fi->state);
-> >  }
-> > +
-> > +int fuse_iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
-> > +                     u64 start, u64 length);
-> > +loff_t fuse_iomap_lseek(struct file *file, loff_t offset, int whence);
-> > +sector_t fuse_iomap_bmap(struct address_space *mapping, sector_t block);
-> >  #else
-> >  # define fuse_iomap_enabled(...)               (false)
-> >  # define fuse_has_iomap(...)                   (false)
-> > @@ -1739,6 +1744,9 @@ static inline bool fuse_inode_has_iomap(const struct inode *inode)
-> >  # define fuse_iomap_init_nonreg_inode(...)     ((void)0)
-> >  # define fuse_iomap_evict_inode(...)           ((void)0)
-> >  # define fuse_inode_has_iomap(...)             (false)
-> > +# define fuse_iomap_fiemap                     NULL
-> > +# define fuse_iomap_lseek(...)                 (-ENOSYS)
-> > +# define fuse_iomap_bmap(...)                  (-ENOSYS)
-> >  #endif
-> >
-> >  #endif /* _FS_FUSE_I_H */
-> > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> > index 18eb1bb192bb58..bafc386f2f4d3a 100644
-> > --- a/fs/fuse/dir.c
-> > +++ b/fs/fuse/dir.c
-> > @@ -2296,6 +2296,7 @@ static const struct inode_operations fuse_common_inode_operations = {
-> >         .set_acl        = fuse_set_acl,
-> >         .fileattr_get   = fuse_fileattr_get,
-> >         .fileattr_set   = fuse_fileattr_set,
-> > +       .fiemap         = fuse_iomap_fiemap,
-> >  };
-> >
-> >  static const struct inode_operations fuse_symlink_inode_operations = {
-> > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> > index bd9c208a46c78d..8a981f41b1dbd0 100644
-> > --- a/fs/fuse/file.c
-> > +++ b/fs/fuse/file.c
-> > @@ -2512,6 +2512,12 @@ static sector_t fuse_bmap(struct address_space *mapping, sector_t block)
-> >         struct fuse_bmap_out outarg;
-> >         int err;
-> >
-> > +       if (fuse_inode_has_iomap(inode)) {
-> > +               sector_t alt_sec = fuse_iomap_bmap(mapping, block);
-> > +               if (alt_sec > 0)
-> > +                       return alt_sec;
-> > +       }
-> > +
-> >         if (!inode->i_sb->s_bdev || fm->fc->no_bmap)
-> >                 return 0;
-> >
-> > @@ -2547,6 +2553,13 @@ static loff_t fuse_lseek(struct file *file, loff_t offset, int whence)
-> >         struct fuse_lseek_out outarg;
-> >         int err;
-> >
-> > +       if (fuse_inode_has_iomap(inode)) {
-> > +               loff_t alt_pos = fuse_iomap_lseek(file, offset, whence);
-> > +
-> > +               if (alt_pos >= 0 || (alt_pos < 0 && alt_pos != -ENOSYS))
+On Thu, Jan 22, 2026 at 11:02:56AM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
 > 
-> I don't think you technically need the "alt_pos < 0" part here since
-> the  "alt_pos >= 0 ||" part already accounts for that
-
-alt_pos is loff_t, which is a signed type.
-
-But I think this could be more concise:
-
-		alt_pos = fuse_iomap_lseek(...);
-		if (alt_pos != -ENOSYS)
-			return alt_pos;
-
-> > +                       return alt_pos;
-> > +       }
-> > +
-> >         if (fm->fc->no_lseek)
-> >                 goto fallback;
-> >
-> > diff --git a/fs/fuse/file_iomap.c b/fs/fuse/file_iomap.c
-> > index 66a7b8faa31ac2..ce64e7c4860ef8 100644
-> > --- a/fs/fuse/file_iomap.c
-> > +++ b/fs/fuse/file_iomap.c
-> > @@ -4,6 +4,7 @@
-> >   * Author: Darrick J. Wong <djwong@kernel.org>
-> >   */
-> >  #include <linux/iomap.h>
-> > +#include <linux/fiemap.h>
-> >  #include "fuse_i.h"
-> >  #include "fuse_trace.h"
-> >  #include "iomap_i.h"
-> > @@ -561,7 +562,7 @@ static int fuse_iomap_end(struct inode *inode, loff_t pos, loff_t count,
-> >         return err;
-> >  }
-> >
-> > -const struct iomap_ops fuse_iomap_ops = {
-> > +static const struct iomap_ops fuse_iomap_ops = {
-> >         .iomap_begin            = fuse_iomap_begin,
-> >         .iomap_end              = fuse_iomap_end,
-> >  };
-> > @@ -690,3 +691,68 @@ void fuse_iomap_evict_inode(struct inode *inode)
-> >         if (conn->iomap && fuse_inode_is_exclusive(inode))
-> >                 clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> >  }
-> > +
-> > +int fuse_iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
-> > +                     u64 start, u64 count)
-> > +{
-> > +       struct fuse_conn *fc = get_fuse_conn(inode);
-> > +       int error;
-> > +
-> > +       /*
-> > +        * We are called directly from the vfs so we need to check per-inode
-> > +        * support here explicitly.
-> > +        */
-> > +       if (!fuse_inode_has_iomap(inode))
-> > +               return -EOPNOTSUPP;
-> > +
-> > +       if (fieinfo->fi_flags & FIEMAP_FLAG_XATTR)
+> Enable upper layers such as NFSD to retrieve case sensitivity
+> information from file systems by adding FS_XFLAG_CASEFOLD and
+> FS_XFLAG_CASENONPRESERVING flags.
 > 
-> I don't see where FIEMAP_FLAG_SYNC and FIEMAP_FLAG_CACHE are supported
-> either, should these return -EOPNOTSUPP if they're set as well?
-
-The vfs implements FIEMAP_FLAG_SYNC for us in fiemap_prep, which is
-called by iomap_fiemap.
-
-I'm not sure what FIEMAP_FLAG_CACHE means in this context.  Its comment
-says "request caching of the extents" which doesn't sound like doing
-anything is mandatory.
-
-> > +               return -EOPNOTSUPP;
-> > +
-> > +       if (fuse_is_bad(inode))
-> > +               return -EIO;
-> > +
-> > +       if (!fuse_allow_current_process(fc))
-> > +               return -EACCES;
-> > +
-> > +       inode_lock_shared(inode);
-> > +       error = iomap_fiemap(inode, fieinfo, start, count, &fuse_iomap_ops);
-> > +       inode_unlock_shared(inode);
-> > +
-> > +       return error;
-> > +}
-> > +
-> > +sector_t fuse_iomap_bmap(struct address_space *mapping, sector_t block)
-> > +{
-> > +       ASSERT(fuse_inode_has_iomap(mapping->host));
-> > +
-> > +       return iomap_bmap(mapping, block, &fuse_iomap_ops);
-> > +}
-> > +
-> > +loff_t fuse_iomap_lseek(struct file *file, loff_t offset, int whence)
-> > +{
-> > +       struct inode *inode = file->f_mapping->host;
-> > +       struct fuse_conn *fc = get_fuse_conn(inode);
-> > +
-> > +       ASSERT(fuse_inode_has_iomap(inode));
-> > +
-> > +       if (fuse_is_bad(inode))
-> > +               return -EIO;
-> > +
-> > +       if (!fuse_allow_current_process(fc))
-> > +               return -EACCES;
-> > +
-> > +       switch (whence) {
-> > +       case SEEK_HOLE:
-> > +               offset = iomap_seek_hole(inode, offset, &fuse_iomap_ops);
-> > +               break;
-> > +       case SEEK_DATA:
-> > +               offset = iomap_seek_data(inode, offset, &fuse_iomap_ops);
-> > +               break;
-> > +       default:
+> Filesystems report case-insensitive or case-nonpreserving behavior
+> by setting these flags directly in fa->fsx_xflags. The default
+> (flags unset) indicates POSIX semantics: case-sensitive and
+> case-preserving. These flags are read-only; userspace cannot set
+> them via ioctl.
 > 
-> Does it make sense to have the default case just call generic_file_llseek()?
+> Remove struct file_kattr initialization from fileattr_fill_xflags()
+> and fileattr_fill_flags(). Callers at ioctl/syscall entry points
+> zero-initialize the struct themselves, which allows them to pass
+> hints (flags_valid, fsx_valid) to the filesystem's ->fileattr_get()
+> callback via the fa argument. Filesystem handlers that invoke these
+> fill functions can now set flags directly in fa->fsx_xflags before
+> calling them, without the fill functions zeroing those values.
 
-Yes.  Thanks for spotting that bug!
+In hindsight I regret not asking for the file_kattr initialization
+change to be in a separate patch.
+
+> Case sensitivity information is exported to userspace via the
+> fa_xflags field in the FS_IOC_FSGETXATTR ioctl and file_getattr()
+> system call.
+> 
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+
+The UAPI changes still look ok to me.  AFAICT the file_kattr
+initialization now seem like they don't zap fields to confuse
+vfs_fileattr_get.
+
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
 --D
 
-> Thanks,
-> Joanne
+> ---
+>  fs/file_attr.c           | 12 ++++--------
+>  fs/xfs/xfs_ioctl.c       |  2 +-
+>  include/linux/fileattr.h |  3 ++-
+>  include/uapi/linux/fs.h  |  2 ++
+>  4 files changed, 9 insertions(+), 10 deletions(-)
 > 
-> > +               return -ENOSYS;
-> > +       }
-> > +
-> > +       if (offset < 0)
-> > +               return offset;
-> > +       return vfs_setpos(file, offset, inode->i_sb->s_maxbytes);
-> > +}
-> >
+> diff --git a/fs/file_attr.c b/fs/file_attr.c
+> index 13cdb31a3e94..6e37040fc5fa 100644
+> --- a/fs/file_attr.c
+> +++ b/fs/file_attr.c
+> @@ -15,12 +15,10 @@
+>   * @fa:		fileattr pointer
+>   * @xflags:	FS_XFLAG_* flags
+>   *
+> - * Set ->fsx_xflags, ->fsx_valid and ->flags (translated xflags).  All
+> - * other fields are zeroed.
+> + * Set ->fsx_xflags, ->fsx_valid and ->flags (translated xflags).
+>   */
+>  void fileattr_fill_xflags(struct file_kattr *fa, u32 xflags)
+>  {
+> -	memset(fa, 0, sizeof(*fa));
+>  	fa->fsx_valid = true;
+>  	fa->fsx_xflags = xflags;
+>  	if (fa->fsx_xflags & FS_XFLAG_IMMUTABLE)
+> @@ -46,11 +44,9 @@ EXPORT_SYMBOL(fileattr_fill_xflags);
+>   * @flags:	FS_*_FL flags
+>   *
+>   * Set ->flags, ->flags_valid and ->fsx_xflags (translated flags).
+> - * All other fields are zeroed.
+>   */
+>  void fileattr_fill_flags(struct file_kattr *fa, u32 flags)
+>  {
+> -	memset(fa, 0, sizeof(*fa));
+>  	fa->flags_valid = true;
+>  	fa->flags = flags;
+>  	if (fa->flags & FS_SYNC_FL)
+> @@ -323,7 +319,7 @@ int ioctl_setflags(struct file *file, unsigned int __user *argp)
+>  {
+>  	struct mnt_idmap *idmap = file_mnt_idmap(file);
+>  	struct dentry *dentry = file->f_path.dentry;
+> -	struct file_kattr fa;
+> +	struct file_kattr fa = {};
+>  	unsigned int flags;
+>  	int err;
+>  
+> @@ -355,7 +351,7 @@ int ioctl_fssetxattr(struct file *file, void __user *argp)
+>  {
+>  	struct mnt_idmap *idmap = file_mnt_idmap(file);
+>  	struct dentry *dentry = file->f_path.dentry;
+> -	struct file_kattr fa;
+> +	struct file_kattr fa = {};
+>  	int err;
+>  
+>  	err = copy_fsxattr_from_user(&fa, argp);
+> @@ -434,7 +430,7 @@ SYSCALL_DEFINE5(file_setattr, int, dfd, const char __user *, filename,
+>  	struct filename *name __free(putname) = NULL;
+>  	unsigned int lookup_flags = 0;
+>  	struct file_attr fattr;
+> -	struct file_kattr fa;
+> +	struct file_kattr fa = {};
+>  	int error;
+>  
+>  	BUILD_BUG_ON(sizeof(struct file_attr) < FILE_ATTR_SIZE_VER0);
+> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+> index 59eaad774371..f0417c4d1fca 100644
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -496,7 +496,7 @@ xfs_ioc_fsgetxattra(
+>  	xfs_inode_t		*ip,
+>  	void			__user *arg)
+>  {
+> -	struct file_kattr	fa;
+> +	struct file_kattr	fa = {};
+>  
+>  	xfs_ilock(ip, XFS_ILOCK_SHARED);
+>  	xfs_fill_fsxattr(ip, XFS_ATTR_FORK, &fa);
+> diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
+> index f89dcfad3f8f..709de829659f 100644
+> --- a/include/linux/fileattr.h
+> +++ b/include/linux/fileattr.h
+> @@ -16,7 +16,8 @@
+>  
+>  /* Read-only inode flags */
+>  #define FS_XFLAG_RDONLY_MASK \
+> -	(FS_XFLAG_PREALLOC | FS_XFLAG_HASATTR)
+> +	(FS_XFLAG_PREALLOC | FS_XFLAG_HASATTR | \
+> +	 FS_XFLAG_CASEFOLD | FS_XFLAG_CASENONPRESERVING)
+>  
+>  /* Flags to indicate valid value of fsx_ fields */
+>  #define FS_XFLAG_VALUES_MASK \
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index 66ca526cf786..919148beaa8c 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+> @@ -253,6 +253,8 @@ struct file_attr {
+>  #define FS_XFLAG_FILESTREAM	0x00004000	/* use filestream allocator */
+>  #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
+>  #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
+> +#define FS_XFLAG_CASEFOLD	0x00020000	/* case-insensitive lookups */
+> +#define FS_XFLAG_CASENONPRESERVING 0x00040000	/* case not preserved */
+>  #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
+>  
+>  /* the read-only stuff doesn't really belong here, but any other place is
+> -- 
+> 2.52.0
+> 
 > 
 
