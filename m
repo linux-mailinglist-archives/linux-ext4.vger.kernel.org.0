@@ -1,152 +1,235 @@
-Return-Path: <linux-ext4+bounces-13252-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13253-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YK1mCdMGc2knrwAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13252-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 06:27:47 +0100
+	id 2HNkO3MTc2lksAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13253-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 07:21:39 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41EE6706E9
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 06:27:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC4570D86
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 07:21:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BA477300621F
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 05:27:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 96BC8301C5BB
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 06:21:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3504364036;
-	Fri, 23 Jan 2026 05:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CBC38757F;
+	Fri, 23 Jan 2026 06:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="OONc+Hz4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7A137F115;
-	Fri, 23 Jan 2026 05:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775C4387569;
+	Fri, 23 Jan 2026 06:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769146055; cv=none; b=MR1Hn6RkZ0381ipCFe/zGEl8AqUb5M3OqTrK0DOzzVpqh3fz3Fz0qoTIhOqb8w9qzTUS/1dx5kbTZ4dpg7xSQJTlRsw6pmgHWmi9lBRkVw4OFcM8TV0rt8BEYMcNmmDa140vRgJFqDVHR+9P2yhmfMwW1Hy5gsc+ZG4697QZLsU=
+	t=1769149268; cv=none; b=Da/s+gEbIx6vvO1sBo1FUIvQJlWpOysEX/ASgQP+x1Ly/hi8HKEfKxYv78eMmzS1+/v6oDOUryvoF8wLT7G2swJ9oAczyOSGeAb8py1t9EuciBIs+ckbjUysXoFDDE/YnrBZZCX+LFeSUMpnUeMxG6608OdCbWgeJ5XvKlKIc8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769146055; c=relaxed/simple;
-	bh=EhNJrIWlevEMHFg7O5W5zHE6itZIjyXAlI6MIoUhDFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vqx1KEqNkAzzKIMKAe52mMjWa0tC1srXSt+s12RKp57VtwcgnZ3PWDMgMe4ZIY94a5MOPdi+rgMyFStKJOYNNK0ulPvYH51OC/NK+DJNi9n8AF4No25vz2m9ae/xdnxTFNPeAdB8kDA8WlhE7vYmaIHZiS5fF6w1f+h0IBWAo2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id BF760227AAE; Fri, 23 Jan 2026 06:27:23 +0100 (CET)
-Date: Fri, 23 Jan 2026 06:27:23 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	fsverity@lists.linux.dev
-Subject: Re: [PATCH 11/11] fsverity: use a hashtable to find the
- fsverity_info
-Message-ID: <20260123052723.GE24123@lst.de>
-References: <20260122082214.452153-1-hch@lst.de> <20260122082214.452153-12-hch@lst.de> <20260122220420.GI5910@frogsfrogsfrogs>
+	s=arc-20240116; t=1769149268; c=relaxed/simple;
+	bh=4qLfl1EKnef/GzUW0bVZNp7SUilauqiMWE77LRDXaXQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ai3eoYiNavdZGugg2TZIWLm2AqVzGXwwY0RVp/Ou2OoUtE5dI6HrVvxo0DOD3HfxKavJ3hoRqdSRNoltajtwQezr/WA8ADAJ+z0FJKIgpjxL9RYVRGxKqSCZMgoUnESG40TvnbC5+DdCjhLBxAjHyLE9ikWPFV1Dk+jd9VCKVdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=OONc+Hz4; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1769149255; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=1870OwY7Yt3wtHMS4Kw5+Uzzq7JdVz48VXgwCaXXTJw=;
+	b=OONc+Hz4lqc1HP74NtQusaU9uk/dcEZsCk52r2ESR4HBF9cIXsmU0KMm8jv1P0jB5096JAHEtML2Qgaqa+XP+adb6qIZpbtghlWD/Iu80rKb5FeQV2HR2YKl8Cp3S9Nn/aRLUSxCWnIp17SLWzv5twcC/C9IC25lv1ZbLsGjZr4=
+Received: from 30.74.144.120(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0WxemimV_1769149254 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 23 Jan 2026 14:20:54 +0800
+Message-ID: <7ccc3447-3a39-4206-95c5-a6cd00e2bda6@linux.alibaba.com>
+Date: Fri, 23 Jan 2026 14:20:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260122220420.GI5910@frogsfrogsfrogs>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/13] mm: update shmem_[kernel]_file_*() functions to
+ use vma_flags_t
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: x86@kernel.org, linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+ nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+ linux-mm@kvack.org, ntfs3@lists.linux.dev, devel@lists.orangefs.org,
+ linux-xfs@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-security-module@vger.kernel.org
+References: <cover.1769097829.git.lorenzo.stoakes@oracle.com>
+ <736febd280eb484d79cef5cf55b8a6f79ad832d2.1769097829.git.lorenzo.stoakes@oracle.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <736febd280eb484d79cef5cf55b8a6f79ad832d2.1769097829.git.lorenzo.stoakes@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-ext4@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13253-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13252-lists,linux-ext4=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 41EE6706E9
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	BLOCKLISTDE_FAIL(0.00)[115.124.30.113:query timed out];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
+X-Rspamd-Queue-Id: 8EC4570D86
 X-Rspamd-Action: no action
 
-On Thu, Jan 22, 2026 at 02:04:20PM -0800, Darrick J. Wong wrote:
-> On Thu, Jan 22, 2026 at 09:22:07AM +0100, Christoph Hellwig wrote:
-> > Use the kernel's resizable hash table to find the fsverity_info.  This
+
+
+On 1/23/26 12:06 AM, Lorenzo Stoakes wrote:
+> In order to be able to use only vma_flags_t in vm_area_desc we must adjust
+> shmem file setup functions to operate in terms of vma_flags_t rather than
+> vm_flags_t.
 > 
-> Oh is that what the 'r' stands for?  I thought it was rcu.  Maybe it's
-> both. :P
-
-From the lib/rhashtable.c:
-
- * Resizable, Scalable, Concurrent Hash Table
-
-> > Because insertation into the hash table now happens before S_VERITY is
-> > set, fsverity just becomes a barrier and a flag check and doesn't have
-> > to look up the fsverity_info at all, so there is only one two two
+> This patch makes this change and updates all callers to use the new
+> functions.
 > 
-> "one two two" <confused>?
-
-one or two, sorry.  The cover letter actually explains this in more
-detail, which this should be updated to.
-
-> > +static const struct rhashtable_params fsverity_info_hash_params = {
-> > +	.key_len		= sizeof(struct inode *),
+> No functional changes intended.
 > 
-> 	.key_len		= sizeof_field(struct fsverity_info, inode),
-> 
-> Perhaps?
+> Signed-off-by: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 
-That should work, yes.
+(reduced distribution list too)
 
-> > -	kfree(vi->tree_params.hashstate);
-> > -	kvfree(vi->hash_block_verified);
-> > -	kmem_cache_free(fsverity_info_cachep, vi);
-> > +	return rhashtable_lookup_fast(&fsverity_info_hash, &inode,
-> > +			fsverity_info_hash_params);
-> 
-> Hrm.  The rhashtable stores a pointer to the rhash_head, but now we're
-> returning that as if it were a fsverity_info pointer.  Can I be pedantic
-> and ask for a proper container_of() to avoid leaving a landmine if the
-> struct layout ever changes?
+Thanks. The shmem part looks good to me with some nits below.
 
-rhashtable_lookup_fast returns the struct containing the rhash_head.
-The paramters store the rhead_offset for that purpose.  See rht_obj
-as used by rhashtable_lookup.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-> > @@ -323,9 +323,9 @@ fsverity_init_verification_context(struct fsverity_verification_context *ctx,
-> >  				   struct fsverity_info *vi)
-> >  {
-> >  	ctx->inode = inode;
-> > -	ctx->vi = vi;
-> 
-> Can this function drop its @vi argument?
+> ---
+>   arch/x86/kernel/cpu/sgx/ioctl.c           |  2 +-
+>   drivers/gpu/drm/drm_gem.c                 |  5 +-
+>   drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  2 +-
+>   drivers/gpu/drm/i915/gem/i915_gem_ttm.c   |  3 +-
+>   drivers/gpu/drm/i915/gt/shmem_utils.c     |  3 +-
+>   drivers/gpu/drm/ttm/tests/ttm_tt_test.c   |  2 +-
+>   drivers/gpu/drm/ttm/ttm_backup.c          |  3 +-
+>   drivers/gpu/drm/ttm/ttm_tt.c              |  2 +-
+>   fs/xfs/scrub/xfile.c                      |  3 +-
+>   fs/xfs/xfs_buf_mem.c                      |  2 +-
+>   include/linux/shmem_fs.h                  |  8 ++-
+>   ipc/shm.c                                 |  6 +--
+>   mm/memfd.c                                |  2 +-
+>   mm/memfd_luo.c                            |  2 +-
+>   mm/shmem.c                                | 59 +++++++++++++----------
+>   security/keys/big_key.c                   |  2 +-
+>   16 files changed, 57 insertions(+), 49 deletions(-)
 
-No..
+[snip]
 
-> 
-> > +	ctx->vi = fsverity_get_info(inode);
+>   	inode->i_flags |= i_flags;
+> @@ -5864,9 +5869,10 @@ static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name,
+>    *	checks are provided at the key or shm level rather than the inode.
+>    * @name: name for dentry (to be seen in /proc/<pid>/maps)
+>    * @size: size to be set for the file
+> - * @flags: VM_NORESERVE suppresses pre-accounting of the entire object size
+> + * @vma_flags: VMA_NORESERVE_BIT suppresses pre-accounting of the entire object size
 
-... but this extra lookup should have been removed and got messed up by a
-rebase, causing a pointless extra lookup.  (Which still is completely
-in the noise in my runs).
+nit: s/vma_flags/flags
+
+>    */
+> -struct file *shmem_kernel_file_setup(const char *name, loff_t size, unsigned long flags)
+> +struct file *shmem_kernel_file_setup(const char *name, loff_t size,
+> +				     vma_flags_t flags)
+>   {
+>   	return __shmem_file_setup(shm_mnt, name, size, flags, S_PRIVATE);
+>   }
+> @@ -5878,7 +5884,7 @@ EXPORT_SYMBOL_GPL(shmem_kernel_file_setup);
+>    * @size: size to be set for the file
+>    * @flags: VM_NORESERVE suppresses pre-accounting of the entire object size
+
+nit: s/VM_NORESERVE/VMA_NORESERVE_BIT
+
+>    */
+> -struct file *shmem_file_setup(const char *name, loff_t size, unsigned long flags)
+> +struct file *shmem_file_setup(const char *name, loff_t size, vma_flags_t flags)
+>   {
+>   	return __shmem_file_setup(shm_mnt, name, size, flags, 0);
+>   }
+> @@ -5889,16 +5895,17 @@ EXPORT_SYMBOL_GPL(shmem_file_setup);
+>    * @mnt: the tmpfs mount where the file will be created
+>    * @name: name for dentry (to be seen in /proc/<pid>/maps)
+>    * @size: size to be set for the file
+> - * @flags: VM_NORESERVE suppresses pre-accounting of the entire object size
+> + * @flags: VMA_NORESERVE_BIT suppresses pre-accounting of the entire object size
+>    */
+>   struct file *shmem_file_setup_with_mnt(struct vfsmount *mnt, const char *name,
+> -				       loff_t size, unsigned long flags)
+> +				       loff_t size, vma_flags_t flags)
+>   {
+>   	return __shmem_file_setup(mnt, name, size, flags, 0);
+>   }
+>   EXPORT_SYMBOL_GPL(shmem_file_setup_with_mnt);
+>   
+> -static struct file *__shmem_zero_setup(unsigned long start, unsigned long end, vm_flags_t vm_flags)
+> +static struct file *__shmem_zero_setup(unsigned long start, unsigned long end,
+> +		vma_flags_t flags)
+>   {
+>   	loff_t size = end - start;
+>   
+> @@ -5908,7 +5915,7 @@ static struct file *__shmem_zero_setup(unsigned long start, unsigned long end, v
+>   	 * accessible to the user through its mapping, use S_PRIVATE flag to
+>   	 * bypass file security, in the same way as shmem_kernel_file_setup().
+>   	 */
+> -	return shmem_kernel_file_setup("dev/zero", size, vm_flags);
+> +	return shmem_kernel_file_setup("dev/zero", size, flags);
+>   }
+>   
+>   /**
+> @@ -5918,7 +5925,7 @@ static struct file *__shmem_zero_setup(unsigned long start, unsigned long end, v
+>    */
+>   int shmem_zero_setup(struct vm_area_struct *vma)
+>   {
+> -	struct file *file = __shmem_zero_setup(vma->vm_start, vma->vm_end, vma->vm_flags);
+> +	struct file *file = __shmem_zero_setup(vma->vm_start, vma->vm_end, vma->flags);
+>   
+>   	if (IS_ERR(file))
+>   		return PTR_ERR(file);
+> @@ -5939,7 +5946,7 @@ int shmem_zero_setup(struct vm_area_struct *vma)
+>    */
+>   int shmem_zero_setup_desc(struct vm_area_desc *desc)
+>   {
+> -	struct file *file = __shmem_zero_setup(desc->start, desc->end, desc->vm_flags);
+> +	struct file *file = __shmem_zero_setup(desc->start, desc->end, desc->vma_flags);
+>   
+>   	if (IS_ERR(file))
+>   		return PTR_ERR(file);
+> diff --git a/security/keys/big_key.c b/security/keys/big_key.c
+> index d46862ab90d6..268f702df380 100644
+> --- a/security/keys/big_key.c
+> +++ b/security/keys/big_key.c
+> @@ -103,7 +103,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
+>   					 0, enckey);
+>   
+>   		/* save aligned data to file */
+> -		file = shmem_kernel_file_setup("", enclen, 0);
+> +		file = shmem_kernel_file_setup("", enclen, EMPTY_VMA_FLAGS);
+>   		if (IS_ERR(file)) {
+>   			ret = PTR_ERR(file);
+>   			goto err_enckey;
 
 
