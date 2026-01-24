@@ -1,184 +1,187 @@
-Return-Path: <linux-ext4+bounces-13284-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13285-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6NWfM0Ltc2nfzgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13284-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 22:50:58 +0100
+	id GCAEKAEgdGk32QAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13285-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 02:27:29 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D8977AF95
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 22:50:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE977BF83
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 02:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9BB173004F3A
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Jan 2026 21:50:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0D7993016EC2
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 01:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5618521323C;
-	Fri, 23 Jan 2026 21:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GeivFwvd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DADB1EF36C;
+	Sat, 24 Jan 2026 01:27:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF44072631
-	for <linux-ext4@vger.kernel.org>; Fri, 23 Jan 2026 21:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.169
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769205055; cv=pass; b=l69V7dE7aqzK/dTf+wDnLSjXZLwV94Of8E+Co+8UpUpkvevfgiGp7XUpmpS1ZpGpn7OK31D3hSCs3nIYQA8KXDjjOY8rgfWu6oKmIMIX6BMHaZw3f1U2y7DHGEVrq8Er7u2Ps4OB9+BQxIEeSa5IFH5mnpCE5PVrLzQAJnYNG8Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769205055; c=relaxed/simple;
-	bh=6IXzu5urvUpIOvNTmg0w02E+jJ0ffDlI4ifqyZP7KSw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t6kjXzpvkW8JvckVTAokUtX/qAj2XOVU+90/hiABzXCe+gkUAgEOQgGDF26yGLzD1MbYTlsl11hsBki9Pm62xftJgkydXAHy+W8hwt7OqJsuQAZNuY7wMQw3b0vf4KrppDNeGck2Z1SKJwR5a+S4n4UC0RQk/qR2VNkAg0m0YTA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GeivFwvd; arc=pass smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5014e8b1615so30870721cf.3
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Jan 2026 13:50:53 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769205053; cv=none;
-        d=google.com; s=arc-20240605;
-        b=X3RjBsxJNIePYZNCs+2Cg2gAmqt6zz15TWo+/T/I63rSMHZUVdbwVR0WJg/QGZaruy
-         Pi4LcApCUrtgBEhkb0n8XI/a0DblknL7e9ZWzCPdxo1HpJ62FhULwkgeM9MyoI7oKAOB
-         HFVitkxrpOp4UwDtaDo9uKJS93sy7v1BLELRVT2da1dCJnhvysvzHaEgn1ldXBOtT7iW
-         YW/jDGHLXVWEklHchyssQjHztKOL/Tj24lKmumWH0R2w9cjMK6RBP+yXjCUv1PoWS2XD
-         QUOUY9gy64JJxl+7NicMF5oqLDvJIF26MQORtv4eSxwSyvG3dMywkPvERHPOEWUDdWxV
-         0dIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=r3RsJnPZvrF//Bx+/Oni1yeILddUVVYgZUnr0pj0hvM=;
-        fh=VkAu4Ql0L6Z1H6M2RcKxjQ+SxERI9f8Yl5kGnuZZmf4=;
-        b=HtgTEc6Vg48F5DT077yCkbXTbPVYw/LDQ+gFg6M8cEAvjhYtkpXnIaCnOc9ZHTCYON
-         Dt3SrpTjH7jxcWyk1ywbiSuIUMGtDEvhd7rSk0uHp9G1AzAjWEWh+nqQdINcRl9MEbuz
-         ph9JX87BlFvSazC4cQA6nAfkTd95VQFOVHDztwbtNb4xhg6KgGJ89x5e77t5UVm+NAyJ
-         ilNq+5J3cd9mwRn3DLLmJdLHZ0QLSWMyKfpwv4FDNRGtZ3fKp9gbLtvC87uvWIAhxTfZ
-         A6R5hx8q3WrQLM3iKUUQ+Ga9P+7PGfm1M4MclHC1SK9W9T0nvG2kg2Fw9KBmHX6bmobH
-         YTgA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769205053; x=1769809853; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r3RsJnPZvrF//Bx+/Oni1yeILddUVVYgZUnr0pj0hvM=;
-        b=GeivFwvdR1iy1xBwOhVxI5ankoPxaRHi/ers7RP5h7Wf+YKTA5HEUNLaOW1RnsjmEf
-         43Fc7ejW5dzZWy4ir4KudAhUyXwHFHD9EP0+sKH120WYkxkzN4ksEKkS3pA84zZYhoFf
-         F/QKBtbZrZsby544iDycPEtKXN6vYveh6ne469CJT8UaHF1BIjhMkX4o/p1fggxkU7K1
-         BpwnFUHTdZfIhhFse/8ZNbTjltrqJkPbKL19yzrQJmKQ6a8H0btzqNsmbT+fhNXxNhEf
-         veCXb8637DiAKLRWrqnJG9lAcRRCid3CuaIBe577RQMksbmwYR9+2MOKkuf9rTs/naut
-         Aw4w==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685AA1A2630
+	for <linux-ext4@vger.kernel.org>; Sat, 24 Jan 2026 01:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.80
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769218044; cv=none; b=jfQf0g0+1gIMrkl43uqM+OGewZo5ESRsrDVoLeXOJFo7xaE1TAmJFoJvCZrSr2/hPUumJ/s3TJHQW9fXR4wyIxB0zGqerCQqo0OnpOQ8H9uL2W/iO0+Gufr6QmcuU/5LcIM6ZUmEJBcjuOxao3Y+IUfYgno1EirNQXobS0e7NIQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769218044; c=relaxed/simple;
+	bh=79CQmac/vHMKx4+blnA6JfjbpbzdMH2UwWRnE3rknIw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PM/AJ25sLTcjZQpwsk8EqdeCIZJldM2mwfpkLwRJPWw9Npwo2WtPoKTCmMifX8Mx5+ytMGh8/1lvBVUwlIRqori3xg9l9+kPxgyC8gd41bDXD/9lBaHMx1N0cCWnUrCSEDX/YjaykJEGL3WxS+vwZtEKqZgOUDCYokxtBO6wieE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-65f30d38617so5316036eaf.1
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Jan 2026 17:27:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769205053; x=1769809853;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=r3RsJnPZvrF//Bx+/Oni1yeILddUVVYgZUnr0pj0hvM=;
-        b=aa7t56/QH9Pk5PU2Rc6/LJekwEZ1dbK4ROWfHdvTP6grTpcgIrDcZiiRGGoNxEKVDQ
-         2Mjji0RcJiW4lQNK62GJgflL6qIUpWd9Sz2B6K9MaRl9RBRQ0izE+C8sET5KaMDcN72j
-         ZTVIWSTzJc/1JI60+jv8ky8Y9h1vxl7bkpuSM0QUraid9UfAjLuUT6w8Nc7Ks/bUqWfz
-         42S3cMidYO6bUuVK7rH4EX6jaxF9sdA0oBALnMH8sUtEqpk3kR9FQ96AdbAUzvsOqcAY
-         XQlY5KVCrrWYRsF5YevztwBW8XGKUF3iPw39f4rIWPOBXcJIMU973JUROtPKbOjrPdof
-         pWnw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhRS5Zm2bUyFJF+gKOyqGB9Oa0ljD1IohidPv7BV043y7sKEIWLOZFUZ92A+agC2h/K4ZLAbm//C7V@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx26XwdJLBsQ1Xy6in+q+/VHYUz4ktkpnTaPr1Be+DecptdD2EP
-	FVIQa7nxB70pdqo4hRwHjXm/1bzNkmwDyA8l5kZwY4RWjXHjRR8MiV+bxAetsjianEPO0cxVDtA
-	l8/0yoNSUmtcKY+OVfT/gmifZAJZy+jk=
-X-Gm-Gg: AZuq6aKyO5DSOePpVPOoogjGM3lIlJJXubSdQet1IQb2ux+kRvmFucJhmP8mghZ0vP/
-	dqca1nUVWh8ZvYcGN+83s94Y/S6PK2+ypvw/h0oQtmI1Neee5RELdqBBMOF91oM/de03SDPCJVx
-	M8ZJp2h+bJ8TKl3Xj5hs5liLM5sULfhjvX8Mg3I7u1QjsMSV9ZP8uFtwlXqFOh3JkLYB9GSTfKr
-	LtY6p9MU4ItzaHaWJLOmAAE/BICf1Q2Fca+KJZVgvEH6SS5ouNP57nTX/8WYl/C+odBAw==
-X-Received: by 2002:ac8:7c55:0:b0:4f1:ab79:fb18 with SMTP id
- d75a77b69052e-502f7747aa4mr55300201cf.25.1769205052741; Fri, 23 Jan 2026
- 13:50:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1769218042; x=1769822842;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7jJqVblTcaDm59x9pbra9PFYT8IN4hr11UnTJQhv4XY=;
+        b=sQZCxmObR12T2kVQ3iciK8PUcqwRqkurPrdNwhcu/mO9Pa6TF5jD3tQW0zXxqiqmRk
+         JfluV3wvdz1PmqdLbwH69vVyGEyiR0lusgb8D+t2CE0WZV+ay7t+I4AtAF1pbjT/SWQD
+         g0vD7ixl5fCYg6kE22cENQwpt4IQO5Zwrieh1lH/J5g9osuVJ8dNEKF0kJtiv0CeUqQW
+         hqYN5C+BzTMKkVyj3qC148cDrE7OPcVLd/OIMaNkbi/HlPilwBrUXhJmVlQswvsF1XGr
+         iIXvCtkjaFtYEpqs2DaGFxJwuXI1K4bxGJVFPPQP13vA7QonNH2LSPtI9ktDyPg7xeUN
+         ckMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnSc5UY9aZRC4JqMf3Fa1NW8+yZN141oKjo8d/t3VOLpPKVkzOZm8A4hx6tDb/wnLWccy6x5jndknZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxd1M9YiGovuYOEFooqND8wobbUOMvoFS2uJddtwj3D7yJdjbzr
+	rY58hv76YXHQNXTUXNlVzcpMcRw/7L2Vlhfy7Qmmz0H+4YcPYhj3oN1AF6ezWEOPhPa04ROaQNm
+	ethOa+tPXI3Z9OzzB9pWFm8csL++tsEfOYOWlHmZxxEXztWF+jJY0/sfCKGU=
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs> <176169810700.1424854.5753715202341698632.stgit@frogsfrogsfrogs>
-In-Reply-To: <176169810700.1424854.5753715202341698632.stgit@frogsfrogsfrogs>
-From: Joanne Koong <joannelkoong@gmail.com>
-Date: Fri, 23 Jan 2026 13:50:41 -0800
-X-Gm-Features: AZwV_QiX4hOk_3lPAHP4zgVxbMS4JU0Q0fRA5UCPS5O3nWxaluH3IssYOZyADgE
-Message-ID: <CAJnrk1bymmhei7X15980THz8gnQCgm2ik2nLBOWkZ3NF5MXNXA@mail.gmail.com>
-Subject: Re: [PATCH 16/31] fuse: implement large folios for iomap pagecache files
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+X-Received: by 2002:a05:6820:8188:b0:65c:2501:6c79 with SMTP id
+ 006d021491bc7-662cab9db87mr2267253eaf.59.1769218042409; Fri, 23 Jan 2026
+ 17:27:22 -0800 (PST)
+Date: Fri, 23 Jan 2026 17:27:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69741ffa.050a0220.1a75db.0328.GAE@google.com>
+Subject: [syzbot] [ext4?] WARNING in ext4_split_convert_extents
+From: syzbot <syzbot+e625b79bfdd66c067432@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=ee3bfbe9e319ed0c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13285-lists,linux-ext4=lfdr.de,e625b79bfdd66c067432];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13284-lists,linux-ext4=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joannelkoong@gmail.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3D8977AF95
+	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,syzkaller.appspot.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,storage.googleapis.com:url,googlegroups.com:email]
+X-Rspamd-Queue-Id: 0CE977BF83
 X-Rspamd-Action: no action
 
-On Tue, Oct 28, 2025 at 5:49=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> Use large folios when we're using iomap.
->
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+Hello,
 
-Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
-> ---
->  fs/fuse/file_iomap.c |    6 ++++++
->  1 file changed, 6 insertions(+)
->
->
-> diff --git a/fs/fuse/file_iomap.c b/fs/fuse/file_iomap.c
-> index 897a07f197c797..0bae356045638b 100644
-> --- a/fs/fuse/file_iomap.c
-> +++ b/fs/fuse/file_iomap.c
-> @@ -1380,12 +1380,18 @@ static const struct address_space_operations fuse=
-_iomap_aops =3D {
->  static inline void fuse_inode_set_iomap(struct inode *inode)
->  {
->         struct fuse_inode *fi =3D get_fuse_inode(inode);
-> +       unsigned int min_order =3D 0;
->
->         inode->i_data.a_ops =3D &fuse_iomap_aops;
->
->         INIT_WORK(&fi->ioend_work, fuse_iomap_end_io);
->         INIT_LIST_HEAD(&fi->ioend_list);
->         spin_lock_init(&fi->ioend_lock);
-> +
-> +       if (inode->i_blkbits > PAGE_SHIFT)
-> +               min_order =3D inode->i_blkbits - PAGE_SHIFT;
-> +
-> +       mapping_set_folio_min_order(inode->i_mapping, min_order);
->         set_bit(FUSE_I_IOMAP, &fi->state);
->  }
->
->
+syzbot found the following issue on:
+
+HEAD commit:    d08c85ac8894 Add linux-next specific files for 20260119
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=171a1852580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee3bfbe9e319ed0c
+dashboard link: https://syzkaller.appspot.com/bug?extid=e625b79bfdd66c067432
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121533fa580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bc7b9a580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/94cfdbd8a0c9/disk-d08c85ac.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f7ec0695ac29/vmlinux-d08c85ac.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ddc8307e03e3/bzImage-d08c85ac.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6ddc9a8efbb6/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=14f96bfc580000)
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e625b79bfdd66c067432@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: fs/ext4/extents.c:3486 at ext4_split_extent fs/ext4/extents.c:3485 [inline], CPU#1: kworker/u8:4/58
+WARNING: fs/ext4/extents.c:3486 at ext4_split_convert_extents+0x13c2/0x1a10 fs/ext4/extents.c:3839, CPU#1: kworker/u8:4/58
+Modules linked in:
+CPU: 1 UID: 0 PID: 58 Comm: kworker/u8:4 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
+RIP: 0010:ext4_split_extent fs/ext4/extents.c:3485 [inline]
+RIP: 0010:ext4_split_convert_extents+0x13c2/0x1a10 fs/ext4/extents.c:3839
+Code: 4c 8b 44 24 38 e8 be 85 fe ff 40 b5 01 4c 8b 64 24 18 49 81 fc 00 f0 ff ff 0f 87 19 ff ff ff e9 4e f0 ff ff e8 3f 8f 4a ff 90 <0f> 0b 90 49 bf 00 00 00 00 00 fc ff df 44 8b 6c 24 04 4c 8b 64 24
+RSP: 0018:ffffc900015f7328 EFLAGS: 00010293
+RAX: ffffffff82768aa1 RBX: dffffc0000000001 RCX: ffff88801cb99e40
+RDX: 0000000000000000 RSI: 0000000000000100 RDI: 0000000000000008
+RBP: 0000000000000008 R08: ffff88802ba1269f R09: 0000000000000000
+R10: ffff88802ba12690 R11: ffffed10057424d4 R12: 0000000000000010
+R13: ffff888073634d01 R14: 0000000000000010 R15: 0000000000000100
+FS:  0000000000000000(0000) GS:ffff888125cf2000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000200000000080 CR3: 000000000df3e000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ext4_convert_unwritten_extents_endio fs/ext4/extents.c:3915 [inline]
+ ext4_ext_handle_unwritten_extents fs/ext4/extents.c:3999 [inline]
+ ext4_ext_map_blocks+0xde4/0x5560 fs/ext4/extents.c:4336
+ ext4_map_create_blocks+0x11d/0x540 fs/ext4/inode.c:616
+ ext4_map_blocks+0x759/0x1170 fs/ext4/inode.c:809
+ ext4_convert_unwritten_extents+0x2a8/0x5d0 fs/ext4/extents.c:5038
+ ext4_convert_unwritten_io_end_vec+0xff/0x170 fs/ext4/extents.c:5078
+ ext4_end_io_end+0xc7/0x410 fs/ext4/page-io.c:200
+ ext4_do_flush_completed_IO fs/ext4/page-io.c:291 [inline]
+ ext4_end_io_rsv_work+0x262/0x330 fs/ext4/page-io.c:306
+ process_one_work+0x93a/0x15a0 kernel/workqueue.c:3279
+ process_scheduled_works kernel/workqueue.c:3362 [inline]
+ worker_thread+0x9b0/0xee0 kernel/workqueue.c:3443
+ kthread+0x389/0x480 kernel/kthread.c:467
+ ret_from_fork+0x510/0xa50 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
