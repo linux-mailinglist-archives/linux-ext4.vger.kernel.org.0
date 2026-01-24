@@ -1,192 +1,113 @@
-Return-Path: <linux-ext4+bounces-13289-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13290-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GMBnGln5dGmO/gAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13289-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 17:54:49 +0100
+	id X70lA0QddWn4AwEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13290-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 20:28:04 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDAA77E302
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 17:54:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557E17EB75
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 20:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 22AA9300B11C
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 16:54:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CED0B3011BC6
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 19:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C69825785D;
-	Sat, 24 Jan 2026 16:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482A0239086;
+	Sat, 24 Jan 2026 19:27:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FfwvaTsZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m58yS5I/"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4581A24677F;
-	Sat, 24 Jan 2026 16:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCE11459FA;
+	Sat, 24 Jan 2026 19:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769273671; cv=none; b=SGwWeZWa3+Fa21Lbjz9BTDHMPq+qFeMGcD+WaYlCImoRefgLSgKNPghzRUCO+YUVknYvfIc82ECJGs5wcDoB+2e5ErR0jS7qU4h3KJcl0va8rdBsv5Zo0V6n2qiHN65l/j1LWOiHlPfbMatz7XNzHo+nBo3EKHvQYNzx8B/5BbA=
+	t=1769282870; cv=none; b=WB0KDUyMTIY5T08qw3FNMEA0L85OO+8gdjnuJrk0ePJIB1pAOIRRWEKazCCkSJCZ0uvSp6JQO6hA3vB/6/yR62heeaV4wek58vAbikKra4i9Dqgh86qoPfUquy7zwIHzfRd3TYWMEcI+EMQvcHUgBImYnCGQRmGNnI+3wNvMYhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769273671; c=relaxed/simple;
-	bh=73Hqh12kK68g6ILOa04pwssPqLmn170Un7G0Rk25elo=;
+	s=arc-20240116; t=1769282870; c=relaxed/simple;
+	bh=RdIXVmuy0+sUc+oiYy7nGjj6fzI+3doQt0//05fe6og=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pIZz2oa4JuHrAAT3XNd//U3+9weB+4ppWAelbxhPxM7mdTCRJetRrcsq1AJn+tzJn0A/o9D5VktYIRKlt5gsWhFuGq7kh0+UEU9Zae1PHmjp7GfHPKMG6NC+bxT4PZ139uQhUZ02wz2YZXWPoDLdpBWTQHaeTYhA2JuwxVEwZiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FfwvaTsZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC262C116D0;
-	Sat, 24 Jan 2026 16:54:30 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=HunC5YB2t8lYxSXWRqfCz0Sm7W7oxh/9WMpBIGJtbedt/uo/0or/o697gASmR05bVdkbumzwNntDi543unK/9uEdc/g9HS3OiBvgixi500PxgRawFrkbuWRwZFf4z55nNrsTwgail+d/BRsjGIj9BhfIOQwHyiDXY9E3pTeS9Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m58yS5I/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C388EC116D0;
+	Sat, 24 Jan 2026 19:27:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769273670;
-	bh=73Hqh12kK68g6ILOa04pwssPqLmn170Un7G0Rk25elo=;
+	s=k20201202; t=1769282869;
+	bh=RdIXVmuy0+sUc+oiYy7nGjj6fzI+3doQt0//05fe6og=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FfwvaTsZUkUFhdLfNWMPF6dIcza9h6DlSnXL4/7TvBnwk6a1iBNyJUJHKhkiOUd8T
-	 pCGieIXfDVmL4LqRW+GlmtQ+bCJpDB5TwlzumpBxDnDsR5uUSt7/CFmwJGhGUScDef
-	 Z2Eueh8uz5KTV40s962/AJauCHw8jpcLcvbHA3QbzjyLM0BfravdeiGe5F1CLO3PBG
-	 7C6/hEeFCrZXpAYh+CMJxEvIS39Vj0wUHB8dGLt9Lg0Cru7i8lwY14J0mf3OtM2waE
-	 wnm9hRy7jhJzKMKr+YjrJMmOZRxPIw9Tdjf1c245q4QE9UV45/mwux+UzH45CvmpHe
-	 XHQDEVgh12Yng==
-Date: Sat, 24 Jan 2026 08:54:30 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Joanne Koong <joannelkoong@gmail.com>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 07/31] fuse: create a per-inode flag for toggling iomap
-Message-ID: <20260124165430.GT5966@frogsfrogsfrogs>
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
- <CAJnrk1ZDeYytdjuCdg6-O-PGjcmwS33LOnfFT_YY9SPE=x=Qxw@mail.gmail.com>
- <20260122222233.GA5900@frogsfrogsfrogs>
- <CAJnrk1ZYp=+ho02gMAPGLsGBo3a84ScuE92xP68=1SR-ixAs+g@mail.gmail.com>
+	b=m58yS5I/FsYNDuCUdf/CVJWOCrf/ECQJKFl6+HVgPgXpfRaLo7hRsFp37W93KosZ3
+	 T6Ujgb3T8kfp2+V1SblRGUPrZpo5zIJWX3pCcquT43IEjEX1hPEdaoPJCzUWMzabph
+	 oPW+I+Lhj0R68TAGsuZbrq3UD3431Xfhz1vW9Di5fg0Q/7HBEJNE1wDDr5xYx1CcPt
+	 fBGWoUwW7vhZ5XOc4i55DZOGwCij0vlUzuqQNj7OUrRQjfOmzawSgDvvZPQWRyDpBC
+	 dGJPUqNOBZtQOAJWx5yStfK5HdNU9w06H4da2abtWDOGery5FdSafrWiI3Mnz2skss
+	 Eqr6lSRfPLjBA==
+Date: Sat, 24 Jan 2026 11:27:47 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: [PATCH 04/11] fsverity: start consolidating pagecache code
+Message-ID: <20260124192747.GD2762@quark>
+References: <20260122082214.452153-1-hch@lst.de>
+ <20260122082214.452153-5-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1ZYp=+ho02gMAPGLsGBo3a84ScuE92xP68=1SR-ixAs+g@mail.gmail.com>
+In-Reply-To: <20260122082214.452153-5-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13289-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13290-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: BDAA77E302
+	RCPT_COUNT_TWELVE(0.00)[15];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 557E17EB75
 X-Rspamd-Action: no action
 
-On Fri, Jan 23, 2026 at 10:05:32AM -0800, Joanne Koong wrote:
-> On Thu, Jan 22, 2026 at 2:22 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Wed, Jan 21, 2026 at 05:13:39PM -0800, Joanne Koong wrote:
-> > > On Tue, Oct 28, 2025 at 5:46 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > >
-> > > > From: Darrick J. Wong <djwong@kernel.org>
-> > > >
-> > > > Create a per-inode flag to control whether or not this inode actually
-> > > > uses iomap.  This is required for non-regular files because iomap
-> > > > doesn't apply there; and enables fuse filesystems to provide some
-> > > > non-iomap files if desired.
-> > > >
-> > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> > >
-> > > The logic in this makes sense to me, left just a few comments below.
-> > >
-> > > Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
-> >
-> > Thanks!
-> >
-> > > > ---
-> > > >  fs/fuse/fuse_i.h          |   17 ++++++++++++++++
-> > > >  include/uapi/linux/fuse.h |    3 +++
-> > > >  fs/fuse/file.c            |    1 +
-> > > >  fs/fuse/file_iomap.c      |   49 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  fs/fuse/inode.c           |   26 ++++++++++++++++++------
-> > > >  5 files changed, 90 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> > > > index f1ef77a0be05bb..42c85c19f3b13b 100644
-> > > > --- a/fs/fuse/file.c
-> > > > +++ b/fs/fuse/file.c
-> > > > +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)
-> > > > +{
-> > > > +       struct fuse_conn *conn = get_fuse_conn(inode);
-> > > > +       struct fuse_inode *fi = get_fuse_inode(inode);
-> > > > +
-> > > > +       ASSERT(S_ISREG(inode->i_mode));
-> > > > +
-> > > > +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP)) {
-> > > > +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> > > > +               fuse_inode_set_iomap(inode);
-> > > > +       }
-> > > > +}
-> > > > +
-> > > > +void fuse_iomap_evict_inode(struct inode *inode)
-> > > > +{
-> > > > +       struct fuse_conn *conn = get_fuse_conn(inode);
-> > > > +       struct fuse_inode *fi = get_fuse_inode(inode);
-> > > > +
-> > > > +       if (fuse_inode_has_iomap(inode))
-> > >
-> > > If I'm understanding this correctly, a fuse inode can't have
-> > > FUSE_I_IOMAP set on it if conn>iomap is not enabled, correct?
-> >
-> > Correct.
-> >
-> > > Maybe it makes sense to just return if (!conn->iomap) at the very
-> > > beginning, to make that more clear?
-> >
-> > <shrug> fuse_inode_has_iomap only checks FUSE_I_IOMAP...
-> >
-> > > > +               fuse_inode_clear_iomap(inode);
-> > > > +       if (conn->iomap && fuse_inode_is_exclusive(inode))
-> > > > +               clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
-> >
-> > ...but I wasn't going to assume that iomap is the only way that
-> > FUSE_I_EXCLUSIVE could get set.
-> >
-> > On the other hand, for non-regular files we set FUSE_I_EXCLUSIVE only if
-> > conn->iomap is nonzero *and* attr->flags contains FUSE_ATTR_IOMAP.  So
-> > this clearing code isn't quite the same as the setting code.
-> >
-> > I wonder if that means we should set FUSE_I_IOMAP for non-regular files?
-> > They don't use iomap itself, but I suppose it would be neat if "iomap
-> > directories" also meant that timestamps and whatnot worked in the same
-> > as they do for regular files.
-> >
-> 
-> That seems like a good idea to me. I think that also makes the mental
-> model (at least for me) simpler.
+On Thu, Jan 22, 2026 at 09:22:00AM +0100, Christoph Hellwig wrote:
+>  fs/ext4/verity.c         | 17 +----------------
+>  fs/f2fs/verity.c         | 17 +----------------
+>  fs/verity/pagecache.c    | 38 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/fsverity.h |  3 +++
+>  4 files changed, 43 insertions(+), 32 deletions(-)
 
-I tried that, and generic/476 immediately broke.  I'll get back to that
-next week, but turning it on unconditionally is not trivial
-unfortunately. :/
+This creates a bisection hazard: the new file fs/verity/pagecache.c
+isn't added to fs/verity/Makefile until the next commit.
 
---D
-
-> Thanks,
-> Joanne
+- Eric
 
