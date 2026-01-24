@@ -1,83 +1,84 @@
-Return-Path: <linux-ext4+bounces-13286-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13287-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id dr2SL7h9dGne6AAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13286-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 09:07:20 +0100
+	id C0+2HnOAdGlW6QAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13287-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 09:18:59 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239E87CF30
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 09:07:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2BB07CF69
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 09:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9BA0F30097EE
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 08:07:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 005F63012CCE
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Jan 2026 08:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA61225403;
-	Sat, 24 Jan 2026 08:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A092773EE;
+	Sat, 24 Jan 2026 08:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cg5noWxm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cJCNC3wM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC2B84039
-	for <linux-ext4@vger.kernel.org>; Sat, 24 Jan 2026 08:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38281F875A
+	for <linux-ext4@vger.kernel.org>; Sat, 24 Jan 2026 08:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769242036; cv=none; b=B8BIybnG5pKPtjT11ihMJVjsBZCIdHPesSCSFP45WSVTdoZXk7kCNHo8DLio1VG2gMAkzxh4iLvg8Gc0B+HRP4xP/gxEx4TziTMIV0aWhDbEw78qOJbuH+F6F6SqW7jfGKcP+kY4RZs/6204qFwjArsOoE5zRNk8AJ/THwajlAY=
+	t=1769242733; cv=none; b=loEoZp+6aamF3OxMmlpMVAkRvHAMhqlXDlwzo4c4v2rrG4GQiGdYEfb0E3ou011UB5FACQo7NQevtaZLQACP5iejkK0EKlSsMCyjmKwI+HQUSdMJeR3uARe4YewAB7USe4Apn+o8DJ/NGXEs4uRHkbxYga4V6LtcfPH/QzfwhaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769242036; c=relaxed/simple;
-	bh=eCFcNa/HY19GOkFMltoj4bjlltVQaLp2EvzjmyJCuQo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZaUj7GEx95RDYqhuaUy0YPdmZJ+FZtqmfrsrU2j+KGIEbYONssmON4u0e1Ml3QWFwS8UP8XVPi3yJtNK1e2Q6FsafYQjb7T/rEORNTgaWMA6k5G5o3DVOGt1B3pMTkQVqP8VtMP78sqUD0IiIq+UhU5gRWJmqpK8bgUXQbJXhAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cg5noWxm; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1769242733; c=relaxed/simple;
+	bh=OVAeomsh6Mj11icHu9KqyNRZ2jyJuFcGOWKABatdc74=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rq6GkiS4apYzNPYcBcEBKfets8KjLWJBxDIr7N/Wuz8rmpBwy7ZhK8hL7+YIVpzbIt8Ztz9SQhis4fc/bXssW8D/S86UF079xfRvjiX9gYCocxCyEoTOrMGoplYXnQb3wtftiXHgWs0s0CRgvk9esI2On2zeWkcOhaldt5qqjrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cJCNC3wM; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-29f102b013fso27193955ad.2
-        for <linux-ext4@vger.kernel.org>; Sat, 24 Jan 2026 00:07:14 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a0834769f0so19744665ad.2
+        for <linux-ext4@vger.kernel.org>; Sat, 24 Jan 2026 00:18:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769242034; x=1769846834; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1769242731; x=1769847531; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bmNq0+UsLIk5q/c1rFFe2Tb3EQ8fjZ0k3OENU3nF5bk=;
-        b=cg5noWxmyl/gwOmLB29J+44fe2xGgxpx4kqI9ab8I32SHqGYxhh4jUumSkJak68YPg
-         VIhcMvzk+vE0KmJnPElSjpXtVis3zwoyGJT8fFem0lsdJGNE8exsQoeNjClgnRIry1Pb
-         C8pkT0Js55bISdHuWKqNVwusvVtU+tH8VSWJKu02Tk77BB3wTyvvwOmKl/WavjKDJ4bW
-         tqCkUIQfxi/R4SWtjdfSurD9Y/xUThpjpnI7eAjVPqiXuoA6LIy7cgneB7fvvoNkY1M3
-         P/DPMOPd7+0AKHBJDApxzjNCSOANTopxLAQuO0lh3fO9Wlnm9+oEZsc2nkuIn3LGPCql
-         xpRw==
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rMKou0lTGiCd2raLCB3aWAc1kprvOo5pfAG7zCR/gfQ=;
+        b=cJCNC3wMIdSCUP3A+WXQel43PbHp4gdbtNfDzydUmwOTnxSSvBbbrh3DHalVMio/qe
+         4xQbrep03hIWESh8L4DkhJRDOET+aAjL5YNBDHPdEBqbqkEs61ZDIG8GSuGAi3Lq6roH
+         5jeJSKg5AnZql8mp5vgTS97V8Q2fHUvLMxZgSIEwbuj9awcwoyzbCK2c6Ul7uJ5ZU7jM
+         bhAG1XhoPhICRqEc9XBMfPkwImlNdqvDzX51y6jKYCLkScLdbz9ciRBI+GAXuz3twbWh
+         1VkobbCVkfsTqdTSZl/2rV8rfrvyr+CLliVzWAPpb4kUXx98sXUdXReMm8m6fevTwn9P
+         U9WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769242034; x=1769846834;
+        d=1e100.net; s=20230601; t=1769242731; x=1769847531;
         h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bmNq0+UsLIk5q/c1rFFe2Tb3EQ8fjZ0k3OENU3nF5bk=;
-        b=Y7tH9HzMp/fTZFAia6aLgOSq2y2J3MfFJ7kIBEPGud6AHy3kmLSLsG+ry+pQOJDCCo
-         pDxFoEwUNIDak5pg7NvPkH/8ejn1pa43GCsZLbsxO1lqpYuc5hi9uH3fFrQXxIC39c8H
-         mlnbXF5g84a+z6QGv74zcnCSK9cbN8tBiBZ0M2CVkealOM2ahl9tpLrFCLWEm6qZCEej
-         pjy4Fj03ZAAlM8+z1E6f0WZl+VxujvocSzC1CFN19iZyIbcimejxdezSowTnjaXUvHjY
-         gSCNAet4zaYPM5KeYkVejqvl92MrCNM4YrqaX8Gx9vUFDgrmKDFg8V33oBWE9Y58rhGo
-         UjWQ==
-X-Gm-Message-State: AOJu0Yynp6PBT+FD/71ZprcoYbVYfrbg5fctgLKzyrNd/XEz1Xz/jmSa
-	U/IrPiALoZUDg2bsZseFRwQzTnmzepezZTcpZrM3pvJrD/G5xDFj8LEpttvxY8ZfqEk=
-X-Gm-Gg: AZuq6aJeHifQYucv7UWXTJzM1fxTxeyVAouOyLuJULjNpMWMol2ksIuuYn2k7WqN6Rx
-	cDtlIVj8YEmxFJGVaxxqoryR+k4XScEJ3ikZFVl3k5BJoFIh4v2o5NirSu4LDL3xM9juE5TLcAv
-	DU5Zo8FaJsZVHE/RTo6F2Yfiev1HXZlcsaMlPrszq+R0jc2wcXFNhrDcEvt8xPyUkphKvZTknOU
-	Z8q6kmG8BqCnIKB3GByChgOT3BKVTOr8DunFSSmaYmfB80wUqnYLzffo2FvEX6PtRPc8j/a5UOb
-	G/pZmCcufhJ3IUL3eAqjcMNX3FN/j3HEsU9tEt46fy5wynGhq1qmMEAQxr7S02e+ORMLvk2m2ex
-	rAWP2K9GF5utRmiT9eMzQ/Rc8CM9DFyvrHSZO4huClaFEIQrsF3KPn+Q2V+Dj6Mq86ZeDU2OLnB
-	okHcvTYcA1U1S+qoslRBOCfJg2BzgApEh5NKoItXtUOIEiNbJRuJuoENU3pqATcQ==
-X-Received: by 2002:a17:902:c94b:b0:2a7:683c:afb8 with SMTP id d9443c01a7336-2a7fe55ecf5mr61272995ad.16.1769242034386;
-        Sat, 24 Jan 2026 00:07:14 -0800 (PST)
+        bh=rMKou0lTGiCd2raLCB3aWAc1kprvOo5pfAG7zCR/gfQ=;
+        b=H2bMyvg+zgIKO99Fg2qodvDpM+QZn8Ur6Omjv6WrYGV+Pp1TBNhLgZM384gqFN9jUT
+         m1LtG46q4p5KA+v5RFkt+xqoVa60ID2gA8FdXKEUrD17UEg2y4UGEsxQQruizLFb83Ml
+         qZSaIlOOnUsbVcDXkGA2kyXwhnROFgCUTxp00rEqloYp0vI52watJ7GFSpu7rWuJin7q
+         RVKapEoWI+wqP6xrsx1kDFUk5JqBeu5z73frPW9YZ3q6JKK/e5inc6QGO6031FlBVR62
+         2LiEgi+nIc3/sZ+IiAF13CT9EN2u12Nvx4G4c12uwULSyPLnfJfPG2lv2yunfNd62z/j
+         YsEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUk5xBR02orS9qdHFtjf87bCcv/6FnDsukwYxNW1lbIDZxxANpmThUTQAyrehCEi0HmiiplNpASXAWT@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8vknAGbN42eTQUygJl5RddEn5wAw8XgHllYqxQiq7F2mkHKoN
+	IkBqZtlQhjcVqsTYFVt7QWYHnvKpSdFEVTqC5iWOHJLhViwifKPDpz8T
+X-Gm-Gg: AZuq6aKTUUY+i8Yh7NEPIGG4D7OrHu3JC4seYtmk7qia4Od14s3+iXcOi1z00Yh20NJ
+	LVgx4tUpOlbAguMIc0rM9A1lp9qsb4449rQegIuP3KGTZJlbVECo4U0K5RCw7GFS0dkvoD6juWD
+	rKU3hiZoQxoUpa1ZVduxcrUQ7D/qqNPYp0eH0sRl11122ZV8ywSRzK4LZikafY1XxjyDtOTlxid
+	EFmvq+gfNmzJ7LXiuSr53AWOIKDeCxb+tFA+SAPD7czSkvpqtn9qYWLtcTwDDnGCYEON1uHZA1+
+	gVV1RBS4PYeYbOE8cuilvX6BaFWsFSbhTi+gGcXdnWhWOvo4XOkcaM0SYCCM5u8Mgj6V9Mhmhmm
+	Ks8/EMJNRuqEZxMNAvooyW/JlZhZy42cbUaQHvcBj2slsCMt+PXs3kO49IfPc4IVxyDdfEQzT+J
+	c+1VlyJqVR6pmT8d++z2RJzKfjpVUyWYcO5nfnCTLVO3FljRFhAC3UsznoozTemg==
+X-Received: by 2002:a17:902:f652:b0:2a7:a22c:90f7 with SMTP id d9443c01a7336-2a7fe756185mr49731635ad.51.1769242731079;
+        Sat, 24 Jan 2026 00:18:51 -0800 (PST)
 Received: from ?IPV6:240e:390:a84:ae11:f96c:3476:2936:720f? ([240e:390:a84:ae11:f96c:3476:2936:720f])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a802daa994sm37976755ad.6.2026.01.24.00.07.11
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a802fdd715sm38380625ad.102.2026.01.24.00.18.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jan 2026 00:07:13 -0800 (PST)
-Message-ID: <5ebab91a-8510-40be-a77e-da17dca83e45@gmail.com>
-Date: Sat, 24 Jan 2026 16:07:10 +0800
+        Sat, 24 Jan 2026 00:18:50 -0800 (PST)
+Message-ID: <f20b78a1-82c2-4864-a996-585c703573e7@gmail.com>
+Date: Sat, 24 Jan 2026 16:18:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -85,102 +86,103 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: remove tl argument from
- ext4_fc_replay_{add,del}_range
-To: Guoqing Jiang <guoqing.jiang@linux.dev>, tytso@mit.edu,
- adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org
-References: <20260121063805.19863-1-guoqing.jiang@linux.dev>
+Subject: Re: [PATCH] ext4: remove unused i_fc_wait
+To: Li Chen <me@linux.beauty>, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260120121941.144192-1-me@linux.beauty>
 Content-Language: en-US
 From: Zhang Yi <yizhang089@gmail.com>
-In-Reply-To: <20260121063805.19863-1-guoqing.jiang@linux.dev>
+In-Reply-To: <20260120121941.144192-1-me@linux.beauty>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13286-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13287-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[yizhang089@gmail.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 239E87CF30
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,linux.beauty:email]
+X-Rspamd-Queue-Id: F2BB07CF69
 X-Rspamd-Action: no action
 
-On 1/21/2026 2:38 PM, Guoqing Jiang wrote:
-> Since commit a7ba36bc94f2 ("ext4: fix fast commit alignment issues"),
-> both ext4_fc_replay_add_range and ext4_fc_replay_del_range get
-> ex based on 'val' instead of 'tl'.
+On 1/20/2026 8:19 PM, Li Chen wrote:
+> i_fc_wait is only initialized in ext4_fc_init_inode() and never used for
+> waiting or wakeups. Drop it.
 > 
-> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+> Signed-off-by: Li Chen <me@linux.beauty>
 
 Thank you for the cleanup, it looks good to me.
 
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
 > ---
->   fs/ext4/fast_commit.c | 10 ++++------
->   1 file changed, 4 insertions(+), 6 deletions(-)
+>   fs/ext4/ext4.h        | 4 ----
+>   fs/ext4/fast_commit.c | 2 +-
+>   2 files changed, 1 insertion(+), 5 deletions(-)
 > 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 56112f201cac..dc3a5a926eff 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -28,7 +28,6 @@
+>   #include <linux/seqlock.h>
+>   #include <linux/mutex.h>
+>   #include <linux/timer.h>
+> -#include <linux/wait.h>
+>   #include <linux/sched/signal.h>
+>   #include <linux/blockgroup_lock.h>
+>   #include <linux/percpu_counter.h>
+> @@ -1091,9 +1090,6 @@ struct ext4_inode_info {
+>   
+>   	spinlock_t i_raw_lock;	/* protects updates to the raw inode */
+>   
+> -	/* Fast commit wait queue for this inode */
+> -	wait_queue_head_t i_fc_wait;
+> -
+>   	/*
+>   	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len
+>   	 * and inode's EXT4_FC_STATE_COMMITTING state bit.
 > diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index fa66b08de999..8474ae52f8dd 100644
+> index fa66b08de999..86789989b3f4 100644
 > --- a/fs/ext4/fast_commit.c
 > +++ b/fs/ext4/fast_commit.c
-> @@ -1751,8 +1751,7 @@ int ext4_fc_record_regions(struct super_block *sb, int ino,
+> @@ -13,6 +13,7 @@
+>   #include "mballoc.h"
+>   
+>   #include <linux/lockdep.h>
+> +#include <linux/wait_bit.h>
+>   /*
+>    * Ext4 Fast Commits
+>    * -----------------
+> @@ -215,7 +216,6 @@ void ext4_fc_init_inode(struct inode *inode)
+>   	ext4_clear_inode_state(inode, EXT4_STATE_FC_COMMITTING);
+>   	INIT_LIST_HEAD(&ei->i_fc_list);
+>   	INIT_LIST_HEAD(&ei->i_fc_dilist);
+> -	init_waitqueue_head(&ei->i_fc_wait);
 >   }
 >   
->   /* Replay add range tag */
-> -static int ext4_fc_replay_add_range(struct super_block *sb,
-> -				    struct ext4_fc_tl_mem *tl, u8 *val)
-> +static int ext4_fc_replay_add_range(struct super_block *sb, u8 *val)
->   {
->   	struct ext4_fc_add_range fc_add_ex;
->   	struct ext4_extent newex, *ex;
-> @@ -1872,8 +1871,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
->   
->   /* Replay DEL_RANGE tag */
->   static int
-> -ext4_fc_replay_del_range(struct super_block *sb,
-> -			 struct ext4_fc_tl_mem *tl, u8 *val)
-> +ext4_fc_replay_del_range(struct super_block *sb, u8 *val)
->   {
->   	struct inode *inode;
->   	struct ext4_fc_del_range lrange;
-> @@ -2243,13 +2241,13 @@ static int ext4_fc_replay(journal_t *journal, struct buffer_head *bh,
->   			ret = ext4_fc_replay_unlink(sb, &tl, val);
->   			break;
->   		case EXT4_FC_TAG_ADD_RANGE:
-> -			ret = ext4_fc_replay_add_range(sb, &tl, val);
-> +			ret = ext4_fc_replay_add_range(sb, val);
->   			break;
->   		case EXT4_FC_TAG_CREAT:
->   			ret = ext4_fc_replay_create(sb, &tl, val);
->   			break;
->   		case EXT4_FC_TAG_DEL_RANGE:
-> -			ret = ext4_fc_replay_del_range(sb, &tl, val);
-> +			ret = ext4_fc_replay_del_range(sb, val);
->   			break;
->   		case EXT4_FC_TAG_INODE:
->   			ret = ext4_fc_replay_inode(sb, &tl, val);
+>   static bool ext4_fc_disabled(struct super_block *sb)
 
 
