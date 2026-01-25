@@ -1,134 +1,179 @@
-Return-Path: <linux-ext4+bounces-13299-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13300-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ADf+JNKPdmksSAEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13299-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 22:49:06 +0100
+	id OKOTJ6STdmmpSQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13300-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 23:05:24 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284EF828F6
-	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 22:49:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B94D829D0
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 23:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0920B3006B11
-	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 21:48:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 38CDB3008798
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Jan 2026 22:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6866730DD27;
-	Sun, 25 Jan 2026 21:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FC430DEC6;
+	Sun, 25 Jan 2026 22:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e5UblH7z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyHfL3ow"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB34224240;
-	Sun, 25 Jan 2026 21:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD57274B2B;
+	Sun, 25 Jan 2026 22:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769377714; cv=none; b=LQ4yF7zz9w1PAaNI5wH0/Bo+9FOhzrYs+qWV7z4G877Qnqb0lS0aLiuLTAsBUuRofroAdDrAoOOgy/7mpcIX3KSAJWyDhPFIjw/FzXT8nlRu7ywY2XOaYRGIGoKZPSE/I6nfpdJq6SouU+DPwaLNedyXNmWecR5vGE3d6mfnTEI=
+	t=1769378706; cv=none; b=eA+lS8dRuldlZKOr4/Yza9nTmClKRMZcPy7t0H0SJGx8veQptAFQYfk1qCnrVv8Rf4JKQedFGvLjQAOuQv40R8sIyeeBahVjgHkW2bdRmvV2mlnXd6L1b4pbE0IDJ/ej+IEFc4BIQVkj7l2KseWi8AS1okRcrBRR4B4f840TEA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769377714; c=relaxed/simple;
-	bh=dVblczFOT3KK64ywz5l+aXQv3RLrX2RoBjFt0kny0a8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZtYpqOlsJ+oIqczEAEfgipQ5P62mh66nTdor8cE+GpmjCb9gBH6cNBLZdwLrihTj5wnF5j9J6SL8Gml7163eMy2kGlYyaEKkaB/Py8xEdxWyvYj51mkvd0tvr2YuKPSJBlb8T0Bo7lOCO9vQt86J2zsgYWl76AX1H4Z8uSmIrYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=e5UblH7z; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=quPIaL6J4vgskyL8jbt0HEBw7S9sSjdcy/gh2a5f1k4=; b=e5UblH7z5/IjdAKi22YkrU/R70
-	RpKHo3fZ71OVhhLv/oYJcW70xMU/N3QMFRSrTRoQ9NeI+QbCHXH6TZFSTz7yN+zkprWYk2wCe/zb3
-	WX/cZTCUAglWH3fuxkJxwIsSo1ygzzq8aILKQhkTwvQIZa0Gs44VH3lUCouxwoEMoc1LE24FR4KWG
-	fJMxm+deBt8KWp6yJWvwdt80mv2jzq+ZxWiF2/cKu3t4q9ZP9O5fMu/JhZ+INTwx0ZWaHrytz8VhQ
-	dRyMWcchY40sPMrTdfnDW2tPwobxN98aqvOeIbVBJ6KjknVfCVzvDeD2O4zCb58CWO3yMSzyMePbg
-	j2CpBSzw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vk7y2-00000004zbi-1ua8;
-	Sun, 25 Jan 2026 21:48:22 +0000
-Date: Sun, 25 Jan 2026 21:48:22 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	fsverity@lists.linux.dev
-Subject: Re: [PATCH 11/11] fsverity: use a hashtable to find the fsverity_info
-Message-ID: <aXaPph6Yi-hzf0J-@casper.infradead.org>
-References: <20260122082214.452153-1-hch@lst.de>
- <20260122082214.452153-12-hch@lst.de>
- <20260125013104.GA2255@sol>
+	s=arc-20240116; t=1769378706; c=relaxed/simple;
+	bh=kJ6JgpGimrqEkXHyyvMzGefViVzL30DBbsFX3mmThgY=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=SiUesWWdaxW1CbM0B86scJLcVunqhMiQ1/atfo9sGcfjjmk3u4wqTUcnezOp9s8/On6cQT1FGISbweABTEmiUmhPk0T2xfgPLcdkJSZNKEXXLcVkbyfhr6NkxCc5kq6rSFOzcxVYLqvSfXWwwyYj2bGhH10+531+ArWQHPklq5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyHfL3ow; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97769C4CEF1;
+	Sun, 25 Jan 2026 22:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769378706;
+	bh=kJ6JgpGimrqEkXHyyvMzGefViVzL30DBbsFX3mmThgY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=DyHfL3owAK89asDfhQXM+IKQMD6vTQqEPbBdlwvj3880nuKIlVyf0kJ1GWPbCGPat
+	 ucjDTwAD/CkI8yzM7fzV0IV1MPYMuEawgnD5iynCNY1ALkgKv9sFW+xgBFPy2nBWnB
+	 Vw+0zrgr5jSTJthmnkVQToa1I1dR/qL6o7Ch+y/wWUAc0vKP1TA6wWml6AXOjXI6Ud
+	 wRJJetxsZsBVnKN3ZkHGem1LlGmy9X9i3cYEDDqsf5mulhsYsRhiGDhq8pPLXkSRY9
+	 Q/jryTZwAIVg5WNUGz1emfgbxV2fX/c6/OJoOuOkdhXdxGxrwa/yVeRymmj5pXCgov
+	 /I04uTvCKfnnw==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 8D84FF40072;
+	Sun, 25 Jan 2026 17:05:04 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Sun, 25 Jan 2026 17:05:04 -0500
+X-ME-Sender: <xms:kJN2accIXvnGH35KtDNF6o27-vsyP7fzrVQ3dK_GjAydqEa0PFcBrg>
+    <xme:kJN2aZBa7y0fs14pjg7lavRyA7jBb1Qhce04atH46-2W2obEGeMJmlkomgp3SRqDp
+    RxhMSUHJfOa5bplDrkrJDlMGsPyRyRCS3mbKX_4B0vg8QEm1E6G5Ck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheehleehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
+    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
+    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
+    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
+    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
+    hilhdrtghomhdpnhgspghrtghpthhtohepfedupdhmohguvgepshhmthhpohhuthdprhgt
+    phhtthhopehsvghnohiihhgrthhskhihsegthhhrohhmihhumhdrohhrghdprhgtphhtth
+    hopegrughilhhgvghrrdhkvghrnhgvlhesughilhhgvghrrdgtrgdprhgtphhtthhopehs
+    lhgrvhgrseguuhgsvgihkhhordgtohhmpdhrtghpthhtoheprhhonhhnihgvshgrhhhlsg
+    gvrhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtoheprghnnhgrsehkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    gtvghmsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegthhgroheskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohephhgrnhhsgheskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:kJN2aSIv3Pu0DWq4PlLBY4O9yN-ASCFm0sosaH_aM7i9EA4YDsTCuA>
+    <xmx:kJN2abYeSpo0MinYvffT8rAw785eZVBG-PcKAL_iaP1ucQhp7re9OQ>
+    <xmx:kJN2aYBSjrpqZHogzuyFxSOU5KPVQuDnSKrscsTWeqY38TyPK1u9Gg>
+    <xmx:kJN2aVWy8CkKlf6gkg775B1qrJHTuZBvRHE-xJ4xFo2VZTjC_zlGZA>
+    <xmx:kJN2aZ0YOApvQBKMC0QERIDFvmWsvDPu2rt_WQDuXHRp4Iy5hsK3cKSX>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 5D6FA780076; Sun, 25 Jan 2026 17:05:04 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260125013104.GA2255@sol>
+X-ThreadId: AdRvsg_UpIrR
+Date: Sun, 25 Jan 2026 17:04:28 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Namjae Jeon" <linkinjeon@kernel.org>,
+ "Sungjong Seo" <sj1557.seo@samsung.com>,
+ "Yuezhang Mo" <yuezhang.mo@sony.com>,
+ almaz.alexandrovich@paragon-software.com,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>, glaubitz@physik.fu-berlin.de,
+ frank.li@vivo.com, "Theodore Tso" <tytso@mit.edu>,
+ adilger.kernel@dilger.ca, "Carlos Maiolino" <cem@kernel.org>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Jaegeuk Kim" <jaegeuk@kernel.org>,
+ "Chao Yu" <chao@kernel.org>, "Hans de Goede" <hansg@kernel.org>,
+ senozhatsky@chromium.org, "Chuck Lever" <chuck.lever@oracle.com>
+Message-Id: <a1692040-58d0-412d-b0fc-c7b7a62585c4@app.fastmail.com>
+In-Reply-To: <20260124-gezollt-vorbild-4f65079ab1f1@brauner>
+References: <20260120142439.1821554-1-cel@kernel.org>
+ <20260123-zwirn-verfassen-c93175b7a1ee@brauner>
+ <41b1274b-0720-451d-80db-210697cdb6ac@app.fastmail.com>
+ <20260124-gezollt-vorbild-4f65079ab1f1@brauner>
+Subject: Re: [PATCH v6 00/16] Exposing case folding behavior
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	XM_UA_NO_VERSION(0.01)[];
+	TAGGED_FROM(0.00)[bounces-13300-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[31];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13299-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,suse.cz,vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,kernel.org,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,mit.edu,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[app.fastmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim]
-X-Rspamd-Queue-Id: 284EF828F6
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 0B94D829D0
 X-Rspamd-Action: no action
 
-On Sat, Jan 24, 2026 at 05:31:04PM -0800, Eric Biggers wrote:
-> Maybe do:
-> 
-> 	if (IS_ENABLED(CONFIG_FS_VERITY) && IS_VERITY(inode)) {
-> 		/*
->                  * This pairs with the try_cmpxchg in set_mask_bits()
->                  * used to set the S_VERITY bit in i_flags.
-> 		 */
-> 		smp_mb();
-> 		return true;
-> 	}
-
-Is there a reason not to do as DAX did:
-
-+++ b/include/linux/fs.h
-@@ -2119,7 +2119,11 @@ extern loff_t vfs_dedupe_file_range_one(struct file *src_file, loff_t src_pos,
- #endif
- #define S_ENCRYPTED    (1 << 14) /* Encrypted file (using fs/crypto/) */
- #define S_CASEFOLD     (1 << 15) /* Casefolded file */
-+#ifdef CONFIG_FS_VERITY
- #define S_VERITY       (1 << 16) /* Verity file (using fs/verity/) */
-+#else
-+#define S_VERITY       0         /* Make all the verity checks disappear */
-+#endif
- #define S_KERNEL_FILE  (1 << 17) /* File is in use by the kernel (eg. fs/cachefiles) */
- #define S_ANON_INODE   (1 << 19) /* Inode is an anonymous inode */
 
 
-and then we can drop the CONFIG_FS_VERITY check here and in (at leaast)
-three other places
+On Sat, Jan 24, 2026, at 7:52 AM, Christian Brauner wrote:
+> On Fri, Jan 23, 2026 at 10:39:55AM -0500, Chuck Lever wrote:
+>> 
+>> 
+>> On Fri, Jan 23, 2026, at 7:12 AM, Christian Brauner wrote:
+>> >> Series based on v6.19-rc5.
+>> >
+>> > We're starting to cut it close even with the announced -rc8.
+>> > So my current preference would be to wait for the 7.1 merge window.
+>> 
+>> Hi Christian -
+>> 
+>> Do you have a preference about continuing to post this series
+>> during the merge window? I ask because netdev generally likes
+>> a quiet period during the merge window.
+>
+> It's usually most helpful if people resend after -rc1 is out because
+> then I can just pull it without having to worry about merge conflicts.
+> But fwiw, I have you series in vfs-7.1.casefolding already. Let me push
+> it out so you can see it.
+
+There will be at least one more revision of this series (and it can
+happen in a few weeks) to split 1/16 as Darrick requested, and
+address the nit that Jan noted.
+
+
+-- 
+Chuck Lever
 
