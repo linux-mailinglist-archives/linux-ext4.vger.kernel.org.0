@@ -1,108 +1,65 @@
-Return-Path: <linux-ext4+bounces-13325-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13326-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ODVHFEpfd2n8eQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13325-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 13:34:18 +0100
+	id eJYAHlu8d2lGkgEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13326-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 20:11:23 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB13888500
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 13:34:17 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E69F28C644
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 20:11:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0870D304C0B0
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 12:28:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5E7643029A5B
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 19:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA9C335BA1;
-	Mon, 26 Jan 2026 12:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89906274658;
+	Mon, 26 Jan 2026 19:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i5G3Hzbt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YwzjLdLh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i5G3Hzbt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YwzjLdLh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I2XZrOKp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3D9332EB8
-	for <linux-ext4@vger.kernel.org>; Mon, 26 Jan 2026 12:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE5E23D7DE;
+	Mon, 26 Jan 2026 19:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769430478; cv=none; b=s4TXCNn9HIzljJFYEfpbAQW4OSr4+Zhk4ue1nVmTT7FuhFcN1xkL+6tH7ZvUWzas+JCAY4PvCTbUo5XHtveGyUIHgapTluVVkgfdXmWneXL4kzeb/XYgY1JzMg045011eP9FCOOl9YkW/A5tpxXMb+rdtf0JZWUY5QSuwesSR0E=
+	t=1769454663; cv=none; b=pwMhHINM7jNAGrO3IRd5g0dAXwE67+FxNFylvDttQrrnz18r61lvYS/vAno33Sf0qk3hqKfVJbd8s3CE59WbVju6mZEfuIsjQnSyrN6gaB8v9aydiVwoutmPu533zev18MY/Eo25l5gALomvXp2MBZHRT5zRiEwDJrkNFBA8jWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769430478; c=relaxed/simple;
-	bh=ZSIwd6IeqXZ1NDMpYSipBBPq9IoNyjtJiAJIq6lHCTs=;
+	s=arc-20240116; t=1769454663; c=relaxed/simple;
+	bh=VuNjk5JPQkuJHg0tkyb4Xhls+pw6q17FfG9hVadfPQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t2LExrhy1DKs/r/aAl8Eh0i4wul8PeAB66jdrUuuxzx2koOSeCdNlVMfRyLZAkR+AFnLgem3aJzj7oR/8TjYaAH0w+sLmUjPDHEWxHe0AAB4pgtYUL3J1nYx5pUee4fPftf1k6oThB/eT3TdNizKexje4IXx2P2XucLSpsm+2NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i5G3Hzbt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YwzjLdLh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i5G3Hzbt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YwzjLdLh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BCDCA5BCD8;
-	Mon, 26 Jan 2026 12:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769430474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=i5G3Hzbt22ByqMm2UldLc/SFNkK0O0odDVZevDLIPdpU5RmVDd4uAcFy+PPSW3PVkdZ2L+
-	opGNMhT4cz1g2WlYNsVyh9Rpb+r3gIkRi6e5DsnSN8vgh54snCBsS39GaslbpIRDggfQjT
-	etl3IIFQD6v/ey7ibS1vfLlTtSX2eVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769430474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=YwzjLdLh3SCQ4Qef4Dv4wOdMMZSF/1P4p3mgxilGKo1rN8/xzN0nTLPKmVI3NVsX4wSU1N
-	25YeIYiB5lB57eBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=i5G3Hzbt;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YwzjLdLh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769430474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=i5G3Hzbt22ByqMm2UldLc/SFNkK0O0odDVZevDLIPdpU5RmVDd4uAcFy+PPSW3PVkdZ2L+
-	opGNMhT4cz1g2WlYNsVyh9Rpb+r3gIkRi6e5DsnSN8vgh54snCBsS39GaslbpIRDggfQjT
-	etl3IIFQD6v/ey7ibS1vfLlTtSX2eVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769430474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=YwzjLdLh3SCQ4Qef4Dv4wOdMMZSF/1P4p3mgxilGKo1rN8/xzN0nTLPKmVI3NVsX4wSU1N
-	25YeIYiB5lB57eBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A1460139F0;
-	Mon, 26 Jan 2026 12:27:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gPxbJ8pdd2kmEwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 26 Jan 2026 12:27:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 555A1A0A4F; Mon, 26 Jan 2026 13:27:54 +0100 (CET)
-Date: Mon, 26 Jan 2026 13:27:54 +0100
-From: Jan Kara <jack@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=V33pNX/39f2z51Ucv5mBMTrYvD9p5nLgm67OFW3j2WuOn6eZs5IbU5e1PMRalc4Kd8WAC4ZY65SdNspPyuA97fwuyw6l2AU15PmINK4nbAtinwmCEvb/rulybcBD8EZIjY9OVHn5s7s098KeWd/J2e1Wf8r6NcmmuBj3xYzOUCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I2XZrOKp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 080F1C116C6;
+	Mon, 26 Jan 2026 19:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769454663;
+	bh=VuNjk5JPQkuJHg0tkyb4Xhls+pw6q17FfG9hVadfPQ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I2XZrOKpelUwXVo3uRwJuxY9weKtlh0PSlhPTaKfohUJ09qk2nF0eKyw3KYuGrzIq
+	 P2B/Fu4TmTWZxnZzSHDXYwnB8sqyQ5KFBcLuUQcrU8o8wPtOMsEY5Xax7z3T0L1fOI
+	 HtdeL0HHtZTqRh5vTqgL2vRquzGT8lg6eK0mo06sYgnpT0hAXrl7yy9phFAbxzl3iI
+	 26s9jlb8JuojngiEhqQOzF24Sm2mtFC+qtCLLETANb8fkiiKYtTT2B6YCQbwgbUWRW
+	 ZtzxW5iXUsC3TeHuPdY8R2BfYNcJrPOCwXEJS99N3zxxUgyVv1e9nNrSv9X8OKiucy
+	 S/XyKphCGnE0g==
+Date: Mon, 26 Jan 2026 11:11:02 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
-	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 13/16] ext4: consolidate fsverity_info lookup
-Message-ID: <nfaojijyqteu4756ji3irwodtuxhk3fvgqzbbam2h37xnvj6qk@a67fhgid5ysu>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: [PATCH 07/16] fsverity: don't issue readahead for non-ENOENT
+ errors from __filemap_get_folio
+Message-ID: <20260126191102.GO5910@frogsfrogsfrogs>
 References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-14-hch@lst.de>
+ <20260126045212.1381843-8-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -111,172 +68,95 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260126045212.1381843-14-hch@lst.de>
-X-Spam-Score: -4.01
-X-Spam-Level: 
-X-Spam-Flag: NO
+In-Reply-To: <20260126045212.1381843-8-hch@lst.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:email,suse.cz:dkim];
-	DMARC_NA(0.00)[suse.cz];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13325-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-13326-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: BB13888500
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lst.de:email]
+X-Rspamd-Queue-Id: E69F28C644
 X-Rspamd-Action: no action
 
-On Mon 26-01-26 05:50:59, Christoph Hellwig wrote:
-> Look up the fsverity_info once in ext4_mpage_readpages, and then use it
-> for the readahead, local verification of holes and pass it along to the
-> I/O completion workqueue in struct bio_post_read_ctx.
-> 
-> This amortizes the lookup better once it becomes less efficient.
+On Mon, Jan 26, 2026 at 05:50:53AM +0100, Christoph Hellwig wrote:
+> Issuing more reads on errors is not a good idea, especially when the
+> most common error here is -ENOMEM.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-
-Looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
 > ---
->  fs/ext4/readpage.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+>  fs/verity/pagecache.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-> index bf65562da9c2..17920f14e2c2 100644
-> --- a/fs/ext4/readpage.c
-> +++ b/fs/ext4/readpage.c
-> @@ -61,6 +61,7 @@ enum bio_post_read_step {
+> diff --git a/fs/verity/pagecache.c b/fs/verity/pagecache.c
+> index 1efcdde20b73..63393f0f5834 100644
+> --- a/fs/verity/pagecache.c
+> +++ b/fs/verity/pagecache.c
+> @@ -22,7 +22,8 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+>  	struct folio *folio;
 >  
->  struct bio_post_read_ctx {
->  	struct bio *bio;
-> +	struct fsverity_info *vi;
->  	struct work_struct work;
->  	unsigned int cur_step;
->  	unsigned int enabled_steps;
-> @@ -96,7 +97,7 @@ static void verity_work(struct work_struct *work)
->  	struct bio_post_read_ctx *ctx =
->  		container_of(work, struct bio_post_read_ctx, work);
->  	struct bio *bio = ctx->bio;
-> -	struct inode *inode = bio_first_folio_all(bio)->mapping->host;
-> +	struct fsverity_info *vi = ctx->vi;
+>  	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
+> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
+> +	if (PTR_ERR(folio) == -ENOENT ||
+> +	    !(IS_ERR(folio) && !folio_test_uptodate(folio))) {
+
+I don't understand this logic at all.  If @folio is actually an
+ERR_PTR, then we dereference the non-folio to see if it's not uptodate?
+
+I think (given the previous revisions) that what you want is to initiate
+readahead if either there's no folio at all (ENOENT) or if there is a
+folio but it's not uptodate?  But not if there's some other error
+(ENOMEM, EL3HLT, EFSCORRUPTED, etc)?
+
+So maybe you want:
+
+	folio = __filemap_get_folio(...);
+	if (!IS_ERR(folio)) {
+		if (folio_test_uptodate(folio))
+			return folio_file_page(folio);
+		folio_put(folio);
+	} else if (PTR_ERR(folio) == -ENOENT) {
+		return ERR_CAST(folio);
+	}
+
+	if (num_ra_pages > 1)
+		page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
+	folio = read_mapping_folio(inode->i_mapping, index, NULL);
+	if (IS_ERR(folio))
+		return ERR_CAST(folio);
+
+	return folio_file_page(folio);
+
+<confused>
+
+--D
+
+>  		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
 >  
->  	/*
->  	 * fsverity_verify_bio() may call readahead() again, and although verity
-> @@ -109,7 +110,7 @@ static void verity_work(struct work_struct *work)
->  	mempool_free(ctx, bio_post_read_ctx_pool);
->  	bio->bi_private = NULL;
->  
-> -	fsverity_verify_bio(*fsverity_info_addr(inode), bio);
-> +	fsverity_verify_bio(vi, bio);
->  
->  	__read_end_io(bio);
->  }
-> @@ -173,22 +174,16 @@ static void mpage_end_io(struct bio *bio)
->  	__read_end_io(bio);
->  }
->  
-> -static inline bool ext4_need_verity(const struct inode *inode, pgoff_t idx)
-> -{
-> -	return fsverity_active(inode) &&
-> -	       idx < DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
-> -}
-> -
->  static void ext4_set_bio_post_read_ctx(struct bio *bio,
->  				       const struct inode *inode,
-> -				       pgoff_t first_idx)
-> +				       struct fsverity_info *vi)
->  {
->  	unsigned int post_read_steps = 0;
->  
->  	if (fscrypt_inode_uses_fs_layer_crypto(inode))
->  		post_read_steps |= 1 << STEP_DECRYPT;
->  
-> -	if (ext4_need_verity(inode, first_idx))
-> +	if (vi)
->  		post_read_steps |= 1 << STEP_VERITY;
->  
->  	if (post_read_steps) {
-> @@ -197,6 +192,7 @@ static void ext4_set_bio_post_read_ctx(struct bio *bio,
->  			mempool_alloc(bio_post_read_ctx_pool, GFP_NOFS);
->  
->  		ctx->bio = bio;
-> +		ctx->vi = vi;
->  		ctx->enabled_steps = post_read_steps;
->  		bio->bi_private = ctx;
->  	}
-> @@ -224,6 +220,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  	sector_t first_block;
->  	unsigned page_block;
->  	struct block_device *bdev = inode->i_sb->s_bdev;
-> +	struct fsverity_info *vi = NULL;
->  	int length;
->  	unsigned relative_block = 0;
->  	struct ext4_map_blocks map;
-> @@ -245,9 +242,11 @@ int ext4_mpage_readpages(struct inode *inode,
->  			folio = readahead_folio(rac);
->  
->  		if (first_folio) {
-> -			if (ext4_need_verity(inode, folio->index))
-> -				fsverity_readahead(*fsverity_info_addr(inode),
-> -						folio, nr_pages);
-> +			if (folio->index <
-> +			    DIV_ROUND_UP(inode->i_size, PAGE_SIZE))
-> +				vi = fsverity_get_info(inode);
-> +			if (vi)
-> +				fsverity_readahead(vi, folio, nr_pages);
->  			first_folio = false;
->  		}
->  
-> @@ -338,10 +337,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  			folio_zero_segment(folio, first_hole << blkbits,
->  					  folio_size(folio));
->  			if (first_hole == 0) {
-> -				if (ext4_need_verity(inode, folio->index) &&
-> -				    !fsverity_verify_folio(
-> -						*fsverity_info_addr(inode),
-> -						folio))
-> +				if (vi && !fsverity_verify_folio(vi, folio))
->  					goto set_error_page;
->  				folio_end_read(folio, true);
->  				continue;
-> @@ -369,7 +365,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  					REQ_OP_READ, GFP_KERNEL);
->  			fscrypt_set_bio_crypt_ctx(bio, inode, next_block,
->  						  GFP_KERNEL);
-> -			ext4_set_bio_post_read_ctx(bio, inode, folio->index);
-> +			ext4_set_bio_post_read_ctx(bio, inode, vi);
->  			bio->bi_iter.bi_sector = first_block << (blkbits - 9);
->  			bio->bi_end_io = mpage_end_io;
->  			if (rac)
+>  		if (!IS_ERR(folio))
 > -- 
 > 2.47.3
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
 
