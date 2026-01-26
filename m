@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-13335-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13336-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLc0NETRd2mxlQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13335-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 21:40:36 +0100
+	id mM2PLTPUd2mFlwEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13336-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 21:53:07 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D2388D298
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 21:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EE668D54D
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 21:53:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 56488301D4E3
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 20:40:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 12685301DEEE
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Jan 2026 20:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF5F2D780C;
-	Mon, 26 Jan 2026 20:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9E12D879E;
+	Mon, 26 Jan 2026 20:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GvCXJa1w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qZWXMCWx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5AF2D6E7C;
-	Mon, 26 Jan 2026 20:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C912BF3CC;
+	Mon, 26 Jan 2026 20:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769460033; cv=none; b=eHlVVZUyBNEYLbdUTz983tvzZWc290YCPcByqsZXjPoPvj1tK4YbHIny1nlGz5F3bALxm3iVAVID2nWc4p/TIJAenypqq7O+gQdOhzZOZ54Pe/BLF3Vecp1DID0sd8GpcXT7xJP0GZTej8L7TMimSt8WC8gTbNZKx7I3SaBetMU=
+	t=1769460784; cv=none; b=KCzNtQUpgLGas6cL2vIJHTLiHBsQdToOGw2PbNqRuw1g8bC8ruObPTEF9iZwyfPrxmViF6UQAUD3U2vwKdcNpyBa9aKXDwYqJ6FuG/e2+/0UDyFQHmnsjw43V5pL6bf/OdDiFdE+8kQba5WzTIY0deMZVqm7XQ/hJk0v3TXWmBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769460033; c=relaxed/simple;
-	bh=l9LtVaA6nSgchLlbWTin67CmDN89iXVzMWWCdcxjYtQ=;
+	s=arc-20240116; t=1769460784; c=relaxed/simple;
+	bh=TkdZAEHLoZVW6dNs7U/9PTST8Ny56M8c0+/eFzOYBvk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IhXuV9BqAi4Twdw1aSxjNFzICVf0DpiXw53XglfKXGfz80iG04z8sWInwWqmAKca/UNrbW3QedfL4F3kNantlf5E3GOZPYDukV8MRzio/Lr3xl1/oDfG7lw9G5m+R2pq+6qNyv2lLJHUTVrt/QDpTDRZ/VwyNz8CRs95UJp7bOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GvCXJa1w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27EF5C19425;
-	Mon, 26 Jan 2026 20:40:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QCfaznwU4boDFWU0S8Yr/KmyR8Eq6JypEuFn4B2Tl1VvxNC2N3k0lovVFaUkeA83XDyHrZMr1hLF7d4mf+caplC5AuGTbHsOBPtZoywr84Rwa+EMPmtt4LENgF6IdJ7UdIJGikfNdqsGUUdaNaELu2nZtBcUo50Xng2hnN6UJsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qZWXMCWx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D16EC116C6;
+	Mon, 26 Jan 2026 20:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769460033;
-	bh=l9LtVaA6nSgchLlbWTin67CmDN89iXVzMWWCdcxjYtQ=;
+	s=k20201202; t=1769460784;
+	bh=TkdZAEHLoZVW6dNs7U/9PTST8Ny56M8c0+/eFzOYBvk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GvCXJa1wvGHyoJV9yOd66dqhtlHhRupqhUfh5O2T0Ya8SFJbAMSYNmVfKko3GIlzu
-	 GZ4v7xk90vOaiMqntDQZxal2LJHyMdqlrfA2VrpO1g1ONf3CaidthkaAO/8WSMijUC
-	 nRhLsxhFiOQKBR46zuWB+3wSNaEv0N1t9HVvogXMcgvEXPJsyzsH3D7nLjEGus2NDu
-	 BtuiviqxabzsOo6QlqNqbiaPJMyPcakCnf391arUowfEXOpSoV5GY9Xab/cmuxIRhp
-	 MtOqb7XafJGEURKGFxcUFt7JsLfBHierdMIOntMx4UUkCnLxHWHNc05ScL7mmULr5F
-	 7Ls1cBic34NrA==
-Date: Mon, 26 Jan 2026 12:40:30 -0800
+	b=qZWXMCWxHJ0tK1fvd3LwZN12C8TxdX8K7aUxfNiW2T8u22fQjivNmH4uEyABRVEoV
+	 GPlLUp4YhcrFMRNRU9DgYuMDpM9kkSGLvTQrIQfKDaVFMKcc1mceuyy83UERMGhTQx
+	 1mcedkcUNatj9dpAlswBq7c8gseKUbax/FBX5umcKjpk5NMkV6WHlGFOQWTyBAfQaf
+	 UsjcT4ChuK8ryu+wbC0HIuSb71aTT6dcdO9GFJC1Lyf5DCxaWcWOjE61A0QDL3T3Fb
+	 6zxB+40sjKUa92xpoHKbBTTTdg4Zcbqjpk60VVAq3lbBtCk4TKDtwLho9XKIJnvZOj
+	 oZJBc6ED8t7Fw==
+Date: Mon, 26 Jan 2026 12:53:01 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
 	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -55,10 +55,12 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
-Subject: Re: [PATCH 16/16] fsverity: use a hashtable to find the fsverity_info
-Message-ID: <20260126204030.GC30838@quark>
+Subject: Re: [PATCH 07/16] fsverity: don't issue readahead for non-ENOENT
+ errors from __filemap_get_folio
+Message-ID: <20260126205301.GD30838@quark>
 References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-17-hch@lst.de>
+ <20260126045212.1381843-8-hch@lst.de>
+ <20260126191102.GO5910@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,7 +69,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260126045212.1381843-17-hch@lst.de>
+In-Reply-To: <20260126191102.GO5910@frogsfrogsfrogs>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -81,8 +83,8 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13335-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-13336-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -95,32 +97,95 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5D2388D298
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 2EE668D54D
 X-Rspamd-Action: no action
 
-On Mon, Jan 26, 2026 at 05:51:02AM +0100, Christoph Hellwig wrote:
-> The file open path uses rhashtable_lookup_get_insert_fast,
-> which can either find an existing object for the hash key or insert a
-> new one in a single atomic operation, so that concurrent opens never
-> allocate duplicate fsverity_info structure.
+On Mon, Jan 26, 2026 at 11:11:02AM -0800, Darrick J. Wong wrote:
+> On Mon, Jan 26, 2026 at 05:50:53AM +0100, Christoph Hellwig wrote:
+> > Issuing more reads on errors is not a good idea, especially when the
+> > most common error here is -ENOMEM.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  fs/verity/pagecache.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/verity/pagecache.c b/fs/verity/pagecache.c
+> > index 1efcdde20b73..63393f0f5834 100644
+> > --- a/fs/verity/pagecache.c
+> > +++ b/fs/verity/pagecache.c
+> > @@ -22,7 +22,8 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+> >  	struct folio *folio;
+> >  
+> >  	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
+> > -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
+> > +	if (PTR_ERR(folio) == -ENOENT ||
+> > +	    !(IS_ERR(folio) && !folio_test_uptodate(folio))) {
+> 
+> I don't understand this logic at all.  If @folio is actually an
+> ERR_PTR, then we dereference the non-folio to see if it's not uptodate?
+> 
+> I think (given the previous revisions) that what you want is to initiate
+> readahead if either there's no folio at all (ENOENT) or if there is a
+> folio but it's not uptodate?  But not if there's some other error
+> (ENOMEM, EL3HLT, EFSCORRUPTED, etc)?
+> 
+> So maybe you want:
+> 
+> 	folio = __filemap_get_folio(...);
+> 	if (!IS_ERR(folio)) {
+> 		if (folio_test_uptodate(folio))
+> 			return folio_file_page(folio);
+> 		folio_put(folio);
+> 	} else if (PTR_ERR(folio) == -ENOENT) {
+> 		return ERR_CAST(folio);
+> 	}
+> 
+> 	if (num_ra_pages > 1)
+> 		page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
+> 	folio = read_mapping_folio(inode->i_mapping, index, NULL);
+> 	if (IS_ERR(folio))
+> 		return ERR_CAST(folio);
+> 
+> 	return folio_file_page(folio);
+> 
+> <confused>
 
-They still do, though.  But that's unchanged from before.
-ensure_verity_info() frees the one it allocated if it finds that one got
-set concurrently.
+That version is wrong too: the condition 'PTR_ERR(folio) == -ENOENT' is
+backwards.
 
-> Because insertion into the hash table now happens before S_VERITY is set,
-> fsverity just becomes a barrier and a flag check and doesn't have to look
-> up the fsverity_info at all, so there is only a single lookup per
-> ->read_folio or ->readahead invocation.  For btrfs there is an additional
-> one for each bio completion, while for ext4 and f2fs the fsverity_info
-> is stored in the per-I/O context and reused for the completion workqueue.
+This code gets replaced later in the series anyway.  For this patch, we
+could simply insert two lines:
 
-btrfs actually still looks up the verity info once per folio.  See:
+	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
++	if (IS_ERR(folio) && folio != ERR_PTR(-ENOENT))
++		return folio;
 
-    btrfs_readahead()
-        -> btrfs_do_readpage()
-            -> fsverity_get_info()
+Then for the final version in generic_readahead_merkle_tree(), one
+option would be:
+
+	struct folio *folio;
+
+	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
+	if (folio == ERR_PTR(-ENOENT) ||
+	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
+
+		page_cache_ra_unbounded(&ractl, nr_pages, 0);
+	}
+	if (!IS_ERR(folio))
+		folio_put(folio);
+
+Or as a diff from this series:
+
+-	if (PTR_ERR(folio) == -ENOENT ||
+-	    !(IS_ERR(folio) && !folio_test_uptodate(folio))) {
++	if (folio == ERR_PTR(-ENOENT) ||
++	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+
+(Note that PTR_ERR() shouldn't be used before it's known that the
+pointer is an error pointer.)
 
 - Eric
 
