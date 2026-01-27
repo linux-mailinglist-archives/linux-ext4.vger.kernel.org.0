@@ -1,62 +1,62 @@
-Return-Path: <linux-ext4+bounces-13360-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13361-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eB+nAoBIeWl0wQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13360-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 00:21:36 +0100
+	id QGngJVlLeWmXwQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13361-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 00:33:45 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D2A9B5D8
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 00:21:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2DED9B6CE
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 00:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 36AC33010DB7
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 23:21:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8176E3012275
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 23:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F61B2EBDCD;
-	Tue, 27 Jan 2026 23:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA82C2D838B;
+	Tue, 27 Jan 2026 23:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T9blrn0M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5FPFfyI"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC5F2D6E66;
-	Tue, 27 Jan 2026 23:21:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A40284689;
+	Tue, 27 Jan 2026 23:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769556087; cv=none; b=WylCHqmoieR/vhBgSjz4Ioovi7dfSlwSk5MGBgnSK/M+EvyHvIbGbrq51hl2UsMWiEEgzoAA69/ZxeGpfa2dhkNX5kL3j/kANIFHsXJYgt79e0o+6jH/waFanxcW9iER6vs7aOTpkHurnnJE+Q4NPWt4xPO76t+QsqVlJ7L4ThE=
+	t=1769556818; cv=none; b=A4NQJiFR9QptZ86PQvDgyEKzT3JnuqsnQwmFLt30K9CVkUgSZJm8vAnzjGLzhZZclAB6Sn8dYx1Bp18HOc7peE+PM4yyiM4sqD6l+V0cVm4TPYGtc8dnyhg2fIV0S1yeuMdwScHvcFlez3gURZmxYd6vNh9u4HqBNuxhnqR3ECo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769556087; c=relaxed/simple;
-	bh=z5nng7RlI/SdUAp4rXwRow7Ng58N6YuGHmFa7mWDQLE=;
+	s=arc-20240116; t=1769556818; c=relaxed/simple;
+	bh=STgkijcigGlMrJsij4S3qXbKeizuWURck/hf+kHmMX8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rT0JwilhdJtGVDqGUeyQV6eXCN4TDdg+OdS4EqGWmRxz4ID8YYphVziiUVBHP6JB8bmLVkJ30WzLx/jMygwGq5zRIVZ4cDU8wHHE2KegBZ0vm04GQmmEH2Hz9RfCu/pyCA8dKWW6Hq71hYYHpFc0Fg6mPAE9kGF7CM/JWi8j84E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T9blrn0M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B802C116C6;
-	Tue, 27 Jan 2026 23:21:27 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=WMG5z5F1CcX6mOOcAS/ybqWba1PKUW5+L6zAhVwlRmz0Q6fNL3LvmiFL28LuLD9e3hdmvMCFvq2oECQGH9d2cbft7O+emMPJ/KwuKXdPOm92IfcMpG8Hla5ys+NbE50PhnkLx60Bs0crajEGahz+sagEczJSdz1/JQMWkNpTR5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5FPFfyI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20577C116C6;
+	Tue, 27 Jan 2026 23:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769556087;
-	bh=z5nng7RlI/SdUAp4rXwRow7Ng58N6YuGHmFa7mWDQLE=;
+	s=k20201202; t=1769556818;
+	bh=STgkijcigGlMrJsij4S3qXbKeizuWURck/hf+kHmMX8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T9blrn0Myz1kfjqRmogoC1JugLlmy6QmN0ugHbFIVozWzU+yMWe9ZuxkRYIducyt8
-	 jCKk4Mse+VELymuSbEShAnaEXDQ9bV6j/EQ1s3VNqm0IPzCqNuDoRqnGgMpQdoCPhu
-	 52uGC3RDcr/jld1b64lFJXsZW99eNjMjTyaQMC1XMMBdmY+u+NSvR/d7xIksT8xyV3
-	 au40GOuF0CxyItdwqNvy5PuJBQgZ6jKTLVINOwm648OY9RtU1QU6ZCTw4mnFQ2DvPQ
-	 5Nv6/vpITcJ6IpBSpsif7DJi4i0Nw5zFseny8Vf1JUHwvFPcJ8l8pFzcjcv4Fqy/f7
-	 CHYyZio22eTeA==
-Date: Tue, 27 Jan 2026 15:21:25 -0800
+	b=q5FPFfyI66KqhE3+dDxNMiBReccL7OctdNiVrWZB9H4Y7Jhh7Q6hJKeIGbSHBqmNo
+	 dxgba6l7JXeIPbBTZs8sQIaccVA9PwLDyU4D7OivyjeppoE4XIkQ/or6pr2ltSueXN
+	 nnRyfY6M8dlx06lyMZgBx3xS/LDyW19s8LnC3uLseuXRJiKA5mwCZVwPVhNYBZsoHq
+	 1bonx30pSqdzbNuXF6gyEO3ykriPsOQN6gRM4j8eQWxkAleVQfFx38FJmslxmqT1g1
+	 qXIWhxVXRmrtugd7tdNzMYxClp+Ih4sFbNwDHbAsT9VuKsD1tyZnfZ26lSNkhQh/Pr
+	 ZIarzQrdyhKJQ==
+Date: Tue, 27 Jan 2026 15:33:37 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Joanne Koong <joannelkoong@gmail.com>
 Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev,
 	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
- file IO performance
-Message-ID: <20260127232125.GA5966@frogsfrogsfrogs>
-References: <20251029002755.GK6174@frogsfrogsfrogs>
- <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <CAJnrk1Z05QZmos90qmWtnWGF+Kb7rVziJ51UpuJ0O=A+6N1vrg@mail.gmail.com>
- <20260127022235.GG5900@frogsfrogsfrogs>
- <CAJnrk1bSVy4=c=N_FfOajs1FE4o8T=Br=jFm7gBDaCGvRpgGVA@mail.gmail.com>
+Subject: Re: [PATCH 07/31] fuse: create a per-inode flag for toggling iomap
+Message-ID: <20260127233337.GH5900@frogsfrogsfrogs>
+References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
+ <176169810502.1424854.13869957103489591272.stgit@frogsfrogsfrogs>
+ <CAJnrk1ZDeYytdjuCdg6-O-PGjcmwS33LOnfFT_YY9SPE=x=Qxw@mail.gmail.com>
+ <20260122222233.GA5900@frogsfrogsfrogs>
+ <CAJnrk1ZYp=+ho02gMAPGLsGBo3a84ScuE92xP68=1SR-ixAs+g@mail.gmail.com>
+ <20260124165430.GT5966@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,14 +66,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJnrk1bSVy4=c=N_FfOajs1FE4o8T=Br=jFm7gBDaCGvRpgGVA@mail.gmail.com>
+In-Reply-To: <20260124165430.GT5966@frogsfrogsfrogs>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -81,7 +81,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13360-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13361-lists,linux-ext4=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -92,197 +92,115 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 61D2A9B5D8
+X-Rspamd-Queue-Id: F2DED9B6CE
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 11:47:31AM -0800, Joanne Koong wrote:
-> On Mon, Jan 26, 2026 at 6:22 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> >
-> > On Mon, Jan 26, 2026 at 04:59:16PM -0800, Joanne Koong wrote:
-> > > On Tue, Oct 28, 2025 at 5:38 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > >
-> > > > Hi all,
-> > > >
-> > > > This series connects fuse (the userspace filesystem layer) to fs-iomap
-> > > > to get fuse servers out of the business of handling file I/O themselves.
-> > > > By keeping the IO path mostly within the kernel, we can dramatically
-> > > > improve the speed of disk-based filesystems.  This enables us to move
-> > > > all the filesystem metadata parsing code out of the kernel and into
-> > > > userspace, which means that we can containerize them for security
-> > > > without losing a lot of performance.
+On Sat, Jan 24, 2026 at 08:54:30AM -0800, Darrick J. Wong wrote:
+> On Fri, Jan 23, 2026 at 10:05:32AM -0800, Joanne Koong wrote:
+> > On Thu, Jan 22, 2026 at 2:22 PM Darrick J. Wong <djwong@kernel.org> wrote:
 > > >
-> > > I haven't looked through how the fuse2fs or fuse4fs servers are
-> > > implemented yet (also, could you explain the difference between the
-> > > two? Which one should we look at to see how it all ties together?),
-> >
-> > fuse4fs is a lowlevel fuse server; fuse2fs is a high(?) level fuse
-> > server.  fuse4fs is the successor to fuse2fs, at least on Linux and BSD.
+> > > On Wed, Jan 21, 2026 at 05:13:39PM -0800, Joanne Koong wrote:
+> > > > On Tue, Oct 28, 2025 at 5:46 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> > > > >
+> > > > > From: Darrick J. Wong <djwong@kernel.org>
+> > > > >
+> > > > > Create a per-inode flag to control whether or not this inode actually
+> > > > > uses iomap.  This is required for non-regular files because iomap
+> > > > > doesn't apply there; and enables fuse filesystems to provide some
+> > > > > non-iomap files if desired.
+> > > > >
+> > > > > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+> > > >
+> > > > The logic in this makes sense to me, left just a few comments below.
+> > > >
+> > > > Reviewed-by: Joanne Koong <joannelkoong@gmail.com>
+> > >
+> > > Thanks!
+> > >
+> > > > > ---
+> > > > >  fs/fuse/fuse_i.h          |   17 ++++++++++++++++
+> > > > >  include/uapi/linux/fuse.h |    3 +++
+> > > > >  fs/fuse/file.c            |    1 +
+> > > > >  fs/fuse/file_iomap.c      |   49 +++++++++++++++++++++++++++++++++++++++++++++
+> > > > >  fs/fuse/inode.c           |   26 ++++++++++++++++++------
+> > > > >  5 files changed, 90 insertions(+), 6 deletions(-)
+> > > > >
+> > > > > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> > > > > index f1ef77a0be05bb..42c85c19f3b13b 100644
+> > > > > --- a/fs/fuse/file.c
+> > > > > +++ b/fs/fuse/file.c
+> > > > > +void fuse_iomap_init_reg_inode(struct inode *inode, unsigned attr_flags)
+> > > > > +{
+> > > > > +       struct fuse_conn *conn = get_fuse_conn(inode);
+> > > > > +       struct fuse_inode *fi = get_fuse_inode(inode);
+> > > > > +
+> > > > > +       ASSERT(S_ISREG(inode->i_mode));
+> > > > > +
+> > > > > +       if (conn->iomap && (attr_flags & FUSE_ATTR_IOMAP)) {
+> > > > > +               set_bit(FUSE_I_EXCLUSIVE, &fi->state);
+> > > > > +               fuse_inode_set_iomap(inode);
+> > > > > +       }
+> > > > > +}
+> > > > > +
+> > > > > +void fuse_iomap_evict_inode(struct inode *inode)
+> > > > > +{
+> > > > > +       struct fuse_conn *conn = get_fuse_conn(inode);
+> > > > > +       struct fuse_inode *fi = get_fuse_inode(inode);
+> > > > > +
+> > > > > +       if (fuse_inode_has_iomap(inode))
+> > > >
+> > > > If I'm understanding this correctly, a fuse inode can't have
+> > > > FUSE_I_IOMAP set on it if conn>iomap is not enabled, correct?
+> > >
+> > > Correct.
+> > >
+> > > > Maybe it makes sense to just return if (!conn->iomap) at the very
+> > > > beginning, to make that more clear?
+> > >
+> > > <shrug> fuse_inode_has_iomap only checks FUSE_I_IOMAP...
+> > >
+> > > > > +               fuse_inode_clear_iomap(inode);
+> > > > > +       if (conn->iomap && fuse_inode_is_exclusive(inode))
+> > > > > +               clear_bit(FUSE_I_EXCLUSIVE, &fi->state);
+> > >
+> > > ...but I wasn't going to assume that iomap is the only way that
+> > > FUSE_I_EXCLUSIVE could get set.
+> > >
+> > > On the other hand, for non-regular files we set FUSE_I_EXCLUSIVE only if
+> > > conn->iomap is nonzero *and* attr->flags contains FUSE_ATTR_IOMAP.  So
+> > > this clearing code isn't quite the same as the setting code.
+> > >
+> > > I wonder if that means we should set FUSE_I_IOMAP for non-regular files?
+> > > They don't use iomap itself, but I suppose it would be neat if "iomap
+> > > directories" also meant that timestamps and whatnot worked in the same
+> > > as they do for regular files.
+> > >
+> > 
+> > That seems like a good idea to me. I think that also makes the mental
+> > model (at least for me) simpler.
 > 
-> Ah I see, thanks for the explanation. In that case, I'll just look at
-> fuse4fs then.
-> 
-> >
-> > > but I wonder if having bpf infrastructure hooked up to fuse would be
-> > > especially helpful for what you're doing here with fuse iomap. afaict,
-> > > every read/write whether it's buffered or direct will incur at least 1
-> > > call to ->iomap_begin() to get the mapping metadata, which will be 2
-> > > context-switches (and if the server has ->iomap_end() implemented,
-> > > then 2 more context-switches).
-> >
-> > Yes, I agree that's a lot of context switching for file IO...
-> >
-> > > But it seems like the logic for retrieving mapping
-> > > offsets/lengths/metadata should be pretty straightforward?
-> >
-> > ...but it gets very cheap if the fuse server can cache mappings in the
-> > kernel to avoid all that.  That is, incidentally, what patchset #7
-> > implements.
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/log/?h=fuse-iomap-cache_2026-01-22
-> >
-> > > If the extent lookups are table lookups or tree
-> > > traversals without complex side effects, then having
-> > > ->iomap_begin()/->iomap_end() be executed as a bpf program would avoid
-> > > the context switches and allow all the caching logic to be moved from
-> > > the kernel to the server-side (eg using bpf maps).
-> >
-> > Hrmm.  Now that /is/ an interesting proposal.  Does BPF have a data
-> > structure that supports interval mappings?  I think the existing bpf map
-> 
-> Not yet but I don't see why a b+ tree like data strucutre couldn't be added.
-> Maybe one workaround in the meantime that could work is using a sorted
-> array map and doing binary search on that, until interval mappings can
-> be natively supported?
+> I tried that, and generic/476 immediately broke.  I'll get back to that
+> next week, but turning it on unconditionally is not trivial
+> unfortunately. :/
 
-I guess, though I already had a C structure to borrow from xfs ;)
+I've tentatively fixed this by defining a FUSE_ATTR_EXCLUSIVE flag in
+the uapi so that the fuse server can tell the kernel which files are
+"exclusive" files, and hence which ones should have FUSE_I_EXCLUSIVE
+set.
 
-> > only does key -> value.  Also, is there an upper limit on the size of a
-> > map?  You could have hundreds of millions of maps for a very fragmented
-> > regular file.
-> 
-> If I'm remembering correctly, there's an upper limit on the number of
-> map entries, which is bounded by u32
-
-That's problematic, since files can have 64-bit logical block numbers.
-
-> > At one point I suggested to the famfs maintainer that it might be
-> > easier/better to implement the interleaved mapping lookups as bpf
-> > programs instead of being stuck with a fixed format in the fuse
-> > userspace abi, but I don't know if he ever implemented that.
-> 
-> This seems like a good use case for it too
-> >
-> > > Is this your
-> > > assessment of it as well or do you think the server-side logic for
-> > > iomap_begin()/iomap_end() is too complicated to make this realistic?
-> > > Asking because I'm curious whether this direction makes sense, not
-> > > because I think it would be a blocker for your series.
-> >
-> > For disk-based filesystems I think it would be difficult to model a bpf
-> > program to do mappings, since they can basically point anywhere and be
-> > of any size.
-> 
-> Hmm I'm not familiar enough with disk-based filesystems to know what
-> the "point anywhere and be of any size" means. For the mapping stuff,
-> doesn't it just point to a block number? Or are you saying the problem
-> would be there's too many mappings since a mapping could be any size?
-
-The second -- mappings can be any size, and unprivileged userspace can
-control the mappings.
-
-> I was thinking the issue would be more that there might be other logic
-> inside ->iomap_begin()/->iomap_end() besides the mapping stuff that
-> would need to be done that would be too out-of-scope for bpf. But I
-> think I need to read through the fuse4fs stuff to understand more what
-> it's doing in those functions.
-
-<nod>
+(These are ofc files where the kernel can transmogrify ACLs into i_mode
+changes and do ACL inheritance because there is no other principal that
+could be writing to the ondisk metadata.)
 
 --D
 
+> --D
 > 
-> Thanks,
-> Joanne
+> > Thanks,
+> > Joanne
 > 
-> >
-> > OTOH it would be enormously hilarious to me if one could load a file
-> > mapping predictive model into the kernel as a bpf program and use that
-> > as a first tier before checking the in-memory btree mapping cache from
-> > patchset 7.  Quite a few years ago now there was a FAST paper
-> > establishing that even a stupid linear regression model could in theory
-> > beat a disk btree lookup.
-> >
-> > --D
-> >
-> > > Thanks,
-> > > Joanne
-> > >
-> > > >
-> > > > If you're going to start using this code, I strongly recommend pulling
-> > > > from my git trees, which are linked below.
-> > > >
-> > > > This has been running on the djcloud for months with no problems.  Enjoy!
-> > > > Comments and questions are, as always, welcome.
-> > > >
-> > > > --D
-> > > >
-> > > > kernel git tree:
-> > > > https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=fuse-iomap-fileio
-> > > > ---
-> > > > Commits in this patchset:
-> > > >  * fuse: implement the basic iomap mechanisms
-> > > >  * fuse_trace: implement the basic iomap mechanisms
-> > > >  * fuse: make debugging configurable at runtime
-> > > >  * fuse: adapt FUSE_DEV_IOC_BACKING_{OPEN,CLOSE} to add new iomap devices
-> > > >  * fuse_trace: adapt FUSE_DEV_IOC_BACKING_{OPEN,CLOSE} to add new iomap devices
-> > > >  * fuse: flush events and send FUSE_SYNCFS and FUSE_DESTROY on unmount
-> > > >  * fuse: create a per-inode flag for toggling iomap
-> > > >  * fuse_trace: create a per-inode flag for toggling iomap
-> > > >  * fuse: isolate the other regular file IO paths from iomap
-> > > >  * fuse: implement basic iomap reporting such as FIEMAP and SEEK_{DATA,HOLE}
-> > > >  * fuse_trace: implement basic iomap reporting such as FIEMAP and SEEK_{DATA,HOLE}
-> > > >  * fuse: implement direct IO with iomap
-> > > >  * fuse_trace: implement direct IO with iomap
-> > > >  * fuse: implement buffered IO with iomap
-> > > >  * fuse_trace: implement buffered IO with iomap
-> > > >  * fuse: implement large folios for iomap pagecache files
-> > > >  * fuse: use an unrestricted backing device with iomap pagecache io
-> > > >  * fuse: advertise support for iomap
-> > > >  * fuse: query filesystem geometry when using iomap
-> > > >  * fuse_trace: query filesystem geometry when using iomap
-> > > >  * fuse: implement fadvise for iomap files
-> > > >  * fuse: invalidate ranges of block devices being used for iomap
-> > > >  * fuse_trace: invalidate ranges of block devices being used for iomap
-> > > >  * fuse: implement inline data file IO via iomap
-> > > >  * fuse_trace: implement inline data file IO via iomap
-> > > >  * fuse: allow more statx fields
-> > > >  * fuse: support atomic writes with iomap
-> > > >  * fuse_trace: support atomic writes with iomap
-> > > >  * fuse: disable direct reclaim for any fuse server that uses iomap
-> > > >  * fuse: enable swapfile activation on iomap
-> > > >  * fuse: implement freeze and shutdowns for iomap filesystems
-> > > > ---
-> > > >  fs/fuse/fuse_i.h          |  161 +++
-> > > >  fs/fuse/fuse_trace.h      |  939 +++++++++++++++++++
-> > > >  fs/fuse/iomap_i.h         |   52 +
-> > > >  include/uapi/linux/fuse.h |  219 ++++
-> > > >  fs/fuse/Kconfig           |   48 +
-> > > >  fs/fuse/Makefile          |    1
-> > > >  fs/fuse/backing.c         |   12
-> > > >  fs/fuse/dev.c             |   30 +
-> > > >  fs/fuse/dir.c             |  120 ++
-> > > >  fs/fuse/file.c            |  133 ++-
-> > > >  fs/fuse/file_iomap.c      | 2230 +++++++++++++++++++++++++++++++++++++++++++++
-> > > >  fs/fuse/inode.c           |  162 +++
-> > > >  fs/fuse/iomode.c          |    2
-> > > >  fs/fuse/trace.c           |    2
-> > > >  14 files changed, 4056 insertions(+), 55 deletions(-)
-> > > >  create mode 100644 fs/fuse/iomap_i.h
-> > > >  create mode 100644 fs/fuse/file_iomap.c
-> > > >
-> > >
 
