@@ -1,54 +1,53 @@
-Return-Path: <linux-ext4+bounces-13346-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13347-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id P5F0BXpZeGkupgEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13346-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 07:21:46 +0100
+	id sPc1GDVbeGkupgEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13347-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 07:29:09 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DF9D90589
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 07:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CCF90654
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 07:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1330F301982C
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 06:21:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05492301C585
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Jan 2026 06:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265A6329E61;
-	Tue, 27 Jan 2026 06:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D79F32AAB2;
+	Tue, 27 Jan 2026 06:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RTL4LvSM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qR32wjGx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89661F3FED;
-	Tue, 27 Jan 2026 06:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B6E14BF92;
+	Tue, 27 Jan 2026 06:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769494888; cv=none; b=kIaYMbKFeAutRHD0IWKyZFXsjlzhHpGWtl3F4yG6Lc9tKDKM/8WsGdl+y400IWafCwT+bWHj+z31XZGJqYWTK/VfdFt9sjlkH1nwg0FGW/N+sZjgZLAR8MDfrQK/S8pHXI0vreuDLuy3jXSH2SywPvcVr/qb4k5G6SeADlzw/PI=
+	t=1769495330; cv=none; b=ejB0fe/AEPpfRXMAeoFSuPpvTbyTVkjjjKRDUF4OozzFaXmNRGvSToedr5wwqtTsybKK5OcaeRGjgtMbWY5VCIYRBWLLlpjIgHeuHQ2m1HCv1dKAhj/a8OMcdDivxZruI8RFKkYHD5Alr2LLplIuB/8jIFjdXqBewsvMM7DAFpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769494888; c=relaxed/simple;
-	bh=kk2V4G3auJhPjVPWGb0eJbR78yju4WWua17kbmc6Gxc=;
+	s=arc-20240116; t=1769495330; c=relaxed/simple;
+	bh=B1kq0mimRXX8LQj8FS8Moi/visceHxddCmzC7rqxylg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LxruRHFRI/4SH8QUNha46MGc3a9NErFCE0FKVyss18e+MWnKtfp1WCpgfGOVbtUQXbhVZaFDDxEEJGB7zKmx+yD0yxIlSpfAOcCoTylrg7gMD7XaKTH4nwLAZZubSWqu7/ZXN+Q9sezviKjHBqR/adH4Gf419sr5C1p06HUqPKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RTL4LvSM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8398C116C6;
-	Tue, 27 Jan 2026 06:21:27 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KxaUYs2qAYSvfLBEnbTV3dMpYW+mr+D6BJ/Yy2hyJdCgtndaM8nLxg58ocXgyRmTMeLmyHRvJ+C6ZzKLuthh3PcQz8//mpzAQU0PVCl6FpP1W06g/YpV4pxB1nSvFaAeR08qgu4kSE6JmJeCFooEcH5crW5zXFJOKj7ua/cQ89E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qR32wjGx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3043DC116C6;
+	Tue, 27 Jan 2026 06:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769494888;
-	bh=kk2V4G3auJhPjVPWGb0eJbR78yju4WWua17kbmc6Gxc=;
+	s=k20201202; t=1769495330;
+	bh=B1kq0mimRXX8LQj8FS8Moi/visceHxddCmzC7rqxylg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RTL4LvSMUGOTtLW9wXJkpR0u684upITx8xZl84Y31HC1RqoKXvCBezyDsiP3ySxUr
-	 E/B+8/BXI1rjjU3BkuZaAFz8J9hKYfFnYkRFHrf18UIwfmvBfV6YHk/uwHTp2HJQvS
-	 6BKI68umDuXLIIj6tsO1PQXJlM4Jf7SQXPycRfvFXvAMNvpdSSTXwAvgN/7dcy0Df0
-	 hr59kGK1M4AtByyuMO2mZWrc2ERwuVIuvR4fK3PqYyXBonryBdqnlvPZTfRfSBQmKj
-	 IiOBH48fB1ojGb3ercxDF4N9AjHTAaHezrLsbjyKZzMJBJBL2DGFWg0BoYDuI3m0NO
-	 8zk5iJ28eeEOw==
-Date: Mon, 26 Jan 2026 22:20:55 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
+	b=qR32wjGxWRHt4sD8mPbI7rcQeLPnFCSuBoyBOLMWuV6cfAXqq2hqcyoCNuTuVwXNI
+	 8LAEzwYd4U2vqsThpgKu7kD34zAEBrj/JW6F8l3rrkgR/yNBydoRkbbx7n2QVP3BxB
+	 lM+TrT14AtPXT1eEet5gRIvAcOx6Y7SITQCVjaP7uG7u2RbA+pkICqumStpVRj3zFX
+	 I4SUvd4HjDRdbPhg9apW+UFxMtUsuoTt4LR9zjW4gmx0NKsrraVG8yyJVHBe0tteEu
+	 DHwKninryNHDNzdhQlmMZ2GodmOjmOLqR4oHNQlTmMxMEIkpjP1NfFh/zsRVbLrYLV
+	 6GpiKRa4Jr3wg==
+Date: Mon, 26 Jan 2026 22:28:49 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
 	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -58,12 +57,13 @@ Cc: "Darrick J. Wong" <djwong@kernel.org>,
 	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
 Subject: Re: [PATCH 07/16] fsverity: don't issue readahead for non-ENOENT
  errors from __filemap_get_folio
-Message-ID: <20260127062055.GA90735@sol>
+Message-ID: <20260127062849.GX5966@frogsfrogsfrogs>
 References: <20260126045212.1381843-1-hch@lst.de>
  <20260126045212.1381843-8-hch@lst.de>
  <20260126191102.GO5910@frogsfrogsfrogs>
  <20260126205301.GD30838@quark>
  <20260127060039.GA25321@lst.de>
+ <20260127062055.GA90735@sol>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -72,21 +72,21 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260127060039.GA25321@lst.de>
+In-Reply-To: <20260127062055.GA90735@sol>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13346-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13347-lists,linux-ext4=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -94,45 +94,51 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5DF9D90589
+X-Rspamd-Queue-Id: D5CCF90654
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 07:00:39AM +0100, Christoph Hellwig wrote:
-> > -	if (PTR_ERR(folio) == -ENOENT ||
-> > -	    !(IS_ERR(folio) && !folio_test_uptodate(folio))) {
-> > +	if (folio == ERR_PTR(-ENOENT) ||
-> > +	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+On Mon, Jan 26, 2026 at 10:20:55PM -0800, Eric Biggers wrote:
+> On Tue, Jan 27, 2026 at 07:00:39AM +0100, Christoph Hellwig wrote:
+> > > -	if (PTR_ERR(folio) == -ENOENT ||
+> > > -	    !(IS_ERR(folio) && !folio_test_uptodate(folio))) {
+> > > +	if (folio == ERR_PTR(-ENOENT) ||
+> > > +	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+> > > 
+> > > (Note that PTR_ERR() shouldn't be used before it's known that the
+> > > pointer is an error pointer.)
 > > 
-> > (Note that PTR_ERR() shouldn't be used before it's known that the
-> > pointer is an error pointer.)
+> > That's new to me, and I can't find anything in the documentation or
+> > implementation suggesting that.  Your example code above also does
+> > this as does plenty of code in the kernel elsewhere.
 > 
-> That's new to me, and I can't find anything in the documentation or
-> implementation suggesting that.  Your example code above also does
-> this as does plenty of code in the kernel elsewhere.
+> Not sure why this is controversial.  The documentation for PTR_ERR() is
+> clear that it's for error pointers:
+> 
+> /**
+>  * PTR_ERR - Extract the error code from an error pointer.
+>  * @ptr: An error pointer.
+>  * Return: The error code within @ptr.
+>  */
+> static inline long __must_check PTR_ERR(__force const void *ptr)
+> {
+>         return (long) ptr;
+> }
+> 
+> Yes, it's really just a cast, and 'PTR_ERR(folio) == -ENOENT' actually
+> still works when folio isn't necessarily an error pointer.  But normally
+> it would be written as a pointer comparison as I suggested.
 
-Not sure why this is controversial.  The documentation for PTR_ERR() is
-clear that it's for error pointers:
+How does one know that a pointer is an error pointer?  Oughtn't there be
+some kind of obvious marker, or is IS_ERR the only tool we've got?
 
-/**
- * PTR_ERR - Extract the error code from an error pointer.
- * @ptr: An error pointer.
- * Return: The error code within @ptr.
- */
-static inline long __must_check PTR_ERR(__force const void *ptr)
-{
-        return (long) ptr;
-}
+--D
 
-Yes, it's really just a cast, and 'PTR_ERR(folio) == -ENOENT' actually
-still works when folio isn't necessarily an error pointer.  But normally
-it would be written as a pointer comparison as I suggested.
-
-- Eric
+> - Eric
 
