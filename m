@@ -1,67 +1,67 @@
-Return-Path: <linux-ext4+bounces-13410-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13413-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8FhnDilRemnk5AEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13410-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 19:10:49 +0100
+	id sE0mO2lQemnk5AEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13413-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 19:07:37 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F0EA7896
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 19:10:48 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21895A77A4
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 19:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E576F30BB323
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 18:05:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 569003015FE3
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 18:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD6E37105F;
-	Wed, 28 Jan 2026 18:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90981B4257;
+	Wed, 28 Jan 2026 18:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Ou6Lk2pT"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="XReZ3WPt"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE7436F437
-	for <linux-ext4@vger.kernel.org>; Wed, 28 Jan 2026 18:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEBB325495
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Jan 2026 18:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769623537; cv=none; b=eMunFmFlqvuQ/CFKpS1bukHO0IGny4z/ac2cTdHl2HQlBQAMav2vn0oJtXhm16spXzonblXOgIgZaNKgMJDZAJAE18R5+SXCAf4Ni/bRALccNHZAD67004yvEIhg6XBxyN2/94j2KJRxdNgocxUOkOpknJlDArvEZiOEaqPuzRo=
+	t=1769623549; cv=none; b=cNz+d81Kp/mjHbA3tZkSXFzw9shDdzmcYxoximB4DTrdw027Y3LocJXhO+QsnkXeDuXRLeaFvGvsd5k3iJU+G9iPDu7sZhOKd2o5qcLHwR80uXwWMCtmqGkGIQ5Ae9SJIQ6GuhrSGnzbe1XGjtoESfJ6VBFIvSj9BvAadaj5Qeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769623537; c=relaxed/simple;
-	bh=i/tndf1EqorbEeQkQkZTsLIp5n8auM7VxbJQjxgHC+U=;
+	s=arc-20240116; t=1769623549; c=relaxed/simple;
+	bh=qFQS3o1l1rxRw6aX6GmDgG9TM4WF3WVtJOm9x7dyjq8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f7zcj75x/cBDKdjqVie3hxNkQ4p5zBYULlCLZLvhyhBkncPDP4kbL7EKjAXVlTK3LZ8npWLMB+iUY7264kkQ+akjtUTWBRcU7TUk8VyeTJgxLk0OkTCX1Awp9EAqqxPPJcvXpj+4Bh0UKou1CsC6f3MNDnUAmHjfB0jN2DeUG6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Ou6Lk2pT; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=njanx9iTrni+h7oGZ7uu69X1jiaTeTGOuHG4GXo1UcFNGu7IhwhMVczrYaen5j7AyJ0ZhJ22JKuJRLmBSNMscgyWkHzTSMhiVfqxG/SM+YiW5ggWGjAo2n+QMqGXw/Md6DCwE05mAEbAEzyIanZC1ZRKI2gJI+tdllIHKr0YRWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=XReZ3WPt; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from trampoline.thunk.org (pool-173-48-123-50.bstnma.fios.verizon.net [173.48.123.50])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 60SI5GNQ028634
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 60SI5Gqp028637
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 28 Jan 2026 13:05:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1769623518; bh=WMPk7clOddB33GiQ7o8ddtxtguT6/yuBZkOPNrCW4XM=;
+	t=1769623518; bh=B19L/8chwZF2e8JPRyGJKcXcgpbTlcTxeJqfBKAJHDs=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=Ou6Lk2pTMDGX0BSYwp913qHdEjZv67tI1LmQRI9Z7ZIR5UT31GuvyHoWTOEVEWDDa
-	 h73+QKNwqLsE7OfSSVtJKAlfEoV2/F71TYBfv6KyJKaN+j3GKeR3iehgxTThKUHvYh
-	 1/1bjR/Uq2m5rDn9kslPov/Eg8xQpVHoerprWp++xBB2UAhoq0ziQ4nzF35CaOviRw
-	 wwYYFFfqPNT95wI4m8h5AEspzZbtLU5u6BcOBNbLiK5Hq5GhQRkcUnj0Ycw37kaqco
-	 oLzUnOW/YeWihx+xJjwxVu/717c6yijmjUaaOSK+GIMrlCnMbQYo+3yS9S3CNe3jYk
-	 mZnJxtoGu1cNw==
+	b=XReZ3WPtJuZw95nvqgDaEBPhI/PvtKDdW30H1oZSIk7X96CD3Ktvt1P4c/diEf7OI
+	 42ud+VIWQKgC9PtCQOphxFzhtct+h86Dq7ERY+GwLUCzaAuQAarfSVxy3BHBKiJtty
+	 PHlzGdw3YJOESuxvcMCzcWaew71in88LyK8KvQO3XCySFggqifTcty5AtOd6NoRoT1
+	 kQeMYQqsI5zlZrNkFPFG8jm1snnjxcZg7nH5jQ2niUxAKUvKWvs7Yn31YyREyAZRoQ
+	 g5W7TRlqWiEAQ64Dwhb7GTKPwVxhMPzyHxmrGSuwObaGGqtNSIS7lEk/1MnesBwGvs
+	 LswuGTqz6KMzQ==
 Received: by trampoline.thunk.org (Postfix, from userid 15806)
-	id 0BEA42E00DA; Wed, 28 Jan 2026 13:05:16 -0500 (EST)
+	id 0EDE02E00DB; Wed, 28 Jan 2026 13:05:16 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Baokun Li <libaokun1@huawei.com>, Pedro Falcato <pfalcato@suse.de>,
-        Zhang Yi <yi.zhang@huawei.com>
-Subject: Re: [PATCH 1/2] ext4: always allocate blocks only from groups inode can use
-Date: Wed, 28 Jan 2026 13:05:00 -0500
-Message-ID: <176962347640.1138505.1021788434907927289.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, libaokun@huaweicloud.com
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, libaokun1@huawei.com
+Subject: Re: [PATCH] ext4: move ext4_percpu_param_init() before ext4_mb_init()
+Date: Wed, 28 Jan 2026 13:05:01 -0500
+Message-ID: <176962347637.1138505.14003201012666831144.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260114182836.14120-3-jack@suse.cz>
-References: <20260114182333.7287-1-jack@suse.cz> <20260114182836.14120-3-jack@suse.cz>
+In-Reply-To: <20251209133116.731350-1-libaokun@huaweicloud.com>
+References: <20251209133116.731350-1-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -74,49 +74,70 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13410-lists,linux-ext4=lfdr.de];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[mit.edu:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13413-lists,linux-ext4=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[mit.edu:+]
-X-Rspamd-Queue-Id: 79F0EA7896
+	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 21895A77A4
 X-Rspamd-Action: no action
 
 
-On Wed, 14 Jan 2026 19:28:18 +0100, Jan Kara wrote:
-> For filesystems with more than 2^32 blocks inodes using indirect block
-> based format cannot use blocks beyond the 32-bit limit.
-> ext4_mb_scan_groups_linear() takes care to not select these unsupported
-> groups for such inodes however other functions selecting groups for
-> allocation don't. So far this is harmless because the other selection
-> functions are used only with mb_optimize_scan and this is currently
-> disabled for inodes with indirect blocks however in the following patch
-> we want to enable mb_optimize_scan regardless of inode format.
+On Tue, 09 Dec 2025 21:31:16 +0800, libaokun@huaweicloud.com wrote:
+> When running `kvm-xfstests -c ext4/1k -C 1 generic/383` with the
+> `DOUBLE_CHECK` macro defined, the following panic is triggered:
+> 
+> ==================================================================
+> EXT4-fs error (device vdc): ext4_validate_block_bitmap:423:
+>                         comm mount: bg 0: bad block bitmap checksum
+> BUG: unable to handle page fault for address: ff110000fa2cc000
+> PGD 3e01067 P4D 3e02067 PUD 0
+> Oops: Oops: 0000 [#1] SMP NOPTI
+> CPU: 0 UID: 0 PID: 2386 Comm: mount Tainted: G W
+>                         6.18.0-gba65a4e7120a-dirty #1152 PREEMPT(none)
+> RIP: 0010:percpu_counter_add_batch+0x13/0xa0
+> Call Trace:
+>  <TASK>
+>  ext4_mark_group_bitmap_corrupted+0xcb/0xe0
+>  ext4_validate_block_bitmap+0x2a1/0x2f0
+>  ext4_read_block_bitmap+0x33/0x50
+>  mb_group_bb_bitmap_alloc+0x33/0x80
+>  ext4_mb_add_groupinfo+0x190/0x250
+>  ext4_mb_init_backend+0x87/0x290
+>  ext4_mb_init+0x456/0x640
+>  __ext4_fill_super+0x1072/0x1680
+>  ext4_fill_super+0xd3/0x280
+>  get_tree_bdev_flags+0x132/0x1d0
+>  vfs_get_tree+0x29/0xd0
+>  vfs_cmd_create+0x59/0xe0
+>  __do_sys_fsconfig+0x4f6/0x6b0
+>  do_syscall_64+0x50/0x1f0
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> ==================================================================
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] ext4: always allocate blocks only from groups inode can use
-      commit: 4865c768b563deff1b6a6384e74a62f143427b42
-[2/2] ext4: use optimized mballoc scanning regardless of inode format
-      commit: 3574c322b1d0eb32dbd76b469cb08f9a67641599
+[1/1] ext4: move ext4_percpu_param_init() before ext4_mb_init()
+      commit: 270564513489d98b721a1e4a10017978d5213bff
 
 Best regards,
 -- 
