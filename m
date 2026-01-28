@@ -1,252 +1,288 @@
-Return-Path: <linux-ext4+bounces-13380-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13381-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mB7HLHPjeWm50gEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13380-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 11:22:43 +0100
+	id yJ4FEVT9eWm71QEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13381-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 13:13:08 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0965B9F645
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 11:22:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9946A1085
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 13:13:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 25AB5300917B
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 10:22:40 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BA82D3003700
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 12:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1F12E03F1;
-	Wed, 28 Jan 2026 10:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939C034EEF1;
+	Wed, 28 Jan 2026 12:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H9K1vXbg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tNx4IiC2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="K0zjKHly";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9n8zmuTq"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="gTRY/WK5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B1D2DA75C
-	for <linux-ext4@vger.kernel.org>; Wed, 28 Jan 2026 10:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D028B34C83C;
+	Wed, 28 Jan 2026 12:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769595758; cv=none; b=GzR/4HlbZYq0evNOAlDozG0JRhI55940pv6XqqzSUEkr4pd3rd8ji4NwmeojNGh5RkjHGcrq8ll0kJtZtE7bCKCM7HBpPDCzrmMjvDG6cJ2ENEEQ28RuQLPr1x8oOs6WuGMAqfuNFjgC082gSNq1dgrjXDZFY8p15OvzIKdqCu4=
+	t=1769602376; cv=none; b=O9+BMWXt+aYRbdu96leKu/rv9Br5OFmlxd2mOJdKJiIk/QY/os6ISYgPQcRvK5feF5rSVBO9cSL4aC0F0qZfQy/b6eQwgSX0liYC3Sqv4JHrIKS18EdyuB+umnBYyj0aYQdxW4QcQAFnQNnfpVT6QJ1CdbRvbRnScHwxhVK2qXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769595758; c=relaxed/simple;
-	bh=TZJa3nyIyMfD7aDMevZtWMqbxGYcGXKLIJea/frr2GA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c4HY6dPWlrsPrM10/Uf/br8nE0wNvF8FcAuIuRU1W/PxWmxr3Kf0goaKPt6t76DeIJRpMzTV3hMxpDT0mI5JAloc260bhahJzkFE56DYlyh//hde3u49nv43Q9LL2SmBuVjc+/UkapP1MmH5ig65Szm0S5q5cxKkTEk++aZZZI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H9K1vXbg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tNx4IiC2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=K0zjKHly; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9n8zmuTq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D76ED33B15;
-	Wed, 28 Jan 2026 10:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769595755; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv/x+o4pxsH0xcghuEnxyCWO59uC3aK4oOof9k161e4=;
-	b=H9K1vXbgVmPh5w3ag21llUm9Ah2SxojOE9IXXdbY3TFwi7Kv4LEocifANho7budAzhlmGB
-	c0tQTX8Bh/oKDm2QXAj/U6RYpCU33h4NAM6K+su8v4rr8SSQ1mxIg7n9QugBGi5BU+foII
-	cDkTJp63nY1yE0D7Etd5pxgXqdOiTM0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769595755;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv/x+o4pxsH0xcghuEnxyCWO59uC3aK4oOof9k161e4=;
-	b=tNx4IiC2cFesWrAymhUC7tZCv3I6DvbOJ8gGNaqBmay/NOzYH4bfM5qaj4BoyiuLnLLljc
-	CdDvyvbS2rhS8SCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=K0zjKHly;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9n8zmuTq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769595754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv/x+o4pxsH0xcghuEnxyCWO59uC3aK4oOof9k161e4=;
-	b=K0zjKHly4AvvtIdf3dUfFP9nnnfAtIvYau6H7KxwYtnwurAijafP3aHipmFkM+ekgJ5zQV
-	3WoiYGB8GbQ+iwD0Cy70jFOG9Z1EeerjvgX0LYeGvs8KJqHAWts1m1onEkikgVQjqy33FI
-	figzaKuWZpOqAhvpj7yna2kfM2rAlQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769595754;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mv/x+o4pxsH0xcghuEnxyCWO59uC3aK4oOof9k161e4=;
-	b=9n8zmuTqrv0FH8yIzywqAvgqUS6rIP5rVhod/yNkWY+g52C4/rfy4MSwIUXCqA5Gx9KzPQ
-	2m2yhKx6MDn7n/Cw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C36CB3EA61;
-	Wed, 28 Jan 2026 10:22:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yU2yL2rjeWlfDgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 28 Jan 2026 10:22:34 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 83E21A09FC; Wed, 28 Jan 2026 11:22:30 +0100 (CET)
-Date: Wed, 28 Jan 2026 11:22:30 +0100
-From: Jan Kara <jack@suse.cz>
-To: Gerald Yang <gerald.yang@canonical.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
-	linux-ext4@vger.kernel.org, gerald.yang.tw@gmail.com
-Subject: Re: [PATCH] ext4: Fix call trace when remounting to read only in
- data=journal mode
-Message-ID: <4u2l4huoj7zsfy2u37lgdzlmwwdntgqaer7wta7ud3kat7ox2n@oxhbcqryre3r>
-References: <20260128074515.2028982-1-gerald.yang@canonical.com>
+	s=arc-20240116; t=1769602376; c=relaxed/simple;
+	bh=brJyfqTrpOAwu9gN1Gk9OR3qAejoMh9naiSI6qk19dE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lxVuaFmuuUh0sDBV+NL9Y9SAgZOWd5nTawLoWFalr0nLGkx/PS6mAKegIfp3e2jYv3t7QJN7S12N7EcTtzYrn1Bql5+bP5dTzze2ymjuYIAvCC9K6ZlpwJ+dqDLxD76OEGp7UFrfab4GqrLFonPypAErm+6WDzdxFG9IbolxYig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=gTRY/WK5; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60SB138M1478460;
+	Wed, 28 Jan 2026 04:12:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=Sd3tTNC9Qi1NraZ3FKZVjxKypYrlKrXHxdzsRn97YZE=; b=gTRY/WK5dlMJ
+	+w33bnXlRn1cCiq77T2CcMcXQkZLDeCgVL96iSn62FmkkrRxzBM9MIvA0/cb+Yqp
+	7K2voFCBRv+61xwztZqJKWxwspJ55PsOpC1EDOp9KTPbF6BIJWuk9ijNdT5ye3hN
+	2qFlu8Baf7zOiO2sS+AFcRFjCj8EIQBI+FWjL8w8MnzADaoEJNxQSdivlV6UW3he
+	/wb0Y/R32ZcnznUNp/NThA2xnL9bV+ILuQu5yUUX8YQKP21FSmcApEMpZ5O3AuC3
+	/zWNiD+9HEYCHz+k7PzzpBd2lBlTxy8vvfv8sVuLDoGyHUQax4GHXHh1oNeRoIln
+	Y1F/zIHK8w==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bycg226fm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Wed, 28 Jan 2026 04:12:23 -0800 (PST)
+Received: from devbig003.atn7.facebook.com (2620:10d:c085:108::150d) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.35; Wed, 28 Jan 2026 12:12:18 +0000
+From: Chris Mason <clm@meta.com>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+CC: Andrew Morton <akpm@linux-foundation.org>,
+        Jarkko Sakkinen
+	<jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas
+ Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov
+	<bp@alien8.de>, <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Arnd
+ Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma
+	<vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Jani Nikula
+	<jani.nikula@linux.intel.com>,
+        Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tursulin@ursulin.net>,
+        Christian Koenig
+	<christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, Matthew Auld
+	<matthew.auld@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Alexander
+ Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan
+ Kara <jack@suse.cz>,
+        Benjamin LaHaise <bcrl@kvack.org>, Gao Xiang
+	<xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Muchun Song <muchun.song@linux.dev>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@kernel.org>,
+        Konstantin Komarov
+	<almaz.alexandrovich@paragon-software.com>,
+        Mike Marshall
+	<hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Tony Luck
+	<tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave
+ Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>,
+        Babu Moger
+	<babu.moger@amd.com>, Carlos Maiolino <cem@kernel.org>,
+        Damien Le Moal
+	<dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn
+	<jth@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett"
+	<Liam.Howlett@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport
+	<rppt@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko
+	<mhocko@suse.com>, Hugh Dickins <hughd@google.com>,
+        Baolin Wang
+	<baolin.wang@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
+        Nico Pache
+	<npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+        Dev Jain
+	<dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+        Lance Yang
+	<lance.yang@linux.dev>, Jann Horn <jannh@google.com>,
+        Pedro Falcato
+	<pfalcato@suse.de>, David Howells <dhowells@redhat.com>,
+        Paul Moore
+	<paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn"
+	<serge@hallyn.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes
+	<linux@rasmusvillemoes.dk>,
+        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
+        <linux-mm@kvack.org>, <ntfs3@lists.linux.dev>,
+        <devel@lists.orangefs.org>, <linux-xfs@vger.kernel.org>,
+        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        Jason
+ Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v2 07/13] mm: update secretmem to use VMA flags on mmap_prepare
+Date: Wed, 28 Jan 2026 04:08:36 -0800
+Message-ID: <20260128121200.283932-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <a243a09b0a5d0581e963d696de1735f61f5b2075.1769097829.git.lorenzo.stoakes@oracle.com>
+References: <cover.1769097829.git.lorenzo.stoakes@oracle.com> <a243a09b0a5d0581e963d696de1735f61f5b2075.1769097829.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260128074515.2028982-1-gerald.yang@canonical.com>
-X-Spam-Score: -2.51
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI4MDA5OCBTYWx0ZWRfX/YMdvd0IEW+M
+ mfJ/bYR9k4eRvDbs9QGzO+ygu2VSotJCKMMxUusrpYkrvYdQaFJRWVvBv2EkD12mCpCYEvw+XB/
+ DwyN2M8BBbTeyqqZ9/i9fDyEPE0MOIwU1pNj8r3a1/SGXN38+xZGlcMtDVhwJA1iofmGT+NTjsa
+ 3wJFzmew6yuj81cYLEWiubhhxDZMBD6hVVMuqCOVg+bB7Gz9bEYCH56KvIcfJ13/7NnDlwWy1ay
+ rut+pW91VzKqtLFjeZDFQXQuymj3+pWlazUmuuQXtfS+yB5rh8eIrZb/ZGDSDilJLhwKOSnwEsm
+ tXIPQzyp+XE21UBIWU7JysVYMwhm9BUIbA4gV+4NNGJrteyEtklAhziLQl5fV0j0MzIV6sri7hz
+ h9QDQw7JEBl4y5dfKeMuesm0LqUNBE+g04KLVmq1Y9FiJcFdRQVCoCh0B4S6SthUPRAGT0RWyAc
+ Vh/HaT4eUcQ+KnB1bbQ==
+X-Proofpoint-GUID: 6cECoo2vZpz-_Y4sX-WfJbWu0BG9k_53
+X-Authority-Analysis: v=2.4 cv=Q63fIo2a c=1 sm=1 tr=0 ts=6979fd27 cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
+ a=VZ3cX_PGfQEInpbj4y4A:9
+X-Proofpoint-ORIG-GUID: 6cECoo2vZpz-_Y4sX-WfJbWu0BG9k_53
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-01-28_02,2026-01-28_01,2025-10-01_01
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13380-lists,linux-ext4=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,canonical.com:email,suse.cz:dkim];
-	DMARC_NA(0.00)[suse.cz];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,vger.kernel.org,gmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.intel.com,redhat.com,alien8.de,zytor.com,arndb.de,linuxfoundation.org,intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net,amd.com,zeniv.linux.org.uk,suse.cz,kvack.org,linux.alibaba.com,google.com,huawei.com,vivo.com,mit.edu,dilger.ca,linux.dev,paragon-software.com,omnibond.com,arm.com,wdc.com,infradead.org,oracle.com,suse.com,nvidia.com,paul-moore.com,namei.org,hallyn.com,rasmusvillemoes.dk,vger.kernel.org,lists.linux.dev,lists.freedesktop.org,lists.ozlabs.org,lists.orangefs.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13381-lists,linux-ext4=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-ext4@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[meta.com:+];
+	NEURAL_HAM(-0.00)[-0.993];
+	RCPT_COUNT_GT_50(0.00)[94];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 0965B9F645
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,oracle.com:email,meta.com:mid,meta.com:dkim]
+X-Rspamd-Queue-Id: A9946A1085
 X-Rspamd-Action: no action
 
-On Wed 28-01-26 15:45:15, Gerald Yang wrote:
-> When remounting the filesystem to read only in data=journal mode
-> it may dump the following call trace:
+Lorenzo Stoakes <lorenzo.stoakes@oracle.com> wrote:
+> This patch updates secretmem to use the new vma_flags_t type which will
+> soon supersede vm_flags_t altogether.
 > 
-> [   71.629350] CPU: 0 UID: 0 PID: 177 Comm: kworker/u96:5 Tainted: G            E       6.19.0-rc7 #1 PREEMPT(voluntary)
-> [   71.629352] Tainted: [E]=UNSIGNED_MODULE
-> [   71.629353] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/LXD, BIOS unknown 2/2/2022
-> [   71.629354] Workqueue: writeback wb_workfn (flush-7:4)
-> [   71.629359] RIP: 0010:ext4_journal_check_start+0x8b/0xd0
-> [   71.629360] Code: 31 ff 45 31 c0 45 31 c9 e9 42 ad c4 00 48 8b 5d f8 b8 fb ff ff ff c9 31 d2 31 c9 31 f6 31 ff 45 31 c0 45 31 c9 c3 cc cc cc cc <0f> 0b b8 e2 ff ff ff eb c2 0f 0b eb
->  a9 44 8b 42 08 68 c7 53 ce b8
-> [   71.629361] RSP: 0018:ffffcf32c0fdf6a8 EFLAGS: 00010202
-> [   71.629364] RAX: ffff8f08c8505000 RBX: ffff8f08c67ee800 RCX: 0000000000000000
-> [   71.629366] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> [   71.629367] RBP: ffffcf32c0fdf6b0 R08: 0000000000000001 R09: 0000000000000000
-> [   71.629368] R10: ffff8f08db18b3a8 R11: 0000000000000000 R12: 0000000000000000
-> [   71.629368] R13: 0000000000000002 R14: 0000000000000a48 R15: ffff8f08c67ee800
-> [   71.629369] FS:  0000000000000000(0000) GS:ffff8f0a7d273000(0000) knlGS:0000000000000000
-> [   71.629370] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   71.629371] CR2: 00007b66825905cc CR3: 000000011053d004 CR4: 0000000000772ef0
-> [   71.629374] PKRU: 55555554
-> [   71.629374] Call Trace:
-> [   71.629378]  <TASK>
-> [   71.629382]  __ext4_journal_start_sb+0x38/0x1c0
-> [   71.629383]  mpage_prepare_extent_to_map+0x4af/0x580
-> [   71.629389]  ? sbitmap_get+0x73/0x180
-> [   71.629399]  ext4_do_writepages+0x3cc/0x10a0
-> [   71.629400]  ? kvm_sched_clock_read+0x11/0x20
-> [   71.629409]  ext4_writepages+0xc8/0x1b0
-> [   71.629410]  ? ext4_writepages+0xc8/0x1b0
-> [   71.629411]  do_writepages+0xc4/0x180
-> [   71.629416]  __writeback_single_inode+0x45/0x350
-> [   71.629419]  ? _raw_spin_unlock+0xe/0x40
-> [   71.629423]  writeback_sb_inodes+0x260/0x5c0
-> [   71.629425]  ? __schedule+0x4d1/0x1870
-> [   71.629429]  __writeback_inodes_wb+0x54/0x100
-> [   71.629431]  ? queue_io+0x82/0x140
-> [   71.629433]  wb_writeback+0x1ab/0x330
-> [   71.629448]  wb_workfn+0x31d/0x410
-> [   71.629450]  process_one_work+0x191/0x3e0
-> [   71.629455]  worker_thread+0x2e3/0x420
+> In order to make this change we also have to update mlock_future_ok(), we
+> replace the vm_flags_t parameter with a simple boolean is_vma_locked one,
+> which also simplifies the invocation here.
 > 
-> This issue can be easily reproduced by:
-> mkdir -p mnt
-> dd if=/dev/zero of=ext4disk bs=1G count=2 oflag=direct
-> mkfs.ext4 ext4disk
-> tune2fs -o journal_data ext4disk
-> mount ext4disk mnt
-> fio --name=fiotest --rw=randwrite --bs=4k --runtime=3 --ioengine=libaio --iodepth=128 --numjobs=4 --filename=mnt/fiotest --filesize=1G --group_reporting
-> mount -o remount,ro ext4disk mnt
-> sync
+> This is laying the groundwork for eliminating the vm_flags_t in
+> vm_area_desc and more broadly throughout the kernel.
 > 
-> In data=journal mode, metadata and data are both written to the journal
-> first, but for the second write, ext4 relies on the writeback thread to
-> flush the data to the real file location.
-> 
-> After the filesystem is remounted to read only, writeback thread still
-> writes data to it and causes the issue. Return early to avoid starting
-> a journal transaction on a read only filesystem, once the filesystem
-> becomes writable again, the write thread will continue writing data.
-> 
-> Signed-off-by: Gerald Yang <gerald.yang@canonical.com>
 
-Thanks for the report and the patch! I can indeed reproduce this warning.
-But the patch itself is certainly not the right fix for this problem.
-ext4_remount() must make sure there are no dirty pages on the filesystem
-anymore when remounting filesystem read only and it apparently fails to do
-so. In particular it calls sync_filesystem() which should make sure all
-data is written. So this bug needs more investigation why there are some
-dirty pages left in the inode in data=journal mode because
-ext4_writepages() should have written them all...
+Hi everyone,
 
-								Honza
+Running mm-new through AI review flagged this one:
 
-> ---
->  fs/ext4/inode.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 15ba4d42982f..4e3bbf17995e 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2787,6 +2787,17 @@ static int ext4_do_writepages(struct mpage_da_data *mpd)
->  	if (unlikely(ret))
->  		goto out_writepages;
->  
-> +	/*
-> +	 * For data=journal, if the filesystem was remounted read-only,
-> +	 * the writeback thread may still write dirty pages to it.
-> +	 * Return early to avoid starting a journal transaction on a
-> +	 * read-only filesystem.
-> +	 */
-> +	if (ext4_should_journal_data(inode) && sb_rdonly(inode->i_sb)) {
-> +		ret = -EROFS;
-> +		goto out_writepages;
-> +	}
-> +
->  	/*
->  	 * If we have inline data and arrive here, it means that
->  	 * we will soon create the block for the 1st page, so
-> -- 
-> 2.43.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -225,12 +225,12 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
+>  	return hint;
+>  }
+>
+> -bool mlock_future_ok(const struct mm_struct *mm, vm_flags_t vm_flags,
+> -			unsigned long bytes)
+> +bool mlock_future_ok(const struct mm_struct *mm, bool is_vma_locked,
+> +		     unsigned long bytes)
+>  {
+>  	unsigned long locked_pages, limit_pages;
+>
+> -	if (!(vm_flags & VM_LOCKED) || capable(CAP_IPC_LOCK))
+> +	if (!is_vma_locked || capable(CAP_IPC_LOCK))
+>  		return true;
+
+[ ... ]
+
+> @@ -416,7 +416,7 @@
+>  		if (!can_do_mlock())
+>  			return -EPERM;
+>
+> -	if (!mlock_future_ok(mm, vm_flags, len))
+> +	if (!mlock_future_ok(mm, vm_flags & VM_LOCKED, len))
+>  		return -EAGAIN;
+
+This looks correct - do_mmap() now extracts the VM_LOCKED bit from
+vm_flags and passes that to mlock_future_ok().
+
+However, it appears check_brk_limits() was not updated when
+mlock_future_ok() changed its signature. The function at mm/mmap.c:111
+still passes the raw def_flags value:
+
+    return mlock_future_ok(current->mm, current->mm->def_flags, len)
+        ? 0 : -EAGAIN;
+
+When def_flags has any bit set, this converts to true, incorrectly
+triggering mlock limit checks even when VM_LOCKED is not set. Should
+this be passing (current->mm->def_flags & VM_LOCKED) instead?
+
+[ ... ]
+
+Additionally, the test stub at tools/testing/vma/vma_internal.h:1627
+still has the old signature (mm, vm_flags_t vm_flags, bytes) while the
+production code now uses (mm, bool is_vma_locked, bytes). This could
+cause compilation issues or mask bugs in the test suite.
+
+
 
