@@ -1,168 +1,72 @@
-Return-Path: <linux-ext4+bounces-13381-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13382-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yJ4FEVT9eWm71QEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13381-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 13:13:08 +0100
+	id mDNVNJMremnd3gEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13382-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 16:30:27 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9946A1085
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 13:13:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 052FEA3DEF
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 16:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BA82D3003700
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 12:13:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E5AF330A076F
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 15:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939C034EEF1;
-	Wed, 28 Jan 2026 12:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0796936BCEA;
+	Wed, 28 Jan 2026 15:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="gTRY/WK5"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pdSh+5NQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D028B34C83C;
-	Wed, 28 Jan 2026 12:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE5536BCCA;
+	Wed, 28 Jan 2026 15:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769602376; cv=none; b=O9+BMWXt+aYRbdu96leKu/rv9Br5OFmlxd2mOJdKJiIk/QY/os6ISYgPQcRvK5feF5rSVBO9cSL4aC0F0qZfQy/b6eQwgSX0liYC3Sqv4JHrIKS18EdyuB+umnBYyj0aYQdxW4QcQAFnQNnfpVT6QJ1CdbRvbRnScHwxhVK2qXA=
+	t=1769614007; cv=none; b=VSJ3MMCKVzpkVSkZCkGtUpJIogSI7+FMJupapWW7o6DL2rbTY4YyWNQrQyUb4oHU3Y2kVO5a9d7T4AymchI5j+p2YTNCjBLoo2Ay7OvNQjrJWV+9FzutfO+r4V5qDIHqKknYdGPj20MVl0ERBS0Q+C9iAOx4O1Y6311lLAYdfmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769602376; c=relaxed/simple;
-	bh=brJyfqTrpOAwu9gN1Gk9OR3qAejoMh9naiSI6qk19dE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lxVuaFmuuUh0sDBV+NL9Y9SAgZOWd5nTawLoWFalr0nLGkx/PS6mAKegIfp3e2jYv3t7QJN7S12N7EcTtzYrn1Bql5+bP5dTzze2ymjuYIAvCC9K6ZlpwJ+dqDLxD76OEGp7UFrfab4GqrLFonPypAErm+6WDzdxFG9IbolxYig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=gTRY/WK5; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60SB138M1478460;
-	Wed, 28 Jan 2026 04:12:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=Sd3tTNC9Qi1NraZ3FKZVjxKypYrlKrXHxdzsRn97YZE=; b=gTRY/WK5dlMJ
-	+w33bnXlRn1cCiq77T2CcMcXQkZLDeCgVL96iSn62FmkkrRxzBM9MIvA0/cb+Yqp
-	7K2voFCBRv+61xwztZqJKWxwspJ55PsOpC1EDOp9KTPbF6BIJWuk9ijNdT5ye3hN
-	2qFlu8Baf7zOiO2sS+AFcRFjCj8EIQBI+FWjL8w8MnzADaoEJNxQSdivlV6UW3he
-	/wb0Y/R32ZcnznUNp/NThA2xnL9bV+ILuQu5yUUX8YQKP21FSmcApEMpZ5O3AuC3
-	/zWNiD+9HEYCHz+k7PzzpBd2lBlTxy8vvfv8sVuLDoGyHUQax4GHXHh1oNeRoIln
-	Y1F/zIHK8w==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bycg226fm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Wed, 28 Jan 2026 04:12:23 -0800 (PST)
-Received: from devbig003.atn7.facebook.com (2620:10d:c085:108::150d) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Wed, 28 Jan 2026 12:12:18 +0000
-From: Chris Mason <clm@meta.com>
-To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
-CC: Andrew Morton <akpm@linux-foundation.org>,
-        Jarkko Sakkinen
-	<jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas
- Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov
-	<bp@alien8.de>, <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, Arnd
- Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma
-	<vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard
-	<mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie
-	<airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Jani Nikula
-	<jani.nikula@linux.intel.com>,
-        Joonas Lahtinen
-	<joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tursulin@ursulin.net>,
-        Christian Koenig
-	<christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, Matthew Auld
-	<matthew.auld@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Alexander
- Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan
- Kara <jack@suse.cz>,
-        Benjamin LaHaise <bcrl@kvack.org>, Gao Xiang
-	<xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Muchun Song <muchun.song@linux.dev>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@kernel.org>,
-        Konstantin Komarov
-	<almaz.alexandrovich@paragon-software.com>,
-        Mike Marshall
-	<hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Tony Luck
-	<tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave
- Martin <Dave.Martin@arm.com>, James Morse <james.morse@arm.com>,
-        Babu Moger
-	<babu.moger@amd.com>, Carlos Maiolino <cem@kernel.org>,
-        Damien Le Moal
-	<dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn
-	<jth@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett"
-	<Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport
-	<rppt@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Michal Hocko
-	<mhocko@suse.com>, Hugh Dickins <hughd@google.com>,
-        Baolin Wang
-	<baolin.wang@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
-        Nico Pache
-	<npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-        Dev Jain
-	<dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
-        Lance Yang
-	<lance.yang@linux.dev>, Jann Horn <jannh@google.com>,
-        Pedro Falcato
-	<pfalcato@suse.de>, David Howells <dhowells@redhat.com>,
-        Paul Moore
-	<paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn"
-	<serge@hallyn.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes
-	<linux@rasmusvillemoes.dk>,
-        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
-        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
-        <linux-mm@kvack.org>, <ntfs3@lists.linux.dev>,
-        <devel@lists.orangefs.org>, <linux-xfs@vger.kernel.org>,
-        <keyrings@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        Jason
- Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v2 07/13] mm: update secretmem to use VMA flags on mmap_prepare
-Date: Wed, 28 Jan 2026 04:08:36 -0800
-Message-ID: <20260128121200.283932-1-clm@meta.com>
+	s=arc-20240116; t=1769614007; c=relaxed/simple;
+	bh=Qv96bq1R4l+P0AlqlNQr3M3cd7C8DHbj97fp/5ZTzPw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y/A7JQjOrMS2zeMan96SyKhoX3sPwQd8q5Y6XlzLCnb7SzrSsZfgtTD7pidnVqMLeX3rmlW8WIIxQSeEOnC5NRUsVm3Z0h6FUiucn8SvPxgSgEveR/ztyNFaxoViPvPRJPMEOFYA4qrv4KEePvstNko0yu59GvdJy6IXwVFuX90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pdSh+5NQ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=V4gzpQ2cI1n1D9pDC+6TS0qJqy9O+aRgiUvOw1bVFC4=; b=pdSh+5NQiI2K3lcSaijooTJsfh
+	6qzoCa3ADP9YMFgR3h/B1s/BIcAC9VGll1ImR7tDl1tKZ2ceSJ03Tp+ms0wIZFioZLoP68kMsm1YW
+	p9qeWDjjsaIZgv4k5edvUcioQV3q9BGvlqub2/q/fKSQw/QSNRAPhizfs6rYTYrJ1qu8/kjlzsgdW
+	ZtJXRGD3iTYRAXt1yGYBAcpg0JhlaEGNZRdaWEoA1zFU/thPhKD1hDpTycRzOMQgKyRX+8n6c//Cw
+	JRMSmnSqB3JjtL89qPdrZw8R74BTCGGNdew1j0DtSrP1zgU72bMsSZto9/6zJcS0bUFGr+ISMGVN8
+	Whn5rFvA==;
+Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vl7RG-0000000GHDn-3mz7;
+	Wed, 28 Jan 2026 15:26:39 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: fsverity cleanups, speedup and memory usage optimization v4
+Date: Wed, 28 Jan 2026 16:26:12 +0100
+Message-ID: <20260128152630.627409-1-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <a243a09b0a5d0581e963d696de1735f61f5b2075.1769097829.git.lorenzo.stoakes@oracle.com>
-References: <cover.1769097829.git.lorenzo.stoakes@oracle.com> <a243a09b0a5d0581e963d696de1735f61f5b2075.1769097829.git.lorenzo.stoakes@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -170,119 +74,132 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI4MDA5OCBTYWx0ZWRfX/YMdvd0IEW+M
- mfJ/bYR9k4eRvDbs9QGzO+ygu2VSotJCKMMxUusrpYkrvYdQaFJRWVvBv2EkD12mCpCYEvw+XB/
- DwyN2M8BBbTeyqqZ9/i9fDyEPE0MOIwU1pNj8r3a1/SGXN38+xZGlcMtDVhwJA1iofmGT+NTjsa
- 3wJFzmew6yuj81cYLEWiubhhxDZMBD6hVVMuqCOVg+bB7Gz9bEYCH56KvIcfJ13/7NnDlwWy1ay
- rut+pW91VzKqtLFjeZDFQXQuymj3+pWlazUmuuQXtfS+yB5rh8eIrZb/ZGDSDilJLhwKOSnwEsm
- tXIPQzyp+XE21UBIWU7JysVYMwhm9BUIbA4gV+4NNGJrteyEtklAhziLQl5fV0j0MzIV6sri7hz
- h9QDQw7JEBl4y5dfKeMuesm0LqUNBE+g04KLVmq1Y9FiJcFdRQVCoCh0B4S6SthUPRAGT0RWyAc
- Vh/HaT4eUcQ+KnB1bbQ==
-X-Proofpoint-GUID: 6cECoo2vZpz-_Y4sX-WfJbWu0BG9k_53
-X-Authority-Analysis: v=2.4 cv=Q63fIo2a c=1 sm=1 tr=0 ts=6979fd27 cx=c_pps
- a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
- a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
- a=VZ3cX_PGfQEInpbj4y4A:9
-X-Proofpoint-ORIG-GUID: 6cECoo2vZpz-_Y4sX-WfJbWu0BG9k_53
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-01-28_02,2026-01-28_01,2025-10-01_01
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.06 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.intel.com,redhat.com,alien8.de,zytor.com,arndb.de,linuxfoundation.org,intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net,amd.com,zeniv.linux.org.uk,suse.cz,kvack.org,linux.alibaba.com,google.com,huawei.com,vivo.com,mit.edu,dilger.ca,linux.dev,paragon-software.com,omnibond.com,arm.com,wdc.com,infradead.org,oracle.com,suse.com,nvidia.com,paul-moore.com,namei.org,hallyn.com,rasmusvillemoes.dk,vger.kernel.org,lists.linux.dev,lists.freedesktop.org,lists.ozlabs.org,lists.orangefs.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13381-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-ext4@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[meta.com:+];
-	NEURAL_HAM(-0.00)[-0.993];
-	RCPT_COUNT_GT_50(0.00)[94];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13382-lists,linux-ext4=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,oracle.com:email,meta.com:mid,meta.com:dkim]
-X-Rspamd-Queue-Id: A9946A1085
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:mid,infradead.org:dkim]
+X-Rspamd-Queue-Id: 052FEA3DEF
 X-Rspamd-Action: no action
 
-Lorenzo Stoakes <lorenzo.stoakes@oracle.com> wrote:
-> This patch updates secretmem to use the new vma_flags_t type which will
-> soon supersede vm_flags_t altogether.
-> 
-> In order to make this change we also have to update mlock_future_ok(), we
-> replace the vm_flags_t parameter with a simple boolean is_vma_locked one,
-> which also simplifies the invocation here.
-> 
-> This is laying the groundwork for eliminating the vm_flags_t in
-> vm_area_desc and more broadly throughout the kernel.
-> 
+Hi all,
 
-Hi everyone,
+this series has a hodge podge of fsverity enhances that I looked into as
+part of the review of the xfs fsverity support series.
 
-Running mm-new through AI review flagged this one:
+The first part calls fsverity code from VFS code instead of requiring
+boilerplate in the file systems.
 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -225,12 +225,12 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
->  	return hint;
->  }
->
-> -bool mlock_future_ok(const struct mm_struct *mm, vm_flags_t vm_flags,
-> -			unsigned long bytes)
-> +bool mlock_future_ok(const struct mm_struct *mm, bool is_vma_locked,
-> +		     unsigned long bytes)
->  {
->  	unsigned long locked_pages, limit_pages;
->
-> -	if (!(vm_flags & VM_LOCKED) || capable(CAP_IPC_LOCK))
-> +	if (!is_vma_locked || capable(CAP_IPC_LOCK))
->  		return true;
+The first patch fixes a bug in btrfs as part of that, as btrfs was missing
+a check.  An xfstests test case for this was submitted already.
+Can we expedite this fix?
 
-[ ... ]
+The middle part optimizes the fsverity read path by kicking off readahead
+for the fsverity hashes from the data read submission context, which in my
+simply testing showed huge benefits for sequential reads using dd.
+I haven't been able to get fio to run on a preallocated fio file, but
+I expect random read benefits would be significantly better than that
+still.
 
-> @@ -416,7 +416,7 @@
->  		if (!can_do_mlock())
->  			return -EPERM;
->
-> -	if (!mlock_future_ok(mm, vm_flags, len))
-> +	if (!mlock_future_ok(mm, vm_flags & VM_LOCKED, len))
->  		return -EAGAIN;
+The last part avoids the need for a pointer in every inode for fsverity
+and instead uses a rhashtable lookup, which is done once per read_folio
+or ->readahead invocation plus for btrfs only for each bio completion.
+Right now this does not increse the number of inodes in
+each slab, but for ext4 we are getting very close to that (within
+16 bytes by my count).
 
-This looks correct - do_mmap() now extracts the VM_LOCKED bit from
-vm_flags and passes that to mlock_future_ok().
+Changes since v4:
+ - drop the constification of ctx->vi again
+ - fix __filemap_get_folio error handling again
+ - don't use "pgoff_t long"
+ - improve documentation of the new pagecache helpers
+ - reduce the number of fsverity_info lookups in btrfs
+ - improve the documentation for fsverity_active
 
-However, it appears check_brk_limits() was not updated when
-mlock_future_ok() changed its signature. The function at mm/mmap.c:111
-still passes the raw def_flags value:
+Changes since v2:
+ - use sizeof_field for .key_len
+ - fix a rebase error that caused an extra fsverity_get_info in
+   fsverity_init_verification_context
+ - add verify.o to the build in the correct patch
+ - fix handling of non-ENOENT ERR_PTR folios in
+   generic_readahead_merkle_tree
+ - split fixing the __filemap_get_folio error handling into a
+   separate patch
+ - fix the readahead range in fsverity_read_merkle_tree
+ - remove __fsverity_readahead as a result of the above
+ - simplify the start/end_hidx calculation in fsverity_readahead
+ - drop the > i_size check in fsverity_readahead
+ - use pgoff_t where applicable
+ - constify fsverity_info pointers in the verification path
+ - use IS_ENABLED to disable code not used for non-fsverity builds in
+   ext4 and f2fs
+ - allow bisection for non-fsverity builds by provinding a stub
+   fsverity_info_addr prototype
+ - drop the now superflous inode argument to
+   fsverity_init_verification_context
+ - improve the kerneldoc for fsverity_readahead
+ - improve various commit messages
+ - fix the barrier placement in fsverity_active
+ - mark fsverity_active to work around stupid compilers
 
-    return mlock_future_ok(current->mm, current->mm->def_flags, len)
-        ? 0 : -EAGAIN;
+Changes since v1:
+ - reorder to keep the most controversial part last
+ - drop moving the open handling to common code (for now)
+ - factor the page cache read code into common code
+ - reduce the number of hash lookups
+ - add a barrier in the fsverity_active that pairs with the cmpxchg
+   that sets the inode flag.
 
-When def_flags has any bit set, this converts to true, incorrectly
-triggering mlock limit checks even when VM_LOCKED is not set. Should
-this be passing (current->mm->def_flags & VM_LOCKED) instead?
-
-[ ... ]
-
-Additionally, the test stub at tools/testing/vma/vma_internal.h:1627
-still has the old signature (mm, vm_flags_t vm_flags, bytes) while the
-production code now uses (mm, bool is_vma_locked, bytes). This could
-cause compilation issues or mask bugs in the test suite.
-
-
+Diffstat:
+ fs/attr.c                    |   12 ++
+ fs/btrfs/btrfs_inode.h       |    4 
+ fs/btrfs/extent_io.c         |   53 +++++++-----
+ fs/btrfs/inode.c             |   13 --
+ fs/btrfs/verity.c            |   11 --
+ fs/buffer.c                  |   25 ++---
+ fs/ext4/ext4.h               |    4 
+ fs/ext4/inode.c              |    4 
+ fs/ext4/readpage.c           |   34 ++++---
+ fs/ext4/super.c              |    4 
+ fs/ext4/verity.c             |   34 ++-----
+ fs/f2fs/compress.c           |    7 -
+ fs/f2fs/data.c               |   72 ++++++++++------
+ fs/f2fs/f2fs.h               |   12 --
+ fs/f2fs/file.c               |    4 
+ fs/f2fs/inode.c              |    1 
+ fs/f2fs/super.c              |    3 
+ fs/f2fs/verity.c             |   34 ++-----
+ fs/inode.c                   |    9 ++
+ fs/verity/Makefile           |    1 
+ fs/verity/enable.c           |   39 +++++---
+ fs/verity/fsverity_private.h |   21 ++--
+ fs/verity/open.c             |   82 ++++++++++--------
+ fs/verity/pagecache.c        |   56 ++++++++++++
+ fs/verity/read_metadata.c    |   17 ++-
+ fs/verity/verify.c           |   94 +++++++++++++--------
+ include/linux/fsverity.h     |  188 ++++++++++++++++---------------------------
+ 27 files changed, 451 insertions(+), 387 deletions(-)
 
