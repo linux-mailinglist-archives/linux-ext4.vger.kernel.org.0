@@ -1,50 +1,50 @@
-Return-Path: <linux-ext4+bounces-13372-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13373-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WJuFCYOFeWnGxQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13372-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:41:55 +0100
+	id cJP1EjCGeWnjxQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13373-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:44:48 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4709CCF1
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:41:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2999CD27
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:44:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AA28430136B1
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:41:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0B7633011100
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740EB32F749;
-	Wed, 28 Jan 2026 03:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C6532FA10;
+	Wed, 28 Jan 2026 03:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dbwCTTNN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P201+ebc"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194CF309F04;
-	Wed, 28 Jan 2026 03:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9281A3029;
+	Wed, 28 Jan 2026 03:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769571695; cv=none; b=JbLXaXP4/+/BzZZY+YdbU9rCIMz9heiBfYIifl+9vEReV1biQF8DjvGcOQvdX3i1o1jZMFmRvXsd4cd1MHE28NDEMqhYwKHZqDO5FM0Nrq8s+580tGtQyyyBNM4R5wxdeVuiT4pTyIcpCK4Zx7o3gHd1uXhUsWUgNFJ9cFXQTd0=
+	t=1769571879; cv=none; b=QAukOcdtFnWWuIJJ4vlNkIDO4e0PbhrssMajXb1Me8ncZQgHjFZjfrawqQb3Qt97a4nfLoD0xL7ICd5kaU1IoJt0E2WtiicWXyh+ifAVYNrbZ8WlBMzjSsVJN/x2GesYr59FrCD6qTB6Nl5Qu2KVrt9uNnp09Yqae58/GQkoyNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769571695; c=relaxed/simple;
-	bh=34CW2N/dMbkFR7cyXaksGnhaLHYhfifPNLB5pSoQWJE=;
+	s=arc-20240116; t=1769571879; c=relaxed/simple;
+	bh=AxsbRiz6g5OHmI8dfGU8IScrv9tHBdspZu1p6bmeGBE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PeEDlBhdUScL4t3ceZEehtcVGuV//E8oEJ7jyYNCCHdVHr6ld7nJGcWOdBqxt0ShR9ifDrmgswM8fAminjTQsqpBeIp+T6SyQZEThs+Phwef4UGdufFkCUuSQyRngGlo18B6TjulzDE7UEhEOeSzJYuXrHzJui0fveLi5zN8I6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dbwCTTNN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79AE0C4CEF1;
-	Wed, 28 Jan 2026 03:41:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pf1kOo60kSC23J4fZhbRHcrJ149oZkR1+W2ehDNVDN8QM2+eb2IRGQlNPfQupiKernc1xKnLzWGbg9xXWfKctcvbbZ9K3CskJsD3uDxdkKpXvpfgdMYIYlAcX73i7+DgGJB0ddlI9bUawB/K4ZdQ97eKbHdYwDu7OXGCf7Xhw0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P201+ebc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 388A4C4CEF1;
+	Wed, 28 Jan 2026 03:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769571695;
-	bh=34CW2N/dMbkFR7cyXaksGnhaLHYhfifPNLB5pSoQWJE=;
+	s=k20201202; t=1769571878;
+	bh=AxsbRiz6g5OHmI8dfGU8IScrv9tHBdspZu1p6bmeGBE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dbwCTTNNtA2TKf57Dcgd/gAlPCfwSPJkzXB3I0ZjyGqro2OC4619YEMvb7YfHTNfM
-	 jbbinV6fx+3o6stxCiyTbER6NlHiabXHM2N0tJsuZYdqiA53a1y3FENrQCJUGd/QWZ
-	 KJ89SaP7IBuIx1QeDPYdGy+5fanThEWZyeXhXMIviAkumfjCalzL7OWk8+Kq7nV7k8
-	 dMWmiOE1p5dO7wppx7RgSc1wDvLCR19Nt3jBuW3KtXQCkh4VYhPb5OKtosUKtClEpu
-	 69vfH/WpL7e3WbzfuH7+Px8no6l4ad0AwmMuuYOe7xaD+Z8U7wSiaMdfA+BI+uODz7
-	 vqATPSgpMFC4Q==
-Date: Tue, 27 Jan 2026 19:41:02 -0800
+	b=P201+ebcahtveats5bhW2VJNT2y5qzZhA5UQq4K1H1t4r3j8dB204ErQtUZ4OVk7N
+	 YnWXZUkXX1CbW8uko3pPh+QLq4pWZLsSBJA9PvkIniP9ouFclwLqq3s7rzdJdnahiv
+	 F8uNjLjPV7RhubK6C9IlB690qAzIOrBIS168z1Jj9DAw594M2kV1u1lIAtTaU6frsL
+	 YVjDJT63xqbvutBpXCtTvsieBy0dKR44T1c1fyeRrNuX51xye8cn2hCQKzBf/PGuN2
+	 y3G1FufZ7pMbsRJS+GieYovcevovNHI/9hjK7cqJDIpSxdqJz1BNQ/LggEt/fIz2Yr
+	 VqO+Ot3ttWEuA==
+Date: Tue, 27 Jan 2026 19:44:05 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -55,13 +55,12 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
-Subject: Re: [PATCH 09/16] fsverity: constify the vi pointer in
- fsverity_verification_context
-Message-ID: <20260128034102.GC2718@sol>
+Subject: Re: [PATCH 16/16] fsverity: use a hashtable to find the fsverity_info
+Message-ID: <20260128034405.GD2718@sol>
 References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-10-hch@lst.de>
- <20260128032203.GA2718@sol>
- <20260128033242.GA30830@lst.de>
+ <20260126045212.1381843-17-hch@lst.de>
+ <20260128032817.GB2718@sol>
+ <20260128033519.GB30830@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,61 +69,60 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260128033242.GA30830@lst.de>
+In-Reply-To: <20260128033519.GB30830@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13372-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13373-lists,linux-ext4=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email]
-X-Rspamd-Queue-Id: BB4709CCF1
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9A2999CD27
 X-Rspamd-Action: no action
 
-On Wed, Jan 28, 2026 at 04:32:42AM +0100, Christoph Hellwig wrote:
-> On Tue, Jan 27, 2026 at 07:22:03PM -0800, Eric Biggers wrote:
-> > On Mon, Jan 26, 2026 at 05:50:55AM +0100, Christoph Hellwig wrote:
-> > > struct fsverity_info contains information that is only read in the
-> > > verification path.  Apply the const qualifier to match various explicitly
-> > > passed arguments.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >  fs/verity/verify.c | 15 ++++++++-------
-> > >  1 file changed, 8 insertions(+), 7 deletions(-)
-> > 
-> > Did you consider that fsverity_info::hash_block_verified is written to?
-> > It's a pointer to an array, so the 'const' doesn't apply to its
-> > contents.  But logically it's still part of the fsverity information.
+On Wed, Jan 28, 2026 at 04:35:19AM +0100, Christoph Hellwig wrote:
+> > Is there a reason for this function in particular to be __always_inline?
+> > fsverity_get_info() is just inline.
 > 
-> Well, it doesn't apply by the type rules.  But if you don't like the
-> const here just let me know and I'll drop it.
+> Without the __always_inline some gcc versions on sparc fail to inline it,
+> and cause a link failure due to a reference to fsverity_readahead in
+> f2fs_mpage_readpages for non-verity builds.  (reported by the buildbot)
 
-It just seems that the motivation is a bit weak.  It works only because
-hash_block_verified happens to be a dynamic array, and also because the
-spinlock that used to be there got removed.  And the very next patch
-removes const from the inode, so it kind of feels like we're going in
-two different directions.  Maybe just drop this patch for now?
+The relevant code is:
+
+    vi = f2fs_need_verity(inode, folio->index);              
+    if (vi)                                                  
+            fsverity_readahead(vi, folio, nr_pages); 
+
+Where:
+
+    f2fs_need_verity()
+        => fsverity_get_info()
+            => fsverity_active()
+
+If fsverity_active() needs __always_inline, why don't the other two
+functions in the call chain need it?
 
 - Eric
 
