@@ -1,50 +1,50 @@
-Return-Path: <linux-ext4+bounces-13368-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13369-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id /M7rIQCBeWmqxQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13368-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:22:40 +0100
+	id CP7RCX6CeWmexQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13369-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:29:02 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDA39C9DF
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB9669CAF3
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 04:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D9D0E30173BD
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:22:38 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4A2903024478
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7169B32E6BD;
-	Wed, 28 Jan 2026 03:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC82A32E6BF;
+	Wed, 28 Jan 2026 03:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GVoeY+wZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZsazHlGT"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159DC54763;
-	Wed, 28 Jan 2026 03:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832A22BB13;
+	Wed, 28 Jan 2026 03:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769570557; cv=none; b=PtSZwNw6I75D/8EPC46lDY11b6MAjH3j0ip3yxgMZ2oUyTeW9sgnkLn0Z3cS1PttQUuhn3AXY3kpc3WMMguHZuBTfauqy09bKXgHNMnJ6QmMMT1cRuW8JOlchID8HALgxL06BMSCvACjdjiAdpsbMzY59bv5PvOgpCcQJ0TyXso=
+	t=1769570930; cv=none; b=imki0B2jJrk206eauJ4orRcct2JSgEMImqSbCrG3a0jWtIRZiFMYHplSJs6v/0fhxQskXJ6K0B4B3O8Q464D7ZuepeAGh/nxZQx8oBel15GbgjAkxRfbHXIRbLjRVsTjT8W1BqNeGgHc3LYgOlXDjAam2i00f4yhr0QkIt1y4Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769570557; c=relaxed/simple;
-	bh=hO7Dvp+n2fT8USiyWHCLLJZmQ5uqUDuWImmkAnQEdLg=;
+	s=arc-20240116; t=1769570930; c=relaxed/simple;
+	bh=M66VvmyKffB7Z0mgvoF1z/uND8SQzYs4dDIbYqFJeaw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOGP/ROkeKPmONFfdf3Yguv0XIOZi1slD8GtKlKjEaogDawS6SqRWSBgsM/8vT8G8xEq3fFF+6JHpHHvbTdw07mcTHSS46Z7jUwkzY2FMX3hbjyjqNN5GyrJvd3TI/YEcRubjfvAKtudjf0l8DjPcB4AgTuk7WBSxMVYSdJBlIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GVoeY+wZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 305E8C4CEF1;
-	Wed, 28 Jan 2026 03:22:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8X37zsBbfcj7E6ZIxAnzuPb9cJHSEHtfuDBWh5e6DDMTunywp8X4d6H72u6+8rDLh8ABSlICl7E6GDjMB2c/Lnxa7inRui8YJFi646dGWfrRd+PnIKfHknA8EqMdHhxh+PAzg4KZWNIn92z4pvVSEC7KtpYZ13X4PnY0uxt94c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZsazHlGT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9E81C4CEF1;
+	Wed, 28 Jan 2026 03:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769570556;
-	bh=hO7Dvp+n2fT8USiyWHCLLJZmQ5uqUDuWImmkAnQEdLg=;
+	s=k20201202; t=1769570930;
+	bh=M66VvmyKffB7Z0mgvoF1z/uND8SQzYs4dDIbYqFJeaw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GVoeY+wZx5buXBTIHSfGxUGQ57DrOaBRKk5U5A/3h9N3bozABH3DFmg7tGDTgOWXw
-	 8pOK+jle1pHoNNdSngnSz79EnorWBVoK6MUWSACqVy6ko4d52R0r+wZV7trXYk6oGr
-	 0tCJEH+MjaMQfWnMRpkSDQs5UBbaCv7/TXS1i9GYb4dVjHBTEAT7aHvgVCbaikQibv
-	 rbWHYIIBbH1JSEqLPkGm9OzuvkCKXHUmqSWwyY7bTLmDhrYTHiTNqyA6bU5sfS2NlY
-	 fB0DubjlJnjMafKhG51XCPpwFeVgmjXE8o8FQ03pRK/N+dEF22Vk5OOrn/DLTUWHuj
-	 bVPe2pm4VAhKw==
-Date: Tue, 27 Jan 2026 19:22:03 -0800
+	b=ZsazHlGTI4JJelUSnWi1LzMyGszwGA9wTVyrjgSQpYx1q2Ekl5T9hLZT4mhuitl2N
+	 Yia1KeKDb+mkwNd2bdvb0Q3tUbBJrq0x6xi74nf8m7kgpTv9c2umel5Paw3Uj+6DqJ
+	 +zotcBTjbXQgYfzfmmeH7N0fULDmWZDA8rF6giYX6Wg8kc8I4K7221n6PAHR1TZ+v2
+	 8AxChkyBMiAvAtZkrdPLwf4FuXafAMcuROFFuTIZe7ykfBSBdA5dJBd/ryAWl38det
+	 1oA1z022UejlktPWncECiKhbfYMgIsJZLbdUfPK7KUNaQlIVAxXkl5ATvEVpi5gHc9
+	 HwvfhJkcFhDvg==
+Date: Tue, 27 Jan 2026 19:28:17 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Al Viro <viro@zeniv.linux.org.uk>,
@@ -55,11 +55,10 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
-Subject: Re: [PATCH 09/16] fsverity: constify the vi pointer in
- fsverity_verification_context
-Message-ID: <20260128032203.GA2718@sol>
+Subject: Re: [PATCH 16/16] fsverity: use a hashtable to find the fsverity_info
+Message-ID: <20260128032817.GB2718@sol>
 References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-10-hch@lst.de>
+ <20260126045212.1381843-17-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,7 +67,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260126045212.1381843-10-hch@lst.de>
+In-Reply-To: <20260126045212.1381843-17-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -82,36 +81,61 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13368-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13369-lists,linux-ext4=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: ECDA39C9DF
+X-Rspamd-Queue-Id: BB9669CAF3
 X-Rspamd-Action: no action
 
-On Mon, Jan 26, 2026 at 05:50:55AM +0100, Christoph Hellwig wrote:
-> struct fsverity_info contains information that is only read in the
-> verification path.  Apply the const qualifier to match various explicitly
-> passed arguments.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/verity/verify.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+On Mon, Jan 26, 2026 at 05:51:02AM +0100, Christoph Hellwig wrote:
+> @@ -296,18 +243,39 @@ static inline bool fsverity_verify_page(struct fsverity_info *vi,
+>   * fsverity_active() - do reads from the inode need to go through fs-verity?
+>   * @inode: inode to check
+>   *
+> - * This checks whether the inode's verity info has been set.
+> - *
+> - * Filesystems call this from ->readahead() to check whether the pages need to
+> - * be verified or not.  Don't use IS_VERITY() for this purpose; it's subject to
+> - * a race condition where the file is being read concurrently with
+> - * FS_IOC_ENABLE_VERITY completing.  (S_VERITY is set before the verity info.)
+> + * This checks whether the inode's verity info has been set, and reads need
+> + * to verify the verity information.
 
-Did you consider that fsverity_info::hash_block_verified is written to?
-It's a pointer to an array, so the 'const' doesn't apply to its
-contents.  But logically it's still part of the fsverity information.
+Nit: the point is to verify the file's data, not to verify "the verity
+information".
+
+>   *
+>   * Return: true if reads need to go through fs-verity, otherwise false
+>   */
+> -static inline bool fsverity_active(const struct inode *inode)
+> +static __always_inline bool fsverity_active(const struct inode *inode)
+> +{
+> +	if (IS_ENABLED(CONFIG_FS_VERITY) && IS_VERITY(inode)) {
+> +		/*
+> +		 * This pairs with the try_cmpxchg in set_mask_bits()
+> +		 * used to set the S_VERITY bit in i_flags.
+> +		 */
+> +		smp_mb();
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
+
+Is there a reason for this function in particular to be __always_inline?
+fsverity_get_info() is just inline.
 
 - Eric
 
