@@ -1,119 +1,186 @@
-Return-Path: <linux-ext4+bounces-13365-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13366-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AON2KPVeeWkXwwEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13365-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 01:57:25 +0100
+	id YAPJGYNyeWn9xAEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13366-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:20:51 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B42929BC94
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 01:57:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF2B29C316
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 03:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 51EAA3007A4B
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 00:57:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9AC6C301B15C
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Jan 2026 02:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0F021771C;
-	Wed, 28 Jan 2026 00:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijPQUzsn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185112874E3;
+	Wed, 28 Jan 2026 02:20:47 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D821A2545;
-	Wed, 28 Jan 2026 00:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2450C1DC997;
+	Wed, 28 Jan 2026 02:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769561838; cv=none; b=tldbcezW5dN7VZbLu3k4XDYCeaPdGQKNRRCDSuu1LDXIOr/yDcLIohkvV9/RsFVBQ8q5hnfqLEdYbVqfCRpUjVeyuXj0Ed2ZyCojGBt+MHrDU4UNezC9hVhaqDzgnQ9V0Nl9Ku/ZpFJXZa9FtkEeKJWEkSaomxepa5UgPD+bsaE=
+	t=1769566846; cv=none; b=B3LEvOSP8ufhIFMb38evGiaojXXXGt50qC24SNvOKgE42hmkcbQYVEG7uYt+HSmyvMiyoyCppvJpwscxYhtVlvQxaXDPM2ipx/g2j71LpU9dwrmJkOFFRH9n6yOrQmmN81mM+i6/T221rXsFU0d4SpZ1gfAzooWmbBNDPU7w2ZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769561838; c=relaxed/simple;
-	bh=LsHCD/RWZwU2P+vYKyBFSjWLqYN/hWAmZsoM1SJuARs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AMKhA0XTBYuUlfrddzZyQu+86uYh/lCx8CNZKgEIZbC2+hVn3kz0ibJdzp0WCvC0yaao0wvhepHbDm3Kn0MwzsI5LNSFVrnP0RQK2yW+S+xamOa1X+S3KDQeeOhTVf9HBzWvnv/NFIyIVOCIAmr1trTz346ibrrSFBz1np4tXDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijPQUzsn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 618B5C116C6;
-	Wed, 28 Jan 2026 00:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769561837;
-	bh=LsHCD/RWZwU2P+vYKyBFSjWLqYN/hWAmZsoM1SJuARs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ijPQUzsn57rThaZRqcmFhoVO73D+kTDrD8EsvPyEs9JHuvS7Loc9mswy1HITsW9+r
-	 laBs5lxnXVNbput2XlCspPMWdG04sLY78Wl2Rb3aYVFHKZ86mn5bG1PItmuqLbqVuI
-	 vrOPP0DYKt8czP9HxADzduOGgAKP/A8nUtOcyG+ovV0KrvizpBSYRl7M21A+fs+fgJ
-	 kQgwDXsySS8LuDGANV2a5ciWoiG7zGYZnlCIeuYNVPlYOG7mXa0Vrlo35p8NPddvFr
-	 LDHvtiFWYISEWtr+zpP3L+O/ccE78AYK4p7+KPnNU3lNmrwR6e3NihwPXNU1fZ5Ke5
-	 wgYY1xdq6MJtQ==
-Date: Tue, 27 Jan 2026 16:57:15 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
-Subject: Re: [PATCH 07/16] fsverity: don't issue readahead for non-ENOENT
- errors from __filemap_get_folio
-Message-ID: <20260128005715.GB2127@quark>
-References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-8-hch@lst.de>
- <20260126191102.GO5910@frogsfrogsfrogs>
- <20260126205301.GD30838@quark>
- <20260127060039.GA25321@lst.de>
- <20260127062055.GA90735@sol>
- <20260127062849.GX5966@frogsfrogsfrogs>
- <20260127063809.GB25894@lst.de>
+	s=arc-20240116; t=1769566846; c=relaxed/simple;
+	bh=8bPNlRSRv2AZEv8dpGv0opFY2PkUMGBnwl0qOls0MeU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t0RIS8zTv6rwm/ae50QTqz35nkg1ykxxeaicFkMLSlWF+btaXP1poWDoO+Pf2tjTR9y5F7aUtbjzhHIMPW8IYf/xkVl5+4/v2akSI6yHlOKLncIKxngGAscCS673NADp8AsHy9G+6iqMrpisqBAlWWOWQY08iXHiLcpL8J/H81g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f15Zj6305zYQtlf;
+	Wed, 28 Jan 2026 10:19:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 61F6340539;
+	Wed, 28 Jan 2026 10:20:34 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP4 (Coremail) with SMTP id gCh0CgB3JPVqcnlpnzB5FQ--.31477S4;
+	Wed, 28 Jan 2026 10:20:34 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	yizhang089@gmail.com,
+	libaokun1@huawei.com,
+	yangerkun@huawei.com,
+	yukuai@fnnas.com
+Subject: [PATCH] ext4: do not check fast symlink during orphan recovery
+Date: Wed, 28 Jan 2026 10:16:09 +0800
+Message-ID: <20260128021609.4061686-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260127063809.GB25894@lst.de>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3JPVqcnlpnzB5FQ--.31477S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWkKr4kWrWxWF15KFyrXrb_yoW8KF4kpa
+	yaka4kGr48XF9Ygw4IqrW7Xr1Fq3WYyr4UAFZ3Ar4UZr98Ja4xKF1qgF15Zay5trWkAw4F
+	qFyxKry3Cwn8CFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUpwZcUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13365-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_NONE(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13366-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,huawei.com,huaweicloud.com,fnnas.com];
+	DMARC_NA(0.00)[huaweicloud.com];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.645];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B42929BC94
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:mid,huawei.com:email]
+X-Rspamd-Queue-Id: CF2B29C316
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 07:38:09AM +0100, Christoph Hellwig wrote:
-> PTR_ERR(ptr) == -EFOO checks if ptr is an error pointer for the errno
-> value -EFOO.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-To reiterate (again): when ptr may or may not be an error pointer, it
-should be written as ptr == ERR_PTR(-EFOO), as is normally done.
-Otherwise an error code is being extracted from something that doesn't
-have an error code, which is nonsense, even if it works by accident.
+Commit '5f920d5d6083 ("ext4: verify fast symlink length")' causes the
+generic/475 test to fail during orphan cleanup of zero-length symlinks.
 
-- Eric
+  generic/475  84s ... _check_generic_filesystem: filesystem on /dev/vde is inconsistent
+
+The fsck reports are provided below:
+
+  Deleted inode 9686 has zero dtime.
+  Deleted inode 158230 has zero dtime.
+  ...
+  Inode bitmap differences:  -9686 -158230
+  Orphan file (inode 12) block 13 is not clean.
+  Failed to initialize orphan file.
+
+In ext4_symlink(), a newly created symlink can be added to the orphan
+list due to ENOSPC. Its data has not been initialized, and its size is
+zero. Therefore, we need to disregard the length check of the symbolic
+link when cleaning up orphan inodes.
+
+Fixes: 5f920d5d6083 ("ext4: verify fast symlink length")
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/inode.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 6fba4948e040..44054a04fc4b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -6079,18 +6079,22 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 			inode->i_op = &ext4_encrypted_symlink_inode_operations;
+ 		} else if (ext4_inode_is_fast_symlink(inode)) {
+ 			inode->i_op = &ext4_fast_symlink_inode_operations;
+-			if (inode->i_size == 0 ||
+-			    inode->i_size >= sizeof(ei->i_data) ||
+-			    strnlen((char *)ei->i_data, inode->i_size + 1) !=
+-								inode->i_size) {
+-				ext4_error_inode(inode, function, line, 0,
+-					"invalid fast symlink length %llu",
+-					 (unsigned long long)inode->i_size);
+-				ret = -EFSCORRUPTED;
+-				goto bad_inode;
++
++			/* Orphan cleanup can get a zero-sized symlink. */
++			if (!(EXT4_SB(sb)->s_mount_state & EXT4_ORPHAN_FS)) {
++				if (inode->i_size == 0 ||
++				    inode->i_size >= sizeof(ei->i_data) ||
++				    strnlen((char *)ei->i_data, inode->i_size + 1) !=
++						inode->i_size) {
++					ext4_error_inode(inode, function, line, 0,
++						"invalid fast symlink length %llu",
++						(unsigned long long)inode->i_size);
++					ret = -EFSCORRUPTED;
++					goto bad_inode;
++				}
++				inode_set_cached_link(inode, (char *)ei->i_data,
++						      inode->i_size);
+ 			}
+-			inode_set_cached_link(inode, (char *)ei->i_data,
+-					      inode->i_size);
+ 		} else {
+ 			inode->i_op = &ext4_symlink_inode_operations;
+ 		}
+-- 
+2.52.0
+
 
