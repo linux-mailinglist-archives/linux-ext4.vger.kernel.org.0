@@ -1,528 +1,204 @@
-Return-Path: <linux-ext4+bounces-13423-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13424-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0ACjJym0emma9QEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13423-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 02:13:13 +0100
+	id qBmyDpS+emnw+AEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13424-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 02:57:40 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 034D9AA86D
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 02:13:12 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DE99AAF0F
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 02:57:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 471203029E7D
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 01:13:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0FDAF300844E
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Jan 2026 01:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4EC3148BF;
-	Thu, 29 Jan 2026 01:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HwFozfbF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10E1335083;
+	Thu, 29 Jan 2026 01:57:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A28238D
-	for <linux-ext4@vger.kernel.org>; Thu, 29 Jan 2026 01:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.170
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769649188; cv=pass; b=dJww9TDbnJ831/8EtX1MKSm1rFKIBarFScyx6KopzVYUD0x76yol09AmqBd9uSpfMO6mnZFMrWXm7iByjIte5OGoJwcAEw7o2Bsu0nOWJdnfb5f3VJfIULiZQJyOKUGDKuBLMr3tdfndLzpV8nhat9lEOmcCgq0C9ksS1hUvS2o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769649188; c=relaxed/simple;
-	bh=xc8KPrY7qr2KJfWLJx1nHvX93kGFE1sfwlPxYJMa1kw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I5+QFwQqG18tv/1PIJvrBz476xU9K4q9yU/xTyGOyJ3zTE8g+yW9yYJuViCJUznrQY8CytShXDV5YIxHOJc2BRdy8PG1VZ1v26MaoqSeMJDQ89dsU9yROMXQn12IOJBiYE4XgExHP0G+bWQe1oMqwx2W63WexAnU7l7eVXFNvqg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HwFozfbF; arc=pass smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-501506f448bso2907291cf.3
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Jan 2026 17:13:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769649185; cv=none;
-        d=google.com; s=arc-20240605;
-        b=GAiyKuHyEFCavuAb9t5GBhWsHRsro5Zczg7TN+ly8qme092GpS3AGiPGOCGKGqLMfh
-         yolObAEv7cJPUX7qk0UXJX/P8Cp3v0zmgx9SHyhWPS9g68omWejpREZTtUyVPqHlTCYi
-         hUWHevvX4JXvrp7YY/Lj/a5KjtIf1lsfsYw0ckgNnDm2L23CQA4MHQ+dB1wOa0FKSb8r
-         YDg8yJYFL3zS0AU1cuHNp+CdKOi5undTRcLBPu4Ha5SwnILEBfb6nEivMTF9tEZOHnbH
-         tzJJ94qVlKZU2YvX78Ufhi/8CUk7mXK7CTpKmZzC64iSOlg4z8k1F4SwEG3nPzANSAcM
-         UwGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=u4daGNpMwPVBimFsiKMgFwSRVZajiBOdkMBWepHTmF4=;
-        fh=NcinSHFHHavgWFeiN0su0UH6siwFM+OxcC4hPtmOyEs=;
-        b=Q4u4yKhwO9I4udK/tWu9eaRcwQ7ULUrj/tW40N1X+3h7lt6fQutPFPpSlrCfVuQst8
-         mlcFpLYUnyLm/GtDO0Pm5o3gnTJbj5+qLbJzUH4l3+TdheW0lueuQdUzFruMnHrMBRKh
-         LDWTHTMMiANJRMgIgyfTPRrC2nX4agIQZRGSmsFNHnz4LkYvX0LY0eb4LUSGcRX47yS/
-         m58txkZ5afQY5A7A6uGV7IqrOe0fECu0SM4vwVpmDX43BoUYfyZfIVJgS/NCXUUYOvYL
-         SHzbsTcF9V1E1joeTcyowpMsPmJodW9Jqkp0yh0H8stcTNOCtx8YiX7Fk+fpbeuNhqJ1
-         Wi3w==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769649185; x=1770253985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u4daGNpMwPVBimFsiKMgFwSRVZajiBOdkMBWepHTmF4=;
-        b=HwFozfbFCga09Cs7C9xafLhLCmc4UJ7x64hXduG3lqS6Bj6yw3TcGo6q2d+dBYh5X/
-         pmd/qpi+QOp/PIzEeaevIiKrHNHkurvxvnK98+oQe/quO5PCyuGFObozZ61xjP2EMMH7
-         EP7YTdnxWxW3UrXbMxsZsnPODYqNA4Yg81xe7PMX4IsuNPqxVk/14jo0sVhkGTHyF4Jt
-         IrskP8s4LJfnNCWfU4iQsQQ2GG6b3bPkYzpc5vonwiaS5re4Ec3B4omN2OXyNqyOvNRC
-         vRAug/vWfKJ68poeU8IXp45xSRCZ8U/uqH+HGD2kS4metta6GsF2+k31vBGI3hML8TvN
-         QqcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769649185; x=1770253985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=u4daGNpMwPVBimFsiKMgFwSRVZajiBOdkMBWepHTmF4=;
-        b=hskS9VclovyHn9EQllbCvnpTY5vE+WouV3BAikenDW4LGU7IN/mdh3MoRuCnzGJsqT
-         EIfjLYmmZwfYDXIWniwDx52RxIQUwPz17+5OSm5jD9I5+RKvg/EmSnAqJfRUV60nsNDc
-         tCkcpg3hlElrOyfui6j3+AfzmlNYLMgFWpXfD4SEV2W4w/y6iSZUDKkSwNuE7wcay8Xd
-         3UPJfQHwUVmaWcQ1bWeFVLaZAyUwiAvJfzYTS6yLq9Ed63yp3Ezrjf9Uv3uq6yiGyzQb
-         9RqDshjKwmiA49vmz7sB2Zn4MGlOfkEqCbF47ZiLXB9q8P7HFOnTrriK3Tdqam7a77ec
-         F73w==
-X-Forwarded-Encrypted: i=1; AJvYcCX2qtRWdkvo4iUZd8rbpnvCkdnrMJtrT7aCvDt9kfuZarMmZf5pEmzwN+nzmhjj10pRSr83txKtNMjk@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSRAmzFtUhJrqu2QnTuEzFLKWy/NWZITV2poZZ88lFK9Ip2iFc
-	KY/lFh6M1w+9RV0ug6S2xUOJc6hjIRLDPRKqPOqJBnyWFZsHwmUvtQoGQFVze5Cx5PTzSOGSe8/
-	euBlwLledtoGEBGw3eaK70Wobjnh1R8E=
-X-Gm-Gg: AZuq6aJ+rFNxJp5LNku4RiDQ41Li+0SrNpTcPbCAy7MUMUhw2ztGJUAIDbO2b7x6T7h
-	crCJoLS6c/X330szCMEn7mIjGPZeKr3dsNNP8HVBbm97cOzo5ggEHnGkURY1ob/4bWy73qDWjQr
-	R223NyTWTMvlVnSj0ZghRpfAv6SSjuBd5O8RSywJAgQmiezAWNCBDrbr1MGru96ZmuMTT71YyB/
-	y9Mt8RHJvF4Io/CKYYZ1cBGHBEzXlfbAdxJIVShyJbdiyWZdGamcAlL8uF2bqUmqjuWeA==
-X-Received: by 2002:a05:622a:4c8:b0:4ee:2984:7d95 with SMTP id
- d75a77b69052e-5032f74c526mr100024811cf.13.1769649185254; Wed, 28 Jan 2026
- 17:13:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247033203A9;
+	Thu, 29 Jan 2026 01:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769651818; cv=none; b=dvZ+ow4KY75Vy0yAKPVAFkg/nieVnpBFJm2MmXTtJbjseC9kWU2ApbX1reMLQ9+A8xvSt+yFOw1lgOwUXLbrQVmDIPS78XXjacY6Vh0zhro3h2CRArl+Rotty2vGEMiYCTaDLfxD/XjcWH31J8wlq4Ekp+4ZF0Rat0m0/5Lpp5w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769651818; c=relaxed/simple;
+	bh=JA2gdwNXNSFboqPr70MZOjClN/dk/DvbRQehvr2TPxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N3tZ1ugSnyQTNvvFqcDaAQj86DJDCfDY/g5a5OpUvnhisDkm4gLAdNVcpT3aRB/tvq7t3zMdgZAn1nLAxMbdMgf9neuiRsABSP+hlsGc7cNwaXOU9NQ7NJpRHxwiJh3L9ymk3Fbi/sUdXJVrGVWUpT/El8wb8ueHL4Dyr+pNUKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f1j1L2CLwzKHMPr;
+	Thu, 29 Jan 2026 09:56:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 9D30A40573;
+	Thu, 29 Jan 2026 09:56:51 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgAXd_dgvnppTNTuFQ--.59374S3;
+	Thu, 29 Jan 2026 09:56:51 +0800 (CST)
+Message-ID: <d56ffd21-c835-47cd-8e70-85c0ab320ff8@huaweicloud.com>
+Date: Thu, 29 Jan 2026 09:56:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251029002755.GK6174@frogsfrogsfrogs> <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <CAJnrk1Z05QZmos90qmWtnWGF+Kb7rVziJ51UpuJ0O=A+6N1vrg@mail.gmail.com>
- <20260127022235.GG5900@frogsfrogsfrogs> <CAJnrk1bSVy4=c=N_FfOajs1FE4o8T=Br=jFm7gBDaCGvRpgGVA@mail.gmail.com>
- <20260127232125.GA5966@frogsfrogsfrogs> <CAJnrk1bxhw2u0qwjw0dJPGdmxEXbcEyKn-=iFrszqof2c8wGCA@mail.gmail.com>
- <20260128003431.GX5910@frogsfrogsfrogs>
-In-Reply-To: <20260128003431.GX5910@frogsfrogsfrogs>
-From: Joanne Koong <joannelkoong@gmail.com>
-Date: Wed, 28 Jan 2026 17:12:54 -0800
-X-Gm-Features: AZwV_Qj21Fe0zz_lyhtfO53IVHLqzHI1GSKWXENH33xVZNJmbkUj2BCigCfH2oE
-Message-ID: <CAJnrk1aBGx_FQ=_F-PaPshVKvyecdZZt4C0+z+XvNm6=tL0Y_Q@mail.gmail.com>
-Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
- file IO performance
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: miklos@szeredi.hu, bernd@bsbernd.com, neal@gompa.dev, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: do not check fast symlink during orphan recovery
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com,
+ yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com,
+ yukuai@fnnas.com
+References: <20260128021609.4061686-1-yi.zhang@huaweicloud.com>
+ <ardxpk4lmdigmoren3o4gz6stg36vfywdpu5p24t56mlsjrhgo@buwmke3azxba>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <ardxpk4lmdigmoren3o4gz6stg36vfywdpu5p24t56mlsjrhgo@buwmke3azxba>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAXd_dgvnppTNTuFQ--.59374S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXry8ZrWDKw47Ar4DurW3ZFb_yoW5Ary7pF
+	WSk3WkJr4UJF9Ygr4IqrWUXF10g3W0kr4jyrZ5AFWDZ3s8Aa4xKF12gF45WayUtrs8Aa1F
+	vF1Igr9xZwn8GFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13423-lists,linux-ext4=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-13424-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,huawei.com,fnnas.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joannelkoong@gmail.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.961];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 034D9AA86D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5DE99AAF0F
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 4:34=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> On Tue, Jan 27, 2026 at 04:10:43PM -0800, Joanne Koong wrote:
-> > On Tue, Jan 27, 2026 at 3:21=E2=80=AFPM Darrick J. Wong <djwong@kernel.=
-org> wrote:
-> > >
-> > > On Tue, Jan 27, 2026 at 11:47:31AM -0800, Joanne Koong wrote:
-> > > > On Mon, Jan 26, 2026 at 6:22=E2=80=AFPM Darrick J. Wong <djwong@ker=
-nel.org> wrote:
-> > > > >
-> > > > > On Mon, Jan 26, 2026 at 04:59:16PM -0800, Joanne Koong wrote:
-> > > > > > On Tue, Oct 28, 2025 at 5:38=E2=80=AFPM Darrick J. Wong <djwong=
-@kernel.org> wrote:
-> > > > > > >
-> > > > > > > Hi all,
-> > > > > > >
-> > > > > > > This series connects fuse (the userspace filesystem layer) to=
- fs-iomap
-> > > > > > > to get fuse servers out of the business of handling file I/O =
-themselves.
-> > > > > > > By keeping the IO path mostly within the kernel, we can drama=
-tically
-> > > > > > > improve the speed of disk-based filesystems.  This enables us=
- to move
-> > > > > > > all the filesystem metadata parsing code out of the kernel an=
-d into
-> > > > > > > userspace, which means that we can containerize them for secu=
-rity
-> > > > > > > without losing a lot of performance.
-> > > > > >
-> > > > > > I haven't looked through how the fuse2fs or fuse4fs servers are
-> > > > > > implemented yet (also, could you explain the difference between=
- the
-> > > > > > two? Which one should we look at to see how it all ties togethe=
-r?),
-> > > > >
-> > > > > fuse4fs is a lowlevel fuse server; fuse2fs is a high(?) level fus=
-e
-> > > > > server.  fuse4fs is the successor to fuse2fs, at least on Linux a=
-nd BSD.
-> > > >
-> > > > Ah I see, thanks for the explanation. In that case, I'll just look =
-at
-> > > > fuse4fs then.
-> > > >
-> > > > >
-> > > > > > but I wonder if having bpf infrastructure hooked up to fuse wou=
-ld be
-> > > > > > especially helpful for what you're doing here with fuse iomap. =
-afaict,
-> > > > > > every read/write whether it's buffered or direct will incur at =
-least 1
-> > > > > > call to ->iomap_begin() to get the mapping metadata, which will=
- be 2
-> > > > > > context-switches (and if the server has ->iomap_end() implement=
-ed,
-> > > > > > then 2 more context-switches).
-> > > > >
-> > > > > Yes, I agree that's a lot of context switching for file IO...
-> > > > >
-> > > > > > But it seems like the logic for retrieving mapping
-> > > > > > offsets/lengths/metadata should be pretty straightforward?
-> > > > >
-> > > > > ...but it gets very cheap if the fuse server can cache mappings i=
-n the
-> > > > > kernel to avoid all that.  That is, incidentally, what patchset #=
-7
-> > > > > implements.
-> > > > >
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.=
-git/log/?h=3Dfuse-iomap-cache_2026-01-22
-> > > > >
-> > > > > > If the extent lookups are table lookups or tree
-> > > > > > traversals without complex side effects, then having
-> > > > > > ->iomap_begin()/->iomap_end() be executed as a bpf program woul=
-d avoid
-> > > > > > the context switches and allow all the caching logic to be move=
-d from
-> > > > > > the kernel to the server-side (eg using bpf maps).
-> > > > >
-> > > > > Hrmm.  Now that /is/ an interesting proposal.  Does BPF have a da=
-ta
-> > > > > structure that supports interval mappings?  I think the existing =
-bpf map
-> > > >
-> > > > Not yet but I don't see why a b+ tree like data strucutre couldn't =
-be added.
-> > > > Maybe one workaround in the meantime that could work is using a sor=
-ted
-> > > > array map and doing binary search on that, until interval mappings =
-can
-> > > > be natively supported?
-> > >
-> > > I guess, though I already had a C structure to borrow from xfs ;)
-> > >
-> > > > > only does key -> value.  Also, is there an upper limit on the siz=
-e of a
-> > > > > map?  You could have hundreds of millions of maps for a very frag=
-mented
-> > > > > regular file.
-> > > >
-> > > > If I'm remembering correctly, there's an upper limit on the number =
-of
-> > > > map entries, which is bounded by u32
-> > >
-> > > That's problematic, since files can have 64-bit logical block numbers=
-.
-> >
-> > The key size supports 64-bits. The u32 bound would be the limit on the
-> > number of extents for the file.
->
-> Oh, ok.  If one treats the incore map as a cache and evicts things when
-> they get too old, then that would be fine.  I misread that as an upper
-> limit on the *range* of the map entry keys. :/
+On 1/28/2026 5:59 PM, Jan Kara wrote:
+> On Wed 28-01-26 10:16:09, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Commit '5f920d5d6083 ("ext4: verify fast symlink length")' causes the
+>> generic/475 test to fail during orphan cleanup of zero-length symlinks.
+>>
+>>   generic/475  84s ... _check_generic_filesystem: filesystem on /dev/vde is inconsistent
+>>
+>> The fsck reports are provided below:
+>>
+>>   Deleted inode 9686 has zero dtime.
+>>   Deleted inode 158230 has zero dtime.
+>>   ...
+>>   Inode bitmap differences:  -9686 -158230
+>>   Orphan file (inode 12) block 13 is not clean.
+>>   Failed to initialize orphan file.
+>>
+>> In ext4_symlink(), a newly created symlink can be added to the orphan
+>> list due to ENOSPC. Its data has not been initialized, and its size is
+>> zero. Therefore, we need to disregard the length check of the symbolic
+>> link when cleaning up orphan inodes.
+>>
+>> Fixes: 5f920d5d6083 ("ext4: verify fast symlink length")
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Thanks for the patch!
+> 
+>> @@ -6079,18 +6079,22 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+>>  			inode->i_op = &ext4_encrypted_symlink_inode_operations;
+>>  		} else if (ext4_inode_is_fast_symlink(inode)) {
+>>  			inode->i_op = &ext4_fast_symlink_inode_operations;
+>> -			if (inode->i_size == 0 ||
+>> -			    inode->i_size >= sizeof(ei->i_data) ||
+>> -			    strnlen((char *)ei->i_data, inode->i_size + 1) !=
+>> -								inode->i_size) {
+>> -				ext4_error_inode(inode, function, line, 0,
+>> -					"invalid fast symlink length %llu",
+>> -					 (unsigned long long)inode->i_size);
+>> -				ret = -EFSCORRUPTED;
+>> -				goto bad_inode;
+>> +
+>> +			/* Orphan cleanup can get a zero-sized symlink. */
+> 
+> I was mulling over this for a while. I'd expand the comment here a bit:
+> 
+> 			/*
+> 			 * Orphan cleanup can see inodes with i_size == 0
+> 			 * and i_data uninitialized. Skip size checks in
+> 			 * that case. This is safe because the first thing
+> 			 * ext4_evict_inode() does for fast symlinks is
+> 			 * clearing of i_data and i_size.
+> 			 */
+> 
+> and I think we also need to verify that i_nlink is 0 (as otherwise we'd
+> leave potentially invalid accessible inode in cache).
+> 
+> 								Honza
 
-I think for more complicated servers, the bpf prog handling for
-iomap_begin() would essentially just serve as a cache where if it's
-not found in the cache, then it sends off the FUSE_IOMAP_BEGIN request
-to the server. For servers that don't need as much complicated logic
-(eg famfs), the iomap_begin() logic would just be executed within the
-bpf prog itself.
-
->
-> As it stands, I need to figure out a way to trim the iomap btree when
-> memory gets tight.  Right now it'll drop the cache whenever someone
-> closes the file, but that won't help for long-life processes that open a
-> heavily fragmented file and never close it.
->
-> A coding-intensive way to do that would be to register a shrinker and
-> deal with that, but ugh.  A really stupid way would be to drop the whole
-> cache once you get beyond (say) 64k of memory usage (~2000 mappings).
-
-This kind of seems like another point in favor of giving userspace
-control of the caching layer. They could then implement whatever
-eviction policies they want.
-
-It also allows them to prepopulate the cache upfront (eg when
-servicing a file open request, if the file is below a certain size or
-if the server knows what'll be hot, it could put those extents into
-the map from the get-go).
-
-in my opinion, the fuse-iomap layer should try to be as simple/minimal
-and as generic as possible. I haven't read through iomap_cache.c yet
-but the header comment suggests it's adapted from the xfs extent tree
-cache. As I understand it, different filesystem implementations have
-different caching architectures that are better suited for their use
-cases (I'm guessing that's the case, otherwise there would just be one
-general cache inside iomap all the filesystems would use?). It seems a
-lot better to me to just let the userspace server define that
-themselves. And selfishly from the fuse perspective, would be less
-code we would have to maintain. And I guess too if some servers don't
-need caching (like famfs?), they could avoid that overhead.
-
->
-> > > > > At one point I suggested to the famfs maintainer that it might be
-> > > > > easier/better to implement the interleaved mapping lookups as bpf
-> > > > > programs instead of being stuck with a fixed format in the fuse
-> > > > > userspace abi, but I don't know if he ever implemented that.
-> > > >
-> > > > This seems like a good use case for it too
-> > > > >
-> > > > > > Is this your
-> > > > > > assessment of it as well or do you think the server-side logic =
-for
-> > > > > > iomap_begin()/iomap_end() is too complicated to make this reali=
-stic?
-> > > > > > Asking because I'm curious whether this direction makes sense, =
-not
-> > > > > > because I think it would be a blocker for your series.
-> > > > >
-> > > > > For disk-based filesystems I think it would be difficult to model=
- a bpf
-> > > > > program to do mappings, since they can basically point anywhere a=
-nd be
-> > > > > of any size.
-> > > >
-> > > > Hmm I'm not familiar enough with disk-based filesystems to know wha=
-t
-> > > > the "point anywhere and be of any size" means. For the mapping stuf=
-f,
-> > > > doesn't it just point to a block number? Or are you saying the prob=
-lem
-> > > > would be there's too many mappings since a mapping could be any siz=
-e?
-> > >
-> > > The second -- mappings can be any size, and unprivileged userspace ca=
-n
-> > > control the mappings.
-> >
-> > If I'm understanding what you're saying here, this is the same
-> > discussion as the one above about the u32 bound, correct?
->
-> A different thing -- file data mappings are irregularly sized, can
-> contain sparse holes, etc.  Userspace controls the size and offset of
-> each mapping record (thanks to magic things like fallocate) so it'd be
-> very difficult to create a bpf program to generate mappings on the fly.
-
-Would the bpf prog have to generate mappings on the fly though? If the
-userspace does things like fallocate, those operations would still go
-through to the server as a regular request (eg FUSE_FALLOCATE) and on
-the server side, it'd add that to the map dynamically from userspace.
-
->
-> Also you could have 2^33 mappings records for a file, so I think you
-> can't even write a bpf program that large.
-
-I think this depends on what map structure gets used. If there is
-native support added for b+ tree like data structures, I don't see why
-it wouldn't be able to.
-
->
-> > > > I was thinking the issue would be more that there might be other lo=
-gic
-> > > > inside ->iomap_begin()/->iomap_end() besides the mapping stuff that
-> > > > would need to be done that would be too out-of-scope for bpf. But I
-> > > > think I need to read through the fuse4fs stuff to understand more w=
-hat
-> > > > it's doing in those functions.
-> >
-> > Looking at fuse4fs logic cursorily, it seems doable? What I like about
-> > offloading this to bpf too is it would also then allow John's famfs to
-> > just go through your iomap plumbing as a use case of it instead of
-> > being an entirely separate thing. Though maybe there's some other
-> > reason for that that you guys have discussed prior. In any case, I'll
-> > ask this on John's main famfs patchset. It kind of seems to me that
-> > you guys are pretty much doing the exact same thing conceptually.
->
-> Yes, though John's famfs has the nice property that memory controller
-> interleaving is mathematically regular and likely makes for a compact
-> bpf program.
-
-I tried out integrating the bpf hooks into fuse for iomap_begin() just
-to see if it was realistic and it seems relatively straightforward so
-far (though maybe the devil is in the details...). I used the
-drivers/hid/bpf/hid_bpf_struct_ops.c program as a model for how to set
-up the fuse bpf struct ops on the kernel side. calling it from
-file_iomap.c looks something like
-
-static int fuse_iomap_begin(...)
-{
-       ...
-       struct fuse_bpf_ops *bpf_ops =3D fuse_get_bpf_ops();
-       ...
-      err =3D -EOPNOTSUPP;
-      if (bpf_ops && bpf_ops->iomap_begin)
-               err =3D bpf_ops->iomap_begin(inode, pos, len, flags, &outarg=
-);
-       if (err)
-               err =3D fuse_simple_request(fm, &args);
-      ...
-}
-
-and I was able to verify that iomap_begin() is able to return back
-populated outarg fields from the bpf prog. If we were to actually
-implement it i'm sure it'd be more complicated (eg we'd need to make
-the fuse_bpf_ops registered per-connection, etc) but on the whole it
-seems doable. My worry is that if we land the iomap cache patchset now
-then we can't remove it in the future without breaking backwards
-compatibility for being a performance regression (though maybe we can
-since the fuse-iomap stuff is experimental?), so imo it'd be great if
-we figured out what direction we want to go before landing the cache
-stuff. And I think we need to have this conversation too on the main
-famfs patchset (eg whether it should go through your general iomap
-plumbing with bpf helpers vs. being a separate implementation) since
-once that lands, it'd be irrevocable.
+Thank you for the review and suggestions. These makes sense to me, I will
+add them in my next iteration.
 
 Thanks,
-Joanne
->
-> --D
->
-> > Thanks,
-> > Joanne
-> >
-> > >
-> > > <nod>
-> > >
-> > > --D
-> > >
-> > > >
-> > > > Thanks,
-> > > > Joanne
-> > > >
-> > > > >
-> > > > > OTOH it would be enormously hilarious to me if one could load a f=
-ile
-> > > > > mapping predictive model into the kernel as a bpf program and use=
- that
-> > > > > as a first tier before checking the in-memory btree mapping cache=
- from
-> > > > > patchset 7.  Quite a few years ago now there was a FAST paper
-> > > > > establishing that even a stupid linear regression model could in =
-theory
-> > > > > beat a disk btree lookup.
-> > > > >
-> > > > > --D
-> > > > >
-> > > > > > Thanks,
-> > > > > > Joanne
-> > > > > >
-> > > > > > >
-> > > > > > > If you're going to start using this code, I strongly recommen=
-d pulling
-> > > > > > > from my git trees, which are linked below.
-> > > > > > >
-> > > > > > > This has been running on the djcloud for months with no probl=
-ems.  Enjoy!
-> > > > > > > Comments and questions are, as always, welcome.
-> > > > > > >
-> > > > > > > --D
-> > > > > > >
-> > > > > > > kernel git tree:
-> > > > > > > https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux=
-.git/log/?h=3Dfuse-iomap-fileio
-> > > > > > > ---
-> > > > > > > Commits in this patchset:
-> > > > > > >  * fuse: implement the basic iomap mechanisms
-> > > > > > >  * fuse_trace: implement the basic iomap mechanisms
-> > > > > > >  * fuse: make debugging configurable at runtime
-> > > > > > >  * fuse: adapt FUSE_DEV_IOC_BACKING_{OPEN,CLOSE} to add new i=
-omap devices
-> > > > > > >  * fuse_trace: adapt FUSE_DEV_IOC_BACKING_{OPEN,CLOSE} to add=
- new iomap devices
-> > > > > > >  * fuse: flush events and send FUSE_SYNCFS and FUSE_DESTROY o=
-n unmount
-> > > > > > >  * fuse: create a per-inode flag for toggling iomap
-> > > > > > >  * fuse_trace: create a per-inode flag for toggling iomap
-> > > > > > >  * fuse: isolate the other regular file IO paths from iomap
-> > > > > > >  * fuse: implement basic iomap reporting such as FIEMAP and S=
-EEK_{DATA,HOLE}
-> > > > > > >  * fuse_trace: implement basic iomap reporting such as FIEMAP=
- and SEEK_{DATA,HOLE}
-> > > > > > >  * fuse: implement direct IO with iomap
-> > > > > > >  * fuse_trace: implement direct IO with iomap
-> > > > > > >  * fuse: implement buffered IO with iomap
-> > > > > > >  * fuse_trace: implement buffered IO with iomap
-> > > > > > >  * fuse: implement large folios for iomap pagecache files
-> > > > > > >  * fuse: use an unrestricted backing device with iomap pageca=
-che io
-> > > > > > >  * fuse: advertise support for iomap
-> > > > > > >  * fuse: query filesystem geometry when using iomap
-> > > > > > >  * fuse_trace: query filesystem geometry when using iomap
-> > > > > > >  * fuse: implement fadvise for iomap files
-> > > > > > >  * fuse: invalidate ranges of block devices being used for io=
-map
-> > > > > > >  * fuse_trace: invalidate ranges of block devices being used =
-for iomap
-> > > > > > >  * fuse: implement inline data file IO via iomap
-> > > > > > >  * fuse_trace: implement inline data file IO via iomap
-> > > > > > >  * fuse: allow more statx fields
-> > > > > > >  * fuse: support atomic writes with iomap
-> > > > > > >  * fuse_trace: support atomic writes with iomap
-> > > > > > >  * fuse: disable direct reclaim for any fuse server that uses=
- iomap
-> > > > > > >  * fuse: enable swapfile activation on iomap
-> > > > > > >  * fuse: implement freeze and shutdowns for iomap filesystems
-> > > > > > > ---
-> > > > > > >  fs/fuse/fuse_i.h          |  161 +++
-> > > > > > >  fs/fuse/fuse_trace.h      |  939 +++++++++++++++++++
-> > > > > > >  fs/fuse/iomap_i.h         |   52 +
-> > > > > > >  include/uapi/linux/fuse.h |  219 ++++
-> > > > > > >  fs/fuse/Kconfig           |   48 +
-> > > > > > >  fs/fuse/Makefile          |    1
-> > > > > > >  fs/fuse/backing.c         |   12
-> > > > > > >  fs/fuse/dev.c             |   30 +
-> > > > > > >  fs/fuse/dir.c             |  120 ++
-> > > > > > >  fs/fuse/file.c            |  133 ++-
-> > > > > > >  fs/fuse/file_iomap.c      | 2230 +++++++++++++++++++++++++++=
-++++++++++++++++++
-> > > > > > >  fs/fuse/inode.c           |  162 +++
-> > > > > > >  fs/fuse/iomode.c          |    2
-> > > > > > >  fs/fuse/trace.c           |    2
-> > > > > > >  14 files changed, 4056 insertions(+), 55 deletions(-)
-> > > > > > >  create mode 100644 fs/fuse/iomap_i.h
-> > > > > > >  create mode 100644 fs/fuse/file_iomap.c
-> > > > > > >
-> > > > > >
-> >
+Yi.
+
+> 
+>> +			if (!(EXT4_SB(sb)->s_mount_state & EXT4_ORPHAN_FS)) {
+>> +				if (inode->i_size == 0 ||
+>> +				    inode->i_size >= sizeof(ei->i_data) ||
+>> +				    strnlen((char *)ei->i_data, inode->i_size + 1) !=
+>> +						inode->i_size) {
+>> +					ext4_error_inode(inode, function, line, 0,
+>> +						"invalid fast symlink length %llu",
+>> +						(unsigned long long)inode->i_size);
+>> +					ret = -EFSCORRUPTED;
+>> +					goto bad_inode;
+>> +				}
+>> +				inode_set_cached_link(inode, (char *)ei->i_data,
+>> +						      inode->i_size);
+>>  			}
+>> -			inode_set_cached_link(inode, (char *)ei->i_data,
+>> -					      inode->i_size);
+>>  		} else {
+>>  			inode->i_op = &ext4_symlink_inode_operations;
+>>  		}
+>> -- 
+>> 2.52.0
+>>
+
 
