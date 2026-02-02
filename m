@@ -1,185 +1,205 @@
-Return-Path: <linux-ext4+bounces-13443-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13444-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wCdKCmcMf2lziwIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13443-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Feb 2026 09:18:47 +0100
+	id kLLAC2U/gGk65QIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13444-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 07:08:37 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EC9C53A8
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Feb 2026 09:18:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF753C87D8
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 07:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 91F633014424
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Feb 2026 08:18:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 505D9301158F
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 06:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504C0308F03;
-	Sun,  1 Feb 2026 08:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75A02F3C3D;
+	Mon,  2 Feb 2026 06:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ESsE1TXq"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jra1hwO/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3692E62DC;
-	Sun,  1 Feb 2026 08:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F2F48CFC;
+	Mon,  2 Feb 2026 06:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769933924; cv=none; b=iz6Ra5c4RjD5jT3lSonBMtdik6y202l0J/J50wUZHxyTVU3a8KpTsOd0FTtcmqEcDtn3AfzM8H+41c1Au8Rldl0O8RjNKxSqiWXP2iVhYX0vJD7QZfCM2wSPIn3XZb5cRjnraeIn8yrmjGmVHQGr2w/OzlHpmqEORxHcE1PuBJM=
+	t=1770012491; cv=none; b=EQpCkH6ssUf+pt2FvSqCQlV2LFLGCXMWl7imUg+8ihu0YfMF/djhJL/nuZCNpKJBQdK5POW3EAQQ+XUfkVTJ0CFlMhxj7nIadRQF+JIpPVs+uN3EypGrCxpjReSibCcfZJ1iOs/dEXnkkHfkVDXYQyK72b5trmVIeIGRGAMPymg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769933924; c=relaxed/simple;
-	bh=A4Mqvnvc0NfHCq8RXr630wxVWrxA4qiEUU/doexpgIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j26bHdd3YFWcXrliJwtCc0xmU5uPyJiOt8nIA4laQt1gqpKu1GixVD0V5eWhfev87pjwnu3EszVcZJSIgF2ka2LdzXOa/Tq9Z9z3yfju4M/PmYJQsqftdi33B5+88mtFvitLDWghUQo3y5AsaAZL7+XZPkGMCBqXN867j2G9Yss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ESsE1TXq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15B4CC4CEF7;
-	Sun,  1 Feb 2026 08:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1769933923;
-	bh=A4Mqvnvc0NfHCq8RXr630wxVWrxA4qiEUU/doexpgIM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ESsE1TXqtIGrqsHJbsjvED3c8VCFe0pI3R4Lel1yu+UCMPtFA1BfhcaHW5Z3+mHj7
-	 XQ8TvuRg8kW5kbl/mjlWzzd41fVEAAUqzY1H2MOoEnsvSi6D5ctyvhAPkpO5ajTveo
-	 KXEy0yli+QBKESXUwqi6mcIlD8HwkUdf0kHzExxA=
-Date: Sun, 1 Feb 2026 09:18:40 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: =?utf-8?B?5L2Z5piK6ZOW?= <3230100410@zju.edu.cn>
-Cc: security@kernel.org, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/core: Fix refcount bug and potential UAF in
- perf_mmap
-Message-ID: <2026020124-flashbulb-stumble-f24a@gregkh>
-References: <271c8570.69a28.19c143721c6.Coremail.3230100410@zju.edu.cn>
+	s=arc-20240116; t=1770012491; c=relaxed/simple;
+	bh=59sKMYHYUkHcuzmycWYRWJqMLtKg4/oxldleCjxqwio=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dHfWOv8eF0HRDSi8NesqBMdZwn2MCjMQXgqDcHnFmOI04r6zGe6XMeETy3CjXEUOwu7YJg6PwK9z4JAW09ccYbUpSOTtToRvrin2pVU4Mj8iAW1G3pjAGJG0iISDxymiFG1d9G2+1KhpOsZm7OCKhyXAv86tQ3k6xtZpuFp/x1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Jra1hwO/; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=oTPY6jfHkqoUdgBhijgDg7Uy+7YMZ6k6go+QoIjkenI=; b=Jra1hwO/RMjiIcL+dw8Uk4as9f
+	Tskg/31TTNJRxn6dlkqX7TocDdZMNpfkqeMfKIbiJ6IGWI/5D7HxToyBXx2Wq5GvHn6PMPU7gcBWV
+	LkevtmUSLkPC4n4Sq7hV7XciuurRs/q4NXx88JaJzpcnE1A5OlQ2c7tUN78V4HHFlx2PcOuD0tWeg
+	ncMmgaw4F18ytwj4huPjyf5YBhDMkT+TKDIlRRhX5sfNWBiczZVNZ9oQzbcuqNNjsRBXFGuGRlmux
+	VuTka/qlk9387FpcLAmWMWf9ze8mIimrs9YXsWNp7aSrI/clH6QduExNY7iQvaKC/CUVHKXH4McO+
+	eMJJysBA==;
+Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vmn6N-00000004UjI-3VFw;
+	Mon, 02 Feb 2026 06:08:00 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: fsverity speedup and memory usage optimization v5
+Date: Mon,  2 Feb 2026 07:06:29 +0100
+Message-ID: <20260202060754.270269-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <271c8570.69a28.19c143721c6.Coremail.3230100410@zju.edu.cn>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-0.06 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13443-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13444-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 99EC9C53A8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BF753C87D8
 X-Rspamd-Action: no action
 
-On Sat, Jan 31, 2026 at 09:21:23PM +0800, 余昊铖 wrote:
-> From 34545a4d43adef3147e0ba1c744deb128a05a101 Mon Sep 17 00:00:00 2001
-> From: 0ne1r0s <yuhaocheng035@gmail.com>
-> Date: Sat, 31 Jan 2026 21:16:52 +0800
-> Subject: [PATCH] perf/core: Fix refcount bug and potential UAF in perf_mmap
-> 
-> The issue is caused by a race condition between mmap() and event
-> teardown. In perf_mmap(), the ring_buffer (rb) is accessed via
-> map_range() after the mmap_mutex is released. If another thread
-> closes the event or detaches the buffer during this window, the
-> reference count of rb can drop to zero, leading to a UAF or
-> refcount saturation when map_range() or subsequent logic attempts
-> to use it.
-> 
-> Fix this by extending the scope of mmap_mutex to cover the entire
-> setup process, including map_range(), ensuring the buffer remains
-> valid until the mapping is complete.
-> 
-> Signed-off-by: 0ne1r0s <yuhaocheng035@gmail.com>
-> ---
->  kernel/events/core.c | 42 +++++++++++++++++++++---------------------
->  1 file changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 2c35acc2722b..7c93f7d057cb 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -7167,28 +7167,28 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
->  			ret = perf_mmap_aux(vma, event, nr_pages);
->  		if (ret)
->  			return ret;
-> -	}
-> -
-> -	/*
-> -	 * Since pinned accounting is per vm we cannot allow fork() to copy our
-> -	 * vma.
-> -	 */
-> -	vm_flags_set(vma, VM_DONTCOPY | VM_DONTEXPAND | VM_DONTDUMP);
-> -	vma->vm_ops = &perf_mmap_vmops;
->  
-> -	mapped = get_mapped(event, event_mapped);
-> -	if (mapped)
-> -		mapped(event, vma->vm_mm);
-> -
-> -	/*
-> -	 * Try to map it into the page table. On fail, invoke
-> -	 * perf_mmap_close() to undo the above, as the callsite expects
-> -	 * full cleanup in this case and therefore does not invoke
-> -	 * vmops::close().
-> -	 */
-> -	ret = map_range(event->rb, vma);
-> -	if (ret)
-> -		perf_mmap_close(vma);
-> +    	/*
-> +    	 * Since pinned accounting is per vm we cannot allow fork() to copy our
-> +    	 * vma.
-> +    	 */
-> +    	vm_flags_set(vma, VM_DONTCOPY | VM_DONTEXPAND | VM_DONTDUMP);
-> +    	vma->vm_ops = &perf_mmap_vmops;
-> +
-> +    	mapped = get_mapped(event, event_mapped);
-> +    	if (mapped)
-> +    		mapped(event, vma->vm_mm);
-> +
-> +    	/*
-> +    	 * Try to map it into the page table. On fail, invoke
-> +    	 * perf_mmap_close() to undo the above, as the callsite expects
-> +    	 * full cleanup in this case and therefore does not invoke
-> +    	 * vmops::close().
-> +    	 */
-> +    	ret = map_range(event->rb, vma);
-> +     	if (ret)
-> +    		perf_mmap_close(vma);
-> +	}
->  
->  	return ret;
->  }
-> -- 
-> 2.51.0
+Hi all,
 
-Can you turn this into a patch we can apply (properly sent, real name
-used, etc.) so that the maintainers can review it and apply it
-correctly?
+this series has a hodge podge of fsverity enhances that I looked into as
+part of the review of the xfs fsverity support series.
 
-Also, be sure to send this to the correct people, I don't think that
-the ext4 developers care that much about perf :)
+The first part optimizes the fsverity read path by kicking off readahead
+for the fsverity hashes from the data read submission context, which in my
+simply testing showed huge benefits for sequential reads using dd.
+I haven't been able to get fio to run on a preallocated fio file, but
+I expect random read benefits would be significantly better than that
+still.
 
-thanks,
+The second part avoids the need for a pointer in every inode for fsverity
+and instead uses a rhashtable lookup, which is done once per read_folio
+or ->readahead invocation plus for btrfs only for each bio completion.
+Right now this does not increse the number of inodes in
+each slab, but for ext4 we are getting very close to that (within
+16 bytes by my count).
 
-greg k-h
+Changes since v5:
+ - drop already merged patches
+ - fix a bisection hazard for non-ENOENT error returns from
+   generic_read_merkle_tree_page
+ - don't recurse on invalidate_lock
+ - refactor page_cache_ra_unbounded locking to support the above
+ - refactor ext4 and f2fs fsverity readahead to remove the need for the
+   first_folio branch in the main readpages loop
+
+Changes since v4:
+ - drop the constification of ctx->vi again
+ - fix __filemap_get_folio error handling again
+ - don't use "pgoff_t long"
+ - improve documentation of the new pagecache helpers
+ - reduce the number of fsverity_info lookups in btrfs
+ - improve the documentation for fsverity_active
+
+Changes since v2:
+ - use sizeof_field for .key_len
+ - fix a rebase error that caused an extra fsverity_get_info in
+   fsverity_init_verification_context
+ - add verify.o to the build in the correct patch
+ - fix handling of non-ENOENT ERR_PTR folios in
+   generic_readahead_merkle_tree
+ - split fixing the __filemap_get_folio error handling into a
+   separate patch
+ - fix the readahead range in fsverity_read_merkle_tree
+ - remove __fsverity_readahead as a result of the above
+ - simplify the start/end_hidx calculation in fsverity_readahead
+ - drop the > i_size check in fsverity_readahead
+ - use pgoff_t where applicable
+ - constify fsverity_info pointers in the verification path
+ - use IS_ENABLED to disable code not used for non-fsverity builds in
+   ext4 and f2fs
+ - allow bisection for non-fsverity builds by provinding a stub
+   fsverity_info_addr prototype
+ - drop the now superflous inode argument to
+   fsverity_init_verification_context
+ - improve the kerneldoc for fsverity_readahead
+ - improve various commit messages
+ - fix the barrier placement in fsverity_active
+ - mark fsverity_active to work around stupid compilers
+
+Changes since v1:
+ - reorder to keep the most controversial part last
+ - drop moving the open handling to common code (for now)
+ - factor the page cache read code into common code
+ - reduce the number of hash lookups
+ - add a barrier in the fsverity_active that pairs with the cmpxchg
+   that sets the inode flag.
+
+Diffstat:
+ fs/btrfs/btrfs_inode.h       |    4 -
+ fs/btrfs/extent_io.c         |   53 ++++++++++------
+ fs/btrfs/inode.c             |    3 
+ fs/btrfs/verity.c            |    6 -
+ fs/buffer.c                  |   25 +++----
+ fs/ext4/ext4.h               |    8 --
+ fs/ext4/inode.c              |   27 --------
+ fs/ext4/readpage.c           |   62 +++++++++++++++----
+ fs/ext4/super.c              |    3 
+ fs/ext4/verity.c             |   15 +++-
+ fs/f2fs/compress.c           |    7 +-
+ fs/f2fs/data.c               |   88 +++++++++++++++++----------
+ fs/f2fs/f2fs.h               |   12 ---
+ fs/f2fs/file.c               |    2 
+ fs/f2fs/super.c              |    3 
+ fs/f2fs/verity.c             |   15 +++-
+ fs/verity/enable.c           |   30 +++++----
+ fs/verity/fsverity_private.h |   21 +++---
+ fs/verity/open.c             |   77 +++++++++++++++---------
+ fs/verity/pagecache.c        |   44 ++++++++++---
+ fs/verity/read_metadata.c    |   19 ++++--
+ fs/verity/verify.c           |   94 ++++++++++++++++++-----------
+ include/linux/fsverity.h     |  136 ++++++++++++++++++++++---------------------
+ mm/readahead.c               |   13 ++--
+ 24 files changed, 440 insertions(+), 327 deletions(-)
 
