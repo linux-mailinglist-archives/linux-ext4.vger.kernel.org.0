@@ -1,55 +1,57 @@
-Return-Path: <linux-ext4+bounces-13471-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13472-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yMk3BA73gGmxDQMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13471-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 20:12:14 +0100
+	id WAkfJTr3gGmxDQMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13472-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 20:12:58 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66865D0677
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 20:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03430D0687
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 20:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 92B8E3026C1D
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 19:11:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 865D03045645
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 19:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C895F2F2910;
-	Mon,  2 Feb 2026 19:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87242F12C3;
+	Mon,  2 Feb 2026 19:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lr8ouqnf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+fvS69g"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFF82E0926;
-	Mon,  2 Feb 2026 19:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AB52D6407;
+	Mon,  2 Feb 2026 19:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770059489; cv=none; b=T2ikKB8ZLyciJ4z2MJdg8X0lzQ3gtW1BH9NACwFZQT31bHQLb2EP+7nHPN+0kH9CsZli9SS++jCHVuo8kYd8dIDv4sh9qZWD5Msf4qYuIkSlL489pum47fpRP+lmRXPOwBjFCnCaHvBcefgz2mGYBaWHSGxRq54H9wXIvMDl7+Q=
+	t=1770059505; cv=none; b=PWRPqwacxVdodiIRY1+UpNCogPNVk+pAlSpGazcLJnR/LCFxMQtJfo87NHyLtYsXtoTVM0fvWs+duiX6D26UHqx+LGbwVKQZcjPRb+tr9QD7jRx299yeiBI3mZAqWQoATcyxr3p0F1GJeid/usadmvndtCFflhRrR8Eiix4XqhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770059489; c=relaxed/simple;
-	bh=5F/Jampyew1Z72XbR9tm2SF44ID4dzX17OlHAYwTSdA=;
+	s=arc-20240116; t=1770059505; c=relaxed/simple;
+	bh=GRjO8V+n0VKOwYpY/JYYWEdhzQFZKDhiy1K5bFYT4OU=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tuyluw7LIPnh7paM1f6uGD+9Z+PMVjF623DBnDPr62bz1mZgOGRllLRRnbd/57bAbY+yC9FlNzRYJbALfpCfBeOClg4UIGu3uKbux/4ImR5QmRX6XetAuxmo6jYO3S89q+YGgAAB1Rs3iSLlDrnbB61c7PH9rxSy1xLWASa5gCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lr8ouqnf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EFBDC116C6;
-	Mon,  2 Feb 2026 19:11:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=NdjJkiFcnKQOneprwHD7tkDo2EsrcUGaZQjH1t3hSNLteN8PJIvR9SrFhBSBM0xavWogefxzLi2rpSRxO2OV4H67k4alTYb5zKw1dvRRJJzREFZ4u9C8uaqzKcafLv8R7KwFZ0Cipxbk05NC8fNq3Ex2ZWQJr7eG3F/hTsWjVqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+fvS69g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E24B8C19422;
+	Mon,  2 Feb 2026 19:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770059489;
-	bh=5F/Jampyew1Z72XbR9tm2SF44ID4dzX17OlHAYwTSdA=;
+	s=k20201202; t=1770059505;
+	bh=GRjO8V+n0VKOwYpY/JYYWEdhzQFZKDhiy1K5bFYT4OU=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=Lr8ouqnfyFZUNiD+GcCwj6LBYL5izTEs3wYrvL2n8YwcGYX3DFbRCi3+t9/WUMuzJ
-	 PJtu2PvNnO8y/YD1u+Ho0q/bLA6FQIDeR3F84Si1/d0T9494VI+U5dIFDovneThW4e
-	 cH+cbYhO/tPKD7eGWtat1ATsTquclq3i+YJIW5iiaXEWSFr2fGWqQBpZdVDG03Esq9
-	 nEn5wuihR5FL3c2GCkS1gTtX2CstuOlKzj74O5eki2R3FEkigDy3ZMoDhojmYXICgD
-	 t2Rknd/Sf7Fc2Wrbe7f1PSsRU2812lo3E3cJxbQR1BPuvEUqVSY8jat/2vgdMWK52y
-	 ZxpdaXF80ViHw==
-Date: Mon, 02 Feb 2026 11:11:28 -0800
-Subject: [PATCH 2/3] xfs/620: force xattr leaf format for this test
+	b=g+fvS69g8wCjwMXZdK/ZwG3l+OZMMf00OdqnChNE8ef9cl3Ly3ljZ2DnFEHMk7b8L
+	 Ym5oImCKNLabUpWXfToxswurDJ5xnE1ieECBEyWiclAeQ56hZ4qhGyi5BfyffyZ1lR
+	 G869B2ZnSjXy+7YulGI988bjlduNK/vBALr63zEHP0RWDRQ00OwkcwsZlEEX8YVcFi
+	 Q2NIoS3lvVWXulIQOCsvUD65f1NBdz5i9gcZ3cWxXSYNLeR9BHlfBFY18NQeXdh7Ft
+	 wg5Ry+17pp24T26pDMUiOynP9G82gF5yO90OWBc0kBaxFuMhu1r3WCavOKDpBusCXu
+	 lXuyhvkezOACA==
+Date: Mon, 02 Feb 2026 11:11:44 -0800
+Subject: [PATCH 3/3] generic/749: don't write a ton of _mread output to
+ seqres.full
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: djwong@kernel.org, zlang@redhat.com
-Cc: linux-ext4@vger.kernel.org, fstests@vger.kernel.org
-Message-ID: <177005945316.2432878.12756542407523044780.stgit@frogsfrogsfrogs>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+ fstests@vger.kernel.org
+Message-ID: <177005945334.2432878.12923613447146396794.stgit@frogsfrogsfrogs>
 In-Reply-To: <177005945267.2432878.7105483366958924034.stgit@frogsfrogsfrogs>
 References: <177005945267.2432878.7105483366958924034.stgit@frogsfrogsfrogs>
 Precedence: bulk
@@ -70,56 +72,83 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13471-lists,linux-ext4=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13472-lists,linux-ext4=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_FIVE(0.00)[5];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 66865D0677
+X-Rspamd-Queue-Id: 03430D0687
 X-Rspamd-Action: no action
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Now that the kernel's parent pointer update code skips the attr intent
-mechanism when the attr fork is in local/shortform format, we need to
-bloat the attr fork to force the slow path for error injection testing.
+Something went wrong with this test when testing with fuse4fs, but I
+couldn't tell what because this test writes so much data to seqres.full
+that it completely filled the log partition.  Most of that output was
+from checks that actually succeeded, so let's reduce the amount of
+logging from _mread (which passes -v) by writing to a tempfile and only
+dumping the output to the .full file if something breaks.
 
+Cc: <fstests@vger.kernel.org> # v2024.06.27
+Fixes: e4a6b119e52295 ("fstests: add mmap page boundary tests")
 Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 ---
- tests/xfs/620 |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ tests/generic/749 |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 
-diff --git a/tests/xfs/620 b/tests/xfs/620
-index 42a30630f50ac0..47e042b937eb9c 100755
---- a/tests/xfs/620
-+++ b/tests/xfs/620
-@@ -55,8 +55,11 @@ file5="file5"
+diff --git a/tests/generic/749 b/tests/generic/749
+index 7af019ddd7f98f..01e3eac0ff73be 100755
+--- a/tests/generic/749
++++ b/tests/generic/749
+@@ -163,17 +163,20 @@ do_mmap_tests()
+ 	new_filelen=$(_get_filesize $test_file)
+ 	map_len=$(_round_up_to_page_boundary $new_filelen)
+ 	csum_orig="$(_md5_checksum $test_file)"
+-	_mread $test_file 0 $map_len >> $seqres.full  2>$tmp.err
++	_mread $test_file 0 $map_len > $tmp.out 2>$tmp.err
+ 	if grep -q 'Bus error' $tmp.err; then
+ 		failed=1
++		cat $tmp.out >> $seqres.full
+ 		cat $tmp.err
+ 		echo "Not expecting SIGBUS when reading up to page boundary"
+ 	fi
  
- echo ""
+ 	# This should just work
+-	_mread $test_file 0 $map_len >> $seqres.full  2>$tmp.err
++	_mread $test_file 0 $map_len > $tmp.out 2>$tmp.err
+ 	if [[ $? -ne 0 ]]; then
+ 		let failed=$failed+1
++		cat $tmp.out >> $seqres.full
++		cat $tmp.err
+ 		echo "mmap() read up to page boundary should work"
+ 	fi
  
--# Create files
--touch $SCRATCH_MNT/$testfolder1/$file4
-+# Create a file with a 53k xattr to force the attr structure out of short
-+# format.  Parent pointer operations on a shortform attr structure can skip the
-+# attr intent mechanism and therefore do not trigger the larp knob.
-+truncate -s 53535 $SCRATCH_MNT/$testfolder1/$file4
-+$ATTR_PROG -s x $SCRATCH_MNT/$testfolder1/$file4 < $SCRATCH_MNT/$testfolder1/$file4 &>/dev/null
- _xfs_verify_parent "$testfolder1" "$file4" "$testfolder1/$file4"
+@@ -205,9 +208,11 @@ do_mmap_tests()
+ 	fi
  
- # Inject error
+ 	# Now let's go beyond the allowed mmap() page boundary
+-	_mread $test_file 0 $((map_len + 10)) $((map_len + 10)) >> $seqres.full  2>$tmp.err
++	_mread $test_file 0 $((map_len + 10)) $((map_len + 10)) > $tmp.out 2>$tmp.err
+ 	if ! grep -q 'Bus error' $tmp.err; then
+ 		let failed=$failed+1
++		cat $tmp.out >> $seqres.full
++		cat $tmp.err
+ 		echo "Expected SIGBUS when mmap() reading beyond page boundary"
+ 	fi
+ 
 
 
