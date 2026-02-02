@@ -1,104 +1,108 @@
-Return-Path: <linux-ext4+bounces-13456-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13457-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHDlJ9OdgGl2/wIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13456-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 13:51:31 +0100
+	id uJoHKEGlgGkgAAMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13457-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 14:23:13 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BCE9CC7B0
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 13:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19891CCAF6
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 14:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DEE7930157C9
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 12:51:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E53A7301CDAE
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 13:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28FD1A2392;
-	Mon,  2 Feb 2026 12:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C00367F29;
+	Mon,  2 Feb 2026 13:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qOtBRb8M";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F+TTT06b";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qOtBRb8M";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F+TTT06b"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O8UcVMSw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cgHhQxOp";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O8UcVMSw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cgHhQxOp"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475AC19E7F7
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Feb 2026 12:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEC6366DC9
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Feb 2026 13:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770036688; cv=none; b=uCeij5Avxch8WRcHNUjYlB2esvGUSBoObE4BX+kryUIetI5UuWatF7uoY6q3vzSSADlg/O0KYDS5/lcvv+yw7RWPKfV3AUgKfweC/Va8LMq6c91sUbkSk7vUlhZC/9H7T0vgWxew1PHCXNbqUrU8kv1m9ObQ4MXXKIsk207+ejY=
+	t=1770038590; cv=none; b=IrxJRSMKftlmbpdb+/2OX1VcA/L6/eXm+/9zyLVP8hGKVx/VcZRydFCiVQKcnocmQ03s3MGLI4lC3firTjBh23f2JhqY4r6rUe/9tzFgaEdsQdU7DWkqFFgye+iZqxrRPK3K7sANc9KprQhqWehDYQnD5V+Z4Dyd5unxoQWyB+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770036688; c=relaxed/simple;
-	bh=Rmi9fbqyYVLu5YFs9mHQOkJEiYezJ90ad93nF6DF5bo=;
+	s=arc-20240116; t=1770038590; c=relaxed/simple;
+	bh=26zWbhZ3quDnRBRQlfNMUJkdmyZDQtdDoqRKUZfp39I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mnV+h7ounx8pOQEiwOQsjzkBLxKNZXCLkVSJNPcOOFggUybyZfk2BNEUQr6DVot26izc6o/j7dgd2gVPCE5Df7cE8pIkHSngXl8QEJhVJXfKZA2BPfiJXQ4h0Qp3/9OCs0loP7DWlDqnyq6bDCoCUy8V8Eu0YtOla4i7tmwrynU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qOtBRb8M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F+TTT06b; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qOtBRb8M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F+TTT06b; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=Abkg6v0IQN3DRY1pmCIxxZhH+PHAw9GxJce0CeXqSo3MFCWpemFxTQXwALsjqH+PGlnZCpI8fw7jMrCsOo6NBwUc1/FPq/EXT14/8lH/69vlVx4J3dhtOShwC3qXOMbgOwztr+8KNNmjBYqEzN9z6/Wn60BWZjR/lfGssBbMq4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O8UcVMSw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cgHhQxOp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O8UcVMSw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cgHhQxOp; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6DE8E3E719;
-	Mon,  2 Feb 2026 12:51:25 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 27BBB3E73A;
+	Mon,  2 Feb 2026 13:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770036685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1770038587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KiMj2ZUH+N+OMxKqetmePeOKgPl4RibYfT9Pkjzu2DU=;
-	b=qOtBRb8MZDZl5FzgWyIMDCcBSLvJJAvwr7ocOigaPJXHIX4NtpTyYUzX0bGi9INAIthMnG
-	csSluu9tGaVF8xCp1ZuC97M1BfmM1LwLTA0RSP7zV0V63JbbmgM6/5gu04U6jmjEeU1BmU
-	xSLZhR3mG3rknfv40/tsVYFXMu6X5rw=
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=O8UcVMSwdPeSRo5QHDzpnoQD0utSyBGdT0SYM0yo2hsU46KRNF+GfCogeKKFwkIzmOf7ro
+	505sveLamiJdLnPGaYJetc8kEKOv6un6N0ulUHFuVvS3BbSa4kCAGzgPw7PcXBXIzSITFs
+	flH8tkLTPiYh0G+MXGOh2OsLaFgUgJE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770036685;
+	s=susede2_ed25519; t=1770038587;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KiMj2ZUH+N+OMxKqetmePeOKgPl4RibYfT9Pkjzu2DU=;
-	b=F+TTT06b63kjAZ9cstZLTfrSF/eXciwaAz2TcWxExtykyqjRKmxyHOyAZ5JBz554Psjx/a
-	9iWIzWTuWAjSnGBQ==
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=cgHhQxOp+6dEumsLPNF0vhuziX7oYprxduJvthIKF38+P8f5oQgW3llE+f0B+9UO+RYfwL
+	hxqIdbhsL8UMqwAw==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770036685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1770038587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KiMj2ZUH+N+OMxKqetmePeOKgPl4RibYfT9Pkjzu2DU=;
-	b=qOtBRb8MZDZl5FzgWyIMDCcBSLvJJAvwr7ocOigaPJXHIX4NtpTyYUzX0bGi9INAIthMnG
-	csSluu9tGaVF8xCp1ZuC97M1BfmM1LwLTA0RSP7zV0V63JbbmgM6/5gu04U6jmjEeU1BmU
-	xSLZhR3mG3rknfv40/tsVYFXMu6X5rw=
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=O8UcVMSwdPeSRo5QHDzpnoQD0utSyBGdT0SYM0yo2hsU46KRNF+GfCogeKKFwkIzmOf7ro
+	505sveLamiJdLnPGaYJetc8kEKOv6un6N0ulUHFuVvS3BbSa4kCAGzgPw7PcXBXIzSITFs
+	flH8tkLTPiYh0G+MXGOh2OsLaFgUgJE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770036685;
+	s=susede2_ed25519; t=1770038587;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KiMj2ZUH+N+OMxKqetmePeOKgPl4RibYfT9Pkjzu2DU=;
-	b=F+TTT06b63kjAZ9cstZLTfrSF/eXciwaAz2TcWxExtykyqjRKmxyHOyAZ5JBz554Psjx/a
-	9iWIzWTuWAjSnGBQ==
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=cgHhQxOp+6dEumsLPNF0vhuziX7oYprxduJvthIKF38+P8f5oQgW3llE+f0B+9UO+RYfwL
+	hxqIdbhsL8UMqwAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55E2F3EA62;
-	Mon,  2 Feb 2026 12:51:25 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 103EB3EA62;
+	Mon,  2 Feb 2026 13:23:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QuTvFM2dgGlOVQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Feb 2026 12:51:25 +0000
+	id BhrnAzulgGlVUwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 02 Feb 2026 13:23:07 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1FC2DA08F8; Mon,  2 Feb 2026 13:51:25 +0100 (CET)
-Date: Mon, 2 Feb 2026 13:51:25 +0100
+	id CC3ABA08F8; Mon,  2 Feb 2026 14:23:02 +0100 (CET)
+Date: Mon, 2 Feb 2026 14:23:02 +0100
 From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com, yi.zhang@huawei.com, yizhang089@gmail.com, 
-	libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
-Subject: Re: [PATCH v2] ext4: do not check fast symlink during orphan recovery
-Message-ID: <2sdp5frarezu3rq2pbg35i3lnlwby3mfnpayv7xnokiarx6qvs@nhus35dvxm3f>
-References: <20260131091156.1733648-1-yi.zhang@huaweicloud.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: [PATCH 01/11] fsverity: don't issue readahead for non-ENOENT
+ errors from __filemap_get_folio
+Message-ID: <5tbvx3urecnju72wyvursogffocasy43jcizxncdhl34w72row@blj7csijokcg>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202060754.270269-2-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -107,137 +111,85 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260131091156.1733648-1-yi.zhang@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
+In-Reply-To: <20260202060754.270269-2-hch@lst.de>
+X-Spam-Score: -3.80
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13456-lists,linux-ext4=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,suse.cz:email,suse.cz:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:dkim,lst.de:email];
 	DMARC_NA(0.00)[suse.cz];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,huawei.com,fnnas.com];
+	TAGGED_FROM(0.00)[bounces-13457-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 0BCE9CC7B0
+X-Rspamd-Queue-Id: 19891CCAF6
 X-Rspamd-Action: no action
 
-On Sat 31-01-26 17:11:56, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On Mon 02-02-26 07:06:30, Christoph Hellwig wrote:
+> Issuing more reads on errors is not a good idea, especially when the
+> most common error here is -ENOMEM.
 > 
-> Commit '5f920d5d6083 ("ext4: verify fast symlink length")' causes the
-> generic/475 test to fail during orphan cleanup of zero-length symlinks.
-> 
->   generic/475  84s ... _check_generic_filesystem: filesystem on /dev/vde is inconsistent
-> 
-> The fsck reports are provided below:
-> 
->   Deleted inode 9686 has zero dtime.
->   Deleted inode 158230 has zero dtime.
->   ...
->   Inode bitmap differences:  -9686 -158230
->   Orphan file (inode 12) block 13 is not clean.
->   Failed to initialize orphan file.
-> 
-> In ext4_symlink(), a newly created symlink can be added to the orphan
-> list due to ENOSPC. Its data has not been initialized, and its size is
-> zero. Therefore, we need to disregard the length check of the symbolic
-> link when cleaning up orphan inodes. Instead, we should ensure that the
-> nlink count is zero.
-> 
-> Fixes: 5f920d5d6083 ("ext4: verify fast symlink length")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks good! Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
-> Changes since v1:
->  - Improve the comment and add nlink check during orphan cleanup as Jan
->    suggested.
+>  fs/verity/pagecache.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
->  fs/ext4/inode.c | 40 +++++++++++++++++++++++++++++-----------
->  1 file changed, 29 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 129594bf8311..cfb66f7ad3d7 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -6073,18 +6073,36 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  			inode->i_op = &ext4_encrypted_symlink_inode_operations;
->  		} else if (ext4_inode_is_fast_symlink(inode)) {
->  			inode->i_op = &ext4_fast_symlink_inode_operations;
-> -			if (inode->i_size == 0 ||
-> -			    inode->i_size >= sizeof(ei->i_data) ||
-> -			    strnlen((char *)ei->i_data, inode->i_size + 1) !=
-> -								inode->i_size) {
-> -				ext4_error_inode(inode, function, line, 0,
-> -					"invalid fast symlink length %llu",
-> -					 (unsigned long long)inode->i_size);
-> -				ret = -EFSCORRUPTED;
-> -				goto bad_inode;
-> +
-> +			/*
-> +			 * Orphan cleanup can see inodes with i_size == 0
-> +			 * and i_data uninitialized. Skip size checks in
-> +			 * that case. This is safe because the first thing
-> +			 * ext4_evict_inode() does for fast symlinks is
-> +			 * clearing of i_data and i_size.
-> +			 */
-> +			if ((EXT4_SB(sb)->s_mount_state & EXT4_ORPHAN_FS)) {
-> +				if (inode->i_nlink != 0) {
-> +					ext4_error_inode(inode, function, line, 0,
-> +						"invalid orphan symlink nlink %d",
-> +						inode->i_nlink);
-> +					ret = -EFSCORRUPTED;
-> +					goto bad_inode;
-> +				}
-> +			} else {
-> +				if (inode->i_size == 0 ||
-> +				    inode->i_size >= sizeof(ei->i_data) ||
-> +				    strnlen((char *)ei->i_data, inode->i_size + 1) !=
-> +						inode->i_size) {
-> +					ext4_error_inode(inode, function, line, 0,
-> +						"invalid fast symlink length %llu",
-> +						(unsigned long long)inode->i_size);
-> +					ret = -EFSCORRUPTED;
-> +					goto bad_inode;
-> +				}
-> +				inode_set_cached_link(inode, (char *)ei->i_data,
-> +						      inode->i_size);
->  			}
-> -			inode_set_cached_link(inode, (char *)ei->i_data,
-> -					      inode->i_size);
->  		} else {
->  			inode->i_op = &ext4_symlink_inode_operations;
->  		}
+> diff --git a/fs/verity/pagecache.c b/fs/verity/pagecache.c
+> index 01c652bc802f..1a88decace53 100644
+> --- a/fs/verity/pagecache.c
+> +++ b/fs/verity/pagecache.c
+> @@ -22,7 +22,8 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+>  	struct folio *folio;
+>  
+>  	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
+> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
+> +	if (folio == ERR_PTR(-ENOENT) ||
+> +	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+>  		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
+>  
+>  		if (!IS_ERR(folio))
+> @@ -30,9 +31,9 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+>  		else if (num_ra_pages > 1)
+>  			page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
+>  		folio = read_mapping_folio(inode->i_mapping, index, NULL);
+> -		if (IS_ERR(folio))
+> -			return ERR_CAST(folio);
+>  	}
+> +	if (IS_ERR(folio))
+> +		return ERR_CAST(folio);
+>  	return folio_file_page(folio, index);
+>  }
+>  EXPORT_SYMBOL_GPL(generic_read_merkle_tree_page);
 > -- 
-> 2.52.0
+> 2.47.3
 > 
 -- 
 Jan Kara <jack@suse.com>
