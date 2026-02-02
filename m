@@ -1,246 +1,123 @@
-Return-Path: <linux-ext4+bounces-13460-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13461-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iBFXN+WogGmeAAMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13460-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 14:38:45 +0100
+	id kJC/GryygGn6AQMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13461-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 15:20:44 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 893A6CCDA9
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 14:38:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A19CD41C
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 15:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D0F543009897
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 13:38:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B3B73305B09A
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 14:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EEF36996C;
-	Mon,  2 Feb 2026 13:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD7836AB7B;
+	Mon,  2 Feb 2026 14:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjawmUVR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0dIJITb0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSkzfpqK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KIvVr/cE"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Vuf9nYmW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C98533D6
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Feb 2026 13:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1694B14F70;
+	Mon,  2 Feb 2026 14:14:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770039520; cv=none; b=Q6R7o1SxZ78yDADp2ylkqJ5b6StGwR4s2RqJ3pZlArPefLlcVUMEO9s9Z1qYtl6few7Dy19zluwKNPOxq7ZHpBe5yXU7EJO5NM+GCmpXUfOYZiDexjgCr+zpXA9c0mGNisDS+nioofam8IBC5+EiuCownk94k5A00Bmp1BmcfVw=
+	t=1770041651; cv=none; b=aUmXltmFAc6YhC4WdmbLg8Qv4MIqS/ECI96nL0du58B1T0Nzw1IZoGNfKeLXg9WT1nYBMGSprTXBkLoMLD1fx846L3Wq3Fltcjj/RnbLKEAFeHTsCNwiNk/QgkyVXc7ZYGEagKRLYep3tHdSzOtM+5fS72Nhgnb20KPp8EwCE2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770039520; c=relaxed/simple;
-	bh=l/8LNkn3HhziWJswzZ8vil7HBfy8+hdvqt2g6LjhEos=;
+	s=arc-20240116; t=1770041651; c=relaxed/simple;
+	bh=JqKUl60vf2mk2q6WHXRfrQSgpfjh0GgY9vftFLodTqw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnrJrTtjqWIFn3VNgMbx7tqwOXSUnOnlONIjBpuHcyLJpFH+P6sYnd9uzhGITGxxBfSP69qvb6B6NtI3bSMi0o4gJfxfNILVJS8xOe8CUTZ299J6moEzldcicxt9RtwMZONxqnc2WRFRF5CuJI3dl+efEZ4TAvddt2TUsMJIpuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjawmUVR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0dIJITb0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSkzfpqK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KIvVr/cE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CCA5C5BD80;
-	Mon,  2 Feb 2026 13:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770039517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=JjawmUVRKz6OAXw7k49ipwKq82sevQPhxtyqCCkBDLvZnLWC3lUrQXmd1jSdoudgn5vfGt
-	BNR6GIWjO35G70jUBJ9Nr1WU8wySX5toK3BTEvj1LqZMFtXqPidfQmEu6bG8iaZIWAnMvr
-	xHAHJC/BL5aGByU73xG2aVsjwJe5aH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770039517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=0dIJITb0A7AYvYgpEMWqlm5aXR8pNoSvSvCS349tFKlDUmq751UwU0fDe8kqsZ8bEq4uvx
-	PGzsyZIavyObjUAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770039515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=cSkzfpqKBn0c5ZR4kFZ3myxLpPB+nNGB/YDhaw20M4+Ie/gvLnJE7GoFn+r0wACInIBuMc
-	lcC3xx51DAL3d8FZAfH0f+4SfZ93JBr6hvjXDGvLiPP8L1PjtOiaHv5lQY3a3lxqGL/g1O
-	81EQp9PlHAibWZe7lzI/fIN3M+7HLaQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770039515;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=KIvVr/cEJ3g5JcGwLQEBZXyJVBRdxR9ngg5szTlzBaA7ij45sAPjQ9oRXn6IhLocLzKVPm
-	0KC2tLcGks9dQLBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 981F53EA62;
-	Mon,  2 Feb 2026 13:38:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xtsgJduogGmFSQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Feb 2026 13:38:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3EB41A08F8; Mon,  2 Feb 2026 14:38:35 +0100 (CET)
-Date: Mon, 2 Feb 2026 14:38:35 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
-	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 07/11] fs: consolidate fsverity_info lookup in buffer.c
-Message-ID: <o5g2i6epyug7rx4v3hdejsqhemva2ewnm63mfnqs5e57o72ska@rsdcewqcwd3g>
-References: <20260202060754.270269-1-hch@lst.de>
- <20260202060754.270269-8-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=W6rFg5ptkSJcFLRUt5qP4ty6rYWgK/ck5rVSva+JNVp/t3yUqK8xafvxSTkGGADJylwb7fPCg8Nn5EsUoaaO3zlRGwz4taXn9q9ByYUXH3PgbLJEevR1GSux08uDNpEjFiHIOHK2ZwUhXbFK2njsa2Qtu27EGxw0IdxYBh3SSw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Vuf9nYmW; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=wAc1k4+zJsRHlPOaEXkpUDHcRc6VbrRi9Rvm6Gsx3+s=; b=Vuf9nYmW73DOvW4W1bCFO/Hxhf
+	uedDfAw5PpTFnap8ZcF5G1fMOqOe2VE3qvN/KvhNd6cK/1iX33t9qDefGu5dtybDwg6SHc/mTsaQ3
+	4pfJ7q7Q7UW/Fqy7tYwfS+di3ywvNLV6d4u27oBErXywciqNsEyG6fUzAxxvO/DPTJKAQQhnfbGdQ
+	4XAG22Ps8Iq9rSuz7NqYPvMUDTfjmzZ2ZNqT89ksZxR5D2Mda66892y7vk+/5MOUllpHQhIGQ/Zbb
+	I3M46ENR0WVdvoH/48JMvhlIsSh2JE8qpY1GgUH9yrSJOD8h21d48T4MMyRVu5NO597BRMa2BcCMK
+	Xt9iQZtQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vmugo-0000000Gb0L-1joD;
+	Mon, 02 Feb 2026 14:14:06 +0000
+Date: Mon, 2 Feb 2026 14:14:06 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: =?utf-8?B?5p2O6b6Z5YW0?= <coregee2000@gmail.com>
+Cc: syzkaller@googlegroups.com, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [Kernel Bug] KASAN: slab-use-after-free Read in
+ filemap_free_folio
+Message-ID: <aYCxLsCVUT_kky4o@casper.infradead.org>
+References: <CAHPqNmyHRaGj0fn+2FvvaJYi4WYOVmai6XX3bRCwbAZoj_GwWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260202060754.270269-8-hch@lst.de>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHPqNmyHRaGj0fn+2FvvaJYi4WYOVmai6XX3bRCwbAZoj_GwWg@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,lst.de:email,suse.cz:email,suse.cz:dkim];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13460-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13461-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 893A6CCDA9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[casper.infradead.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim]
+X-Rspamd-Queue-Id: B8A19CD41C
 X-Rspamd-Action: no action
 
-On Mon 02-02-26 07:06:36, Christoph Hellwig wrote:
-> Look up the fsverity_info once in end_buffer_async_read_io, and then
-> pass it along to the I/O completion workqueue in
-> struct postprocess_bh_ctx.
+On Mon, Feb 02, 2026 at 02:20:50PM +0800, 李龙兴 wrote:
+> Dear Linux kernel developers and maintainers,
 > 
-> This amortizes the lookup better once it becomes less efficient.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+> We would like to report a new kernel bug found by our tool. KASAN:
 
-Looks good. Feel free to add:
+Don't be syzbot.  Get your changes into syzkaller upstream and let
+syzbot do its thing.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> Allocated by task 49607:
+>  kasan_save_stack+0x33/0x60 mm/kasan/common.c:56
+>  kasan_save_track+0x14/0x30 mm/kasan/common.c:77
+>  unpoison_slab_object mm/kasan/common.c:342 [inline]
+>  __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:368
+>  kasan_slab_alloc include/linux/kasan.h:252 [inline]
+>  slab_post_alloc_hook mm/slub.c:4978 [inline]
+>  slab_alloc_node mm/slub.c:5288 [inline]
+>  kmem_cache_alloc_lru_noprof+0x254/0x6e0 mm/slub.c:5307
+>  ext4_alloc_inode+0x28/0x610 fs/ext4/super.c:1393
 
-								Honza
+I'd suggest this is an ext4 problem, not a pagecache problem.
 
-> ---
->  fs/buffer.c | 27 +++++++++++----------------
->  1 file changed, 11 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 3982253b6805..f4b3297ef1b1 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -302,6 +302,7 @@ static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
->  struct postprocess_bh_ctx {
->  	struct work_struct work;
->  	struct buffer_head *bh;
-> +	struct fsverity_info *vi;
->  };
->  
->  static void verify_bh(struct work_struct *work)
-> @@ -309,25 +310,14 @@ static void verify_bh(struct work_struct *work)
->  	struct postprocess_bh_ctx *ctx =
->  		container_of(work, struct postprocess_bh_ctx, work);
->  	struct buffer_head *bh = ctx->bh;
-> -	struct inode *inode = bh->b_folio->mapping->host;
->  	bool valid;
->  
-> -	valid = fsverity_verify_blocks(*fsverity_info_addr(inode), bh->b_folio,
-> -				       bh->b_size, bh_offset(bh));
-> +	valid = fsverity_verify_blocks(ctx->vi, bh->b_folio, bh->b_size,
-> +				       bh_offset(bh));
->  	end_buffer_async_read(bh, valid);
->  	kfree(ctx);
->  }
->  
-> -static bool need_fsverity(struct buffer_head *bh)
-> -{
-> -	struct folio *folio = bh->b_folio;
-> -	struct inode *inode = folio->mapping->host;
-> -
-> -	return fsverity_active(inode) &&
-> -		/* needed by ext4 */
-> -		folio->index < DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
-> -}
-> -
->  static void decrypt_bh(struct work_struct *work)
->  {
->  	struct postprocess_bh_ctx *ctx =
-> @@ -337,7 +327,7 @@ static void decrypt_bh(struct work_struct *work)
->  
->  	err = fscrypt_decrypt_pagecache_blocks(bh->b_folio, bh->b_size,
->  					       bh_offset(bh));
-> -	if (err == 0 && need_fsverity(bh)) {
-> +	if (err == 0 && ctx->vi) {
->  		/*
->  		 * We use different work queues for decryption and for verity
->  		 * because verity may require reading metadata pages that need
-> @@ -359,15 +349,20 @@ static void end_buffer_async_read_io(struct buffer_head *bh, int uptodate)
->  {
->  	struct inode *inode = bh->b_folio->mapping->host;
->  	bool decrypt = fscrypt_inode_uses_fs_layer_crypto(inode);
-> -	bool verify = need_fsverity(bh);
-> +	struct fsverity_info *vi = NULL;
-> +
-> +	/* needed by ext4 */
-> +	if (bh->b_folio->index < DIV_ROUND_UP(inode->i_size, PAGE_SIZE))
-> +		vi = fsverity_get_info(inode);
->  
->  	/* Decrypt (with fscrypt) and/or verify (with fsverity) if needed. */
-> -	if (uptodate && (decrypt || verify)) {
-> +	if (uptodate && (decrypt || vi)) {
->  		struct postprocess_bh_ctx *ctx =
->  			kmalloc(sizeof(*ctx), GFP_ATOMIC);
->  
->  		if (ctx) {
->  			ctx->bh = bh;
-> +			ctx->vi = vi;
->  			if (decrypt) {
->  				INIT_WORK(&ctx->work, decrypt_bh);
->  				fscrypt_enqueue_decrypt_work(&ctx->work);
-> -- 
-> 2.47.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+syzbot has good heuristics for this kind of thing now.  You don't.
 
