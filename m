@@ -1,65 +1,71 @@
-Return-Path: <linux-ext4+bounces-13475-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13476-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aEi1NWopgWkwEgMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13475-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 23:47:06 +0100
+	id vHHFM4JIgWnNFQMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13476-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 01:59:46 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796D1D26DA
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Feb 2026 23:47:06 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93855D32EF
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 01:59:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1906D30159FC
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Feb 2026 22:38:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C46413006B4A
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 00:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6904389E18;
-	Mon,  2 Feb 2026 22:34:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894ED21ADA4;
+	Tue,  3 Feb 2026 00:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ss2zz3/z"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="oymjkyAL"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5851635E548;
-	Mon,  2 Feb 2026 22:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B82218ACC
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Feb 2026 00:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770071648; cv=none; b=K2zb7T6v8hG2y+iiaHq98ZpmZehaQuGu/2RSw8vdkayzruqht8u/Mlplt11UuNWlA0ijnul0x90mon8BcfGPWNW6FIOh7I0IWCw72XSadyjmuE8LRULLQBmYw1KAT/cY0b0ZP/4pBz2c/mSIoh8ITHzEhtokdS8RocX+XPPJec8=
+	t=1770080381; cv=none; b=TJV7rVxkzsWIW5ldBveM5nwdQkW/cG465nylg1TObGRhG78ntJLEiT9ULIT0i9/i6AGEIliDiDk+wMHtfRaBbz6WzpOqspwhT5eZysOa072cYe1CxnEf2jDHhqkbeQnXtosLJjjBZNfjaerqtLpk9SPeGAZtwnHjKPaKgJ2QBIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770071648; c=relaxed/simple;
-	bh=2BLw8V36q4ZcoZntEthTMAW+cHIrT5ib6z9TbOGuvgM=;
+	s=arc-20240116; t=1770080381; c=relaxed/simple;
+	bh=8248i/kYArgyaQTa2HABl7HpWtk+x6i4SNBHC7ecfvw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UMTelsopuhibCaM/2n+m1yyFSppWe7FrwmiU9SMxIX3zv9P44C3EUM612DlEtWNIYmA7beavNqECRl+b0GmYsXagFCDhg4/9xQwlnWosPa8es2TX5n1BUZsbY3UEQU9PFJLC8tpOhyErsZwd6Q6c6Lz46uecuAveOdW/A0kMAtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ss2zz3/z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2840C116C6;
-	Mon,  2 Feb 2026 22:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770071647;
-	bh=2BLw8V36q4ZcoZntEthTMAW+cHIrT5ib6z9TbOGuvgM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ss2zz3/zaUboc6X/2TuV+KFtnflhkrpnIr6d8/rxpr8ixW69zHo15BSkfX7C+GrrG
-	 3dxxe8R18qUeUaWY6nisKn2wmrZy9dl4o1heG4kk/K8kzQwV31QMPww5ZQis+db3y1
-	 sUNB3MzBBKSAX/TifSu+FMYAccP/HfGZvUCLqmtopz3b9AU+rS3GnhInsnw4q7GRNU
-	 0qwPxcnVei484r2+HKkAN3+ed4bSRmzSErbAbjvNW8U/46uXtDcaJiilALdBmk+n+Z
-	 EqNcbKlhmyF7FQNNK+sDUH/6bc91lQLmusrhVPXRnKkh41P6MBg+RtcfyL5f5q7jeX
-	 20vZJrM+KKiLg==
-Date: Mon, 2 Feb 2026 14:34:04 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
-Subject: Re: fsverity speedup and memory usage optimization v5
-Message-ID: <20260202223404.GA173552@quark>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tQy+N0MHDI8E+/0EohUlf2SZ4v9DKbrmAagiHImxMiv5GH2njyWRHaLwgOWb4Pq0aYdhX+7lMm6Y9WFCWjN5qNXF38P1/af02dvvIGG4dXGaIyzsonv4dB6tsLzynutsfNHwz5UcPvgUJ2UXEMSKtn+VZPdgKnnW81yCmJYQiAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=oymjkyAL; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-123-50.bstnma.fios.verizon.net [173.48.123.50])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6130wZeK027056
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 2 Feb 2026 19:58:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1770080319; bh=aUyJiVznOTfQ6pPxpOeT0GU34DTIGGka4AHQzI4bQCY=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=oymjkyALcY2L6SOAuZbHGBaaZnFauHrclv6xQuVdOYpduatevDy6DEZzen76pSw5N
+	 XSQfkThuW5BRzrU06IYhabSdIPWNjwnQq3+jhdRbr25SpUVdQmkk5lNGOzd/uO747K
+	 5wJy84oHudJlo887rgejCF0q1QH5M51Hm5HrX5Qs3lHCepH4V3tn4Q2Mbopst+Bthx
+	 0C+l4IQPlMxaV2LUrSt8VQhwr0E8xmYuMjg6fdD9CnZNtwd7fmd+npl3qZ/la1AxRO
+	 KtkMvAXtqMqtkMjomn3aBlwVAqM9ZppQSr3aAmTcLg/UvUvgBZF6yKRoZrRsiGt2QT
+	 gDbA0NuZCVYXw==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id F2B815704A33; Mon,  2 Feb 2026 19:57:34 -0500 (EST)
+Date: Mon, 2 Feb 2026 19:57:34 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <chao@kernel.org>, Andrey Albershteyn <aalbersh@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: [PATCH 03/11] ext4: move ->read_folio and ->readahead to
+ readahead.c
+Message-ID: <20260203005734.GB31420@macsyma.lan>
 References: <20260202060754.270269-1-hch@lst.de>
- <20260202211423.GB4838@quark>
+ <20260202060754.270269-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,142 +74,43 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260202211423.GB4838@quark>
+In-Reply-To: <20260202060754.270269-4-hch@lst.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
+	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13476-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13475-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	DKIM_TRACE(0.00)[mit.edu:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 796D1D26DA
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,macsyma.lan:mid]
+X-Rspamd-Queue-Id: 93855D32EF
 X-Rspamd-Action: no action
 
-On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
-> On Mon, Feb 02, 2026 at 07:06:29AM +0100, Christoph Hellwig wrote:
-> > Hi all,
-> > 
-> > this series has a hodge podge of fsverity enhances that I looked into as
-> > part of the review of the xfs fsverity support series.
-> > 
-> > The first part optimizes the fsverity read path by kicking off readahead
-> > for the fsverity hashes from the data read submission context, which in my
-> > simply testing showed huge benefits for sequential reads using dd.
-> > I haven't been able to get fio to run on a preallocated fio file, but
-> > I expect random read benefits would be significantly better than that
-> > still.
-> > 
-> > The second part avoids the need for a pointer in every inode for fsverity
-> > and instead uses a rhashtable lookup, which is done once per read_folio
-> > or ->readahead invocation plus for btrfs only for each bio completion.
-> > Right now this does not increse the number of inodes in
-> > each slab, but for ext4 we are getting very close to that (within
-> > 16 bytes by my count).
-> > 
-> > Changes since v5:
-> >  - drop already merged patches
-> >  - fix a bisection hazard for non-ENOENT error returns from
-> >    generic_read_merkle_tree_page
-> >  - don't recurse on invalidate_lock
-> >  - refactor page_cache_ra_unbounded locking to support the above
-> >  - refactor ext4 and f2fs fsverity readahead to remove the need for the
-> >    first_folio branch in the main readpages loop
+On Mon, Feb 02, 2026 at 07:06:32AM +0100, Christoph Hellwig wrote:
+> Keep all the read into pagecache code in a single file.
 > 
-> Applied to https://git.kernel.org/pub/scm/fs/fsverity/linux.git/log/?h=for-next
-> 
-> (Though it's getting late for v6.20 / v7.0.  So if there are any
-> additional issues reported, I may have to drop it.)
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Unfortunately this silently conflicts with changes in the f2fs tree.
-Resolution doesn't look too bad, but we'll need to handle this.
-Christoph, Jaegeuk, and Chao, let me know if this looks okay:
+Makes sense to me.  Thanks,
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index d9085d1236d97..081c441c59e71 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2449,11 +2449,13 @@ static void ffs_detach_free(struct folio *folio)
- 	WARN_ON_ONCE(ffs->read_pages_pending != 0);
- 	kmem_cache_free(ffs_entry_slab, ffs);
- }
- 
- static int f2fs_read_data_large_folio(struct inode *inode,
--		struct readahead_control *rac, struct folio *folio)
-+				      struct fsverity_info *vi,
-+				      struct readahead_control *rac,
-+				      struct folio *folio)
- {
- 	struct bio *bio = NULL;
- 	sector_t last_block_in_bio = 0;
- 	struct f2fs_map_blocks map = {0, };
- 	pgoff_t index, offset, next_pgofs = 0;
-@@ -2519,13 +2521,12 @@ static int f2fs_read_data_large_folio(struct inode *inode,
- 				ret = -EFSCORRUPTED;
- 				goto err_out;
- 			}
- 		} else {
- 			folio_zero_range(folio, offset << PAGE_SHIFT, PAGE_SIZE);
--			if (f2fs_need_verity(inode, index) &&
--			    !fsverity_verify_page(folio_file_page(folio,
--								index))) {
-+			if (vi && !fsverity_verify_page(
-+					  vi, folio_file_page(folio, index))) {
- 				ret = -EIO;
- 				goto err_out;
- 			}
- 			continue;
- 		}
-@@ -2552,14 +2553,14 @@ static int f2fs_read_data_large_folio(struct inode *inode,
- submit_and_realloc:
- 			f2fs_submit_read_bio(F2FS_I_SB(inode), bio, DATA);
- 			bio = NULL;
- 		}
- 		if (bio == NULL)
--			bio = f2fs_grab_read_bio(inode, block_nr,
--					max_nr_pages,
--					f2fs_ra_op_flags(rac),
--					index, false);
-+			bio = f2fs_grab_read_bio(inode, vi, block_nr,
-+						 max_nr_pages,
-+						 f2fs_ra_op_flags(rac), index,
-+						 false);
- 
- 		/*
- 		 * If the page is under writeback, we need to wait for
- 		 * its completion to see the correct decrypted data.
- 		 */
-@@ -2627,11 +2628,11 @@ static int f2fs_mpage_readpages(struct inode *inode, struct fsverity_info *vi,
- 	struct address_space *mapping = rac ? rac->mapping : folio->mapping;
- 	unsigned max_nr_pages = nr_pages;
- 	int ret = 0;
- 
- 	if (mapping_large_folio_support(mapping))
--		return f2fs_read_data_large_folio(inode, rac, folio);
-+		return f2fs_read_data_large_folio(inode, vi, rac, folio);
- 
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	if (f2fs_compressed_file(inode)) {
- 		index = rac ? readahead_index(rac) : folio->index;
- 		max_nr_pages = round_up(index + nr_pages, cc.cluster_size) -
+Acked-by: Theodore Ts'o <tytso@mit.edu>
+
 
