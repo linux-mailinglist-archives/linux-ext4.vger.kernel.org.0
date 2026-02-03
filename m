@@ -1,273 +1,267 @@
-Return-Path: <linux-ext4+bounces-13507-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13508-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +EvROpu9gWm7JAMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13507-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 10:19:23 +0100
+	id sO0GLsHHgWl1JwMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13508-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 11:02:41 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F45AD6B63
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 10:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AFE5D741F
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 11:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BBE9B305CDF6
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 09:18:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EE34C30DDA10
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 09:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52371396D00;
-	Tue,  3 Feb 2026 09:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB0E399026;
+	Tue,  3 Feb 2026 09:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QI0mA7F+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tnQQIRd5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QI0mA7F+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tnQQIRd5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AC730CD95;
-	Tue,  3 Feb 2026 09:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECE0395DB3
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Feb 2026 09:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770110300; cv=none; b=kWv2PS/L01OUJedw6pCVGyv3ubrlO0JokDRt9CO9z/LYAPwrWkk+X71ZLGBVYvApXc++mTppgQRrN7e99P8hvO0Ax3VzY0wWs1pOxfhxilW22wFm+lLzcdWscJrLaJmm5d9pzJ+wUqozbp2Ui8snnlvFNtmDnwmBJgL/3v3OZ7M=
+	t=1770112755; cv=none; b=ShMZsqD/pGSm9BpAWkVdGQ9yQnV8NoFrbxL9XvjDnW7g8DZ26XS44VAEmlI5oYBpropDBTcidxWIyWD7Jg7QArxZgJOBkjsml87TwgGzZ5EewG32tJxT7NnEFJB0EdRGEAgCyGk0F9L21gIJRKkneyD9YTw3nSMzuFwqe+T5zp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770110300; c=relaxed/simple;
-	bh=fVkwbUOOKlSgxGlwFPz9wKQ0vaYDWfgpQZ1O84RdCKw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ih4MCI7NJgZJ3KHqm72h6B5fRbmZDLrPUc7XFJKU2nwWdv1SX5QJu4FYDqnXzPVQNz85yOK0qTOSo8Q0q/W7Ks7TrDIXV7afBej8GLdX7XvOu/uFBWVxYl0fqHQProz3uBOVAqC200naXZ6RPXIcZBNRcA3OXFNyf0KWAmP7p5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f4yZ70T8JzKHMjx;
-	Tue,  3 Feb 2026 17:17:51 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8BBCA40539;
-	Tue,  3 Feb 2026 17:18:12 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP4 (Coremail) with SMTP id gCh0CgAHZ_dSvYFpxWVpGA--.22248S3;
-	Tue, 03 Feb 2026 17:18:12 +0800 (CST)
-Message-ID: <77c14b3e-33f9-4a00-83a4-0467f73a7625@huaweicloud.com>
-Date: Tue, 3 Feb 2026 17:18:10 +0800
+	s=arc-20240116; t=1770112755; c=relaxed/simple;
+	bh=JzxGlbAqWJguO/brDfWBiPpZifs77eJ7VtxL7GT6jH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tfq26L4HS+Q1MsEHWqcKKuXIESTGexpwZgZ8mC8WMPAiKY3mMF1MOY2cfrG0UoGFz5v7ZU0jLOE4wSDM91zHCKtTXSemMJ4h9HrBv/8BWU/JK5QHOtgXfVTkCrGZl7BhNK+t+z8XgKHRhOii1EkPY56nAUMo6zxcvPSLeya5I+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QI0mA7F+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tnQQIRd5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QI0mA7F+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tnQQIRd5; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 72CAF5BCC3;
+	Tue,  3 Feb 2026 09:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770112751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EmU1bMf85qYOnBafAe0nQ9ZZaSRn0hZPJl49++fUnGM=;
+	b=QI0mA7F+bHBAK/qqdGj78Hjd9BVT8niQOV8o+YBW5+T91JjpYrjpyZJv7cgyxqp/HInipR
+	68ROMzLMAMv+RxXxE0EF3lQJjqg57b5MAKllAafGrfQx7peZ33suwIo4xr/5R0FlqufxQk
+	fjVVd+P1tR3rnwfCibZdocyVc6+GSGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770112751;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EmU1bMf85qYOnBafAe0nQ9ZZaSRn0hZPJl49++fUnGM=;
+	b=tnQQIRd5KZAJAETGYi9KOi64CqIh5f3x3HupIwoqFmNx4z3nmz9sMHZoHD4wCu6g38q31v
+	kXN5Fd16IQ7VEoCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QI0mA7F+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tnQQIRd5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770112751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EmU1bMf85qYOnBafAe0nQ9ZZaSRn0hZPJl49++fUnGM=;
+	b=QI0mA7F+bHBAK/qqdGj78Hjd9BVT8niQOV8o+YBW5+T91JjpYrjpyZJv7cgyxqp/HInipR
+	68ROMzLMAMv+RxXxE0EF3lQJjqg57b5MAKllAafGrfQx7peZ33suwIo4xr/5R0FlqufxQk
+	fjVVd+P1tR3rnwfCibZdocyVc6+GSGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770112751;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EmU1bMf85qYOnBafAe0nQ9ZZaSRn0hZPJl49++fUnGM=;
+	b=tnQQIRd5KZAJAETGYi9KOi64CqIh5f3x3HupIwoqFmNx4z3nmz9sMHZoHD4wCu6g38q31v
+	kXN5Fd16IQ7VEoCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5AFFC3EA62;
+	Tue,  3 Feb 2026 09:59:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id idoyFu/GgWlZMQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 03 Feb 2026 09:59:11 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1D3E6A08F8; Tue,  3 Feb 2026 10:59:07 +0100 (CET)
+Date: Tue, 3 Feb 2026 10:59:07 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huawei.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, 
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org, 
+	yi.zhang@huaweicloud.com, yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com, 
+	yukuai@fnnas.com
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially
+ block truncating down
+Message-ID: <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2 00/22] ext4: use iomap for regular file's
- buffered I/O path
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, ojaswin@linux.ibm.com, ritesh.list@gmail.com,
- djwong@kernel.org, Zhang Yi <yi.zhang@huawei.com>, yi.zhang@huaweicloud.com,
- yizhang089@gmail.com, libaokun1@huawei.com, yangerkun@huawei.com,
- yukuai@fnnas.com
-References: <20260203062523.3869120-1-yi.zhang@huawei.com>
- <aYGZB_hugPRXCiSI@infradead.org>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <aYGZB_hugPRXCiSI@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAHZ_dSvYFpxWVpGA--.22248S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3GFW3Aw4kXw45tr4kKrWfXwb_yoW7ZF1kpF
-	Z8KFyftrn2gryjk3Z7Aa1Iqr40k3yrJFy3Gr1rKrs7urZ0gF1FyFWqqw1YgFyUGr1xCry2
-	vw4YvryIkFykZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
-	42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvf
-	C2KfnxnUUI43ZEXa7VUbmsjUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203062523.3869120-4-yi.zhang@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	TAGGED_FROM(0.00)[bounces-13507-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
+	TAGGED_FROM(0.00)[bounces-13508-lists,linux-ext4=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:dkim,suse.com:email];
+	DMARC_NA(0.00)[suse.cz];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,kernel.org,huawei.com,huaweicloud.com,fnnas.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,infradead.org,kernel.org,huaweicloud.com,huawei.com,fnnas.com];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid]
-X-Rspamd-Queue-Id: 2F45AD6B63
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 1AFE5D741F
 X-Rspamd-Action: no action
 
-Hi, Christoph!
-
-On 2/3/2026 2:43 PM, Christoph Hellwig wrote:
->> Original Cover (Updated):
+On Tue 03-02-26 14:25:03, Zhang Yi wrote:
+> Currently, __ext4_block_zero_page_range() is called in the following
+> four cases to zero out the data in partial blocks:
 > 
-> This really should always be first.  The updates are rather minor
-> compared to the overview that the cover letter provides.
+> 1. Truncate down.
+> 2. Truncate up.
+> 3. Perform block allocation (e.g., fallocate) or append writes across a
+>    range extending beyond the end of the file (EOF).
+> 4. Partial block punch hole.
 > 
->> Key notes on the iomap implementations in this series.
->>  - Don't use ordered data mode to prevent exposing stale data when
->>    performing append write and truncating down.
+> If the default ordered data mode is used, __ext4_block_zero_page_range()
+> will write back the zeroed data to the disk through the order mode after
+> zeroing out.
 > 
-> I can't parse this.
+> Among the cases 1,2 and 3 described above, only case 1 actually requires
+> this ordered write. Assuming no one intentionally bypasses the file
+> system to write directly to the disk. When performing a truncate down
+> operation, ensuring that the data beyond the EOF is zeroed out before
+> updating i_disksize is sufficient to prevent old data from being exposed
+> when the file is later extended. In other words, as long as the on-disk
+> data in case 1 can be properly zeroed out, only the data in memory needs
+> to be zeroed out in cases 2 and 3, without requiring ordered data.
 
-Thank you for looking into this series, and sorry for the lack of
-clarity. The reasons of these key notes have been described in
-detail in patch 12-13.
+Hum, I'm not sure this is correct. The tail block of the file is not
+necessarily zeroed out beyond EOF (as mmap writes can race with page
+writeback and modify the tail block contents beyond EOF before we really
+submit it to the device). Thus after this commit if you truncate up, just
+zero out the newly exposed contents in the page cache and dirty it, then
+the transaction with the i_disksize update commits (I see nothing
+preventing it) and then you crash, you can observe file with the new size
+but non-zero content in the newly exposed area. Am I missing something?
 
-This means that the ordered journal mode is no longer in ext4 used
-under the iomap infrastructure.  The main reason is that iomap
-processes each folio one by one during writeback. It first holds the
-folio lock and then starts a transaction to create the block mapping.
-If we still use the ordered mode, we need to perform writeback in
-the logging process, which may require initiating a new transaction,
-potentially leading to deadlock issues. In addition, ordered journal
-mode indeed has many synchronization dependencies, which increase
-the risk of deadlocks, and I believe this is one of the reasons why
-ext4_do_writepages() is implemented in such a complicated manner.
-Therefore, I think we need to give up using the ordered data mode.
+> Case 4 does not require ordered data because the entire punch hole
+> operation does not provide atomicity guarantees. Therefore, it's safe to
+> move the ordered data operation from __ext4_block_zero_page_range() to
+> ext4_truncate().
 
-Currently, there are three scenarios where the ordered mode is used:
-1) append write,
-2) partial block truncate down, and
-3) online defragmentation.
+I agree hole punching can already expose intermediate results in case of
+crash so there removing the ordered mode handling is safe.
 
-For append write, we can always allocate unwritten blocks to avoid
-using the ordered journal mode. For partial block truncate down, we
-can explicitly perform a write-back. The third case is the only one
-that will be somewhat more complex. It needs to use the ordered mode
-to ensure the atomicity of data copying and extents exchange when
-exchanging extents and copying data between two files, preventing
-data loss. Considering performance, we cannot explicitly perform a
-writeback for each extent exchange. I have not yet thought of a
-simple way to handle this. This will require consideration of other
-solutions when supporting online defragmentation in the future.
+								Honza
 
+> It should be noted that after this change, we can only determine whether
+> to perform ordered data operations based on whether the target block has
+> been zeroed, rather than on the state of the buffer head. Consequently,
+> unnecessary ordered data operations may occur when truncating an
+> unwritten dirty block. However, this scenario is relatively rare, so the
+> overall impact is minimal.
 > 
->>  - Override dioread_nolock mount option, always allocate unwritten
->>    extents for new blocks.
+> This is prepared for the conversion to the iomap infrastructure since it
+> doesn't use ordered data mode and requires active writeback, which
+> reduces the complexity of the conversion.
 > 
-> Why do you override it?
-
-There are two reasons:
-
-The first one is the previously mentioned reason of not using
-ordered journal mode. To prevent exposing stale data during a power
-failure that occurs while performing append writes, unwritten
-extents are always requested for newly allocated blocks.
-
-The second one is to consider performance during writeback. When
-doing writeback, we should allocate blocks as long as possible when
-first calling ->writeback_range() based on the writeback length,
-rather than mapping each folio individually. Therefore, to avoid the
-situation where more blocks are allocated than actually written
-(which could cause fsck to complain), we cannot directly allocate
-written blocks before performing writeback.
-
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/inode.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
 > 
->>  - When performing write back, don't use reserved journal handle and
->>    postponing updating i_disksize until I/O is done.
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index f856ea015263..20b60abcf777 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4106,19 +4106,10 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+>  	folio_zero_range(folio, offset, length);
+>  	BUFFER_TRACE(bh, "zeroed end of block");
+>  
+> -	if (ext4_should_journal_data(inode)) {
+> +	if (ext4_should_journal_data(inode))
+>  		err = ext4_dirty_journalled_data(handle, bh);
+> -	} else {
+> +	else
+>  		mark_buffer_dirty(bh);
+> -		/*
+> -		 * Only the written block requires ordered data to prevent
+> -		 * exposing stale data.
+> -		 */
+> -		if (!buffer_unwritten(bh) && !buffer_delay(bh) &&
+> -		    ext4_should_order_data(inode))
+> -			err = ext4_jbd2_inode_add_write(handle, inode, from,
+> -					length);
+> -	}
+>  	if (!err && did_zero)
+>  		*did_zero = true;
+>  
+> @@ -4578,8 +4569,23 @@ int ext4_truncate(struct inode *inode)
+>  		goto out_trace;
+>  	}
+>  
+> -	if (inode->i_size & (inode->i_sb->s_blocksize - 1))
+> -		ext4_block_truncate_page(handle, mapping, inode->i_size);
+> +	if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+> +		unsigned int zero_len;
+> +
+> +		zero_len = ext4_block_truncate_page(handle, mapping,
+> +						    inode->i_size);
+> +		if (zero_len < 0) {
+> +			err = zero_len;
+> +			goto out_stop;
+> +		}
+> +		if (zero_len && !IS_DAX(inode) &&
+> +		    ext4_should_order_data(inode)) {
+> +			err = ext4_jbd2_inode_add_write(handle, inode,
+> +					inode->i_size, zero_len);
+> +			if (err)
+> +				goto out_stop;
+> +		}
+> +	}
+>  
+>  	/*
+>  	 * We add the inode to the orphan list, so that if this
+> -- 
+> 2.52.0
 > 
-> Again missing the why and the implications.
-
-The reserved journal handle is used to solve deadlock issues in
-transaction dependencies when writeback occurs in ordered journal
-mode. This mechanism is no longer necessary if the ordered mode is
-not used.
-
-> 
->>  buffered write
->>  ==============
->>
->>   buffer_head:
->>   bs      write cache    uncached write
->>   1k       423  MiB/s      36.3 MiB/s
->>   4k       1067 MiB/s      58.4 MiB/s
->>   64k      4321 MiB/s      869  MiB/s
->>   1M       4640 MiB/s      3158 MiB/s
->>   
->>   iomap:
->>   bs      write cache    uncached write
->>   1k       403  MiB/s      57   MiB/s
->>   4k       1093 MiB/s      61   MiB/s
->>   64k      6488 MiB/s      1206 MiB/s
->>   1M       7378 MiB/s      4818 MiB/s
-> 
-> This would read better if you actually compated buffered_head
-> vs iomap side by side.
-> 
-> What is the bs?  The read unit size?  I guess not the file system
-> block size as some of the values are too large for that.
-
-The 'bs' is the read/write unit size, and the fs block size is the
-default 4KB.
-
-> 
-> Looks like iomap is faster, often much faster except for the
-> 1k cached case, where it is slightly slower.  Do you have
-> any idea why?
-
-I observed the on-cpu flame graph. I think the main reason is the
-buffer_head loop path detects the folio and buffer_head status.
-It saves the uptodate flag in the buffer_head structure when the
-first 1KB write for each 4KB folio, it doesn't need to get blocks
-for the remaining three writes.  However, the iomap infrastructure
-always call ->iomap_begin() to acquire the mapping info for each
-1KB write.  Although the first call to ->iomap_begin() has already
-allocated the block extent, there are still some overheads due to
-synchronization operations such as locking when subsequent calls
-are made. The smaller the unit size, the greater the impact, and
-this will also have a greater impact on pure cache writes than on
-uncached writes.
-
-> 
->>  buffered read
->>  =============
->>
->>   buffer_head:
->>   bs      read hole   read cache      read data
->>   1k       635  MiB/s    661  MiB/s    605  MiB/s
->>   4k       1987 MiB/s    2128 MiB/s    1761 MiB/s
->>   64k      6068 MiB/s    9472 MiB/s    4475 MiB/s
->>   1M       5471 MiB/s    8657 MiB/s    4405 MiB/s
->>
->>   iomap:
->>   bs      read hole   read cache       read data
->>   1k       643  MiB/s    653  MiB/s    602  MiB/s
->>   4k       2075 MiB/s    2159 MiB/s    1716 MiB/s
->>   64k      6267 MiB/s    9545MiB/s     4451 MiB/s
->>   1M       6072 MiB/s    9191MiB/s     4467 MiB/s
-> 
-> What is read cache vs read data here?
-> 
-
-The 'read cache' means that preread is set to 1 during fio tests,
-causing it to read cached data. In contrast, the 'read data'
-preread is set to 0, so it always reads data directly from the
-disk.
-
-Thanks,
-Yi.
-
-
-> Otherwise same comments as for the write case.
-> 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
