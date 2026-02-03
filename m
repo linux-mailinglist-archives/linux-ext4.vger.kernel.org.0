@@ -1,61 +1,53 @@
-Return-Path: <linux-ext4+bounces-13481-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13482-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gC+THNmGgWmzGwMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13481-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 06:25:45 +0100
+	id +LiqOlaJgWnuGwMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13482-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 06:36:22 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09CC6D4A76
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 06:25:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB17D4C27
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 06:36:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F3E6F30199E2
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 05:24:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 32D8E30429B9
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 05:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FFE366554;
-	Tue,  3 Feb 2026 05:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yCnhYUuA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58D3366833;
+	Tue,  3 Feb 2026 05:36:11 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AF036605E;
-	Tue,  3 Feb 2026 05:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475EB271464;
+	Tue,  3 Feb 2026 05:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770096199; cv=none; b=AL8vkHEbWQSXMwAPi3qbWylnKRuLCPIyJp63eRCCt8FyjznzmDqjbwNPPF13V6hyLSrKdYmhRUOxKqCD84Slfe4im2jqI/fHGJMWvZXQD+PFAk3ZOoyxYBaPtnHnaanOAUNKpxprl6nOfFdAt0/+/wAX7scli+D/QVcQuoQqF7c=
+	t=1770096971; cv=none; b=m3hqk3eh/ZWYwjrIDIYgiNVdir7TpF4hjM+RrgRW5AHAi58ii/T43sQEkYX9nENSxvQbzWOr3IpdQIdBrgNAz1ET3Zil9OowAouJasRIRRyTZIYRxkd0ENCnPAVz6z+KdQ1yFSD3XTh1Xi6Pdwa4Kty3AiFCKbNSIgAnQ/9nVTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770096199; c=relaxed/simple;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
+	s=arc-20240116; t=1770096971; c=relaxed/simple;
+	bh=cC/qk4dm1B5K6YpfaVGKmBECm1eO3/9Kot5iyWUeUr4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AKsfkjomFk3GL7CXn3PZhChV0i43YEtR+K9P/aducQn3BV/NxRC+D1Jz/o7T9ARX+ylSZVUUlsQEnuCrvqPZc2puTSWvKnswzieJAtlzqyoYk6MEeuL5R91wIt5oZbQ/zxWp4deUA/JH7xpYYRed7X6klN/T4U4AnRrQAy2wHUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yCnhYUuA; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=yCnhYUuAQi2hKuMxXMif1DpWZp
-	jCVz9VTLWCyttzT5Owt/sfcqF9EBMjf8uSyIDb19taLjSMY1wOwpllu5PWE8QoTHG/8dD1rgveemf
-	H5g4rgPM4FDwrQog8mckh8jsJehfLg97RPwVvw7IVzsXezyXwskrmdvwlzQwvOACLYANLEfjKecHt
-	ZBmAFactMWiV50MCx2YKb11zsvTpTfYPu8B3JfZ8HoqmEiQFVIb/6Nk1fXM3a+yf4s+jmAhsnoFJ3
-	DYm0UvojiSKr8iZYm2042HL1iw3OZyQjS4UIb584S1z6+JN4IY/Rp2hBkJ2zg/TqEpIq8oYjFtO7J
-	j5RLzqww==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vn8sg-0000000667J-0rkQ;
-	Tue, 03 Feb 2026 05:23:18 +0000
-Date: Mon, 2 Feb 2026 21:23:18 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] generic/749: don't write a ton of _mread output to
- seqres.full
-Message-ID: <aYGGRljKbUf4XNc6@infradead.org>
-References: <177005945267.2432878.7105483366958924034.stgit@frogsfrogsfrogs>
- <177005945334.2432878.12923613447146396794.stgit@frogsfrogsfrogs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IL70yqCP0tQFdib4rl8vG9EZNAcKyvMjW/WUuakCOxXL1fKcL+xN1EIgwM11gS0M1ZXrCaVxHPA9WlYNrxgbvEfXATmx31fOvWeU8P42S3s+efgpx6cQ5dkZERFjvcJ0aHi+3IJDdq0SV6qtk8p+q3DnhXosRvX3yIrm6d6TX/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id E866E68AFE; Tue,  3 Feb 2026 06:36:04 +0100 (CET)
+Date: Tue, 3 Feb 2026 06:36:04 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: fsverity speedup and memory usage optimization v5
+Message-ID: <20260203053604.GC15956@lst.de>
+References: <20260202060754.270269-1-hch@lst.de> <20260202211423.GB4838@quark> <20260202223404.GA173552@quark>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,40 +56,76 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <177005945334.2432878.12923613447146396794.stgit@frogsfrogsfrogs>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20260202223404.GA173552@quark>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	TAGGED_FROM(0.00)[bounces-13481-lists,linux-ext4=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-ext4@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:mid,infradead.org:dkim,lst.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 09CC6D4A76
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-ext4@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lst.de:mid];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13482-lists,linux-ext4=lfdr.de];
+	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 6AB17D4C27
 X-Rspamd-Action: no action
 
-Looks good:
+On Mon, Feb 02, 2026 at 02:34:04PM -0800, Eric Biggers wrote:
+> On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
+> > On Mon, Feb 02, 2026 at 07:06:29AM +0100, Christoph Hellwig wrote:
+> > > Hi all,
+> > > 
+> > > this series has a hodge podge of fsverity enhances that I looked into as
+> > > part of the review of the xfs fsverity support series.
+> > > 
+> > > The first part optimizes the fsverity read path by kicking off readahead
+> > > for the fsverity hashes from the data read submission context, which in my
+> > > simply testing showed huge benefits for sequential reads using dd.
+> > > I haven't been able to get fio to run on a preallocated fio file, but
+> > > I expect random read benefits would be significantly better than that
+> > > still.
+> > > 
+> > > The second part avoids the need for a pointer in every inode for fsverity
+> > > and instead uses a rhashtable lookup, which is done once per read_folio
+> > > or ->readahead invocation plus for btrfs only for each bio completion.
+> > > Right now this does not increse the number of inodes in
+> > > each slab, but for ext4 we are getting very close to that (within
+> > > 16 bytes by my count).
+> > > 
+> > > Changes since v5:
+> > >  - drop already merged patches
+> > >  - fix a bisection hazard for non-ENOENT error returns from
+> > >    generic_read_merkle_tree_page
+> > >  - don't recurse on invalidate_lock
+> > >  - refactor page_cache_ra_unbounded locking to support the above
+> > >  - refactor ext4 and f2fs fsverity readahead to remove the need for the
+> > >    first_folio branch in the main readpages loop
+> > 
+> > Applied to https://git.kernel.org/pub/scm/fs/fsverity/linux.git/log/?h=for-next
+> > 
+> > (Though it's getting late for v6.20 / v7.0.  So if there are any
+> > additional issues reported, I may have to drop it.)
+> 
+> Unfortunately this silently conflicts with changes in the f2fs tree.
+> Resolution doesn't look too bad, but we'll need to handle this.
+> Christoph, Jaegeuk, and Chao, let me know if this looks okay:
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I ended up with the same merge, and it looks good to me.
 
 
