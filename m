@@ -1,201 +1,179 @@
-Return-Path: <linux-ext4+bounces-13530-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13531-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ALhYCDSzg2k0tAMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13530-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 21:59:32 +0100
+	id OO6vAVO8g2kgtwMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13531-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 22:38:27 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837B8EC9EA
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 21:59:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E2DECC7F
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 22:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6E76D301D04B
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 20:59:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 66CA83011A6D
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 21:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945B743C072;
-	Wed,  4 Feb 2026 20:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B486D39525A;
+	Wed,  4 Feb 2026 21:38:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kkM7QfTO"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="HuG+JQe9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D2C437F8BD;
-	Wed,  4 Feb 2026 20:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DA731814F
+	for <linux-ext4@vger.kernel.org>; Wed,  4 Feb 2026 21:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770238746; cv=none; b=RAYf1lNuSY/t6Xg/HDh/IPGDH8k40IC7eWCDW9ZU7J1Fe37FX6YdJaCMYUcPgmJnLCzC5wDrhVigczHncPQLUUCB0W50T/sAnAH5PESHh8yplIylhGhyUKpO2Wm4PWiy7Xchw04wskoZIlOL6qcPJtZtShhCvMKQbFMvVHxYGNY=
+	t=1770241104; cv=none; b=NP0WQVu/MJnq3VT3k7xYxi+etZ2xc68/OtPMBc48wQhkUhtkrbD+7OlCuBrMHhIe585Jwf1ZI6WxLNMF3/BopmSvRSVnfjBFlz/uzvsQNfmx19mPdD+KQ/BMNL6FLnoOhfykEC4XpwEA59alBgiLulsPVhciEGdLxQZL4tSMAd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770238746; c=relaxed/simple;
-	bh=B6thRlc2RbHGNG+djMX0Je2bmbWqh2XpAabSWDB4qok=;
+	s=arc-20240116; t=1770241104; c=relaxed/simple;
+	bh=O6qBV6gGN87BHthPO96VoB+LodK9kjJIc83STvOyD44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MDXLGK5tGO1M0TRVy2OVQu+ktIlOs2pBkhlsPG05LF4BfLrM9QNDSfECUf8WIbLQkiH+RodF58K+71ZAo28V4FekqMuOFkSRk0fxVXBsZ7nmNbHUnBHUHx3+zARCKCsdgqSiRf34cTEV4bT4dB7f26LzX4Y47akWPKPMtivDbzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kkM7QfTO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B47C4CEF7;
-	Wed,  4 Feb 2026 20:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770238745;
-	bh=B6thRlc2RbHGNG+djMX0Je2bmbWqh2XpAabSWDB4qok=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kkM7QfTOqM3BIAzzC/hpgJ9HpxFVCy4w//AtvtSbh5N8291R1aPFWS30fM6w/u5ed
-	 piPxsH8J3IKkHn+SbGxwzBhl2wvUia2thL/iyAgvziEd1+u96woqaxyP4KeNAOdW7M
-	 c0fIuPwJROUcPgFKaY1FGINPrCHVWVmYVmyDouYAutrn0PH8f1/d0+8uaEdnRVY10O
-	 TVA432gXYQMnqn/8PetCR6zQaNwJ4Mg9tiWcQuCUpdUy9tPQPHFLZg5ccMqioRiySD
-	 Lfl7bXshqdF88eUxL/nCQIQqdmb5WHqg6l5aRDwrNgyepCJAr/zaaQAwHv76fiwnbP
-	 QgR22p83fSXQA==
-Date: Wed, 4 Feb 2026 12:59:03 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Simon Weber <simon.weber.39@gmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, anthonydev@fastmail.com
-Subject: Re: [PATCH v1] ext4: fix journal credit check when setting fscrypt
- context xattr
-Message-ID: <20260204205903.GA2197@quark>
-References: <8feeeec8-7330-47ae-9b54-9e789ebdfae5@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gzfUoLvhwsmqSSSyjN1IlE9k+v+ZwbmFE0/En2MXBw2yKrKzDXTLodgYv/0dQLwY7zM3erUKOV+NrZ9uOJ7rW7+JVr4jcmrpXNy6VZLjUio6b7lPZeHEJEGDx01WBSTMYXuODmoD7h2FHMTwCZic5cSVlV8EdJuqnJSZ4MSjxso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=HuG+JQe9; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-119-77.bstnma.fios.verizon.net [173.48.119.77])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 614LcDwi024801
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 4 Feb 2026 16:38:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1770241099; bh=o+Ve8qwMXjyJI60yJIDvTa/BgGKoP1paH+c8Ka1uPgY=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=HuG+JQe9iSGxEXCqg8fXzsDQdz91LzEzmr6CAQMEAc3mMr3MwAWs+eABJhFpFTO9m
+	 F1GfuYHPahTPNit+eDPnVeahRP/uHGprFhynHIwAFXfdMP+69yBv8VgzweCtQRGNR6
+	 aqe8uQ/2s1XAAjO3iE4OBSc366GbXf2Woe5TeXIamxS3jW/7Q//QSj8TbFPtjnZ9GW
+	 +mMIx/vNLL5vj88SNeYi95rPPeQHOolAxpjNSamrexjHa7/yvkZc+uc4qHgnzjiHiq
+	 HbDf6BQ0lGiOcgCKeh8P5xtW1pLDUDd2nM4SqKNm0BJTwomeEtQ1fFHHOJs6ALMlyy
+	 KTbYhhoRC6sSQ==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 4EBEE57405D6; Wed,  4 Feb 2026 16:37:13 -0500 (EST)
+Date: Wed, 4 Feb 2026 16:37:13 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Mario Lohajner <mario_lohajner@rocketmail.com>
+Cc: Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: add optional rotating block allocation policy
+Message-ID: <20260204213713.GD31420@macsyma.lan>
+References: <20260204033112.406079-1-mario_lohajner.ref@rocketmail.com>
+ <20260204033112.406079-1-mario_lohajner@rocketmail.com>
+ <C3DAF83A-CE88-4348-BCE2-237960F3CD9D@dilger.ca>
+ <c00064e6-a3d4-4f91-a50b-053db07c7d33@rocketmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8feeeec8-7330-47ae-9b54-9e789ebdfae5@gmail.com>
+In-Reply-To: <c00064e6-a3d4-4f91-a50b-053db07c7d33@rocketmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13531-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13530-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,fastmail.com];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[rocketmail.com];
+	DKIM_TRACE(0.00)[mit.edu:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 837B8EC9EA
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 75E2DECC7F
 X-Rspamd-Action: no action
 
-On Wed, Feb 04, 2026 at 04:09:02PM +0100, Simon Weber wrote:
-> From: Simon Weber <simon.weber.39@gmail.com>
+On Wed, Feb 04, 2026 at 12:07:57PM +0100, Mario Lohajner wrote:
 > 
-> When creating a new inode, the required number of jbd2 journalling credits
-> is conservatively estimated by summing up the credits required for various
-> actions. This includes setting the xattrs for example for ACLs and the
-> fscrypt context. Since the inode is new and has no xattrs, the estimation
-> of credits needed for creating these xattrs is performed by passing
-> is_create=true into the function __ext4_xattr_set_credits, which yields a
-> lower number of credits than when is_create is false. However, following
-> the control flow until the fscrypt context xattr is actually set, the
-> XATTR_CREATE flag is not passed by ext4_set_context to
-> ext4_xattr_set_handle. This causes the latter function to compare the
-> remaining credits against the value of __ext4_xattr_set_credits(...,
-> is_create=false), which may be too much. This flawed design does not
-> usually cause any issues unless the filesystem features has_journal,
-> ea_inode, and encrypt are all present at the same time. In this case,
-> creating a file in any fscrypt-encrypted directory will always return
-> ENOSPC.
-> This patch fixes this issue by passing the XATTR_CREATE flag in the
-> ext4_set_context function. This is safe since ext4_set_context is only
-> called when creating a new inode (in which case the context xattr is not
-> present yet) or when setting the encryption policy on an existing file
-> using the FS_IOC_SET_ENCRYPTION_POLICY ioctl, which however first checks
-> that the file does not currently have an encryption policy set. When
-> calling ext4_set_context it is therefore not undesirable behaviour to
-> possibly fail with an EEXIST error due to the XATTR_CREATE flag and the
-> context xattr already being present.
-> 
-> Co-developed-by: Anthony Durrer <anthonydev@fastmail.com>
-> Signed-off-by: Anthony Durrer <anthonydev@fastmail.com>
-> Signed-off-by: Simon Weber <simon.weber.39@gmail.com>
-> ---
->  fs/ext4/crypto.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
-> index cf0a0970c095..5b665f85f6a7 100644
-> --- a/fs/ext4/crypto.c
-> +++ b/fs/ext4/crypto.c
-> @@ -163,10 +163,20 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
->       */
->  
->      if (handle) {
-> +        /*
-> +         * Set the xattr using the XATTR_CREATE flag, since this function should
-> +         * only be called on inodes that do not have an encryption context yet.
-> +         * Since when estimating the number of credits needed for the new inode
-> +         * we called ext4_xattr_set with is_create = true, we need to pass this
-> +         * flag, otherwise the check for remaining credits is too conservative
-> +         * and may fail.
-> +         * If for some reason the inode already has an encryption context, this
-> +         * fails with EEXIST, which is desirable behaviour.
-> +         */
->          res = ext4_xattr_set_handle(handle, inode,
->                          EXT4_XATTR_INDEX_ENCRYPTION,
->                          EXT4_XATTR_NAME_ENCRYPTION_CONTEXT,
-> -                        ctx, len, 0);
-> +                        ctx, len, XATTR_CREATE);
->          if (!res) {
->              ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
->              ext4_clear_inode_state(inode,
-> 
+> Yes, the main motive for this allocator is flash wear leveling,
+> but it is not strictly a wear leveling mechanism, and it is not named
+> as such for a reason.
 
-Thanks!  A few comments:
+If the device needs such a flash wear leveling scheme, it's very
+likely that it's not going to work very well for ext4, because there
+will be *far* more writes to statially located metadata --- the
+superblock, inode table, allocation bitmaps, which are scattered
+across the LBA space, --- that will potentially becausing problem to
+such a flash device.
 
-This patch doesn't actually apply to the stated base-commit, likely
-because of corrupted whitespace.  Make sure to use 'git send-email' as
-described in Documentation/process/submitting-patches.rst.
+In practice, even the simplest Flash Translation Layer implementations
+do not require this, so I question whether devices that would need
+this exist in practice.  Even the cheapest flash devices, for low-cost
+mobile and digital cameras, have not needed this in the 30 plus years
+that commercial flash storage have been around, and the
+micro-controllers which implement the FTL have been getting more
+sophisticated, not less.  Do you have a specific flash storage device
+where this would be helpful?  Or this a hypothetical exercise?
 
-The commit message should be broken into paragraphs, and ideally
-shortened a bit.  The code comment maybe could be shortened as well.
+> This policy helps avoid allocation hotspots at mount start by
+> distributing allocations sequentially across the entire mount,
+> not just a file or allocation stream.
 
-Since this is a bug fix, please include an appropriate Fixes tag.
+Why are you worrying about allocation hotspots?  What's the high level
+problem that you are trying to address, if it is not about wear
+leveling?
 
-As for the actual change, it's *probably* fine.  The equivalent code in
-f2fs already uses XATTR_CREATE.
+> At the block/group allocation level, the file system is fairly stochastic
+> and timing-sensitive. Rather than providing raw benchmark data, I prefer
+> to explain the design analytically:
 
-However, I'm wondering a bit more about the possibility of inodes that
-have an encryption xattr but not the encrypt flag.  ext4 sets these
-together in a journal transaction, so normally it indeed isn't possible.
+Whether you use raw benchmarks or try to do thought experiments you
+really need to specify your assumptions about the nature of (a) the
+storage device, and (b) the workload.  For example, if the flash
+device has such a primitive, terible flash translation that the file
+system needs to handle wear levelling, it's generally the cheapest,
+most trashy storage device that can be imagined.  In those cases, the
+bottleneck will likely be read/write speed.  So we probably don't need
+to worry about the block allocate performance while writing to this
+storage device, because the I/O throughput latency is probably
+comparable to the worst possible USB thumb drive that you might find
+in the checkout line of a drug store.
 
-However, ext4 also supports a no-journal mode.  In no-journal mode,
-e2fsck is relied on to correct filesystem inconsistencies.
+From the workload perforamnce, how many files are you expecting that
+system will be writing in parallel?  For example, is the user going to
+be running "make -j32" while building some software project?  Probably
+not, because why would connect a really powerful AMD Threadripper CPU
+to the cheapest possible trash flash device?  That
+would be a system that would be very out of balance.  But if this is
+going to be low-demand, low-power performacne, then you might be able
+to use an even simpler allocator --- say, like what FAT file system
+uses.
 
-It looks like e2fsck doesn't currently remove loose encryption xattrs.
-So I'm wondering if that would need to be added.
+Speaking of FAT, depending on the quality of the storage device and
+benchmark, perhaps another file system would be a better choice.  In
+addition to FAT, another file system to consider is f2fs, which is a
+log-structured file system that avoids the static inode table which
+might be a problem with with a flash device that needs file system
+aware wear-leveling.
 
-The specific scenario I'm concerned about is:
+> Of course, this is not optimal for classic HDDs, but NVMe drives behave
+> differently.
 
-    - FS_IOC_SET_ENCRYPTION_POLICY tries to set a directory to encrypted
-    - A crash occurs (in no-journal mode), leaving the inode having an
-      encryption xattr on-disk but not the encrypt flag
-    - e2fsck doesn't correct the inconsistency
-    - Userspace sees that the directory isn't encrypted yet and retries
-      FS_IOC_SET_ENCRYPTION_POLICY.  Due to XATTR_CREATE, it fails.
+I'm not aware of *any* NVMe devices that that would find this to be
+advantages.  This is where some real benchmarks with real hardware,
+and with specific workload that is used in real world devices would be
+really helpful.
 
-Any thoughts on whether this could be a problem?
+Cheers,
 
-- Eric
+						- Ted
+						
 
