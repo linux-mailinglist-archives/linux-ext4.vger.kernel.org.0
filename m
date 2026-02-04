@@ -1,505 +1,303 @@
-Return-Path: <linux-ext4+bounces-13516-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13517-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eHuzNejCgmkpaAMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13516-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 04:54:16 +0100
+	id EOQ8EHfJgmkJbQMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13517-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 05:22:15 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C0EE1680
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 04:54:16 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC47E187A
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 05:22:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CEF6B308F9D6
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 03:53:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5E61530CABFF
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 04:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D258C2DD5F6;
-	Wed,  4 Feb 2026 03:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B67A34CFC0;
+	Wed,  4 Feb 2026 04:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="XCyhnuIl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mjK4iycE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D5028000F
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Feb 2026 03:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEF034C830;
+	Wed,  4 Feb 2026 04:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770177202; cv=none; b=jhA6hhsSFkDwViRs1La8rgeacDEpQMgoXg1DZctPNaXU5QL8eeDePL1QfBdNk7tGqh+KPRtUK3cj3N812njiA8aaL+P7o/3lrqz3NaLcMRNsLd5ZXalATOtu6uKFiLtU8q54xIG449SxUozsZPT0IusnSVeX/XGALNUGDSwcdyY=
+	t=1770178931; cv=none; b=O6qqgmtElPdv2pmqWBDO2B3iVb40a6sdNaX+vd4/N8fPKY9vKB2YgMaG9jDe6kWa41zsDpdW0BrORvDchrFunQPM2yD1hasYsFvCM12qOVTLYhzn4G3AGOlmvRuMCVoT9aESXQ1TH2lOVBseN/VPyUhzwM8XCMihaqTCj3WC3R4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770177202; c=relaxed/simple;
-	bh=Sq/0MuOrsshTlCVoQck4Z+Jcq+1BfdJ3LbTMlEIaZg4=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=R42JNbxDgNVDZ7MtSciMAG/yp2fDOz8tJvoeqEAp7C14kuAwy16GOhP0+b7TMQqRSGT8N4FUur2EKVYqXD91wlyRZvHCiMgIPwuR4fOyRtOT7f/E9pbCeZrjSq5eML/mjcM+S15wBUJ8XM5W+jfS1/y0aJSqPdWKtzQWSUPedfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=XCyhnuIl; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-29f30233d8aso40149645ad.0
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Feb 2026 19:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1770177199; x=1770781999; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TrmCgP+1rlKEXkaMoq+hI17BHfkqZPGBfI0ezgyFhkc=;
-        b=XCyhnuIlYZZk6w5NmOPEqiY+PntAMj9pT8s09nG+UVXmuRIz/c+fno5WCmdO81Gxck
-         1roHXRN7TjS9y+xXGneGLgsB+bVPv5S06rAFSXBPxVxW1vLC0ZkU1rJZUTZ92pu1pqEi
-         C1vdSbV1w3itU/m1sMXM1dNWoP4bpJEtQXfbsGGxKniPF8XoV3SVsrJUxa+FO5V+8feQ
-         Lh3jAkvGRn9KlVJZweleqJB+yeCsUoV4L6nY9Wyb92tKXipuxoZa2fh45Lm3DExtObax
-         eNi3xFvChIcr9qHKfbpq8IJsXdJAaNI/iKJwxjlnwqz4enVLW9joGlaCOAlMOdNzM7J1
-         hphg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770177199; x=1770781999;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TrmCgP+1rlKEXkaMoq+hI17BHfkqZPGBfI0ezgyFhkc=;
-        b=XacB8n9Ppz/ydS9o0Asgd/Kig5D9ii92WnKJjrYSZFTwNAQBF6MhlzT1a+DRfY3MpK
-         mlENzxATZKLZzI4RDFpNhX6VlA3q+ukAkfFnYhXxhxnpmzfTXngmHC7mTFk5kjMCpUo3
-         ZHKrl6kOx6gQh+H/Xno9QsYRQah44wQZFrl7Q1/OkoOvonS9A0BqS4vcIQYT2Dj86jzb
-         N9fp/tfgojOU6q8Cysek8mWEpB8Mf1ZzruJv1Is3QnFKUOwSyJA0cLvAt8s/6lNOLvFp
-         i2at+VRzjZC27/XHyN7LvP8kBBR15oUGHHSosZAsU4F5OqTepIZU3WjM+0RujonrP1sC
-         UoOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVT6Qc28XHKYRQMVKcnCsbxZcOHNLMao/wInPNT+YfIKPRUkXCKm5Fb49NbuYjdbEEPipDI8nl7Kq6Z@vger.kernel.org
-X-Gm-Message-State: AOJu0YweFBcqyc+YHL43wzz9kCUDwEmMJKaCiS1XbIEOhgrq3cCZVDYd
-	SDFJcCaeg1N+2qNF8WxWLmW4SaeSAJ9LDhAwND9CdNd/b7ngcMaZFjUQTCxyblgPnRI=
-X-Gm-Gg: AZuq6aIr4pUFEcYcWYs1FFjKNch3jCIEMJdKisdIjQxo+h3oPGd7hM+WGxTbc3lt1/G
-	718s7UU3soXDHn0Be3NjRS05WtY5XIxzbOC//rJde6THQov6YhZBBVpzWT1DdtzUgxtoo2SIFEF
-	BOO3rlXCBVlWiIM1sXdsjnTzZGNroB4mZ8lC7LUmvf9XUEIHBnEeFvOonYKuGLg85SdikS8BMaC
-	Az52/jpkan/H4eqBVwtcrijKYyz5TICKczMoRlY/MPRgCPkK8wLCWOYnKiHyEvL+14qsDlXUoA6
-	EiCOdiXwEqke0lQRsCxW7vPkgdcMak/nndvzt3bEtj7A6i2C/pJdKryu7ilvI0TTyP8qOsj3Kjf
-	rcAMjl3H9GB8YFeBS/zQ5LGvJT7La5iZ/QJizLcDRS0zirtLiXgzNG0Nrui8Ka4Zsx0SSBq5fxf
-	uDrl5J8nXwICzeR3bUu+RwbeUOKMlbynHg1vNJgsY6cVzikZxs6e14YHKdY5xbVOOwYQ==
-X-Received: by 2002:a17:903:1ae8:b0:2a0:8ca7:69de with SMTP id d9443c01a7336-2a933fd8e92mr19855105ad.41.1770177199515;
-        Tue, 03 Feb 2026 19:53:19 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8241d434f17sm854077b3a.41.2026.02.03.19.53.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Feb 2026 19:53:18 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1770178931; c=relaxed/simple;
+	bh=xAr1MaLBjTmJh1EIvHVY9qAFaejUI/5HqFZckEJcElM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lzJJZXphl11ryT9DuVpv68INWsMtgEeIyPRd3m9fTizze7KrCfe6Yf3Kg54GafVlx4eOv6A/QpOnXUr9Np1vC6vQsHQIao54/uSa4zr2slpsoee7dWsxzBO3JygIV0EphQdzCu9yMa+fLfCO6XeQk2vUY7Rx5W9lRcDPn5JmXPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mjK4iycE; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770178930; x=1801714930;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xAr1MaLBjTmJh1EIvHVY9qAFaejUI/5HqFZckEJcElM=;
+  b=mjK4iycElGTEwlgjfamlOsJBDp/oloBHiy57a9XRIQpbX5MDz8ufH/Dj
+   za0nr23jg6o2b9Y7Mrj6XhPnuvBRHZJllY9oWiF6+N26F4cOqLQspSRoX
+   N4Oe2Y/EC+HPm+18vUkuIGyL4JyVpNyPKvT1+EDVOyG7NkPS1UjFjstpy
+   x0n9Y3wWQd82Ak+HOzNZW/oJkCBUw4lm9iZCPRe1duoVg6uZH3DutB9sP
+   hSJY3dVL8QjqpdYWT8EnIdBN7BFg19+FldAIq6pxHrw2ov1SnvI+ulP1w
+   dWNP1hFtFfzixjOm/8mfdRN0ZWNbLAJ4i+PCoArViXR9PjKB3blGoL7pD
+   Q==;
+X-CSE-ConnectionGUID: Lmag3X5kTuiYU36BrRcRzw==
+X-CSE-MsgGUID: CoWsnVZjRyWWnZzcDVlsUw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="74979366"
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
+   d="scan'208";a="74979366"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 20:22:09 -0800
+X-CSE-ConnectionGUID: K9a77kKNQlCvpvsT37pm5Q==
+X-CSE-MsgGUID: U0IMYBoYTtGKmJ6qBBepqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
+   d="scan'208";a="214753861"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 03 Feb 2026 20:22:05 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vnUOw-00000000hRg-4B3c;
+	Wed, 04 Feb 2026 04:22:02 +0000
+Date: Wed, 4 Feb 2026 12:21:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
+	yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yizhang089@gmail.com,
+	libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially
+ block truncating down
+Message-ID: <202602041239.JFyNwVcg-lkp@intel.com>
+References: <20260203062523.3869120-4-yi.zhang@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH] ext4: add optional rotating block allocation policy
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260204033112.406079-1-mario_lohajner@rocketmail.com>
-Date: Tue, 3 Feb 2026 20:53:07 -0700
-Cc: tytso@mit.edu,
- linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C3DAF83A-CE88-4348-BCE2-237960F3CD9D@dilger.ca>
-References: <20260204033112.406079-1-mario_lohajner.ref@rocketmail.com>
- <20260204033112.406079-1-mario_lohajner@rocketmail.com>
-To: Mario Lohajner <mario_lohajner@rocketmail.com>
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203062523.3869120-4-yi.zhang@huawei.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13516-lists,linux-ext4=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,huaweicloud.com,fnnas.com];
+	TAGGED_FROM(0.00)[bounces-13517-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[rocketmail.com];
-	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger.ca:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,rocketmail.com:email,dilger-ca.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 39C0EE1680
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8DC47E187A
 X-Rspamd-Action: no action
 
-On Feb 3, 2026, at 20:31, Mario Lohajner <mario_lohajner@rocketmail.com> =
-wrote:
->=20
-> Add support for the rotalloc allocation policy as a new mount
-> option. Policy rotates the starting block group for new allocations.
->=20
-> Changes:
-> - fs/ext4/ext4.h
-> rotalloc policy dedlared, extend sb with cursor, vector & lock
->=20
-> - fs/ext4/mballoc.h
-> expose allocator functions for vectoring in super.c
->=20
-> - fs/ext4/super.c
-> parse rotalloc mnt opt, init cursor, lock and allocator vector
->=20
-> - fs/ext4/mballoc.c
-> add rotalloc allocator, vectored allocator call in new_blocks
->=20
-> The policy is selected via a mount option and does not change the
-> on-disk format or default allocation behavior. It preserves existing
-> allocation heuristics within a block group while distributing
-> allocations across block groups in a deterministic sequential manner.
->=20
-> The rotating allocator is implemented as a separate allocation path
-> selected at mount time. This avoids conditional branches in the =
-regular
-> allocator and keeps allocation policies isolated.
-> This also allows the rotating allocator to evolve independently in the
-> future without increasing complexity in the regular allocator.
->=20
-> The policy was tested using v6.18.6 stable locally with the new mount
-> option "rotalloc" enabled, confirmed working as desribed!
+Hi Zhang,
 
-Hi Mario,
-can you please provide some background/reasoning behind this allocator?
-I suspect there are good reasons/workloads that could benefit from it
-(e.g. flash wear leveling), but that should be stated in the commit
-message, and preferably with some benchmarks/measurements that show
-some benefit from adding this feature.
+kernel test robot noticed the following build warnings:
 
-Cheers, Andreas
+[auto build test WARNING on next-20260202]
 
->=20
-> Signed-off-by: Mario Lohajner <mario_lohajner@rocketmail.com>
-> ---
-> fs/ext4/ext4.h    |   8 +++
-> fs/ext4/mballoc.c | 152 ++++++++++++++++++++++++++++++++++++++++++++--
-> fs/ext4/mballoc.h |   3 +
-> fs/ext4/super.c   |  18 +++++-
-> 4 files changed, 175 insertions(+), 6 deletions(-)
->=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 56112f201cac..cbbb7c05d7a2 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -229,6 +229,9 @@ struct ext4_allocation_request {
-> unsigned int flags;
-> };
->=20
-> +/* expose rotalloc allocator argument pointer type */
-> +struct ext4_allocation_context;
-> +
-> /*
->  * Logical to physical block mapping, used by ext4_map_blocks()
->  *
-> @@ -1230,6 +1233,7 @@ struct ext4_inode_info {
->  * Mount flags set via mount options or defaults
->  */
-> #define EXT4_MOUNT_NO_MBCACHE 0x00001 /* Do not use mbcache */
-> +#define EXT4_MOUNT_ROTALLOC 0x00002 /* Use rotalloc policy/allocator =
-*/
-> #define EXT4_MOUNT_GRPID 0x00004 /* Create files with directory's =
-group */
-> #define EXT4_MOUNT_DEBUG 0x00008 /* Some debugging messages */
-> #define EXT4_MOUNT_ERRORS_CONT 0x00010 /* Continue on errors */
-> @@ -1559,6 +1563,10 @@ struct ext4_sb_info {
-> unsigned long s_mount_flags;
-> unsigned int s_def_mount_opt;
-> unsigned int s_def_mount_opt2;
-> + /* Rotalloc cursor, lock & new_blocks allocator vector */
-> + unsigned int s_rotalloc_cursor;
-> + spinlock_t s_rotalloc_lock;
-> + int (*s_mb_new_blocks)(struct ext4_allocation_context *ac);
-> ext4_fsblk_t s_sb_block;
-> atomic64_t s_resv_clusters;
-> kuid_t s_resuid;
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 56d50fd3310b..74f79652c674 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2314,11 +2314,11 @@ static void ext4_mb_check_limits(struct =
-ext4_allocation_context *ac,
->  *   stop the scan and use it immediately
->  *
->  * * If free extent found is smaller than goal, then keep retrying
-> - *   upto a max of sbi->s_mb_max_to_scan times (default 200). After
-> + *   up to a max of sbi->s_mb_max_to_scan times (default 200). After
->  *   that stop scanning and use whatever we have.
->  *
->  * * If free extent found is bigger than goal, then keep retrying
-> - *   upto a max of sbi->s_mb_min_to_scan times (default 10) before
-> + *   up to a max of sbi->s_mb_min_to_scan times (default 10) before
->  *   stopping the scan and using the extent.
->  *
->  *
-> @@ -2981,7 +2981,7 @@ static int ext4_mb_scan_group(struct =
-ext4_allocation_context *ac,
-> return ret;
-> }
->=20
-> -static noinline_for_stack int
-> +noinline_for_stack int
-> ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
-> {
-> ext4_group_t i;
-> @@ -3012,7 +3012,7 @@ ext4_mb_regular_allocator(struct =
-ext4_allocation_context *ac)
-> * is greater than equal to the sbi_s_mb_order2_reqs
-> * You can tune it via /sys/fs/ext4/<partition>/mb_order2_req
-> * We also support searching for power-of-two requests only for
-> - * requests upto maximum buddy size we have constructed.
-> + * requests up to maximum buddy size we have constructed.
-> */
-> if (i >=3D sbi->s_mb_order2_reqs && i <=3D MB_NUM_ORDERS(sb)) {
-> if (is_power_of_2(ac->ac_g_ex.fe_len))
-> @@ -3101,6 +3101,144 @@ ext4_mb_regular_allocator(struct =
-ext4_allocation_context *ac)
-> return err;
-> }
->=20
-> +/* Rotating allocator (rotalloc mount option) */
-> +noinline_for_stack int
-> +ext4_mb_rotating_allocator(struct ext4_allocation_context *ac)
-> +{
-> + ext4_group_t i, goal;
-> + int err =3D 0;
-> + struct super_block *sb =3D ac->ac_sb;
-> + struct ext4_sb_info *sbi =3D EXT4_SB(sb);
-> + struct ext4_buddy e4b;
-> +
-> + BUG_ON(ac->ac_status =3D=3D AC_STATUS_FOUND);
-> +
-> + /* Set the goal from s_rotalloc_cursor */
-> + spin_lock(&sbi->s_rotalloc_lock);
-> + goal =3D sbi->s_rotalloc_cursor;
-> + spin_unlock(&sbi->s_rotalloc_lock);
-> + ac->ac_g_ex.fe_group =3D goal;
-> +
-> + /* first, try the goal */
-> + err =3D ext4_mb_find_by_goal(ac, &e4b);
-> + if (err || ac->ac_status =3D=3D AC_STATUS_FOUND)
-> + goto out;
-> +
-> + if (unlikely(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
-> + goto out;
-> +
-> + /*
-> + * ac->ac_2order is set only if the fe_len is a power of 2
-> + * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
-> + * so that we try exact allocation using buddy.
-> + */
-> + i =3D fls(ac->ac_g_ex.fe_len);
-> + ac->ac_2order =3D 0;
-> + /*
-> + * We search using buddy data only if the order of the request
-> + * is greater than equal to the sbi_s_mb_order2_reqs
-> + * You can tune it via /sys/fs/ext4/<partition>/mb_order2_req
-> + * We also support searching for power-of-two requests only for
-> + * requests up to maximum buddy size we have constructed.
-> + */
-> + if (i >=3D sbi->s_mb_order2_reqs && i <=3D MB_NUM_ORDERS(sb)) {
-> + if (is_power_of_2(ac->ac_g_ex.fe_len))
-> + ac->ac_2order =3D array_index_nospec(i - 1,
-> +   MB_NUM_ORDERS(sb));
-> + }
-> +
-> + /* if stream allocation is enabled, use global goal */
-> + if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
-> + int hash =3D ac->ac_inode->i_ino % sbi->s_mb_nr_global_goals;
-> +
-> + ac->ac_g_ex.fe_group =3D READ_ONCE(sbi->s_mb_last_groups[hash]);
-> + ac->ac_g_ex.fe_start =3D -1;
-> + ac->ac_flags &=3D ~EXT4_MB_HINT_TRY_GOAL;
-> + }
-> +
-> + /*
-> + * Let's just scan groups to find more-less suitable blocks We
-> + * start with CR_GOAL_LEN_FAST, unless it is power of 2
-> + * aligned, in which case let's do that faster approach first.
-> + */
-> + ac->ac_criteria =3D CR_GOAL_LEN_FAST;
-> + if (ac->ac_2order)
-> + ac->ac_criteria =3D CR_POWER2_ALIGNED;
-> +
-> + ac->ac_e4b =3D &e4b;
-> + ac->ac_prefetch_ios =3D 0;
-> + ac->ac_first_err =3D 0;
-> +
-> + /* Be sure to start scanning with goal from s_rotalloc_cursor! */
-> + ac->ac_g_ex.fe_group =3D goal;
-> +repeat:
-> + while (ac->ac_criteria < EXT4_MB_NUM_CRS) {
-> + err =3D ext4_mb_scan_groups(ac);
-> + if (err)
-> + goto out;
-> +
-> + if (ac->ac_status !=3D AC_STATUS_CONTINUE)
-> + break;
-> + }
-> +
-> + if (ac->ac_b_ex.fe_len > 0 && ac->ac_status !=3D AC_STATUS_FOUND &&
-> +    !(ac->ac_flags & EXT4_MB_HINT_FIRST)) {
-> + /*
-> + * We've been searching too long. Let's try to allocate
-> + * the best chunk we've found so far
-> + */
-> + ext4_mb_try_best_found(ac, &e4b);
-> + if (ac->ac_status !=3D AC_STATUS_FOUND) {
-> + int lost;
-> +
-> + /*
-> + * Someone more lucky has already allocated it.
-> + * The only thing we can do is just take first
-> + * found block(s)
-> + */
-> + lost =3D atomic_inc_return(&sbi->s_mb_lost_chunks);
-> + mb_debug(sb, "lost chunk, group: %u, start: %d, len: %d, lost: =
-%d\n",
-> + ac->ac_b_ex.fe_group, ac->ac_b_ex.fe_start,
-> + ac->ac_b_ex.fe_len, lost);
-> +
-> + ac->ac_b_ex.fe_group =3D 0;
-> + ac->ac_b_ex.fe_start =3D 0;
-> + ac->ac_b_ex.fe_len =3D 0;
-> + ac->ac_status =3D AC_STATUS_CONTINUE;
-> + ac->ac_flags |=3D EXT4_MB_HINT_FIRST;
-> + ac->ac_criteria =3D CR_ANY_FREE;
-> + goto repeat;
-> + }
-> + }
-> +
-> + if (sbi->s_mb_stats && ac->ac_status =3D=3D AC_STATUS_FOUND) {
-> + atomic64_inc(&sbi->s_bal_cX_hits[ac->ac_criteria]);
-> + if (ac->ac_flags & EXT4_MB_STREAM_ALLOC &&
-> +    ac->ac_b_ex.fe_group =3D=3D ac->ac_g_ex.fe_group)
-> + atomic_inc(&sbi->s_bal_stream_goals);
-> + }
-> +out:
-> + if (!err && ac->ac_status !=3D AC_STATUS_FOUND && ac->ac_first_err)
-> + err =3D ac->ac_first_err;
-> +
-> + mb_debug(sb, "Best len %d, origin len %d, ac_status %u, ac_flags =
-0x%x, cr %d ret %d\n",
-> + ac->ac_b_ex.fe_len, ac->ac_o_ex.fe_len, ac->ac_status,
-> + ac->ac_flags, ac->ac_criteria, err);
-> +
-> + if (ac->ac_prefetch_nr)
-> + ext4_mb_prefetch_fini(sb, ac->ac_prefetch_grp, ac->ac_prefetch_nr);
-> +
-> + if (!err) {
-> + /* Finally, if no errors, set the currsor to best group! */
-> + goal =3D ac->ac_b_ex.fe_group;
-> + spin_lock(&sbi->s_rotalloc_lock);
-> + sbi->s_rotalloc_cursor =3D goal;
-> + spin_unlock(&sbi->s_rotalloc_lock);
-> + }
-> +
-> + return err;
-> +}
-> +
-> static void *ext4_mb_seq_groups_start(struct seq_file *seq, loff_t =
-*pos)
-> {
-> struct super_block *sb =3D pde_data(file_inode(seq->file));
-> @@ -6314,7 +6452,11 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t =
-*handle,
-> goto errout;
-> repeat:
-> /* allocate space in core */
-> - *errp =3D ext4_mb_regular_allocator(ac);
-> + /*
-> + * Use vectored allocator insead of fixed
-> + * ext4_mb_regular_allocator(ac) function
-> + */
-> + *errp =3D sbi->s_mb_new_blocks(ac);
-> /*
-> * pa allocated above is added to grp->bb_prealloc_list only
-> * when we were able to allocate some block i.e. when
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index 15a049f05d04..309190ce05ae 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -270,4 +270,7 @@ ext4_mballoc_query_range(
-> ext4_mballoc_query_range_fn formatter,
-> void *priv);
->=20
-> +/* Expose rotating & regular allocators for vectoring */
-> +int ext4_mb_rotating_allocator(struct ext4_allocation_context *ac);
-> +int ext4_mb_regular_allocator(struct ext4_allocation_context *ac);
-> #endif
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 87205660c5d0..f53501bbfb4b 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1673,7 +1673,7 @@ enum {
-> Opt_nomblk_io_submit, Opt_block_validity, Opt_noblock_validity,
-> Opt_inode_readahead_blks, Opt_journal_ioprio,
-> Opt_dioread_nolock, Opt_dioread_lock,
-> - Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
-> + Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable, =
-Opt_rotalloc,
-> Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-> Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-> Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
-> @@ -1797,6 +1797,7 @@ static const struct fs_parameter_spec =
-ext4_param_specs[] =3D {
-> fsparam_u32 ("init_itable", Opt_init_itable),
-> fsparam_flag ("init_itable", Opt_init_itable),
-> fsparam_flag ("noinit_itable", Opt_noinit_itable),
-> + fsparam_flag ("rotalloc", Opt_rotalloc),
-> #ifdef CONFIG_EXT4_DEBUG
-> fsparam_flag ("fc_debug_force", Opt_fc_debug_force),
-> fsparam_u32 ("fc_debug_max_replay", Opt_fc_debug_max_replay),
-> @@ -1878,6 +1879,7 @@ static const struct mount_opts {
-> {Opt_noauto_da_alloc, EXT4_MOUNT_NO_AUTO_DA_ALLOC, MOPT_SET},
-> {Opt_auto_da_alloc, EXT4_MOUNT_NO_AUTO_DA_ALLOC, MOPT_CLEAR},
-> {Opt_noinit_itable, EXT4_MOUNT_INIT_INODE_TABLE, MOPT_CLEAR},
-> + {Opt_rotalloc, EXT4_MOUNT_ROTALLOC, MOPT_SET},
-> {Opt_dax_type, 0, MOPT_EXT4_ONLY},
-> {Opt_journal_dev, 0, MOPT_NO_EXT2},
-> {Opt_journal_path, 0, MOPT_NO_EXT2},
-> @@ -2264,6 +2266,9 @@ static int ext4_parse_param(struct fs_context =
-*fc, struct fs_parameter *param)
-> ctx->s_li_wait_mult =3D result.uint_32;
-> ctx->spec |=3D EXT4_SPEC_s_li_wait_mult;
-> return 0;
-> + case Opt_rotalloc:
-> + ctx_set_mount_opt(ctx, EXT4_MOUNT_ROTALLOC);
-> + return 0;
-> case Opt_max_dir_size_kb:
-> ctx->s_max_dir_size_kb =3D result.uint_32;
-> ctx->spec |=3D EXT4_SPEC_s_max_dir_size_kb;
-> @@ -5512,6 +5517,17 @@ static int __ext4_fill_super(struct fs_context =
-*fc, struct super_block *sb)
-> }
-> }
->=20
-> + /*
-> + * Initialize rotalloc cursor, lock and
-> + * vector new_blocks to rotating^regular allocator
-> + */
-> + sbi->s_rotalloc_cursor =3D 0;
-> + spin_lock_init(&sbi->s_rotalloc_lock);
-> + if (test_opt(sb, ROTALLOC))
-> + sbi->s_mb_new_blocks =3D ext4_mb_rotating_allocator;
-> + else
-> + sbi->s_mb_new_blocks =3D ext4_mb_regular_allocator;
-> +
-> /*
-> * Get the # of file system overhead blocks from the
-> * superblock if present.
-> --=20
-> 2.52.0
->=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Yi/ext4-make-ext4_block_zero_page_range-pass-out-did_zero/20260203-144244
+base:   next-20260202
+patch link:    https://lore.kernel.org/r/20260203062523.3869120-4-yi.zhang%40huawei.com
+patch subject: [PATCH -next v2 03/22] ext4: only order data when partially block truncating down
+config: riscv-randconfig-r071-20260204 (https://download.01.org/0day-ci/archive/20260204/202602041239.JFyNwVcg-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 9b8addffa70cee5b2acc5454712d9cf78ce45710)
+smatch version: v0.5.0-8994-gd50c5a4c
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602041239.JFyNwVcg-lkp@intel.com/
 
-Cheers, Andreas
+New smatch warnings:
+fs/ext4/inode.c:4577 ext4_truncate() warn: unsigned 'zero_len' is never less than zero.
 
+Old smatch warnings:
+fs/ext4/inode.c:2651 mpage_prepare_extent_to_map() warn: missing error code 'err'
+fs/ext4/inode.c:5129 check_igot_inode() warn: missing unwind goto?
 
+vim +/zero_len +4577 fs/ext4/inode.c
 
+  4494	
+  4495	/*
+  4496	 * ext4_truncate()
+  4497	 *
+  4498	 * We block out ext4_get_block() block instantiations across the entire
+  4499	 * transaction, and VFS/VM ensures that ext4_truncate() cannot run
+  4500	 * simultaneously on behalf of the same inode.
+  4501	 *
+  4502	 * As we work through the truncate and commit bits of it to the journal there
+  4503	 * is one core, guiding principle: the file's tree must always be consistent on
+  4504	 * disk.  We must be able to restart the truncate after a crash.
+  4505	 *
+  4506	 * The file's tree may be transiently inconsistent in memory (although it
+  4507	 * probably isn't), but whenever we close off and commit a journal transaction,
+  4508	 * the contents of (the filesystem + the journal) must be consistent and
+  4509	 * restartable.  It's pretty simple, really: bottom up, right to left (although
+  4510	 * left-to-right works OK too).
+  4511	 *
+  4512	 * Note that at recovery time, journal replay occurs *before* the restart of
+  4513	 * truncate against the orphan inode list.
+  4514	 *
+  4515	 * The committed inode has the new, desired i_size (which is the same as
+  4516	 * i_disksize in this case).  After a crash, ext4_orphan_cleanup() will see
+  4517	 * that this inode's truncate did not complete and it will again call
+  4518	 * ext4_truncate() to have another go.  So there will be instantiated blocks
+  4519	 * to the right of the truncation point in a crashed ext4 filesystem.  But
+  4520	 * that's fine - as long as they are linked from the inode, the post-crash
+  4521	 * ext4_truncate() run will find them and release them.
+  4522	 */
+  4523	int ext4_truncate(struct inode *inode)
+  4524	{
+  4525		struct ext4_inode_info *ei = EXT4_I(inode);
+  4526		unsigned int credits;
+  4527		int err = 0, err2;
+  4528		handle_t *handle;
+  4529		struct address_space *mapping = inode->i_mapping;
+  4530	
+  4531		/*
+  4532		 * There is a possibility that we're either freeing the inode
+  4533		 * or it's a completely new inode. In those cases we might not
+  4534		 * have i_rwsem locked because it's not necessary.
+  4535		 */
+  4536		if (!(inode_state_read_once(inode) & (I_NEW | I_FREEING)))
+  4537			WARN_ON(!inode_is_locked(inode));
+  4538		trace_ext4_truncate_enter(inode);
+  4539	
+  4540		if (!ext4_can_truncate(inode))
+  4541			goto out_trace;
+  4542	
+  4543		if (inode->i_size == 0 && !test_opt(inode->i_sb, NO_AUTO_DA_ALLOC))
+  4544			ext4_set_inode_state(inode, EXT4_STATE_DA_ALLOC_CLOSE);
+  4545	
+  4546		if (ext4_has_inline_data(inode)) {
+  4547			int has_inline = 1;
+  4548	
+  4549			err = ext4_inline_data_truncate(inode, &has_inline);
+  4550			if (err || has_inline)
+  4551				goto out_trace;
+  4552		}
+  4553	
+  4554		/* If we zero-out tail of the page, we have to create jinode for jbd2 */
+  4555		if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+  4556			err = ext4_inode_attach_jinode(inode);
+  4557			if (err)
+  4558				goto out_trace;
+  4559		}
+  4560	
+  4561		if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+  4562			credits = ext4_chunk_trans_extent(inode, 1);
+  4563		else
+  4564			credits = ext4_blocks_for_truncate(inode);
+  4565	
+  4566		handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, credits);
+  4567		if (IS_ERR(handle)) {
+  4568			err = PTR_ERR(handle);
+  4569			goto out_trace;
+  4570		}
+  4571	
+  4572		if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+  4573			unsigned int zero_len;
+  4574	
+  4575			zero_len = ext4_block_truncate_page(handle, mapping,
+  4576							    inode->i_size);
+> 4577			if (zero_len < 0) {
+  4578				err = zero_len;
+  4579				goto out_stop;
+  4580			}
+  4581			if (zero_len && !IS_DAX(inode) &&
+  4582			    ext4_should_order_data(inode)) {
+  4583				err = ext4_jbd2_inode_add_write(handle, inode,
+  4584						inode->i_size, zero_len);
+  4585				if (err)
+  4586					goto out_stop;
+  4587			}
+  4588		}
+  4589	
+  4590		/*
+  4591		 * We add the inode to the orphan list, so that if this
+  4592		 * truncate spans multiple transactions, and we crash, we will
+  4593		 * resume the truncate when the filesystem recovers.  It also
+  4594		 * marks the inode dirty, to catch the new size.
+  4595		 *
+  4596		 * Implication: the file must always be in a sane, consistent
+  4597		 * truncatable state while each transaction commits.
+  4598		 */
+  4599		err = ext4_orphan_add(handle, inode);
+  4600		if (err)
+  4601			goto out_stop;
+  4602	
+  4603		ext4_fc_track_inode(handle, inode);
+  4604		ext4_check_map_extents_env(inode);
+  4605	
+  4606		down_write(&EXT4_I(inode)->i_data_sem);
+  4607		ext4_discard_preallocations(inode);
+  4608	
+  4609		if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+  4610			err = ext4_ext_truncate(handle, inode);
+  4611		else
+  4612			ext4_ind_truncate(handle, inode);
+  4613	
+  4614		up_write(&ei->i_data_sem);
+  4615		if (err)
+  4616			goto out_stop;
+  4617	
+  4618		if (IS_SYNC(inode))
+  4619			ext4_handle_sync(handle);
+  4620	
+  4621	out_stop:
+  4622		/*
+  4623		 * If this was a simple ftruncate() and the file will remain alive,
+  4624		 * then we need to clear up the orphan record which we created above.
+  4625		 * However, if this was a real unlink then we were called by
+  4626		 * ext4_evict_inode(), and we allow that function to clean up the
+  4627		 * orphan info for us.
+  4628		 */
+  4629		if (inode->i_nlink)
+  4630			ext4_orphan_del(handle, inode);
+  4631	
+  4632		inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+  4633		err2 = ext4_mark_inode_dirty(handle, inode);
+  4634		if (unlikely(err2 && !err))
+  4635			err = err2;
+  4636		ext4_journal_stop(handle);
+  4637	
+  4638	out_trace:
+  4639		trace_ext4_truncate_exit(inode);
+  4640		return err;
+  4641	}
+  4642	
 
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
