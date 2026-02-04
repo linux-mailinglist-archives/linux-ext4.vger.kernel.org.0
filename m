@@ -1,251 +1,124 @@
-Return-Path: <linux-ext4+bounces-13524-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13525-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MBfGLs5Xg2mJlQMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13524-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 15:29:34 +0100
+	id IBOVD2lig2nAmAMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13525-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 16:14:49 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CBE0E71A9
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 15:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 744A6E82DB
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 16:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 63492304704F
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 14:23:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0F7E1310897E
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 14:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F35740FDB2;
-	Wed,  4 Feb 2026 14:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A86841B377;
+	Wed,  4 Feb 2026 14:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GECEUGN4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jdAeoxEO";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GECEUGN4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jdAeoxEO"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oxZnN3K5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10C6283FD6
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Feb 2026 14:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6F23D413D;
+	Wed,  4 Feb 2026 14:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770215029; cv=none; b=hw15Yxxlc5zHiUKFgQrw+5XA3+FLDHsGxm+vMNo7OX8Y3xear8NF0Q0THImMhrdMJ4J5fffNUppsVfThnpie7ygAFzq+kiBkjlnsRKrtjLXk3nYnrUKWTsSPP0PYTpCrnEJ29SNCrUGvkQdoOBPGiTdeZMubKVBMHou9wIjEHC0=
+	t=1770216865; cv=none; b=h2JROxLbn1arHzLTEnxhlRoDbDxoryWG2D5r7qHet44/9pWvFMnSorHp6BxdhITx0jra9ljAkCOQv3lRCu7CjMC1/Z1EN+wypXFZWA0+NPAxRqMw/8rGnnD4wKxOljXyKdJWlvsF4kkzHYT6ej+JB7prJrOPcWx3hEFYqx+d218=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770215029; c=relaxed/simple;
-	bh=5vUsehuZPKeIgCSeACFC8M9S/0Q5TkKs0RXczlR9+fg=;
+	s=arc-20240116; t=1770216865; c=relaxed/simple;
+	bh=bQJBM1CzMKaGOt+OTMHIALAKEUrXTLnZcnSE9Mi8+BE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NyVjl30xYPe16l++nDTIN7dmbvpQoO69MkX1CIGus76dB31p0pBAV1Sl4PIJ9xCb/9LMgY+q0DrYl8QRc8mYO40j3lPcBaJ2rvWQQN6KtDddHfyA9MrSgOameeTTF2Cj+1TjkqovO5v2ydPzAfMEaC0lxqVjX7G+97U0+6xvnwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GECEUGN4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jdAeoxEO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GECEUGN4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jdAeoxEO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3CFDD5BD3A;
-	Wed,  4 Feb 2026 14:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770215027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGxQfo3pNLsPfTQCN+Qxxka1BgGIjfu/518Xoi+fVfo=;
-	b=GECEUGN4MDyDAzo2/J0R8f4OEnyskO7j+6j9m9CDIohUqzy8y0csOEvP/cgeiXDB1PpYpI
-	UUQYxR2bRXPRPJOQWzDbIXCINFe54pgPwl731uekOhmYeU5p4OuyVY0xThlafzPTg6Unsk
-	BQbuqQFgHCeWIrnMQaRc0befZ86jxts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770215027;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGxQfo3pNLsPfTQCN+Qxxka1BgGIjfu/518Xoi+fVfo=;
-	b=jdAeoxEOjETYHoYMFpSAy2WzMYdh/gGddUqjYSerfsHUTIhM5HVxBbPgU7tdxMHxJZbTYO
-	+/4CZt9+/RtPkABg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770215027; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGxQfo3pNLsPfTQCN+Qxxka1BgGIjfu/518Xoi+fVfo=;
-	b=GECEUGN4MDyDAzo2/J0R8f4OEnyskO7j+6j9m9CDIohUqzy8y0csOEvP/cgeiXDB1PpYpI
-	UUQYxR2bRXPRPJOQWzDbIXCINFe54pgPwl731uekOhmYeU5p4OuyVY0xThlafzPTg6Unsk
-	BQbuqQFgHCeWIrnMQaRc0befZ86jxts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770215027;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGxQfo3pNLsPfTQCN+Qxxka1BgGIjfu/518Xoi+fVfo=;
-	b=jdAeoxEOjETYHoYMFpSAy2WzMYdh/gGddUqjYSerfsHUTIhM5HVxBbPgU7tdxMHxJZbTYO
-	+/4CZt9+/RtPkABg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 23EF73EA63;
-	Wed,  4 Feb 2026 14:23:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GjK0CHNWg2kcbQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 04 Feb 2026 14:23:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D72BAA09D8; Wed,  4 Feb 2026 15:23:46 +0100 (CET)
-Date: Wed, 4 Feb 2026 15:23:46 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Theodore Tso <tytso@mit.edu>, Zhang Yi <yi.zhang@huaweicloud.com>, 
-	Christoph Hellwig <hch@infradead.org>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com, 
-	ritesh.list@gmail.com, djwong@kernel.org, Zhang Yi <yi.zhang@huawei.com>, 
-	yizhang089@gmail.com, yangerkun@huawei.com, 
-	yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com, libaokun9@gmail.com
-Subject: Re: [PATCH -next v2 00/22] ext4: use iomap for regular file's
- buffered I/O path
-Message-ID: <eldlhdvhc4sdlmfed5omg6huv5rl6m7ummstlygh2bownaejqn@bykrybkyywzp>
-References: <20260203062523.3869120-1-yi.zhang@huawei.com>
- <aYGZB_hugPRXCiSI@infradead.org>
- <77c14b3e-33f9-4a00-83a4-0467f73a7625@huaweicloud.com>
- <20260203131407.GA27241@macsyma.lan>
- <9666679c-c9f7-435c-8b67-c67c2f0c19ab@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dl8vfzYQCDXdPhxfO7aIHCPrmU0CFJ9kKQk3Nal/VJsXWv9YRERO9WCe/bXFUTWzyu8PFygvmpMqo5JuLqnU/HSc2m5bgJgRBNpH7AB85OxZ5elq4sJldK7eusmOCKuFwWcrOctGFxBv7VZSfLWb9/Yv7nLrWc8m5EzFpypl9JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oxZnN3K5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=NSFwipYtJGppFo1niPpuRr+jtuErqeP9kDtjaWPeRb4=; b=oxZnN3K5faDjoL5v5OXKHO0/5B
+	ALVraMASeOdO1r04MRFOfO4rurUs6RmI865xOx4yso0ar7+P20MsCkTabs1ya5R7FJMXs0ce/Ez/q
+	rbw7GcQz34Rv1Uu4uCXSYS/vjKmtDX7MWB90vI8Y6XrnLPQCQXb9VQLbaHpe2XJ1FOsYrzz4EAtTD
+	0pejcPBsHfrRajM4IfKrqCUr02C6nMxD982pRJhIo8toILLn2rYjgRPmHchK/LCdN/5qjKs6HNCj7
+	f/o5jziZ7q20pft0KQB2Xb21eynAKosZ7IXbGzJcIEHSVLJzQUdCffAiCsqVd3oLW659nU25c/4ST
+	czQtWaFQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vneGo-00000002DxS-1MWR;
+	Wed, 04 Feb 2026 14:54:18 +0000
+Date: Wed, 4 Feb 2026 14:54:18 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: fsverity speedup and memory usage optimization v5
+Message-ID: <aYNdmk1EE5etfUYE@casper.infradead.org>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202211423.GB4838@quark>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9666679c-c9f7-435c-8b67-c67c2f0c19ab@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
-X-Spam-Level: 
+In-Reply-To: <20260202211423.GB4838@quark>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13524-lists,linux-ext4=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	DMARC_NA(0.00)[suse.cz];
+	TAGGED_FROM(0.00)[bounces-13525-lists,linux-ext4=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_CC(0.00)[mit.edu,huaweicloud.com,infradead.org,vger.kernel.org,dilger.ca,suse.cz,linux.ibm.com,gmail.com,kernel.org,huawei.com,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 1CBE0E71A9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,casper.infradead.org:mid]
+X-Rspamd-Queue-Id: 744A6E82DB
 X-Rspamd-Action: no action
 
-On Wed 04-02-26 09:59:36, Baokun Li wrote:
-> On 2026-02-03 21:14, Theodore Tso wrote:
-> > On Tue, Feb 03, 2026 at 05:18:10PM +0800, Zhang Yi wrote:
-> >> This means that the ordered journal mode is no longer in ext4 used
-> >> under the iomap infrastructure.  The main reason is that iomap
-> >> processes each folio one by one during writeback. It first holds the
-> >> folio lock and then starts a transaction to create the block mapping.
-> >> If we still use the ordered mode, we need to perform writeback in
-> >> the logging process, which may require initiating a new transaction,
-> >> potentially leading to deadlock issues. In addition, ordered journal
-> >> mode indeed has many synchronization dependencies, which increase
-> >> the risk of deadlocks, and I believe this is one of the reasons why
-> >> ext4_do_writepages() is implemented in such a complicated manner.
-> >> Therefore, I think we need to give up using the ordered data mode.
-> >>
-> >> Currently, there are three scenarios where the ordered mode is used:
-> >> 1) append write,
-> >> 2) partial block truncate down, and
-> >> 3) online defragmentation.
-> >>
-> >> For append write, we can always allocate unwritten blocks to avoid
-> >> using the ordered journal mode.
-> > This is going to be a pretty severe performance regression, since it
-> > means that we will be doubling the journal load for append writes.
-> > What we really need to do here is to first write out the data blocks,
-> > and then only start the transaction handle to modify the data blocks
-> > *after* the data blocks have been written (to heretofore, unused
-> > blocks that were just allocated).  It means inverting the order in
-> > which we write data blocks for the append write case, and in fact it
-> > will improve fsync() performance since we won't be gating writing the
-> > commit block on the date blocks getting written out in the append
-> > write case.
-> 
-> I have some local demo patches doing something similar, and I think this
-> work could be decoupled from Yi's patch set.
-> 
-> Since inode preallocation (PA) maintains physical block occupancy with a
-> logical-to-physical mapping, and ensures on-disk data consistency after
-> power failure, it is an excellent location for recording temporary
-> occupancy. Furthermore, since inode PA often allocates more blocks than
-> requested, it can also help reduce file fragmentation.
-> 
-> The specific approach is as follows:
-> 
-> 1. Allocate only the PA during block allocation without inserting it into
->    the extent status tree. Return the PA to the caller and increment its
->    refcount to prevent it from being discarded.
-> 
-> 2. Issue IOs to the blocks within the inode PA. If IO fails, release the
->    refcount and return -EIO. If successful, proceed to the next step.
-> 
-> 3. Start a handle upon successful IO completion to convert the inode PA to
->    extents. Release the refcount and update the extent tree.
-> 
-> 4. If a corresponding extent already exists, we’ll need to punch holes to
->    release the old extent before inserting the new one.
+On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
+> - Used the code formatting from 'git clang-format' in the cases where it
+>   looks better than the ad-hoc formatting
 
-Sounds good. Just if I understand correctly case 4 would happen only if you
-really try to do something like COW with this? Normally you'd just use the
-already present blocks and write contents into them?
+clang-format makes some bad choices.
 
-> This ensures data atomicity, while jbd2—being a COW-like implementation
-> itself—ensures metadata atomicity. By leveraging this "delay map"
-> mechanism, we can achieve several benefits:
-> 
->  * Lightweight, high-performance COW.
->  * High-performance software atomic writes (hardware-independent).
->  * Replacing dio_readnolock, which might otherwise read unexpected zeros.
->  * Replacing ordered data and data journal modes.
->  * Reduced handle hold time, as it's only held during extent tree updates.
->  * Paving the way for snapshot support.
-> 
-> Of course, COW itself can lead to severe file fragmentation, especially
-> in small-scale overwrite scenarios.
+>  static int ext4_mpage_readpages(struct inode *inode, struct fsverity_info *vi,
+> -		struct readahead_control *rac, struct folio *folio)
+> +				struct readahead_control *rac,
+> +				struct folio *folio)
 
-I agree the feature can provide very interesting benefits and we were
-pondering about something like that for a long time, just never got to
-implementing it. I'd say the immediate benefits are you can completely get
-rid of dioread_nolock as well as the legacy dioread_lock modes so overall
-code complexity should not increase much. We could also mostly get rid of
-data=ordered mode use (although not completely - see my discussion with
-Zhang over patch 3) which would be also welcome simplification. These
-benefits alone are IMO a good enough reason to have the functionality :).
-Even without COW, atomic writes and other fancy stuff.
+Aligning to the opening bracket is one of them.  If anything changes
+in a subsequent patch (eg function name, whether or not it's static,
+adding a function attribute like __must_check, converting the return
+type from int to bool), you have to eitheer break the formatting or
+needlessly change the lines which have the subsequent arguments.
 
-I don't see how you want to get rid of data=journal mode - perhaps that's
-related to the COW functionality?
+Also, you've consumed an extra line in this case.  Just leave the
+two tab indent, it's actually easier to read.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
