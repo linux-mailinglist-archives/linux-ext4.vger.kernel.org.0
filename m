@@ -1,193 +1,138 @@
-Return-Path: <linux-ext4+bounces-13526-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13527-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GMrnNdBkg2l1mQMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13526-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 16:25:04 +0100
+	id yFWAAumXg2lnpwMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13527-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 20:03:05 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995B9E87CC
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 16:25:04 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05D75EBCEF
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 20:03:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 45704304DC53
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 15:14:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6899C3006822
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 19:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABFC42980B;
-	Wed,  4 Feb 2026 15:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BEB4279FC;
+	Wed,  4 Feb 2026 19:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qj3PZO/p"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iofq7J9Z"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6461F426691
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Feb 2026 15:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA002DF707;
+	Wed,  4 Feb 2026 19:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770217746; cv=none; b=JJicwD3C4k565VNa3L9/6Z+a/0FaIzb686L1WFL0h7Nix5JDSdMCTaEyFWvw4SuJ0Fgj2UH4FAwL9VT1KgY/xwUUArIrb9+PKXW+rBC7fBqY2I8roispyJL99s+kj0A0rXkTQYnpGgiZY3RXCYBILv7DRLaP9n3CsEBWjhxFglk=
+	t=1770231775; cv=none; b=B3ubt/4F9GUsosQg20yEuhcYNymC7q0HU6nHqWos6QYMrgzZYpPGbUVI4uVKBExxx1Tz16TMRFiDeStIk58zuxKupTKWiGX+Hbdm7Q0d3wrv407PdgtDBlm/DugJK7yCIeSkOKYTneKUFPlanFBMtR+nTvgZb+U2MVRQmATb3Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770217746; c=relaxed/simple;
-	bh=s+h8tPFEoHBFyC4SszIfcNz/5tQ5uQJuxvMFYcXuaM8=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=mdRbUYWOWCAoUE5xFCJASIHBdwpoFypDnbvx6o2IXSTLUnh0wtRZD9KoQBqJmIaHQzVbqBgtYm2QEn8FzevLiQ6CG9toZfrD4HMieixhgZPayrBek7HiT2nd428L0SUhsUCzPVkJN3FO7aQ4svaRAfw08oiS5kcwJfvIkexWlDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qj3PZO/p; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4801ea9bafdso5710395e9.3
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Feb 2026 07:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770217745; x=1770822545; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MZ9HeuGtWnUm+VotOezBkdkMbFGZUlFL8p7rfJPrtMg=;
-        b=Qj3PZO/pnfM50AEt5GMWK7StT5RjNUtkWVl11H4oerhL3jyP+fZpD8TP62yZSoapCM
-         8Yl0hTD40V9N3/jML56A7jNjwD4ktswoZVHohefzuD/SmWAgOXUsSXFwb0Vr+KEhN7Lg
-         /9QINvG4EUnYWrDcLmmMhfkhdsP1aZVHodO7vSs61OQyC/ZE5Euq1VoWoFy+Lb3RW2Co
-         hZquDE3cXWBCSmSGdAtIib+LoYICX8poPnlgytxdxvW2IZehsGx0Jr1kNGRnR/95AzzV
-         /XzyFaFA7Fya9TcK8TFt36IQMkP+WysS7hFriG4OP8KuJQWsgoCRca/3V3LLh4GwVg5w
-         4nSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770217745; x=1770822545;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MZ9HeuGtWnUm+VotOezBkdkMbFGZUlFL8p7rfJPrtMg=;
-        b=vDG6BTee/PH3m3t4CcLvK3iNXKxeCCVy3/Q9JEbzgTjIEATH7MgkcpoKnDCHxRuJ36
-         3Expoae4CJQQ2FRCHHb8jcOOivYuBDA8R2lo6N1Yblm7FfII8FW0D6HWXdy3EvBTQGoD
-         FgbTp+X8QiDpfpBUa8DZAq3BFtjHkhKV5YWyDJLMcSWk2oY+grpmn06HmskAoWJY/lIi
-         xzfzMCp6XpXWvKrD+IAVcHdQV9TfdxxmZFmBGylSGy7dcPYkqo0j2bVzze3s960YJCmJ
-         Pd69KWRTZaX6PfiuNyWinG6gY6bBaEh8FGCALwePPXS09RwXQ4/BoV1+FKO50QCeJGke
-         WHfw==
-X-Gm-Message-State: AOJu0YzWJih/5beAgfjtqMpigj7mOV1FY8+JD22/1r7UbkWMwq1xvKyl
-	UiavQe0c4muA/DwzWCZLwTvVi5bVYRALBWjIKNp9X8es5vrsMXZKGWffZXzkRw==
-X-Gm-Gg: AZuq6aIKsoye6NPB/EsZT7yG88sdUXDNNREb3HkkXUvLT10+U+81BiehMlVj6qZq8GG
-	pChvC2JHlTAnjLhoos5B+bM72jxCrKEm3WZp7bmnYXAt18i5yzd/SMMmtwLRkTiFa4tW1EXPzkx
-	Lt8IlwqlDHz3GMLdDyrwh+HhiEg5Z8iZW75xawOV2X+ivpg57lRi09X1A8b0PFn7pFLKDWIAWT/
-	SHrK1Y8Xy4rg4rAa4k9VX39IlCMxBNnITL8wxwRbJbxGvpEg+eVvu0nrU38ujMZsfi7CQu9JNnn
-	WwjL46Y19LjNhjvmx98O2CPWQbq6K/5N02F7ecX9hjxJJyeEsQ4jnyxKOBoF+HBDEHUFTGYOFBm
-	MHoexxmFqpxbJna/pQ2UBq8GVTdkDT7wIX8JQhqZ+KRVUsbJCQ/Lte5N0BykKNxRZm845rn/3JI
-	d5CFB4WrmrS5mAzDxbItrdN5U=
-X-Received: by 2002:a05:600c:608e:b0:480:3ad0:93bf with SMTP id 5b1f17b1804b1-4830e96d1e3mr50311575e9.24.1770217744455;
-        Wed, 04 Feb 2026 07:09:04 -0800 (PST)
-Received: from [192.168.63.97] ([193.247.225.163])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4830ec10011sm34600875e9.0.2026.02.04.07.09.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Feb 2026 07:09:03 -0800 (PST)
-Message-ID: <8feeeec8-7330-47ae-9b54-9e789ebdfae5@gmail.com>
-Date: Wed, 4 Feb 2026 16:09:02 +0100
+	s=arc-20240116; t=1770231775; c=relaxed/simple;
+	bh=fvuVHItsYXpPWArU/0i6pDSN5I363ZzcoNvZNPppv2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s05oJA4DObHl4Sn9fBGfw2usZ2RtuT4r5ZHVIODr6GpEDqmFLYhppPpNOcs0cI+oqfc5rsxgZMuLjpqM/aU86vuLkbRvp8bfDABTn2dSC0E5PYmsv/qGIEmNxh2wvmn2xRo8v7Cz59f+ZFSv6xUUAFC5a8mtD2taru2Hfw+8ilA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iofq7J9Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CF1DC4CEF7;
+	Wed,  4 Feb 2026 19:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770231775;
+	bh=fvuVHItsYXpPWArU/0i6pDSN5I363ZzcoNvZNPppv2A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iofq7J9ZB5Q1dLAB7Qy2uln0MXvVcL8qlvWkKB9VOYrtveQA4p5R4JTmTGe9Gx4mC
+	 Ly679d9E5LOL2n1FGUeWmohBZgFgVIkdBvw+55f1to50oLS5fY9G4zPv+d8uBnGhzo
+	 LmRcgveKUt7s6aE5+Pbkm904SsxtQlB04KUAu9gbIY+U0c0q7pTnP7rUIE6DY7CvT7
+	 AWNUxuB028+w9gFncQbilhM43+W4aUnf0kqw0ju5I8u+DZUqUGksc3l8vdRI8X2u9n
+	 YEUuj8GIaw8EwBwmU7aB8JU/OP0avF4KzqkYdpw5Kzh4D/gZTea5d4fWopgA3+BMmk
+	 oE3OICQWQ9TCg==
+Date: Wed, 4 Feb 2026 11:02:18 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: fsverity speedup and memory usage optimization v5
+Message-ID: <20260204190218.GA2193@sol>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202211423.GB4838@quark>
+ <aYNdmk1EE5etfUYE@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- anthonydev@fastmail.com
-From: Simon Weber <simon.weber.39@gmail.com>
-Subject: [PATCH v1] ext4: fix journal credit check when setting fscrypt
- context xattr
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aYNdmk1EE5etfUYE@casper.infradead.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13526-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13527-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[vger.kernel.org,mit.edu,dilger.ca,fastmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[simonweber39@gmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,fastmail.com:email]
-X-Rspamd-Queue-Id: 995B9E87CC
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 05D75EBCEF
 X-Rspamd-Action: no action
 
-From: Simon Weber <simon.weber.39@gmail.com>
+On Wed, Feb 04, 2026 at 02:54:18PM +0000, Matthew Wilcox wrote:
+> On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
+> > - Used the code formatting from 'git clang-format' in the cases where it
+> >   looks better than the ad-hoc formatting
+> 
+> clang-format makes some bad choices.
+> 
+> >  static int ext4_mpage_readpages(struct inode *inode, struct fsverity_info *vi,
+> > -		struct readahead_control *rac, struct folio *folio)
+> > +				struct readahead_control *rac,
+> > +				struct folio *folio)
+> 
+> Aligning to the opening bracket is one of them.  If anything changes
+> in a subsequent patch (eg function name, whether or not it's static,
+> adding a function attribute like __must_check, converting the return
+> type from int to bool), you have to eitheer break the formatting or
+> needlessly change the lines which have the subsequent arguments.
+> 
+> Also, you've consumed an extra line in this case.  Just leave the
+> two tab indent, it's actually easier to read.
 
-When creating a new inode, the required number of jbd2 journalling credits
-is conservatively estimated by summing up the credits required for various
-actions. This includes setting the xattrs for example for ACLs and the
-fscrypt context. Since the inode is new and has no xattrs, the estimation
-of credits needed for creating these xattrs is performed by passing
-is_create=true into the function __ext4_xattr_set_credits, which yields a
-lower number of credits than when is_create is false. However, following
-the control flow until the fscrypt context xattr is actually set, the
-XATTR_CREATE flag is not passed by ext4_set_context to
-ext4_xattr_set_handle. This causes the latter function to compare the
-remaining credits against the value of __ext4_xattr_set_credits(...,
-is_create=false), which may be too much. This flawed design does not
-usually cause any issues unless the filesystem features has_journal,
-ea_inode, and encrypt are all present at the same time. In this case,
-creating a file in any fscrypt-encrypted directory will always return
-ENOSPC.
-This patch fixes this issue by passing the XATTR_CREATE flag in the
-ext4_set_context function. This is safe since ext4_set_context is only
-called when creating a new inode (in which case the context xattr is not
-present yet) or when setting the encryption policy on an existing file
-using the FS_IOC_SET_ENCRYPTION_POLICY ioctl, which however first checks
-that the file does not currently have an encryption policy set. When
-calling ext4_set_context it is therefore not undesirable behaviour to
-possibly fail with an EEXIST error due to the XATTR_CREATE flag and the
-context xattr already being present.
+Aligning to the opening bracket is the usual style as agreed on by the
+kernel community.  This should also be clear if you look at the existing
+style in all the files this patchset touches.  It's not done exclusively
+but is the more common way.  clang-format just follows that.
 
-Co-developed-by: Anthony Durrer <anthonydev@fastmail.com>
-Signed-off-by: Anthony Durrer <anthonydev@fastmail.com>
-Signed-off-by: Simon Weber <simon.weber.39@gmail.com>
----
- fs/ext4/crypto.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+It's 2026.  We generally shouldn't be formatting code manually.  We have
+better things to do.
 
-diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
-index cf0a0970c095..5b665f85f6a7 100644
---- a/fs/ext4/crypto.c
-+++ b/fs/ext4/crypto.c
-@@ -163,10 +163,20 @@ static int ext4_set_context(struct inode *inode, const void *ctx, size_t len,
-      */
- 
-     if (handle) {
-+        /*
-+         * Set the xattr using the XATTR_CREATE flag, since this function should
-+         * only be called on inodes that do not have an encryption context yet.
-+         * Since when estimating the number of credits needed for the new inode
-+         * we called ext4_xattr_set with is_create = true, we need to pass this
-+         * flag, otherwise the check for remaining credits is too conservative
-+         * and may fail.
-+         * If for some reason the inode already has an encryption context, this
-+         * fails with EEXIST, which is desirable behaviour.
-+         */
-         res = ext4_xattr_set_handle(handle, inode,
-                         EXT4_XATTR_INDEX_ENCRYPTION,
-                         EXT4_XATTR_NAME_ENCRYPTION_CONTEXT,
--                        ctx, len, 0);
-+                        ctx, len, XATTR_CREATE);
-         if (!res) {
-             ext4_set_inode_flag(inode, EXT4_INODE_ENCRYPT);
-             ext4_clear_inode_state(inode,
+If you're going to insist on ad-hoc formatting of argument lists, you'll
+need to be more specific about where and how you want it to be done.  It
+certainly doesn't make sense in files that are already using the normal
+style exclusively, for example.
 
-base-commit: 4f5e8e6f012349a107531b02eed5b5ace6181449
--- 
-2.49.0
-
+- Eric
 
