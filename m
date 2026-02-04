@@ -1,108 +1,83 @@
-Return-Path: <linux-ext4+bounces-13511-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13512-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eM3XCkoLgmmCOQMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13511-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 15:50:50 +0100
+	id GNYoFjaRgmmCWQMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13512-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 01:22:14 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95426DACD9
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Feb 2026 15:50:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F693DFFBA
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 01:22:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 71D5B3063B92
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Feb 2026 14:50:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0058F30D25ED
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 00:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5833A1CF4;
-	Tue,  3 Feb 2026 14:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1330E1C3BF7;
+	Wed,  4 Feb 2026 00:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tDgRFGqX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Yny2qzQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tDgRFGqX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Yny2qzQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MIByiWK8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9231F1E487
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Feb 2026 14:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF5F51A5B9D;
+	Wed,  4 Feb 2026 00:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770130247; cv=none; b=oeajLJdOrLpTUTdwzi6LRi8J8j/jLPbJnK77as2CQMxaSsQOQbUXDHNgU+9zBWhJksnFZrPCarcixRqDNyfAa9PiNMDLjy+1CMyPRvrCm//q1MqkFHleiwAi3hba3TMMPe/CZrqtdrj8D0rgw27FzypJnrEg5Y31G7ITPgHf9BY=
+	t=1770164525; cv=none; b=TIHIbdzV2zghlzLhkvaLXxu8NCRpHYw3TiwDplBrHDR2mGvkLBxfaigbR04WtkII6wh4d+SPchdPekbsAMjAHqWcYAjexW1/gMq4UaNAkz2wMbF/wtnAzf3DVrMSiGDSjrsyyU+l2hF27tJ7JgVmxFClB/hmBnmiAYkPKooVBNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770130247; c=relaxed/simple;
-	bh=pH7aguUyl752/wAdz0ZJ60xBADwB0yyPS+Lqpl9dO/g=;
+	s=arc-20240116; t=1770164525; c=relaxed/simple;
+	bh=vJqaIkkGQQvB0y2jKpAyCZtx6W0Oi8NhwX7gnDSzPQM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cTydoCxmewf20CHfshg2HzMAw6nPYvDj2Fm+pS9H6wlsuQ5QfhJEU5dr22w2DxgVR5jEqfPdKZ3JItbZrriNvW2DuEIichPh/cPfJ0xVwwPENEVvlY/9mFJ3kt9nfHaLUQBKdCqzHZtE/C2kKCP8+tpHPa8Tjlf2jO+Wicca1xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tDgRFGqX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Yny2qzQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tDgRFGqX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Yny2qzQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 933DE5BCC6;
-	Tue,  3 Feb 2026 14:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770130243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERkrjzuQK7Aa/7UCcxP4OZ4zW+9Awu+eZyIVuFg7Mwc=;
-	b=tDgRFGqX0S8pyUOfoM2PpFSS98TXM35RwqOSJxlvLvxGxBYqHyYIBt6nENl+ohM+C8gG6K
-	9LwM0ABDAe2+Qi0crt2g6fyqZGE26w1gZUx8Ry5u3mXxEQafqXT2DjVu7i1HAo3BwGjGwp
-	p7bumf0bFDxgSxNIJUmYCqVUFxMsodo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770130243;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERkrjzuQK7Aa/7UCcxP4OZ4zW+9Awu+eZyIVuFg7Mwc=;
-	b=2Yny2qzQuHXFbqxZYy7cDo8wIRmVHVatiNar7z9erKeMhzE5bWZcxzOvvyhXliAHadMbuG
-	sufK+tsWlBVhY9DA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=tDgRFGqX;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2Yny2qzQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770130243; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERkrjzuQK7Aa/7UCcxP4OZ4zW+9Awu+eZyIVuFg7Mwc=;
-	b=tDgRFGqX0S8pyUOfoM2PpFSS98TXM35RwqOSJxlvLvxGxBYqHyYIBt6nENl+ohM+C8gG6K
-	9LwM0ABDAe2+Qi0crt2g6fyqZGE26w1gZUx8Ry5u3mXxEQafqXT2DjVu7i1HAo3BwGjGwp
-	p7bumf0bFDxgSxNIJUmYCqVUFxMsodo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770130243;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERkrjzuQK7Aa/7UCcxP4OZ4zW+9Awu+eZyIVuFg7Mwc=;
-	b=2Yny2qzQuHXFbqxZYy7cDo8wIRmVHVatiNar7z9erKeMhzE5bWZcxzOvvyhXliAHadMbuG
-	sufK+tsWlBVhY9DA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DD063EA62;
-	Tue,  3 Feb 2026 14:50:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Vs+4HkMLgmmiDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 03 Feb 2026 14:50:43 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 347DBA09E1; Tue,  3 Feb 2026 15:50:43 +0100 (CET)
-Date: Tue, 3 Feb 2026 15:50:43 +0100
-From: Jan Kara <jack@suse.cz>
-To: Gerald Yang <gerald.yang@canonical.com>
-Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	linux-ext4@vger.kernel.org, gerald.yang.tw@gmail.com
-Subject: Re: [PATCH] ext4: Fix call trace when remounting to read only in
- data=journal mode
-Message-ID: <gluj62pw5pu7ag2juf5ejwsr3ghvckag7wh4zunwyk57slcrmg@42of57gybigz>
-References: <20260128074515.2028982-1-gerald.yang@canonical.com>
- <4u2l4huoj7zsfy2u37lgdzlmwwdntgqaer7wta7ud3kat7ox2n@oxhbcqryre3r>
- <CAMsNC+s1R-AUzhe80vjxYCSRu0X9Ybp33sSMHGHKpBL6=dG2_w@mail.gmail.com>
- <bycdopvwzfaskilhk3nsljuk3gkztvoa3is466a6utuj2lozmj@pxf44ulcnqup>
- <CAMsNC+ve3dRwT1xGWB0pvBJXqBpeksf7PgbEeihcnfs=AmwVRQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jqDrfimoRKGKUGeULy1BkTvw0fZQYBJLG8OnJ0GgI9y5tlhv1uRQ/GW98ZaxZTraTop6dlFoHN4piLcFalyageagxiaqSRu1e8Vo0fSuvJ0ZKYrWSabim8cCo5SjudIpZicSELp1z0gCt8vsyRrVyGheZBTEpXDILLn6DXZcqzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MIByiWK8; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770164522; x=1801700522;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vJqaIkkGQQvB0y2jKpAyCZtx6W0Oi8NhwX7gnDSzPQM=;
+  b=MIByiWK8s3SilpcI5zPKPEthr/Fz9Jag5F/IVkB/fXs5QkocwIO2cz79
+   K34XRuV2T8e1RUVNweAvqeOCWO2UwI5bnU/VytXj2z4ZnMLAQtQ4kUEH4
+   tfoe16yZStRMFLisJjwpBSprTbDRylPuJxycmS4u09Cf4DaLjSdlU+P6b
+   nDYzfdW1xOMHqmUwAq8kMTSc3mfyHZmpyo4jE0nW9mvyRGzWogT0y7k3g
+   hE4lAPPEJQcw3MpTzvNSVT0oD0JVQtp8kM9+/iOR0enc2Rh38IL2c/dN+
+   0hglGzRCXMKSicjPu8/C/xYPn6VtEqSLe8bwLWKX+tsp9k3gUu1fojBIp
+   w==;
+X-CSE-ConnectionGUID: xvjwZ/4LRYCDSf6sOn0YFw==
+X-CSE-MsgGUID: pTsO5uXARoSDosk7cnFqEw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="71428556"
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="71428556"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 16:22:01 -0800
+X-CSE-ConnectionGUID: t5rIKQ7vT8mNAM1G04i7VQ==
+X-CSE-MsgGUID: gWaNtIfiRWSd5iEDpjxA8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="214548021"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 03 Feb 2026 16:22:00 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vnQea-00000000hK0-2QDh;
+	Wed, 04 Feb 2026 00:21:56 +0000
+Date: Wed, 4 Feb 2026 08:21:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
+	yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yizhang089@gmail.com,
+	libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
+Subject: Re: [PATCH -next v2 17/22] ext4: implement partial block zero range
+ iomap path
+Message-ID: <202602040854.1tmFmFGB-lkp@intel.com>
+References: <20260203062523.3869120-18-yi.zhang@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -111,93 +86,73 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMsNC+ve3dRwT1xGWB0pvBJXqBpeksf7PgbEeihcnfs=AmwVRQ@mail.gmail.com>
-X-Spam-Score: -2.51
-X-Spam-Level: 
-X-Spam-Flag: NO
+In-Reply-To: <20260203062523.3869120-18-yi.zhang@huawei.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13511-lists,linux-ext4=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:email];
-	DMARC_NA(0.00)[suse.cz];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,huaweicloud.com,fnnas.com];
+	TAGGED_FROM(0.00)[bounces-13512-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,mit.edu,dilger.ca,vger.kernel.org,gmail.com];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 95426DACD9
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,intel.com:dkim,intel.com:mid]
+X-Rspamd-Queue-Id: 9F693DFFBA
 X-Rspamd-Action: no action
 
-Hello,
+Hi Zhang,
 
-On Fri 30-01-26 19:38:55, Gerald Yang wrote:
-> Thanks for sharing the findings, I'd also like to share some findings:
-> I tried to figure out why the buffer is dirty after calling sync_filesystem,
-> in mpage_prepare_extent_to_map, first I printed folio_test_dirty(folio):
-> 
-> while (index <= end)
->     ...
->     for (i = 0; i < nr_folios; i++) {
->         ...
->         (print if folio is dirty here)
-> 
-> and actually all folios are clean:
-> if (!folio_test_dirty(folio) ||
->     ...
->     folio_unlock(folio);
->     continue;       <==== continue here without writing anything
-> 
-> Because the call trace happens before going into the above while loop:
-> 
-> if (ext4_should_journal_data(mpd->inode)) {
->     handle = ext4_journal_start(mpd->inode, EXT4_HT_WRITE_PAGE,
-> 
-> it checks if the file system is read only and dumps the call trace in
-> ext4_journal_check_start, but it doesn't check if there are any real writes
-> that will happen later in the loop.
-> 
-> To confirm this, first I added 2 more lines in the reproduce script before
-> remounting read only:
-> sync      <==== it calls ext4_sync_fs to flush all dirty data same as what's
->                          called during remount read only
-> echo 1 > /proc/sys/vm/drop_caches       <==== drop clean page cache
-> mount -o remount,ro ext4disk mnt
-> 
-> Then I can no longer reproduce the call trace.
+kernel test robot noticed the following build warnings:
 
-OK, but ext4_do_writepages() has a check at the beginning:
+[auto build test WARNING on next-20260202]
 
-        if (!mapping->nrpages || !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
-                goto out_writepages;
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Yi/ext4-make-ext4_block_zero_page_range-pass-out-did_zero/20260203-144244
+base:   next-20260202
+patch link:    https://lore.kernel.org/r/20260203062523.3869120-18-yi.zhang%40huawei.com
+patch subject: [PATCH -next v2 17/22] ext4: implement partial block zero range iomap path
+config: m68k-randconfig-r123-20260204 (https://download.01.org/0day-ci/archive/20260204/202602040854.1tmFmFGB-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.4.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260204/202602040854.1tmFmFGB-lkp@intel.com/reproduce)
 
-So if there are no dirty pages, mapping_tagged(mapping, PAGECACHE_TAG_DIRTY)
-should be false and so we shouldn't go further?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602040854.1tmFmFGB-lkp@intel.com/
 
-It all looks like some kind of a race because I'm not always able to
-reproduce the problem... I'll try to look more into this.
+sparse warnings: (new ones prefixed by >>)
+>> fs/ext4/inode.c:4151:24: sparse: sparse: symbol 'ext4_iomap_zero_ops' was not declared. Should it be static?
+   fs/ext4/inode.c:4164:24: sparse: sparse: symbol 'ext4_iomap_buffered_read_ops' was not declared. Should it be static?
+   fs/ext4/inode.c:5135:32: sparse: sparse: unsigned value that used to be signed checked against zero?
+   fs/ext4/inode.c:5134:52: sparse: signed value source
 
-								Honza
+vim +/ext4_iomap_zero_ops +4151 fs/ext4/inode.c
+
+  4150	
+> 4151	const struct iomap_ops ext4_iomap_zero_ops = {
+  4152		.iomap_begin = ext4_iomap_zero_begin,
+  4153	};
+  4154	
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
