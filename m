@@ -1,303 +1,283 @@
-Return-Path: <linux-ext4+bounces-13517-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13518-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EOQ8EHfJgmkJbQMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13517-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 05:22:15 +0100
+	id IKlkE0LngmlTegMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13518-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 07:29:22 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC47E187A
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 05:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6117E2533
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Feb 2026 07:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5E61530CABFF
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 04:22:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D516F304F21F
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Feb 2026 06:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B67A34CFC0;
-	Wed,  4 Feb 2026 04:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D121F37F11E;
+	Wed,  4 Feb 2026 06:29:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mjK4iycE"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="080blcXj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEF034C830;
-	Wed,  4 Feb 2026 04:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC9B37F0F4;
+	Wed,  4 Feb 2026 06:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770178931; cv=none; b=O6qqgmtElPdv2pmqWBDO2B3iVb40a6sdNaX+vd4/N8fPKY9vKB2YgMaG9jDe6kWa41zsDpdW0BrORvDchrFunQPM2yD1hasYsFvCM12qOVTLYhzn4G3AGOlmvRuMCVoT9aESXQ1TH2lOVBseN/VPyUhzwM8XCMihaqTCj3WC3R4=
+	t=1770186555; cv=none; b=Tz1+i/vie1/dmVJiUKsOc2jBSBZ5hlesFjyQ1VodS/od4sccqWaUwnJEtPTTY8BP/vc6LdBhglqRQw9iNCAE4VIrKVUYgKGVB3Qa2VR5zOdlnX9D0Ev0D6FbWKGO/nr0PNfMcx8SZjsDSes+D6Ruj6dwvyVf+DZImN17wTq2PR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770178931; c=relaxed/simple;
-	bh=xAr1MaLBjTmJh1EIvHVY9qAFaejUI/5HqFZckEJcElM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lzJJZXphl11ryT9DuVpv68INWsMtgEeIyPRd3m9fTizze7KrCfe6Yf3Kg54GafVlx4eOv6A/QpOnXUr9Np1vC6vQsHQIao54/uSa4zr2slpsoee7dWsxzBO3JygIV0EphQdzCu9yMa+fLfCO6XeQk2vUY7Rx5W9lRcDPn5JmXPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mjK4iycE; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770178930; x=1801714930;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xAr1MaLBjTmJh1EIvHVY9qAFaejUI/5HqFZckEJcElM=;
-  b=mjK4iycElGTEwlgjfamlOsJBDp/oloBHiy57a9XRIQpbX5MDz8ufH/Dj
-   za0nr23jg6o2b9Y7Mrj6XhPnuvBRHZJllY9oWiF6+N26F4cOqLQspSRoX
-   N4Oe2Y/EC+HPm+18vUkuIGyL4JyVpNyPKvT1+EDVOyG7NkPS1UjFjstpy
-   x0n9Y3wWQd82Ak+HOzNZW/oJkCBUw4lm9iZCPRe1duoVg6uZH3DutB9sP
-   hSJY3dVL8QjqpdYWT8EnIdBN7BFg19+FldAIq6pxHrw2ov1SnvI+ulP1w
-   dWNP1hFtFfzixjOm/8mfdRN0ZWNbLAJ4i+PCoArViXR9PjKB3blGoL7pD
-   Q==;
-X-CSE-ConnectionGUID: Lmag3X5kTuiYU36BrRcRzw==
-X-CSE-MsgGUID: CoWsnVZjRyWWnZzcDVlsUw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="74979366"
-X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
-   d="scan'208";a="74979366"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 20:22:09 -0800
-X-CSE-ConnectionGUID: K9a77kKNQlCvpvsT37pm5Q==
-X-CSE-MsgGUID: U0IMYBoYTtGKmJ6qBBepqg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
-   d="scan'208";a="214753861"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 03 Feb 2026 20:22:05 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vnUOw-00000000hRg-4B3c;
-	Wed, 04 Feb 2026 04:22:02 +0000
-Date: Wed, 4 Feb 2026 12:21:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
-	yi.zhang@huawei.com, yi.zhang@huaweicloud.com, yizhang089@gmail.com,
-	libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
-Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially
- block truncating down
-Message-ID: <202602041239.JFyNwVcg-lkp@intel.com>
-References: <20260203062523.3869120-4-yi.zhang@huawei.com>
+	s=arc-20240116; t=1770186555; c=relaxed/simple;
+	bh=2KyYnjnFnxV0kXpqvPA5fd74nfX9k3kv/XEQU3f4b7g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WUQvTVTJpyyntQZB1vQtX6lg9HThw2UlHi6xsE0Zkr2aY4SkA54V1yq9pxALkI6Cj0yXawMbdEm+LuAZv/k+XbwWwUJTVkI8oeMsq6PqrHPLSYY4QJi6ibj4XelPw8uDlWfSIGqJyggLyczseZf40JC3+hcA4YKZ7BUUfPucBDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=080blcXj; arc=none smtp.client-ip=113.46.200.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=FAoHAVu5PeBUU58hDd9iKhl+JihlYYfgLxt55xiyZf0=;
+	b=080blcXj2PQV2Ne3zGhfSEivFm2W39MrbUWj1NTgbttkYaefE2VF0kp5ZNn6QkD5DGdjtqVtU
+	ma/Wu/mfWeUqSJ6icP5YlfOfMoMFgsgmb5wUzOTME1GNAL9AmoF8PJ4PaEwsN8Yan5fK5iF6qly
+	CF20CKEbtsGPi05ZfoddQHY=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4f5VhD27TFzpStQ;
+	Wed,  4 Feb 2026 14:25:00 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id B83A440363;
+	Wed,  4 Feb 2026 14:29:10 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 4 Feb
+ 2026 14:29:09 +0800
+Message-ID: <c6a3faa7-299a-4f10-981d-693cdf55b930@huawei.com>
+Date: Wed, 4 Feb 2026 14:29:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260203062523.3869120-4-yi.zhang@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: add optional rotating block allocation policy
+To: Mario Lohajner <mario_lohajner@rocketmail.com>, <tytso@mit.edu>
+CC: <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Yang Erkun <yangerkun@huawei.com>,
+	<libaokun9@gmail.com>, Baokun Li <libaokun1@huawei.com>
+References: <20260204033112.406079-1-mario_lohajner.ref@rocketmail.com>
+ <20260204033112.406079-1-mario_lohajner@rocketmail.com>
+Content-Language: en-GB
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20260204033112.406079-1-mario_lohajner@rocketmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,mit.edu,dilger.ca,suse.cz,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,huaweicloud.com,fnnas.com];
-	TAGGED_FROM(0.00)[bounces-13517-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[dilger.ca,vger.kernel.org,huawei.com,gmail.com];
+	TAGGED_FROM(0.00)[bounces-13518-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[rocketmail.com,mit.edu];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[libaokun1@huawei.com,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8DC47E187A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: A6117E2533
 X-Rspamd-Action: no action
 
-Hi Zhang,
+On 2026-02-04 11:31, Mario Lohajner wrote:
+> Add support for the rotalloc allocation policy as a new mount
+> option. Policy rotates the starting block group for new allocations.
+>
+> Changes:
+> - fs/ext4/ext4.h
+> 	rotalloc policy dedlared, extend sb with cursor, vector & lock
+>
+> - fs/ext4/mballoc.h
+> 	expose allocator functions for vectoring in super.c
+>
+> - fs/ext4/super.c
+> 	parse rotalloc mnt opt, init cursor, lock and allocator vector
+>
+> - fs/ext4/mballoc.c
+> 	add rotalloc allocator, vectored allocator call in new_blocks
+>
+> The policy is selected via a mount option and does not change the
+> on-disk format or default allocation behavior. It preserves existing
+> allocation heuristics within a block group while distributing
+> allocations across block groups in a deterministic sequential manner.
+>
+> The rotating allocator is implemented as a separate allocation path
+> selected at mount time. This avoids conditional branches in the regular
+> allocator and keeps allocation policies isolated.
+> This also allows the rotating allocator to evolve independently in the
+> future without increasing complexity in the regular allocator.
+>
+> The policy was tested using v6.18.6 stable locally with the new mount
+> option "rotalloc" enabled, confirmed working as desribed!
+>
+> Signed-off-by: Mario Lohajner <mario_lohajner@rocketmail.com>
+> ---
+>  fs/ext4/ext4.h    |   8 +++
+>  fs/ext4/mballoc.c | 152 ++++++++++++++++++++++++++++++++++++++++++++--
+>  fs/ext4/mballoc.h |   3 +
+>  fs/ext4/super.c   |  18 +++++-
+>  4 files changed, 175 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 56112f201cac..cbbb7c05d7a2 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -229,6 +229,9 @@ struct ext4_allocation_request {
+>  	unsigned int flags;
+>  };
+>  
+> +/* expose rotalloc allocator argument pointer type */
+> +struct ext4_allocation_context;
+> +
+>  /*
+>   * Logical to physical block mapping, used by ext4_map_blocks()
+>   *
+> @@ -1230,6 +1233,7 @@ struct ext4_inode_info {
+>   * Mount flags set via mount options or defaults
+>   */
+>  #define EXT4_MOUNT_NO_MBCACHE		0x00001 /* Do not use mbcache */
+> +#define EXT4_MOUNT_ROTALLOC			0x00002 /* Use rotalloc policy/allocator */
+>  #define EXT4_MOUNT_GRPID		0x00004	/* Create files with directory's group */
+>  #define EXT4_MOUNT_DEBUG		0x00008	/* Some debugging messages */
+>  #define EXT4_MOUNT_ERRORS_CONT		0x00010	/* Continue on errors */
+> @@ -1559,6 +1563,10 @@ struct ext4_sb_info {
+>  	unsigned long s_mount_flags;
+>  	unsigned int s_def_mount_opt;
+>  	unsigned int s_def_mount_opt2;
+> +	/* Rotalloc cursor, lock & new_blocks allocator vector */
+> +	unsigned int s_rotalloc_cursor;
+> +	spinlock_t s_rotalloc_lock;
+> +	int (*s_mb_new_blocks)(struct ext4_allocation_context *ac);
+>  	ext4_fsblk_t s_sb_block;
+>  	atomic64_t s_resv_clusters;
+>  	kuid_t s_resuid;
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 56d50fd3310b..74f79652c674 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2314,11 +2314,11 @@ static void ext4_mb_check_limits(struct ext4_allocation_context *ac,
+>   *   stop the scan and use it immediately
+>   *
+>   * * If free extent found is smaller than goal, then keep retrying
+> - *   upto a max of sbi->s_mb_max_to_scan times (default 200). After
+> + *   up to a max of sbi->s_mb_max_to_scan times (default 200). After
+>   *   that stop scanning and use whatever we have.
+>   *
+>   * * If free extent found is bigger than goal, then keep retrying
+> - *   upto a max of sbi->s_mb_min_to_scan times (default 10) before
+> + *   up to a max of sbi->s_mb_min_to_scan times (default 10) before
+>   *   stopping the scan and using the extent.
+>   *
+>   *
+> @@ -2981,7 +2981,7 @@ static int ext4_mb_scan_group(struct ext4_allocation_context *ac,
+>  	return ret;
+>  }
+>  
+> -static noinline_for_stack int
+> +noinline_for_stack int
+>  ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  {
+>  	ext4_group_t i;
+> @@ -3012,7 +3012,7 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  	 * is greater than equal to the sbi_s_mb_order2_reqs
+>  	 * You can tune it via /sys/fs/ext4/<partition>/mb_order2_req
+>  	 * We also support searching for power-of-two requests only for
+> -	 * requests upto maximum buddy size we have constructed.
+> +	 * requests up to maximum buddy size we have constructed.
+>  	 */
+>  	if (i >= sbi->s_mb_order2_reqs && i <= MB_NUM_ORDERS(sb)) {
+>  		if (is_power_of_2(ac->ac_g_ex.fe_len))
+> @@ -3101,6 +3101,144 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  	return err;
+>  }
+>  
+> +/* Rotating allocator (rotalloc mount option) */
+> +noinline_for_stack int
+> +ext4_mb_rotating_allocator(struct ext4_allocation_context *ac)
+> +{
+> +	ext4_group_t i, goal;
+> +	int err = 0;
+> +	struct super_block *sb = ac->ac_sb;
+> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	struct ext4_buddy e4b;
+> +
+> +	BUG_ON(ac->ac_status == AC_STATUS_FOUND);
+> +
+> +	/* Set the goal from s_rotalloc_cursor */
+> +	spin_lock(&sbi->s_rotalloc_lock);
+> +	goal = sbi->s_rotalloc_cursor;
+> +	spin_unlock(&sbi->s_rotalloc_lock);
+> +	ac->ac_g_ex.fe_group = goal;
+> +
+> +	/* first, try the goal */
+> +	err = ext4_mb_find_by_goal(ac, &e4b);
+> +	if (err || ac->ac_status == AC_STATUS_FOUND)
+> +		goto out;
+> +
+> +	if (unlikely(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
+> +		goto out;
+> +
+> +	/*
+> +	 * ac->ac_2order is set only if the fe_len is a power of 2
+> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
+> +	 * so that we try exact allocation using buddy.
+> +	 */
+> +	i = fls(ac->ac_g_ex.fe_len);
+> +	ac->ac_2order = 0;
+> +	/*
+> +	 * We search using buddy data only if the order of the request
+> +	 * is greater than equal to the sbi_s_mb_order2_reqs
+> +	 * You can tune it via /sys/fs/ext4/<partition>/mb_order2_req
+> +	 * We also support searching for power-of-two requests only for
+> +	 * requests up to maximum buddy size we have constructed.
+> +	 */
+> +	if (i >= sbi->s_mb_order2_reqs && i <= MB_NUM_ORDERS(sb)) {
+> +		if (is_power_of_2(ac->ac_g_ex.fe_len))
+> +			ac->ac_2order = array_index_nospec(i - 1,
+> +							   MB_NUM_ORDERS(sb));
+> +	}
+> +
+> +	/* if stream allocation is enabled, use global goal */
+> +	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
+> +		int hash = ac->ac_inode->i_ino % sbi->s_mb_nr_global_goals;
+> +
+> +		ac->ac_g_ex.fe_group = READ_ONCE(sbi->s_mb_last_groups[hash]);
+> +		ac->ac_g_ex.fe_start = -1;
+> +		ac->ac_flags &= ~EXT4_MB_HINT_TRY_GOAL;
 
-kernel test robot noticed the following build warnings:
+Rotating block allocation looks a lot like stream allocation—they both
+pick up from where the last successful allocation left off.
 
-[auto build test WARNING on next-20260202]
+I noticed that the stream allocation's global goal is now split up.
+Is there an advantage to keeping it as a single goal?
+Alternatively, do you see any downsides to this split in your use case?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Yi/ext4-make-ext4_block_zero_page_range-pass-out-did_zero/20260203-144244
-base:   next-20260202
-patch link:    https://lore.kernel.org/r/20260203062523.3869120-4-yi.zhang%40huawei.com
-patch subject: [PATCH -next v2 03/22] ext4: only order data when partially block truncating down
-config: riscv-randconfig-r071-20260204 (https://download.01.org/0day-ci/archive/20260204/202602041239.JFyNwVcg-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 9b8addffa70cee5b2acc5454712d9cf78ce45710)
-smatch version: v0.5.0-8994-gd50c5a4c
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602041239.JFyNwVcg-lkp@intel.com/
-
-New smatch warnings:
-fs/ext4/inode.c:4577 ext4_truncate() warn: unsigned 'zero_len' is never less than zero.
-
-Old smatch warnings:
-fs/ext4/inode.c:2651 mpage_prepare_extent_to_map() warn: missing error code 'err'
-fs/ext4/inode.c:5129 check_igot_inode() warn: missing unwind goto?
-
-vim +/zero_len +4577 fs/ext4/inode.c
-
-  4494	
-  4495	/*
-  4496	 * ext4_truncate()
-  4497	 *
-  4498	 * We block out ext4_get_block() block instantiations across the entire
-  4499	 * transaction, and VFS/VM ensures that ext4_truncate() cannot run
-  4500	 * simultaneously on behalf of the same inode.
-  4501	 *
-  4502	 * As we work through the truncate and commit bits of it to the journal there
-  4503	 * is one core, guiding principle: the file's tree must always be consistent on
-  4504	 * disk.  We must be able to restart the truncate after a crash.
-  4505	 *
-  4506	 * The file's tree may be transiently inconsistent in memory (although it
-  4507	 * probably isn't), but whenever we close off and commit a journal transaction,
-  4508	 * the contents of (the filesystem + the journal) must be consistent and
-  4509	 * restartable.  It's pretty simple, really: bottom up, right to left (although
-  4510	 * left-to-right works OK too).
-  4511	 *
-  4512	 * Note that at recovery time, journal replay occurs *before* the restart of
-  4513	 * truncate against the orphan inode list.
-  4514	 *
-  4515	 * The committed inode has the new, desired i_size (which is the same as
-  4516	 * i_disksize in this case).  After a crash, ext4_orphan_cleanup() will see
-  4517	 * that this inode's truncate did not complete and it will again call
-  4518	 * ext4_truncate() to have another go.  So there will be instantiated blocks
-  4519	 * to the right of the truncation point in a crashed ext4 filesystem.  But
-  4520	 * that's fine - as long as they are linked from the inode, the post-crash
-  4521	 * ext4_truncate() run will find them and release them.
-  4522	 */
-  4523	int ext4_truncate(struct inode *inode)
-  4524	{
-  4525		struct ext4_inode_info *ei = EXT4_I(inode);
-  4526		unsigned int credits;
-  4527		int err = 0, err2;
-  4528		handle_t *handle;
-  4529		struct address_space *mapping = inode->i_mapping;
-  4530	
-  4531		/*
-  4532		 * There is a possibility that we're either freeing the inode
-  4533		 * or it's a completely new inode. In those cases we might not
-  4534		 * have i_rwsem locked because it's not necessary.
-  4535		 */
-  4536		if (!(inode_state_read_once(inode) & (I_NEW | I_FREEING)))
-  4537			WARN_ON(!inode_is_locked(inode));
-  4538		trace_ext4_truncate_enter(inode);
-  4539	
-  4540		if (!ext4_can_truncate(inode))
-  4541			goto out_trace;
-  4542	
-  4543		if (inode->i_size == 0 && !test_opt(inode->i_sb, NO_AUTO_DA_ALLOC))
-  4544			ext4_set_inode_state(inode, EXT4_STATE_DA_ALLOC_CLOSE);
-  4545	
-  4546		if (ext4_has_inline_data(inode)) {
-  4547			int has_inline = 1;
-  4548	
-  4549			err = ext4_inline_data_truncate(inode, &has_inline);
-  4550			if (err || has_inline)
-  4551				goto out_trace;
-  4552		}
-  4553	
-  4554		/* If we zero-out tail of the page, we have to create jinode for jbd2 */
-  4555		if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
-  4556			err = ext4_inode_attach_jinode(inode);
-  4557			if (err)
-  4558				goto out_trace;
-  4559		}
-  4560	
-  4561		if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-  4562			credits = ext4_chunk_trans_extent(inode, 1);
-  4563		else
-  4564			credits = ext4_blocks_for_truncate(inode);
-  4565	
-  4566		handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, credits);
-  4567		if (IS_ERR(handle)) {
-  4568			err = PTR_ERR(handle);
-  4569			goto out_trace;
-  4570		}
-  4571	
-  4572		if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
-  4573			unsigned int zero_len;
-  4574	
-  4575			zero_len = ext4_block_truncate_page(handle, mapping,
-  4576							    inode->i_size);
-> 4577			if (zero_len < 0) {
-  4578				err = zero_len;
-  4579				goto out_stop;
-  4580			}
-  4581			if (zero_len && !IS_DAX(inode) &&
-  4582			    ext4_should_order_data(inode)) {
-  4583				err = ext4_jbd2_inode_add_write(handle, inode,
-  4584						inode->i_size, zero_len);
-  4585				if (err)
-  4586					goto out_stop;
-  4587			}
-  4588		}
-  4589	
-  4590		/*
-  4591		 * We add the inode to the orphan list, so that if this
-  4592		 * truncate spans multiple transactions, and we crash, we will
-  4593		 * resume the truncate when the filesystem recovers.  It also
-  4594		 * marks the inode dirty, to catch the new size.
-  4595		 *
-  4596		 * Implication: the file must always be in a sane, consistent
-  4597		 * truncatable state while each transaction commits.
-  4598		 */
-  4599		err = ext4_orphan_add(handle, inode);
-  4600		if (err)
-  4601			goto out_stop;
-  4602	
-  4603		ext4_fc_track_inode(handle, inode);
-  4604		ext4_check_map_extents_env(inode);
-  4605	
-  4606		down_write(&EXT4_I(inode)->i_data_sem);
-  4607		ext4_discard_preallocations(inode);
-  4608	
-  4609		if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-  4610			err = ext4_ext_truncate(handle, inode);
-  4611		else
-  4612			ext4_ind_truncate(handle, inode);
-  4613	
-  4614		up_write(&ei->i_data_sem);
-  4615		if (err)
-  4616			goto out_stop;
-  4617	
-  4618		if (IS_SYNC(inode))
-  4619			ext4_handle_sync(handle);
-  4620	
-  4621	out_stop:
-  4622		/*
-  4623		 * If this was a simple ftruncate() and the file will remain alive,
-  4624		 * then we need to clear up the orphan record which we created above.
-  4625		 * However, if this was a real unlink then we were called by
-  4626		 * ext4_evict_inode(), and we allow that function to clean up the
-  4627		 * orphan info for us.
-  4628		 */
-  4629		if (inode->i_nlink)
-  4630			ext4_orphan_del(handle, inode);
-  4631	
-  4632		inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
-  4633		err2 = ext4_mark_inode_dirty(handle, inode);
-  4634		if (unlikely(err2 && !err))
-  4635			err = err2;
-  4636		ext4_journal_stop(handle);
-  4637	
-  4638	out_trace:
-  4639		trace_ext4_truncate_exit(inode);
-  4640		return err;
-  4641	}
-  4642	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
