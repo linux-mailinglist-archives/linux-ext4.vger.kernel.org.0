@@ -1,235 +1,259 @@
-Return-Path: <linux-ext4+bounces-13545-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13546-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qOWJJHmVhGk43gMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13545-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 14:04:57 +0100
+	id 6OjDKeykhGmI3wMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13546-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 15:10:52 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8C4EF2F3D
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 14:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 099E2F3D0D
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 15:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1C2AB301B93D
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 12:59:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1051030495CC
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 14:07:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B053D413F;
-	Thu,  5 Feb 2026 12:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129CA3EF0D8;
+	Thu,  5 Feb 2026 14:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b="gaG797Sm"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UyRBEduu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QphShRST";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UyRBEduu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QphShRST"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0DA3B95F9
-	for <linux-ext4@vger.kernel.org>; Thu,  5 Feb 2026 12:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.125.188.122
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770296378; cv=pass; b=fMHjd6K4nRljZlzIAggSnGOl+KOKt5V5wwyM72YpDp8aCOKGQBnUAjbPxeWSM3XK48aiE4F8sHH2X/f3Wn8/3voWEYbyfDe713miZo45mO6FXjeQiUFjXITyPMsudefiA3Sfhaa99OLZZmeEvnHrYxRBP1o0gvRyprZL2FEo6dk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770296378; c=relaxed/simple;
-	bh=b6ybiLUWQC0U95KN4n2npwQwXvLR6ygB0oFnX8K6/rg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LavKfHgpQRP8l5u64tr0+6f0YgPgZjlySg8deovrXwA+1Y1/hlpxKt9uj3tqp+MTv456bY6eednNxaEDwJ3YfQ/SEs+mXVf1DOCkDpFPeRYtA+XvCBacaOLYDz7webqjl2652Aq+gvn6Ysg5CF9fkqQIKUcj5p4dek0OBT4wAdI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (4096-bit key) header.d=canonical.com header.i=@canonical.com header.b=gaG797Sm; arc=pass smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AD739A7EE
+	for <linux-ext4@vger.kernel.org>; Thu,  5 Feb 2026 14:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770300457; cv=none; b=Xjnnci4aMZn/gK2LmZLKT0gxgHDJqu3k0yhXvse8UgPEtinS9p/sPnXR3wVmjxIXBteEZEgCGX1soXqxGD1DkFBhHlXCC9lj2jJ69cpcl+0DRYEnBZc5KhW5ktN8q/8tR5X4kToTe8O7Qx/iwfbMpD9009KxVHXt8Bi659oEmYM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770300457; c=relaxed/simple;
+	bh=5hx/cqxHxEpV3jNE2eWt1KVL4Bf8rWrHEGjP6Sfebg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nscba4M8dRH0s069NHQg3YsKcyR8MOh8EBP+eF4KOQ3o0d70P91GxNuq1UZokwB4KzQgy+u4oMxuG16FEVR5g4aF71IgHnyYWuTxWB6z1tyqRiLZLbsD9GIs5jKbFWXWr/zQcSmoOOHx5llD6nWIntWQ4n+B4NOU3dk/UFQI6CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UyRBEduu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QphShRST; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UyRBEduu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QphShRST; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C43593F520
-	for <linux-ext4@vger.kernel.org>; Thu,  5 Feb 2026 12:59:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20251003; t=1770296369;
-	bh=qqKrekzgv2kE0rks6W5HOVCMvB1GxK8/1lFD25PHZRg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=gaG797Smp11FNaqTEnm/KNmfJ+gqelsumX8O2BZS9TQnJFmiukCsemsIStROqSmv3
-	 25FRasENr/qeeUsoOKNfVB8jSHTCzYQmVH14KeTU2OhK9V7InsqA4xWKylNlEGQcUj
-	 pdbkEQkU9XyyvAtfUMoNXO6DhUdnS0bKhxtlRl6dLbe5ROzKgh6nfLn/Cp0PpyznlN
-	 zPDNLEInABMw5B/o9bWdb1KygdAHdGG8huXLVZHdGP6wOthRH2ejjbRa0tBJy0eQJH
-	 fs0aXejbDWX+T68qhUuKM49yzuVwDrFIkPZqCSHjAVbejqZajvTsP4i3sRmT8A3Jn5
-	 UR7naE/El41ZV8b6ZSwG/l9THQnZfFC+kPuXr2RrOyYDp2+6maEyPBOoDTYrFXL0Ay
-	 HVM69Oje4+TMAcP7Kn90uw5vp9JzJB3IAlM5GKBOXFvZXciaTqgSw+R37w8EolD/3a
-	 MRqXjzVyaQnnkIVNYLENZx06PJOiT4wC1Ruv5zXHK9pMmxz9OiSfaW/eOt4qbnEvmX
-	 6yZcrnwOrvZlN+xt6Lz14PF9yKdbNSdW3cSmY1YHjrcAm2MDxhBHGBt55drGFMtcwR
-	 9lFseUu57Q+RmXlkX901b396bp8jcKc3IkWBIFj1QrETGBH9kIQcl9RE9B0r7Uaj2N
-	 QOHptEVst5eJRB/mkj7+JnYs=
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-45f1665f706so3119886b6e.3
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Feb 2026 04:59:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770296368; cv=none;
-        d=google.com; s=arc-20240605;
-        b=GhCFiQa/zETIwTWIibUddF15qWkckU3NUoE4d3hFgk8PrNzCRHBRJ5d4V2ibAZIAGM
-         Xw76gHUvItR34Gol9IblQ/Jq45kGLJJTzlWDu7TH3ccu7p5ah3/fLT0q908aZNh87kz+
-         TEP4BOVZWGqrZWFWQaiuKxMineEl/YB5qpNEXrrpH+/sMz4Qnp+uL8Wc+4eNRHmE9eyJ
-         DIyiYOIVG1NRj6mM2DH0rJgQmxhrXaBOzEsEaw7jmeDYXdlNEzn3HP3uEyJmBGFSnuFk
-         KAjHpk5QDKFJkA9+Z5C9ieLPTG3fwseQqrQrY6hV54xEZe6zfYoE4ikWtdPt4R0JiCaf
-         JSPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version;
-        bh=qqKrekzgv2kE0rks6W5HOVCMvB1GxK8/1lFD25PHZRg=;
-        fh=yvx/tm7EMdooEqTr9zh8mhbUelW3Bgtdvs5Jh01wKnw=;
-        b=HAV87ksWE4i9Vd+uQkiOj+4GgpCqvjK2SKqXjYJi+teIfaZyWw8ftpWUgSfcqBNxpQ
-         jkD9CYnJC7OP6k5kjTneUCiTqjeO2X61270Pzv9gUeM9sCJB44TAXgNMW9Bgevj+cbr8
-         YhqACAvW0WaOr0bo1qcdSwhWKdpwQwJVLuP+FnvAwO0XZvoGXp4tOjHI1R7pATN9+5yo
-         r2gx1/a9LwX/i5dNhyrMD/ZRaamnEgBHCI+lQrd8kXFUIXreE8a3ZurF1o3nXOePDakD
-         m71CAXgkcdZ8dA/XwD6ec5pyD4dRMKlz1+AOlgX6WVaYyL7SIePBUlSQU1Yjxmz1M/5c
-         i6Hw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770296368; x=1770901168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qqKrekzgv2kE0rks6W5HOVCMvB1GxK8/1lFD25PHZRg=;
-        b=fyjoulMurNIPlRMEugaQiVddLs9mwWzz7LlQuvM06jQl+3ryXIdfMcP0P492pNh/Tb
-         k/NumBONR5a++268+PN6Jg4Mx2A8rT1SvTV6ZSMek6UMajAhO6aC4lEF5BuGQMFHSL0w
-         9adxAYq4e707ISrAiwagXGPhuQESISJak6ajHTgD6HYZwyc4J45zNyBUDy2xT6e5PSuQ
-         nVMYtrg/A0+VKphjMhd9LtGTrHX/PoIiOtFsXPc5RXVinDi9pvWru2rh8z0NgnQiGm11
-         W+yKNeFvTTFzhNeTsYz4E1OU2DGA8eMB2s9kX0+DkrJYTMQWvpmdCQoPOndCt9/Grg4e
-         sDMA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhI2dT9i9z7GToiDDXjn+gI4aCJ6uSORgTDHsRnlaN1XHKpqlFUvHnXSQAn7qm7TkMPcA+RU4ncHyh@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwPjcmibwfl/R21SboVSlETnX+GeJY9/7n3xYggsKa4FSEAjvD
-	0rsUCCciGcvSk6KXvy4mIzHje6vEJU/XLS+Vm0SirL/VGfMWMPcHqZWep23w3ZLeBXG0U886zuu
-	Rj5S/MXseV8kiTC76tDZXQUwsl2M1+XWF71LenOCjXOjkpjYBzmmnG6zzz2Hn0xwmnoRyH+DACy
-	WAPZwMjUUp1C2N0+74edUCNRUEHzKhG1ciMSZcy6HXBx7O8L2gV2qdIA==
-X-Gm-Gg: AZuq6aKqvH7BdOSiY1S7zkZ/YFj/ttSMMR/DC4JwdrS0FcR2h3GHD+ikePetgGuO5Or
-	2szycnMCP5X0+EgsexcEIscBib1120YkazQnS1OrqjJuJkSKQRCH/sBHOyF2H9Sq1TKxpZsxTRx
-	IW7VadpPcY9GkNb163W2rpIBt2SrxZhFmoMH8VwhUhekbuZa22IOwTbD7CsOraecCGBi0=
-X-Received: by 2002:a05:6808:15a0:b0:450:794a:6cee with SMTP id 5614622812f47-462d5907893mr3661109b6e.21.1770296368645;
-        Thu, 05 Feb 2026 04:59:28 -0800 (PST)
-X-Received: by 2002:a05:6808:15a0:b0:450:794a:6cee with SMTP id
- 5614622812f47-462d5907893mr3661099b6e.21.1770296368340; Thu, 05 Feb 2026
- 04:59:28 -0800 (PST)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C4FC55BDA6;
+	Thu,  5 Feb 2026 14:07:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770300455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq5UKb93psP804heOP3D7DfvO9NIXfWiHXqPIFMBhho=;
+	b=UyRBEduuoo+ZRw/u2vYWbygcjt0Usn5GPXNdmM6F3iWik2jw6y36uFghgPkZ4iMPW13JSN
+	fxlOHLDwjOseyttvZl/vpLQhdIcLZz7/PyKTBrjars1L5SQsapDrU7d/bXtEXOCE04bIaq
+	TmXetB1kGWhTcnOZNUEl00fKSYluDZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770300455;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq5UKb93psP804heOP3D7DfvO9NIXfWiHXqPIFMBhho=;
+	b=QphShRSTc7osdvPdjxz67EuFyWBdwTazuktpTLrN7H4grSUBcUgQvJu5AaukBqpl4K9qPq
+	e+cqeDCgIq3EYoAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770300455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq5UKb93psP804heOP3D7DfvO9NIXfWiHXqPIFMBhho=;
+	b=UyRBEduuoo+ZRw/u2vYWbygcjt0Usn5GPXNdmM6F3iWik2jw6y36uFghgPkZ4iMPW13JSN
+	fxlOHLDwjOseyttvZl/vpLQhdIcLZz7/PyKTBrjars1L5SQsapDrU7d/bXtEXOCE04bIaq
+	TmXetB1kGWhTcnOZNUEl00fKSYluDZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770300455;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tq5UKb93psP804heOP3D7DfvO9NIXfWiHXqPIFMBhho=;
+	b=QphShRSTc7osdvPdjxz67EuFyWBdwTazuktpTLrN7H4grSUBcUgQvJu5AaukBqpl4K9qPq
+	e+cqeDCgIq3EYoAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AAFFB3EA63;
+	Thu,  5 Feb 2026 14:07:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yDW3KSekhGmVUQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Feb 2026 14:07:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 637BDA09D8; Thu,  5 Feb 2026 15:07:35 +0100 (CET)
+Date: Thu, 5 Feb 2026 15:07:35 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, Zhang Yi <yi.zhang@huaweicloud.com>, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	tytso@mit.edu, adilger.kernel@dilger.ca, ojaswin@linux.ibm.com, 
+	ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org, 
+	Zhang Yi <yi.zhang@huawei.com>, yizhang089@gmail.com, yangerkun@huawei.com, yukuai@fnnas.com, 
+	libaokun9@gmail.com
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially
+ block truncating down
+Message-ID: <s434ifpengcthkmohmc6vvmvppx4o2k2ctk2p3it55ncgce3je@irbt7xpdnnzu>
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
+ <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+ <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
+ <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
+ <9b7e93da-65dd-4574-be7f-4ec88bce4da7@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260128074515.2028982-1-gerald.yang@canonical.com>
- <4u2l4huoj7zsfy2u37lgdzlmwwdntgqaer7wta7ud3kat7ox2n@oxhbcqryre3r>
- <CAMsNC+s1R-AUzhe80vjxYCSRu0X9Ybp33sSMHGHKpBL6=dG2_w@mail.gmail.com>
- <bycdopvwzfaskilhk3nsljuk3gkztvoa3is466a6utuj2lozmj@pxf44ulcnqup>
- <CAMsNC+ve3dRwT1xGWB0pvBJXqBpeksf7PgbEeihcnfs=AmwVRQ@mail.gmail.com>
- <gluj62pw5pu7ag2juf5ejwsr3ghvckag7wh4zunwyk57slcrmg@42of57gybigz> <tmtgzmvkfag4r6lbt4i2ej5ad3bfudezcm35l27ybit25r7l4d@5o2i4cuymh5j>
-In-Reply-To: <tmtgzmvkfag4r6lbt4i2ej5ad3bfudezcm35l27ybit25r7l4d@5o2i4cuymh5j>
-From: Gerald Yang <gerald.yang@canonical.com>
-Date: Thu, 5 Feb 2026 20:59:13 +0800
-X-Gm-Features: AZwV_QhwvKyPhKC_AULj0yACRazOcdsNLyJoWYEw-m1ch3bTmpOh67ChjUEbJo4
-Message-ID: <CAMsNC+svSX9AiZbs1dd4qigZqBuOjuCHOjpyXzgaO0sNLUHDYA@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Fix call trace when remounting to read only in
- data=journal mode
-To: Jan Kara <jack@suse.cz>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	gerald.yang.tw@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b7e93da-65dd-4574-be7f-4ec88bce4da7@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[canonical.com,reject];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[canonical.com:s=20251003];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13545-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13546-lists,linux-ext4=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.cz:dkim];
+	DMARC_NA(0.00)[suse.cz];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FREEMAIL_CC(0.00)[suse.cz,huaweicloud.com,vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gerald.yang@canonical.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[canonical.com:+];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,canonical.com:dkim,mail.gmail.com:mid,suse.cz:email]
-X-Rspamd-Queue-Id: A8C4EF2F3D
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 099E2F3D0D
 X-Rspamd-Action: no action
 
-Thanks Jan for fixing this issue, I can confirm the patch works for me too.
+On Thu 05-02-26 11:27:09, Baokun Li wrote:
+> On 2026-02-04 22:18, Jan Kara wrote:
+> > Hi Zhang!
+> >
+> > On Wed 04-02-26 14:42:46, Zhang Yi wrote:
+> >> On 2/3/2026 5:59 PM, Jan Kara wrote:
+> >>> On Tue 03-02-26 14:25:03, Zhang Yi wrote:
+> >>>> Currently, __ext4_block_zero_page_range() is called in the following
+> >>>> four cases to zero out the data in partial blocks:
+> >>>>
+> >>>> 1. Truncate down.
+> >>>> 2. Truncate up.
+> >>>> 3. Perform block allocation (e.g., fallocate) or append writes across a
+> >>>>    range extending beyond the end of the file (EOF).
+> >>>> 4. Partial block punch hole.
+> >>>>
+> >>>> If the default ordered data mode is used, __ext4_block_zero_page_range()
+> >>>> will write back the zeroed data to the disk through the order mode after
+> >>>> zeroing out.
+> >>>>
+> >>>> Among the cases 1,2 and 3 described above, only case 1 actually requires
+> >>>> this ordered write. Assuming no one intentionally bypasses the file
+> >>>> system to write directly to the disk. When performing a truncate down
+> >>>> operation, ensuring that the data beyond the EOF is zeroed out before
+> >>>> updating i_disksize is sufficient to prevent old data from being exposed
+> >>>> when the file is later extended. In other words, as long as the on-disk
+> >>>> data in case 1 can be properly zeroed out, only the data in memory needs
+> >>>> to be zeroed out in cases 2 and 3, without requiring ordered data.
+> >>> Hum, I'm not sure this is correct. The tail block of the file is not
+> >>> necessarily zeroed out beyond EOF (as mmap writes can race with page
+> >>> writeback and modify the tail block contents beyond EOF before we really
+> >>> submit it to the device). Thus after this commit if you truncate up, just
+> >>> zero out the newly exposed contents in the page cache and dirty it, then
+> >>> the transaction with the i_disksize update commits (I see nothing
+> >>> preventing it) and then you crash, you can observe file with the new size
+> >>> but non-zero content in the newly exposed area. Am I missing something?
+> >>>
+> >> Well, I think you are right! I missed the mmap write race condition that
+> >> happens during the writeback submitting I/O. Thank you a lot for pointing
+> >> this out. I thought of two possible solutions:
+> >>
+> >> 1. We also add explicit writeback operations to the truncate-up and
+> >>    post-EOF append writes. This solution is the most straightforward but
+> >>    may cause some performance overhead. However, since at most only one
+> >>    block is written, the impact is likely limited. Additionally, I
+> >>    observed that the implementation of the XFS file system also adopts a
+> >>    similar approach in its truncate up and down operation. (But it is
+> >>    somewhat strange that XFS also appears to have the same issue with
+> >>    post-EOF append writes; it only zero out the partial block in
+> >>    xfs_file_write_checks(), but it neither explicitly writeback zeroed
+> >>    data nor employs any other mechanism to ensure that the zero data
+> >>    writebacks before the metadata is written to disk.)
+> >>
+> >> 2. Resolve this race condition, ensure that there are no non-zero data
+> >>    in the post-EOF partial blocks on the disk. I observed that after the
+> >>    writeback holds the folio lock and calls folio_clear_dirty_for_io(),
+> >>    mmap writes will re-trigger the page fault. Perhaps we can filter out
+> >>    the EOF folio based on i_size in ext4_page_mkwrite(),
+> >>    block_page_mkwrite() and iomap_page_mkwrite(), and then call
+> >>    folio_wait_writeback() to wait for this partial folio writeback to
+> >>    complete. This seems can break the race condition without introducing
+> >>    too much overhead (no?).
+> >>
+> >> What do you think? Any other suggestions are also welcome.
+> > Hum, I like the option 2 because IMO non-zero data beyond EOF is a
+> > corner-case quirk which unnecessarily complicates rather common paths. But
+> > I'm not sure we can easily get rid of it. It can happen for example when
+> > you do appending write inside a block. The page is written back but before
+> > the transaction with i_disksize update commits we crash. Then again we have
+> > a non-zero content inside the block beyond EOF.
+> >
+> > So the only realistic option I see is to ensure tail of the block gets
+> > zeroed on disk before the transaction with i_disksize update commits in the
+> > cases of truncate up or write beyond EOF. data=ordered mode machinery is an
+> > asynchronous way how to achieve this. We could also just synchronously
+> > writeback the block where needed but the latency hit of such operation is
+> > going to be significant so I'm quite sure some workload somewhere will
+> > notice although the truncate up / write beyond EOF operations triggering this
+> > are not too common. So why do you need to get rid of these data=ordered
+> > mode usages? I guess because with iomap keeping our transaction handle ->
+> > folio lock ordering is complicated? Last time I looked it seemed still
+> > possible to keep it though.
+> >
+> > Another possibility would be to just *submit* the write synchronously and
+> > use data=ordered mode machinery only to wait for IO to complete before the
+> > transaction commits. That way it should be safe to start a transaction
+> > while holding folio lock and thus the iomap conversion would be easier.
+> >
+> > 								Honza
+> 
+> Can we treat EOF blocks as metadata and update them in the same
+> transaction as i_disksize? Although this would introduce some
+> management and journaling overhead, it could avoid the deadlock
+> of "writeback -> start handle -> trigger writeback".
 
+No, IMHO that would get too difficult. Just look at the hoops data=journal
+mode has to jump through to make page cache handling work with the
+journalling machinery. And you'd now have that for all the inodes. So I
+think some form of data=ordered machinery is much simpler to reason about.
 
-On Thu, Feb 5, 2026 at 5:25=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Tue 03-02-26 15:50:43, Jan Kara wrote:
-> > Hello,
-> >
-> > On Fri 30-01-26 19:38:55, Gerald Yang wrote:
-> > > Thanks for sharing the findings, I'd also like to share some findings=
-:
-> > > I tried to figure out why the buffer is dirty after calling sync_file=
-system,
-> > > in mpage_prepare_extent_to_map, first I printed folio_test_dirty(foli=
-o):
-> > >
-> > > while (index <=3D end)
-> > >     ...
-> > >     for (i =3D 0; i < nr_folios; i++) {
-> > >         ...
-> > >         (print if folio is dirty here)
-> > >
-> > > and actually all folios are clean:
-> > > if (!folio_test_dirty(folio) ||
-> > >     ...
-> > >     folio_unlock(folio);
-> > >     continue;       <=3D=3D=3D=3D continue here without writing anyth=
-ing
-> > >
-> > > Because the call trace happens before going into the above while loop=
-:
-> > >
-> > > if (ext4_should_journal_data(mpd->inode)) {
-> > >     handle =3D ext4_journal_start(mpd->inode, EXT4_HT_WRITE_PAGE,
-> > >
-> > > it checks if the file system is read only and dumps the call trace in
-> > > ext4_journal_check_start, but it doesn't check if there are any real =
-writes
-> > > that will happen later in the loop.
-> > >
-> > > To confirm this, first I added 2 more lines in the reproduce script b=
-efore
-> > > remounting read only:
-> > > sync      <=3D=3D=3D=3D it calls ext4_sync_fs to flush all dirty data=
- same as what's
-> > >                          called during remount read only
-> > > echo 1 > /proc/sys/vm/drop_caches       <=3D=3D=3D=3D drop clean page=
- cache
-> > > mount -o remount,ro ext4disk mnt
-> > >
-> > > Then I can no longer reproduce the call trace.
-> >
-> > OK, but ext4_do_writepages() has a check at the beginning:
-> >
-> >         if (!mapping->nrpages || !mapping_tagged(mapping, PAGECACHE_TAG=
-_DIRTY))
-> >                 goto out_writepages;
-> >
-> > So if there are no dirty pages, mapping_tagged(mapping, PAGECACHE_TAG_D=
-IRTY)
-> > should be false and so we shouldn't go further?
-> >
-> > It all looks like some kind of a race because I'm not always able to
-> > reproduce the problem... I'll try to look more into this.
->
-> OK, the race is with checkpointing code writing the buffers while flush
-> worker tries to writeback the pages. I've posted a patch which fixes the
-> issue for me.
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
