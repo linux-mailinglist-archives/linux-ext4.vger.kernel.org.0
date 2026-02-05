@@ -1,192 +1,207 @@
-Return-Path: <linux-ext4+bounces-13540-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13541-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qA+uCGZhhGng2gMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13540-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 10:22:46 +0100
+	id sI/6ATJkhGkK2wMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13541-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 10:34:42 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CE3BF095E
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 10:22:45 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08261F0D8D
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 10:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1126C30039B8
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 09:22:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 65FCE30CC4A1
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 09:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100AE298CAB;
-	Thu,  5 Feb 2026 09:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6ED3921CE;
+	Thu,  5 Feb 2026 09:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lqyuHKnY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kx8+dNq/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lqyuHKnY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kx8+dNq/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0atXNMF6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MF15H2FN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0atXNMF6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MF15H2FN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796B122301
-	for <linux-ext4@vger.kernel.org>; Thu,  5 Feb 2026 09:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8887E3921D1
+	for <linux-ext4@vger.kernel.org>; Thu,  5 Feb 2026 09:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770283360; cv=none; b=tYV7ombxzlExyuAgbNk6efFiChQLkvBy4HNdHQuBFMniAq5NHCxJufvsQQ3VrQTtiKS/pmQTATAoPD4FHN83BXo6sEOEaaXXlSNWeVTdhx9BWpXHgfPz4sdPTZ/RmJCrBnvqmaa1br1MaGEI5SxFn4eBHEnJLF3CQzEWPSg7//M=
+	t=1770283545; cv=none; b=V8wS3cPCenWOf6TiJ47I0rX+fAcdnPnR15g+ILTdiQXAloVYUVrbQV+JrXbyafcLlrF99eNM21VrXXM529WSeWrwv3TZUkfCHczvaOUhoqWgdXnvkamS06eXZfgdq6VKreHK4Ob1C3lj3L4i6x1Qo+oq9dBVDeVWNQrkjhmCdxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770283360; c=relaxed/simple;
-	bh=UpTP2E/A6bvegBNBPjj4DPdIN1/VGMppv8vNzKDRMWE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LbF+r7gQZrOcta2uQQ35hX7+jB4ubQ690fIREivI3MbmXLlqRueJtZemCMCOM2wEFphZGtEE7BDy0lhQjydKZvrUNQSsL1pHI585ao+ypwjTijbGIRUt+wxBWobnvNygd7RX3SMowqGeTYzUvYOf1qkKX6Dp5OF21/Z2jCeNQ8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lqyuHKnY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kx8+dNq/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lqyuHKnY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kx8+dNq/; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1770283545; c=relaxed/simple;
+	bh=KTapkWoXB2jtTdohE4dGoz3tDJTQ8fsIDd1XB1/S+0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q28JqoHgzIqJwAiegZTF0QX0c3Jz033lAZad/HE4FVgi8gf7kRGCzxgnKkgtKIwzkghwyQZGsnxsSl1BhJ8iCKBTlTFSDpU+grFAzETaCBoID8jh4b3HoZV2v6ZjbAcSsdmiFIXo/DeTYySwori5SgAratRU9FIn0xS/jmbH6Bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0atXNMF6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MF15H2FN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0atXNMF6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MF15H2FN; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 816CD3E754;
-	Thu,  5 Feb 2026 09:22:38 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C0D8B5BD9F;
+	Thu,  5 Feb 2026 09:25:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770283358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhfzFDUOEGmTkuZirYWsgJpfg7Bu5MthxL0dtJovxT4=;
-	b=lqyuHKnY1TtgCt1lmL56iRXOy45rW6lDSwuNx/bAZz6f0VUeGJXezgFu86ZanZ3xG7kgal
-	3Xua2flFi8a7sHYfr3XdO8qH3pPxL5aSUtZlUjwPvRm+F8GgqG1vuELa0KcU6PzMeNlqbM
-	e3Ha4D8anV5DVPzj1YRSx7MLPoP6TUQ=
+	t=1770283543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APdaobgvIXoTN9naCopRVTV+3nTDAdXaYQ3C4AfX44w=;
+	b=0atXNMF6XUoVmfNVI0MiyzdSla5IHS7YZX9vH6zLPyuMkIgfMhJg3y1+d/P54MuBoxfs1j
+	+eiivWOL2nm1hi51sbbHffYnyZ9fUvH88dg/yvInQmAkiRwBsXdmcbK+Z6556bUFIBvpQb
+	q2UoiJipjYmn1ghRNq6pLVNQ/Q+7AN8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770283358;
+	s=susede2_ed25519; t=1770283543;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhfzFDUOEGmTkuZirYWsgJpfg7Bu5MthxL0dtJovxT4=;
-	b=Kx8+dNq/5FewEOV2Z3xv6B3dmyuVemvzEVmMPJvSj180PkZnHdvPdDcjj4QiTng+jqI5yP
-	OwjujDpGCotF8xCw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=lqyuHKnY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="Kx8+dNq/"
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APdaobgvIXoTN9naCopRVTV+3nTDAdXaYQ3C4AfX44w=;
+	b=MF15H2FNPPMVYGb/pwnrCwym2mXQ9hTG5tFI6wzPHpR8a+Z8ovXXgqJ0/I9gEaEPU7xdJC
+	0JXHVFnEESQCa6Dw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770283358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhfzFDUOEGmTkuZirYWsgJpfg7Bu5MthxL0dtJovxT4=;
-	b=lqyuHKnY1TtgCt1lmL56iRXOy45rW6lDSwuNx/bAZz6f0VUeGJXezgFu86ZanZ3xG7kgal
-	3Xua2flFi8a7sHYfr3XdO8qH3pPxL5aSUtZlUjwPvRm+F8GgqG1vuELa0KcU6PzMeNlqbM
-	e3Ha4D8anV5DVPzj1YRSx7MLPoP6TUQ=
+	t=1770283543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APdaobgvIXoTN9naCopRVTV+3nTDAdXaYQ3C4AfX44w=;
+	b=0atXNMF6XUoVmfNVI0MiyzdSla5IHS7YZX9vH6zLPyuMkIgfMhJg3y1+d/P54MuBoxfs1j
+	+eiivWOL2nm1hi51sbbHffYnyZ9fUvH88dg/yvInQmAkiRwBsXdmcbK+Z6556bUFIBvpQb
+	q2UoiJipjYmn1ghRNq6pLVNQ/Q+7AN8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770283358;
+	s=susede2_ed25519; t=1770283543;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhfzFDUOEGmTkuZirYWsgJpfg7Bu5MthxL0dtJovxT4=;
-	b=Kx8+dNq/5FewEOV2Z3xv6B3dmyuVemvzEVmMPJvSj180PkZnHdvPdDcjj4QiTng+jqI5yP
-	OwjujDpGCotF8xCw==
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=APdaobgvIXoTN9naCopRVTV+3nTDAdXaYQ3C4AfX44w=;
+	b=MF15H2FNPPMVYGb/pwnrCwym2mXQ9hTG5tFI6wzPHpR8a+Z8ovXXgqJ0/I9gEaEPU7xdJC
+	0JXHVFnEESQCa6Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E0D53EA63;
-	Thu,  5 Feb 2026 09:22:38 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE2833EA63;
+	Thu,  5 Feb 2026 09:25:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aBraGl5hhGlNHwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 05 Feb 2026 09:22:38 +0000
+	id N6aCKhdihGlzUQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Feb 2026 09:25:43 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 28397A09D8; Thu,  5 Feb 2026 10:22:38 +0100 (CET)
+	id 72928A09D8; Thu,  5 Feb 2026 10:25:39 +0100 (CET)
+Date: Thu, 5 Feb 2026 10:25:39 +0100
 From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Gerald Yang <gerald.yang@canonical.com>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Fix stale xarray tags after writeback
-Date: Thu,  5 Feb 2026 10:22:24 +0100
-Message-ID: <20260205092223.21287-2-jack@suse.cz>
-X-Mailer: git-send-email 2.51.0
+To: Gerald Yang <gerald.yang@canonical.com>
+Cc: Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	linux-ext4@vger.kernel.org, gerald.yang.tw@gmail.com
+Subject: Re: [PATCH] ext4: Fix call trace when remounting to read only in
+ data=journal mode
+Message-ID: <tmtgzmvkfag4r6lbt4i2ej5ad3bfudezcm35l27ybit25r7l4d@5o2i4cuymh5j>
+References: <20260128074515.2028982-1-gerald.yang@canonical.com>
+ <4u2l4huoj7zsfy2u37lgdzlmwwdntgqaer7wta7ud3kat7ox2n@oxhbcqryre3r>
+ <CAMsNC+s1R-AUzhe80vjxYCSRu0X9Ybp33sSMHGHKpBL6=dG2_w@mail.gmail.com>
+ <bycdopvwzfaskilhk3nsljuk3gkztvoa3is466a6utuj2lozmj@pxf44ulcnqup>
+ <CAMsNC+ve3dRwT1xGWB0pvBJXqBpeksf7PgbEeihcnfs=AmwVRQ@mail.gmail.com>
+ <gluj62pw5pu7ag2juf5ejwsr3ghvckag7wh4zunwyk57slcrmg@42of57gybigz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2222; i=jack@suse.cz; h=from:subject; bh=UpTP2E/A6bvegBNBPjj4DPdIN1/VGMppv8vNzKDRMWE=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBphGFPVkhIRAdGXgNPAWwcuasjeiZiMTit50wdJ rhbz9XBx4GJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCaYRhTwAKCRCcnaoHP2RA 2b7gB/9ONnVpErI8ZVDo0epfGOHbyruG6QVIWEgFajcUjPfyd3zfDG5UBNFjs5z/ILMZhuoeMai BaRrbpKSNCjy6Ha9Xh/atkWzKrDhDhBj2JH2p2uDDzKIUJx/y/niIUIn341+vVE7KexciGgfjJ3 wMou3utJ3pNWnIuR0nS4prnkfC7qG4+LFiAqWt+Orin5jMxZhzWnUBSa586MjXXcF3wM70T/Dih Ir24KwYh0x0nibOB5vmNayvftkwNyrwkKbvGaxZj3+F32BJb0ZNl7SD7lFwAxM3YQmK4yydIAoP ViYymPtCezDSYDGM9DGQZrKWAA2ldzCqzVZSBWlycw5JJV/0
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <gluj62pw5pu7ag2juf5ejwsr3ghvckag7wh4zunwyk57slcrmg@42of57gybigz>
+X-Spam-Score: -2.30
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13540-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13541-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	DMARC_NA(0.00)[suse.cz];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,dilger.ca,vger.kernel.org,gmail.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,suse.cz:email,suse.cz:dkim,suse.cz:mid,canonical.com:email];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[suse.cz:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 9CE3BF095E
+X-Rspamd-Queue-Id: 08261F0D8D
 X-Rspamd-Action: no action
 
-There are cases where ext4_bio_write_page() gets called for a page which
-has no buffers to submit. This happens e.g. when the part of the file is
-actually a hole, when we cannot allocate blocks due to being called from
-jbd2, or in data=journal mode when checkpointing writes the buffers
-earlier. In these cases we just return from ext4_bio_write_page()
-however if the page didn't need redirtying, we will leave stale DIRTY
-and/or TOWRITE tags in xarray because those get cleared only in
-__folio_start_writeback(). As a result we can leave these tags set in
-mappings even after a final sync on filesystem that's getting remounted
-read-only or that's being frozen. Various assertions can then get upset
-when writeback is started on such filesystems (Gerald reported assertion
-in ext4_journal_check_start() firing).
+On Tue 03-02-26 15:50:43, Jan Kara wrote:
+> Hello,
+> 
+> On Fri 30-01-26 19:38:55, Gerald Yang wrote:
+> > Thanks for sharing the findings, I'd also like to share some findings:
+> > I tried to figure out why the buffer is dirty after calling sync_filesystem,
+> > in mpage_prepare_extent_to_map, first I printed folio_test_dirty(folio):
+> > 
+> > while (index <= end)
+> >     ...
+> >     for (i = 0; i < nr_folios; i++) {
+> >         ...
+> >         (print if folio is dirty here)
+> > 
+> > and actually all folios are clean:
+> > if (!folio_test_dirty(folio) ||
+> >     ...
+> >     folio_unlock(folio);
+> >     continue;       <==== continue here without writing anything
+> > 
+> > Because the call trace happens before going into the above while loop:
+> > 
+> > if (ext4_should_journal_data(mpd->inode)) {
+> >     handle = ext4_journal_start(mpd->inode, EXT4_HT_WRITE_PAGE,
+> > 
+> > it checks if the file system is read only and dumps the call trace in
+> > ext4_journal_check_start, but it doesn't check if there are any real writes
+> > that will happen later in the loop.
+> > 
+> > To confirm this, first I added 2 more lines in the reproduce script before
+> > remounting read only:
+> > sync      <==== it calls ext4_sync_fs to flush all dirty data same as what's
+> >                          called during remount read only
+> > echo 1 > /proc/sys/vm/drop_caches       <==== drop clean page cache
+> > mount -o remount,ro ext4disk mnt
+> > 
+> > Then I can no longer reproduce the call trace.
+> 
+> OK, but ext4_do_writepages() has a check at the beginning:
+> 
+>         if (!mapping->nrpages || !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+>                 goto out_writepages;
+> 
+> So if there are no dirty pages, mapping_tagged(mapping, PAGECACHE_TAG_DIRTY)
+> should be false and so we shouldn't go further?
+> 
+> It all looks like some kind of a race because I'm not always able to
+> reproduce the problem... I'll try to look more into this.
 
-Fix the problem by cycling the page through writeback state even if we
-decide nothing needs to be written for it so that xarray tags get
-properly updated. This is slightly silly (we could update the xarray
-tags directly) but I don't think a special helper messing with xarray
-tags is really worth it in this relatively rare corner case.
+OK, the race is with checkpointing code writing the buffers while flush
+worker tries to writeback the pages. I've posted a patch which fixes the
+issue for me.
 
-Reported-by: Gerald Yang <gerald.yang@canonical.com>
-Link: https://lore.kernel.org/all/20260128074515.2028982-1-gerald.yang@canonical.com
-Fixes: dff4ac75eeee ("ext4: move keep_towrite handling to ext4_bio_write_page()")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/page-io.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 39abfeec5f36..0a3ef9bd6803 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -523,9 +523,15 @@ int ext4_bio_write_folio(struct ext4_io_submit *io, struct folio *folio,
- 		nr_to_submit++;
- 	} while ((bh = bh->b_this_page) != head);
- 
--	/* Nothing to submit? Just unlock the folio... */
--	if (!nr_to_submit)
-+	if (!nr_to_submit) {
-+		/*
-+		 * We have nothing to submit. Just cycle the folio through
-+		 * writeback state to properly update xarray tags.
-+		 */
-+		__folio_start_writeback(folio, keep_towrite);
-+		folio_end_writeback(folio);
- 		return 0;
-+	}
- 
- 	bh = head = folio_buffers(folio);
- 
+								Honza
 -- 
-2.51.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
