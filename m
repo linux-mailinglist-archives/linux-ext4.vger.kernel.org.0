@@ -1,48 +1,58 @@
-Return-Path: <linux-ext4+bounces-13534-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13535-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +Je6GST7g2kXwgMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13534-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 03:06:28 +0100
+	id qd/0GtAGhGlmxAMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13535-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 03:56:16 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC8BEDD94
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 03:06:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE73EE275
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 03:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9EE72301451A
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 02:06:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11AF73011847
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 02:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D71F259C84;
-	Thu,  5 Feb 2026 02:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0316F2D6E4B;
+	Thu,  5 Feb 2026 02:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="yqj5WT+P"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29102243367;
-	Thu,  5 Feb 2026 02:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEE33EBF11;
+	Thu,  5 Feb 2026 02:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770257184; cv=none; b=Z1fuVnUVdtWmy6DsMjs+0hlwOczIQDLPnWM64NsMXGoe7J7kgMJgPFsJweBcQiA1MhO1Dp0sYbA7Ndwsy1Ir7fTmDQ0i94+sF9lj+FcnjWDdtD6ik4zJF1JEd/qtTG2ZsDrMKIT/crDgvpUZTfCQKdcXOJkPUIPsOh2qeEC4Vkc=
+	t=1770260165; cv=none; b=gG7Gyxl1DT9t1NeA1P9R+ZF0K86+y76VsVScJTtVfu2RVqnF6FKn66nDk6VtRuLLii4YTxuXjU0/7VHtovfJrwOpJ/8oEmc8YyuGFL1ANhrDkSOr7xRII+DPPFzX2KiYbps3GPIyXdoSb4jbf0FlNXWXRrhxiJeEnsRREZdBzk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770257184; c=relaxed/simple;
-	bh=a0NRoClyqFjfjnO8d/DwtdKwo2mnhXY/TzfEFzmuz4Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r0oemJK9dWXOm0rDYdjaor7b0QCM3G+vxGeMd/15v03vPv5lPzdV6mpwi3AvCU8htYGw9bu55mhc148G7qCsMpPP9xDwCqbPLvLGgv1NrzYCemRMjYqs1mRijsoxLa27UL9Z45jWWV4kBcAmZevFMhrShkFrwvo6RPOzPjneECE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f60tC3w3DzYQtpM;
-	Thu,  5 Feb 2026 10:05:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 8737140578;
-	Thu,  5 Feb 2026 10:06:13 +0800 (CST)
-Received: from [10.174.178.152] (unknown [10.174.178.152])
-	by APP4 (Coremail) with SMTP id gCh0CgAHZ_cT+4NpfNI0GQ--.52769S3;
-	Thu, 05 Feb 2026 10:06:13 +0800 (CST)
-Message-ID: <e186c712-1594-4f66-aa89-5517696f70ec@huaweicloud.com>
-Date: Thu, 5 Feb 2026 10:06:11 +0800
+	s=arc-20240116; t=1770260165; c=relaxed/simple;
+	bh=I2nkTFH+BL21/rMgNYImH+ax1dWv1FAujm/drX76KLE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=GLZN37yMnetW5pFZdIElSIaGEpzcsuuKZNgGbrx4WeR/8+kVQCd9iySZ9x9mbYQt76ewQpQac3jNmrjhOudx2d4qXUeRtfUQCRyi55p9bIg9HAEV1/eNWFI1lX4xqnieY5PPrT7lWNtJ1GMX9FzQd88wKWp8geZ2mubtLKW8t9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=yqj5WT+P; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=+gxl9EYdWDs8Qq49GmK0JobeTbA8FisTuCfgvPyHDAE=;
+	b=yqj5WT+PLOOzXYAs0n1DRK7730KnFblF3ZDZFa0gSbZygSJ5+Y1+n4BN80Y6uj/y0Vc0o1wKf
+	0DPdA9IWTjzrsV4o+h6MQVnhis4iL/WhaYW0AS0CW9esFScemaFJUUrCRLeAT9hzmD6CIy8jHqt
+	ISNUSnU81oNV0YA/khcSwlE=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4f61vY72Mlz1T4Gw;
+	Thu,  5 Feb 2026 10:51:37 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6932D40561;
+	Thu,  5 Feb 2026 10:56:01 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 5 Feb
+ 2026 10:56:00 +0800
+Message-ID: <4a210be6-eced-4a47-a54b-3f2bc3f3bfbf@huawei.com>
+Date: Thu, 5 Feb 2026 10:55:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -52,74 +62,61 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH -next v2 00/22] ext4: use iomap for regular file's
  buffered I/O path
-To: Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>
-Cc: Theodore Tso <tytso@mit.edu>, Christoph Hellwig <hch@infradead.org>,
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca,
- ojaswin@linux.ibm.com, ritesh.list@gmail.com, djwong@kernel.org,
- Zhang Yi <yi.zhang@huawei.com>, yizhang089@gmail.com, yangerkun@huawei.com,
- yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com,
- libaokun9@gmail.com
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>
+CC: Theodore Tso <tytso@mit.edu>, Zhang Yi <yi.zhang@huaweicloud.com>,
+	Christoph Hellwig <hch@infradead.org>, <linux-ext4@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<adilger.kernel@dilger.ca>, <ojaswin@linux.ibm.com>, <ritesh.list@gmail.com>,
+	<djwong@kernel.org>, Zhang Yi <yi.zhang@huawei.com>, <yizhang089@gmail.com>,
+	<yangerkun@huawei.com>,
+	<yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com>,
+	<libaokun9@gmail.com>, Baokun Li <libaokun1@huawei.com>
 References: <20260203062523.3869120-1-yi.zhang@huawei.com>
  <aYGZB_hugPRXCiSI@infradead.org>
  <77c14b3e-33f9-4a00-83a4-0467f73a7625@huaweicloud.com>
  <20260203131407.GA27241@macsyma.lan>
  <9666679c-c9f7-435c-8b67-c67c2f0c19ab@huawei.com>
  <eldlhdvhc4sdlmfed5omg6huv5rl6m7ummstlygh2bownaejqn@bykrybkyywzp>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
+From: Baokun Li <libaokun1@huawei.com>
 In-Reply-To: <eldlhdvhc4sdlmfed5omg6huv5rl6m7ummstlygh2bownaejqn@bykrybkyywzp>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAHZ_cT+4NpfNI0GQ--.52769S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr1kXF4kur15AFy7XF1rXrb_yoW7CryUpF
-	W5Ka4rtr4DW348Awn2vw48Xr4S93yfAFW3Jrn0qrsrZas8JF1SvFWxKw1j9a4vkrs7G3Wj
-	qr4jvFyxu3WDZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	aFAJUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13535-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	TAGGED_FROM(0.00)[bounces-13534-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,infradead.org,vger.kernel.org,dilger.ca,linux.ibm.com,gmail.com,kernel.org,huawei.com,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,huaweicloud.com,infradead.org,vger.kernel.org,dilger.ca,linux.ibm.com,gmail.com,kernel.org,huawei.com,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	NEURAL_HAM(-0.00)[-0.987];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[libaokun1@huawei.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:mid]
-X-Rspamd-Queue-Id: CAC8BEDD94
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: EAE73EE275
 X-Rspamd-Action: no action
 
-On 2/4/2026 10:23 PM, Jan Kara wrote:
+On 2026-02-04 22:23, Jan Kara wrote:
 > On Wed 04-02-26 09:59:36, Baokun Li wrote:
 >> On 2026-02-03 21:14, Theodore Tso wrote:
 >>> On Tue, Feb 03, 2026 at 05:18:10PM +0800, Zhang Yi wrote:
@@ -152,7 +149,6 @@ On 2/4/2026 10:23 PM, Jan Kara wrote:
 >>> will improve fsync() performance since we won't be gating writing the
 >>> commit block on the date blocks getting written out in the append
 >>> write case.
->>
 >> I have some local demo patches doing something similar, and I think this
 >> work could be decoupled from Yi's patch set.
 >>
@@ -176,11 +172,13 @@ On 2/4/2026 10:23 PM, Jan Kara wrote:
 >>
 >> 4. If a corresponding extent already exists, we’ll need to punch holes to
 >>    release the old extent before inserting the new one.
-> 
 > Sounds good. Just if I understand correctly case 4 would happen only if you
 > really try to do something like COW with this? Normally you'd just use the
 > already present blocks and write contents into them?
-> 
+
+Yes, case 4 only needs to be considered when implementing COW.
+
+>
 >> This ensures data atomicity, while jbd2—being a COW-like implementation
 >> itself—ensures metadata atomicity. By leveraging this "delay map"
 >> mechanism, we can achieve several benefits:
@@ -194,7 +192,6 @@ On 2/4/2026 10:23 PM, Jan Kara wrote:
 >>
 >> Of course, COW itself can lead to severe file fragmentation, especially
 >> in small-scale overwrite scenarios.
-> 
 > I agree the feature can provide very interesting benefits and we were
 > pondering about something like that for a long time, just never got to
 > implementing it. I'd say the immediate benefits are you can completely get
@@ -202,26 +199,36 @@ On 2/4/2026 10:23 PM, Jan Kara wrote:
 > code complexity should not increase much. We could also mostly get rid of
 > data=ordered mode use (although not completely - see my discussion with
 > Zhang over patch 3) which would be also welcome simplification. These
-
-I suppose this feature can also be used to get rid of the data=ordered mode
-use in online defragmentation. With this feature, perhaps we can develop a
-new method of online defragmentation that eliminates the need to pre-allocate
-a donor file.  Instead, we can attempt to allocate as many contiguous blocks
-as possible through PA. If the allocated length is longer than the original
-extent, we can perform the swap and copy the data. Once the copy is complete,
-we can atomically construct a new extent, then releases the original blocks
-synchronously or asynchronously, similar to a regular copy-on-write (COW)
-operation. What does this sounds?
-
-Regards,
-Yi.
-
 > benefits alone are IMO a good enough reason to have the functionality :).
 > Even without COW, atomic writes and other fancy stuff.
-> 
+
+Glad you liked the 'delay map' concept (naming suggestions are welcome!).
+
+With delay-map in place, implementing COW only requires handling overwrite
+scenarios, and software atomic writes can be achieved by enabling atomic
+delay-maps across multiple PAs.
+
+I expect to send out a minimal RFC version for discussion in a few weeks.
+
+I will share some additional thoughts regarding EOF blocks and
+data=ordered mode in patch 3.
+
+Thanks for your feedback!
+
+>
 > I don't see how you want to get rid of data=journal mode - perhaps that's
 > related to the COW functionality?
-> 
+>
 > 								Honza
+
+Yes. The only real advantage of data=journal mode over data=ordered is
+its guarantee of data atomicity for overwrites.
+
+If we can achieve this through COW-based software atomic writes, we can
+move away from the performance-heavy data=journal mode.
+
+
+Cheers,
+Baokun
 
 
