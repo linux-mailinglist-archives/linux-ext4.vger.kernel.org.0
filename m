@@ -1,58 +1,60 @@
-Return-Path: <linux-ext4+bounces-13550-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13551-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2E44MpzQhGk45QMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13550-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 18:17:16 +0100
+	id +BlBBzjShGlo5gMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13551-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 18:24:08 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5845CF5C89
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 18:17:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFDFF5DDC
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Feb 2026 18:24:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 62D383004600
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 17:17:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 870653017029
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 17:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1012D8372;
-	Thu,  5 Feb 2026 17:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44832FC037;
+	Thu,  5 Feb 2026 17:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXC8As9s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ot3+1e1J"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FD1244675;
-	Thu,  5 Feb 2026 17:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2E021A453;
+	Thu,  5 Feb 2026 17:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770311832; cv=none; b=ZdHOgfjx9mOhJByHf2evt8ogXl15FvZCwW1BuVxeb00xPE/oTfrBcYYKJ+XGbI0c7jaYZ5Qqn8y2X5cvase3smtYuACTcEVgBb/TKWogo/Vr2E8qC2yffRqVER0ThhQsebK1h/SPAM+WejrFyeNV0tblxqp+9bxszteLKfyTEZE=
+	t=1770311977; cv=none; b=dtatqlPrfpg9B9cmlono6lV39va3mymA/5F0R0J+Sd8dQQjb+exPKYsnoyG/d2Q4b8PqrKgd4WpOBnjEr+hyUCfX2f0lu3zah48zDerPM1/DAQxINFhjjr/9T/+E+uA6TG+OJpzobF53Ven2IHK4+HJ7sJTDN5uJRIe4tfcwEu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770311832; c=relaxed/simple;
-	bh=gO/89uPgJr1PKZxothOfQ8gZFjjL+AuATUUG/3oilm0=;
+	s=arc-20240116; t=1770311977; c=relaxed/simple;
+	bh=GBmx7iVATtfHF8n4egM8Oksu9mKWBze4Z2VkWqY6Fow=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r3TLm1lZwU0iLiblMMqQ5kOeN/NLqeigdEJmpP9iMQanNeAXmTYq0yWGwSNUsLKVksNZJ4aEsrc+72iS0L6/+/6uHQcsILyonp7cI3ZgdyPd/j4CwQC2gHM0E1XQHaYoxw4Bf/Ou6ZrrCkC9J0JBJ4WaqdLQAkvXTpjShDqeZxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXC8As9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA4FC4CEF7;
-	Thu,  5 Feb 2026 17:17:10 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=UgG0DyNJKrF9Eu5bmwM0G3KwBAfTlClxYidOZNlkTZUKDnJeK8Zl9O8tM6d28TTLDhpf72QUIQNkPiEA6xMmnZguA9jlNmTCPj+nZIt/x2i9A33XdXTiaQDeDX1zbG+SplqgFkigNbKsZsInXVbd5xBMsd6Pz8izkr9gRS7mtjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ot3+1e1J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC058C4CEF7;
+	Thu,  5 Feb 2026 17:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770311832;
-	bh=gO/89uPgJr1PKZxothOfQ8gZFjjL+AuATUUG/3oilm0=;
+	s=k20201202; t=1770311977;
+	bh=GBmx7iVATtfHF8n4egM8Oksu9mKWBze4Z2VkWqY6Fow=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GXC8As9sqatOU6GbnO+zc8gtTWOQD4sznj2p6/V4qT7Zk2nX7WeP0rDz/KpuyZFsi
-	 5OQtZWbfoWvuCIn5d6id/ookCTzS0h70qtpJ7/vFlJwaMkw9G3r9M0/UCYN2U7tO6W
-	 VemiDbrCegv/Iqgp6TnwOkumLwhfo+/lqEvFb00RDJnDz6iTpj0GkT4kJPAJ4/eVlO
-	 aThS70Gc5DjcBYspdDHOd6LPR/w80PuQUmmVveMFaRew0ifZ/Y6lozPrgddQwUa1A1
-	 S7FFO0ufdmbfgn67LWFWsY1p3nqu8X3nUU3qfEzrsD4U9H9zdbmPtrHmj4/wbkvO5R
-	 zwXRDU8l3SLeA==
-Date: Thu, 5 Feb 2026 18:17:08 +0100
+	b=Ot3+1e1JPzx2gClbTEkU43JbjLRPLuw6mAzjCNMZJjgfpdCu1sLKJfKBGP22h5gur
+	 ZCcRFahuXT9GOFU17CWhHWVKjunHFO/6ZvHOfMD9lT34qXk3wb2CGzhmMf6OCLA0HS
+	 vZbejmT+EFcXCw+VJNOLfmFe3AG47wfA41ifNI52UqwKELAFhGzsCAk0Qj6jgw8Z2b
+	 cOpBqTM9gKpBIGST9ESgc35JfPx18hDcUZtfQB5y2nZIGoLfdqtTpYj6pNMEX4jz8w
+	 85bl83Usq0UDfN9cmKNi9WWgCIRm9DVDiJiJfF1LwRCioDgSzK2HIkMKP7kOiyq8ot
+	 hQPoFvS2AafYw==
+Date: Thu, 5 Feb 2026 18:19:32 +0100
 From: Carlos Maiolino <cem@kernel.org>
 To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: zlang@redhat.com, fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] generic/749: don't write a ton of _mread output to
- seqres.full
-Message-ID: <aYTQTiXamR3Bq4Zf@nidhogg.toxiclabs.cc>
+Cc: Christoph Hellwig <hch@infradead.org>, zlang@redhat.com, 
+	linux-ext4@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH 1/3] xfs/018: remove inline xattr recovery tests
+Message-ID: <aYTQyseO0dEjfPIp@nidhogg.toxiclabs.cc>
 References: <177005945267.2432878.7105483366958924034.stgit@frogsfrogsfrogs>
- <177005945334.2432878.12923613447146396794.stgit@frogsfrogsfrogs>
+ <177005945298.2432878.17951687824065765554.stgit@frogsfrogsfrogs>
+ <aYGGHMfca4gbB2vy@infradead.org>
+ <20260205165624.GA7703@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,99 +63,91 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <177005945334.2432878.12923613447146396794.stgit@frogsfrogsfrogs>
+In-Reply-To: <20260205165624.GA7703@frogsfrogsfrogs>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13550-lists,linux-ext4=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13551-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[cem@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nidhogg.toxiclabs.cc:mid]
-X-Rspamd-Queue-Id: 5845CF5C89
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nidhogg.toxiclabs.cc:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6FFDFF5DDC
 X-Rspamd-Action: no action
 
-On Mon, Feb 02, 2026 at 11:11:44AM -0800, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
+On Thu, Feb 05, 2026 at 08:56:24AM -0800, Darrick J. Wong wrote:
+> On Mon, Feb 02, 2026 at 09:22:36PM -0800, Christoph Hellwig wrote:
+> > On Mon, Feb 02, 2026 at 11:11:12AM -0800, Darrick J. Wong wrote:
+> > > From: Darrick J. Wong <djwong@kernel.org>
+> > > 
+
+FWIW, this fix the regressions I'm hitting on 7.0 merge window queue.
+
+
+> > > Now that we can do xattr updates in a single transaction (as opposed to
+> > > using the attr intent machinery) if we keep the attr structure in short
+> > > format, remove the attr intent item log recovery tests.
+> > 
+> > I have a bit of a hard time parsing this.  Currently with xfs/for-next
+> > these fail, so removing them fixes it, which is probably what drove
+> > this.
 > 
-> Something went wrong with this test when testing with fuse4fs, but I
-> couldn't tell what because this test writes so much data to seqres.full
-> that it completely filled the log partition.  Most of that output was
-> from checks that actually succeeded, so let's reduce the amount of
-> logging from _mread (which passes -v) by writing to a tempfile and only
-> dumping the output to the .full file if something breaks.
+> Yep.
 > 
-> Cc: <fstests@vger.kernel.org> # v2024.06.27
-> Fixes: e4a6b119e52295 ("fstests: add mmap page boundary tests")
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
-> ---
->  tests/generic/749 |   11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+> > But looking through the patches I'm not sure why they actually are
+> > failing - the updates are logged as part of the inode item, and
+> > nothing in test_attr_replay seems to actually look at log specific
+> > bits?
+> 
+> I've rewritten the commit message; does this help?
+> 
+> "In Linux 7.0 we've changed the extended attribute update code to try to
+> take a shortcut for performance reasons.  Before walking through the
+> attr intent state machine (slow), the update will check to see if the
+> attr structure is in short format and will stay in that format after the
+> change.  If so, then the incore inode can be updated and logged, and the
+> update is complete (fast) in a single transaction.
+> 
+> "(Obviously, for complex attr structures or large changes we still walk
+> through the intent machinery.)
+> 
+> "However, xfs/018 tests the behavior of the "larp" error injector, which
+> only triggers from inside the attr intent state machine.  Therefore, the
+> short format tests don't actually trip the injector.  It makes no sense
+> to add a new larp injection callsite for the shortcut because either the
+> single transaction gets written to disk or it doesn't."
+> 
+> > Only vaguely related, but should we ensure to always clear error
+> > tags after the test runs to ensure they don't leak into other tests?
+> 
+> They go away with _scratch_remount because error tags only live as long
+> as the mount.
+
+The changes looks good to me, if you re-send this, feel free to add:
 
 Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
 
 
 > 
-> 
-> diff --git a/tests/generic/749 b/tests/generic/749
-> index 7af019ddd7f98f..01e3eac0ff73be 100755
-> --- a/tests/generic/749
-> +++ b/tests/generic/749
-> @@ -163,17 +163,20 @@ do_mmap_tests()
->  	new_filelen=$(_get_filesize $test_file)
->  	map_len=$(_round_up_to_page_boundary $new_filelen)
->  	csum_orig="$(_md5_checksum $test_file)"
-> -	_mread $test_file 0 $map_len >> $seqres.full  2>$tmp.err
-> +	_mread $test_file 0 $map_len > $tmp.out 2>$tmp.err
->  	if grep -q 'Bus error' $tmp.err; then
->  		failed=1
-> +		cat $tmp.out >> $seqres.full
->  		cat $tmp.err
->  		echo "Not expecting SIGBUS when reading up to page boundary"
->  	fi
->  
->  	# This should just work
-> -	_mread $test_file 0 $map_len >> $seqres.full  2>$tmp.err
-> +	_mread $test_file 0 $map_len > $tmp.out 2>$tmp.err
->  	if [[ $? -ne 0 ]]; then
->  		let failed=$failed+1
-> +		cat $tmp.out >> $seqres.full
-> +		cat $tmp.err
->  		echo "mmap() read up to page boundary should work"
->  	fi
->  
-> @@ -205,9 +208,11 @@ do_mmap_tests()
->  	fi
->  
->  	# Now let's go beyond the allowed mmap() page boundary
-> -	_mread $test_file 0 $((map_len + 10)) $((map_len + 10)) >> $seqres.full  2>$tmp.err
-> +	_mread $test_file 0 $((map_len + 10)) $((map_len + 10)) > $tmp.out 2>$tmp.err
->  	if ! grep -q 'Bus error' $tmp.err; then
->  		let failed=$failed+1
-> +		cat $tmp.out >> $seqres.full
-> +		cat $tmp.err
->  		echo "Expected SIGBUS when mmap() reading beyond page boundary"
->  	fi
->  
-> 
+> --D
 > 
 
