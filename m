@@ -1,138 +1,251 @@
-Return-Path: <linux-ext4+bounces-13582-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13583-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SBMVDd2JhWkWDQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13582-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 07:27:41 +0100
+	id 8AipIcXMhWlWGgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13583-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 12:13:09 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12854FAA9D
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 07:27:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8D84FD104
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 12:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 92ED33010634
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Feb 2026 06:27:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C46AB306FF72
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Feb 2026 11:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2953009D4;
-	Fri,  6 Feb 2026 06:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCBtn2Vx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94648396B87;
+	Fri,  6 Feb 2026 11:10:02 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CCC2E11D2;
-	Fri,  6 Feb 2026 06:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECB72FC876;
+	Fri,  6 Feb 2026 11:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770359237; cv=none; b=i61c6sNY4knHoibq4SlfHzPJ9jjpp1XlhilwfOCYsE7ufzbWpVwwwPG8xRtmNho04x7BMIA2if+JJQqwcJf7l9xzVft+KmqLw6RHv8bbpCYOwclDZPMzE/0x8SdJ3m9qTE4qTV2PI6G2GGm/je5NuVxWfvCxXl3HZe3FPUqBA4c=
+	t=1770376202; cv=none; b=mYN7stl6DLPrUmPkrks0nKngv/esNEHlXiF8LBdx2TZ89n2Hg7rWug1/Qzvl0Qt/QKKzs1fBrpvD+RKPYNgjcZXZAMeKQtOU5nB1ClK1PZi5w7uAZaeWaYDE3byGtQJzaAaSskkz6YKJDs5sAgpEsheowV94gAeettuwH9IkGO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770359237; c=relaxed/simple;
-	bh=EFK7bINGhhgJnC2FGSGhoGq4drzrbQYw+dzKcFB7XRU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CZVyeoIN8vksaf7IAeFWGIj7sOwfzLh4zZH2UPqfCrrl2UvM7FSUN5kDpBkRfIDm4DTjRhRn5bFOk1P4SVOZIE+PuiuBNzxOakQEBWy/1u1zqNYAFtaq9L7v0hft7xGNXK/zCr4s1nFB547p4pVCqsfjfr/LIDXLQdM+spDjgrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCBtn2Vx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1503EC116C6;
-	Fri,  6 Feb 2026 06:27:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770359237;
-	bh=EFK7bINGhhgJnC2FGSGhoGq4drzrbQYw+dzKcFB7XRU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oCBtn2Vx55VJ+hGY3lA03Ucgw6hl4etuc/Z0tBcOXcr0ySKJtDMLigp8r71Jzk98O
-	 jenOuVHhzeLuhUTxJqHZnKa4KI81/xeB+okuUEY4HDvAeUZEgtjZBJEyVV0yQE4NbL
-	 GBIsMs1web2hP532MP0DRQsY0ceGErCZ8TE5mdUTtOphpxHpEYOK+hqckKWcVD4pOU
-	 yF/yZjqkS0UC4SKxN/9eQfMDc0lGPXEMxFpQlfNupEXvuYaHdi4/4maW+8FeWReQUH
-	 ikkZyt6JntUSR6aUGz6q9TQYGi56SkB4ywKlUSg6YxI1lE0JK7pUWdEToA0QhIPD8w
-	 e2S/ofKrNBo8w==
-Date: Thu, 5 Feb 2026 22:27:16 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: zlang@redhat.com, linux-ext4@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH 1/3] xfs/018: remove inline xattr recovery tests
-Message-ID: <20260206062716.GO7686@frogsfrogsfrogs>
-References: <177005945267.2432878.7105483366958924034.stgit@frogsfrogsfrogs>
- <177005945298.2432878.17951687824065765554.stgit@frogsfrogsfrogs>
- <aYGGHMfca4gbB2vy@infradead.org>
- <20260205165624.GA7703@frogsfrogsfrogs>
- <aYWDTrxRhDAE2efB@infradead.org>
- <20260206062222.GN7686@frogsfrogsfrogs>
- <aYWJhGU-7YfXr2HR@infradead.org>
+	s=arc-20240116; t=1770376202; c=relaxed/simple;
+	bh=ieAGYcihW1ZN1usXW1lEn5Yo7YWJAUzlJ/jq3+seTm4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qrE+0boYZdGzYzQ1FJ162YGOjRXcUBKMEZEM9UTpvLp/dd1SJkcJdOa8Lutt4xrW/m7g1ZUbJnJID7TzNuzQgWbbK2hfsU/g/l09pmYcXqOjiHg1QYsCu4pYphtBjSBUMBfDPt7l2xwGZ/Effit46hNafJUidrIg0u5hAlsThwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f6rv62L3JzYQtyT;
+	Fri,  6 Feb 2026 19:09:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 159534058D;
+	Fri,  6 Feb 2026 19:09:56 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgCX+PgCzIVpeC3aGQ--.22087S3;
+	Fri, 06 Feb 2026 19:09:55 +0800 (CST)
+Message-ID: <3ea033c1-8d32-4c82-baea-c383fa1d9e2a@huaweicloud.com>
+Date: Fri, 6 Feb 2026 19:09:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aYWJhGU-7YfXr2HR@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially block
+ truncating down
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, hch@infradead.org,
+ djwong@kernel.org, Zhang Yi <yi.zhang@huawei.com>, yizhang089@gmail.com,
+ libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
+ <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+ <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
+ <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
+ <1dad3113-7b84-40a0-8c7e-da30ae5cba8e@huaweicloud.com>
+ <7hy5g3bp5whis4was5mqg3u6t37lwayi6j7scvpbuoqsbe5adc@mh5zxvml3oe7>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <7hy5g3bp5whis4was5mqg3u6t37lwayi6j7scvpbuoqsbe5adc@mh5zxvml3oe7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCX+PgCzIVpeC3aGQ--.22087S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3XFy5WrW3Kw4xAFykKF13twb_yoW7Zry8pF
+	WUK3Z8tr1vg343urn7ZF4xtF1Fv3y5JrW7JF95KrsFvas8WFn7KFWSqayFgFyjkrs3ta42
+	qr4UtFZ7uF98ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13582-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-13583-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 12854FAA9D
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.987];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D8D84FD104
 X-Rspamd-Action: no action
 
-On Thu, Feb 05, 2026 at 10:26:12PM -0800, Christoph Hellwig wrote:
-> On Thu, Feb 05, 2026 at 10:22:22PM -0800, Darrick J. Wong wrote:
-> > On Thu, Feb 05, 2026 at 09:59:42PM -0800, Christoph Hellwig wrote:
-> > > On Thu, Feb 05, 2026 at 08:56:24AM -0800, Darrick J. Wong wrote:
-> > > > "In Linux 7.0 we've changed the extended attribute update code to try to
-> > > > take a shortcut for performance reasons.  Before walking through the
-> > > > attr intent state machine (slow), the update will check to see if the
-> > > > attr structure is in short format and will stay in that format after the
-> > > > change.  If so, then the incore inode can be updated and logged, and the
-> > > > update is complete (fast) in a single transaction.
-> > > > 
-> > > > "(Obviously, for complex attr structures or large changes we still walk
-> > > > through the intent machinery.)
-> > > > 
-> > > > "However, xfs/018 tests the behavior of the "larp" error injector, which
-> > > > only triggers from inside the attr intent state machine.  Therefore, the
-> > > > short format tests don't actually trip the injector.  It makes no sense
-> > > > to add a new larp injection callsite for the shortcut because either the
-> > > > single transaction gets written to disk or it doesn't."
-> > > 
-> > > Make sense, but from looking at the test I'm still a bit confused
-> > > why it fails (vs just not testing something too useful)
-> > 
-> > The golden output no longer matches because the attr update doesn't
-> > return EIO and shut down the filesystem due to the larp injection.
+On 2/5/2026 11:05 PM, Jan Kara wrote:
+> On Thu 05-02-26 15:50:38, Zhang Yi wrote:
+>> On 2/4/2026 10:18 PM, Jan Kara wrote:
+>>> So why do you need to get rid of these data=ordered
+>>> mode usages? I guess because with iomap keeping our transaction handle ->
+>>> folio lock ordering is complicated? Last time I looked it seemed still
+>>> possible to keep it though.
+>>
+>> Yes, that's one reason. There's another reason is that we also need to
+>> implement partial folio submits for iomap.
+>>
+>> When the journal process is waiting for a folio to be written back
+>> (which contains an ordered block), and the folio also contains unmapped
+>> blocks with a block size smaller than the folio size, if the regular
+>> writeback process has already started committing this folio (and set the
+>> writeback flag), then a deadlock may occur while mapping the remaining
+>> unmapped blocks. This is because the writeback flag is cleared only
+>> after the entire folio are processed and committed. If we want to support
+>> partial folio submit for iomap, we need to be careful to prevent adding
+>> additional performance overhead in the case of severe fragmentation.
 > 
-> Ah, that's the missing bit.  Can you add that blurb to the commit
-> message?
-
-Will do!
-
-> With that and the above:
+> Yeah, this logic is currently handled by ext4_bio_write_folio(). And the
+> deadlocks are currently resolved by grabbing transaction handle before we
+> go and lock any page for writeback. But I agree that with iomap it may be
+> tricky to keep this scheme.
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Therefore, this aspect of the logic is complicated and subtle. As we
+>> discussed in patch 0, if we can avoid using the data=ordered mode in
+>> append write and online defrag, then this would be the only remaining
+>> corner case. I'm not sure if it is worth implementing this and adjusting
+>> the lock ordering.
+>>
+>>> Another possibility would be to just *submit* the write synchronously and
+>>> use data=ordered mode machinery only to wait for IO to complete before the
+>>> transaction commits. That way it should be safe to start a transaction
+>>
+>> IIUC, this solution seems can avoid adjusting the lock ordering, but partial
+>> folio submission still needs to be implemented, is my understanding right?
+>> This is because although we have already submitted this zeroed partial EOF
+>> block, when the journal process is waiting for this folio, this folio is
+>> being written back, and there are other blocks in this folio that need to be
+>> mapped.
+> 
+> That's a good question. If we submit the tail folio from truncation code,
+> we could just submit the full folio write and there's no need to restrict
+> ourselves only to mapped blocks. But you are correct that if this IO
+> completes but the folio had holes in it and the hole gets filled in by
+> write before the transaction with i_disksize update commits, jbd2 commit
+> could still race with flush worker writing this folio again and the
+> deadlock could happen. Hrm...
+> 
+Yes!
 
-Thanks!
+> So how about the following:
 
---D
+Let me see, please correct me if my understanding is wrong, ana there are
+also some points I don't get.
+
+> We expand our io_end processing with the
+> ability to journal i_disksize updates after page writeback completes. Then
+> when doing truncate up or appending writes, we keep i_disksize at the old
+> value and just zero folio tails in the page cache, mark the folio dirty and
+> update i_size.
+
+I think we need to submit this zeroed folio here as well. Because,
+
+1) In the case of truncate up, if we don't submit, the i_disksize may have to
+   wait a long time (until the folio writeback is complete, which takes about
+   30 seconds by default) before being updated, which is too long.
+2) In the case of appending writes. Assume that the folio written beyond this
+   one is written back first, we have to wait this zeroed folio to be write
+   back and then update i_disksize, so we can't wait too long either.
+
+Right?
+
+> When submitting writeback for a folio beyond current
+> i_disksize we make sure writepages submits IO for all the folios from
+> current i_disksize upwards.
+
+Why "all the folios"? IIUC, we only wait the zeroed EOF folio is sufficient.
+
+> When io_end processing happens after completed
+> folio writeback, we update i_disksize to min(i_size, end of IO).
+
+Yeah, in the case of append write back. Assume we append write the folio 2
+and folio 3,
+
+       old_idisksize  new_isize
+       |             |
+     [WWZZ][WWWW][WWWW]
+       1  |  2     3
+          A
+
+Assume that folio 1 first completes the writeback, then we update i_disksize
+to pos A when the writeback is complete. Assume that folio 2 or 3 completes
+first, we should wait(e.g. call filemap_fdatawait_range_keep_errors() or
+something like) folio 1 to complete and then update i_disksize to new_isize.
+
+But in the case of truncate up, We will only write back this zeroed folio. If
+the new i_size exceeds the end of this folio, how should we update i_disksize
+to the correct value?
+
+For example, we truncate the file from old old_idisksize to new_isize, but we
+only zero and writeback folio 1, in the end_io processing of folio 1, we can
+only update the i_disksize to A, but we can never update it to new_isize. Am
+I missing something ?
+
+       old_idisksize new_isize
+       |             |
+     [WWZZ]...hole ...
+       1  |
+          A
+
+> This
+> should take care of non-zero data exposure issues and with "delay map"
+> processing Baokun works on all the inode metadata updates will happen after
+> IO completion anyway so it will be nicely batched up in one transaction.
+
+Currently, my iomap convert implementation always enables dioread_nolock,
+so I feel that this solution can be achieved even without the "delay map"
+feature. After we have the "delay map", we can extend this to the
+buffer_head path.
+
+Thanks,
+Yi.
+
+> It's a big change but so far I think it should work. What do you think?
+> 
+> 								Honza
+
 
