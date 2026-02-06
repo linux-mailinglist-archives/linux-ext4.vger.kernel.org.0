@@ -1,225 +1,163 @@
-Return-Path: <linux-ext4+bounces-13565-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13566-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPDsM6BAhWme+gMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13565-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:15:12 +0100
+	id IGzLBzdHhWkN/QMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13566-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:43:19 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63974F8E6E
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:15:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 762AEF8FF4
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7B3A230166D8
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Feb 2026 01:15:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2DD4F3017786
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Feb 2026 01:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2DD234966;
-	Fri,  6 Feb 2026 01:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DB123F422;
+	Fri,  6 Feb 2026 01:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="ABe+Ds0i"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="CSeOBOCN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E5019C54E;
-	Fri,  6 Feb 2026 01:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542D023ED5B
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Feb 2026 01:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770340505; cv=none; b=ppXUMM97sFWJ+GhbCK31EZ7WhPgHd/OiuJlFMuY6kUWNLujrMiAYSp+Xo0arDWwLqqNoFLtzVFwNQ9iiPlWQNX3PP5kxkzzuvNkCMLZNT4Kv27slAjVOxSY7z7nfQz8a+/eNr1dZTMmAwcFc/J/0NvZo31/dsNuqSa9xZ9HZwvE=
+	t=1770342195; cv=none; b=DcEsp7pcVlhyzTcAf282RKHY/7i1/d75XlNYgQow2rsGDtPU4GKtSH09PB3t0ibuOPigtrOBV/vn7dfQiCxjXxro9Di1q3ddc0p+XzeT7NijgoxXrQCxqqbhgfmIOOH82gOU2MCnCiMrcynKcfHYzFlEF9+rTHsJyhzaWppaWqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770340505; c=relaxed/simple;
-	bh=A0AjAjUsGSSu5NFAHmcb2Nj/utizFM0hGfJTsGlv1dU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=iepVUqLBHb14bQSyXkmKSZJuVdQW+Pji+LtBuRyhYBbWuxv5igAIDCQbZLXlCEtsr2IlsI3VT5naz7QGrr3JSmFCZRm1TlyZkqRw8Ip/bx2anEp50IDe9j4S437LzEOipVryfcK9Iw9X1gyVFcc08dJ066YSgCOsWOj5Je3cXcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=ABe+Ds0i; arc=none smtp.client-ip=113.46.200.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=sQ8ZYm9EKNt348xD3uEYD5yQpwEtVLoM1aN86AiBAxA=;
-	b=ABe+Ds0imj040vkRYzyHi2HGsgfk8ivxdDHrk2ni3E2N5oZ6RqptAnbPbEEa5nKltWfji+o4k
-	DLHNPBECZNmrcniAuMCydPM3S7G/edovD+Q50oahr3K3l+AZTRMKM2Yagvc4xVKlNbflpQ+4V8l
-	uEiISooKC6KVpxiZjkbctPc=
-Received: from mail.maildlp.com (unknown [172.19.163.0])
-	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4f6bc948Cdz1prKt;
-	Fri,  6 Feb 2026 09:10:17 +0800 (CST)
-Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
-	by mail.maildlp.com (Postfix) with ESMTPS id 40F5E4036C;
-	Fri,  6 Feb 2026 09:14:55 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
- (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 6 Feb
- 2026 09:14:53 +0800
-Message-ID: <6b3fddd2-047b-4639-b54f-554b16a0ef36@huawei.com>
-Date: Fri, 6 Feb 2026 09:14:53 +0800
+	s=arc-20240116; t=1770342195; c=relaxed/simple;
+	bh=xwpOqzULNFaxUq8fMFm+Xlb5ctlbpZpshxhVbpcTpHk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PQ6XnS5qvS7SQkBWguTahV8DtSaNknVw1YwX+pjdTFbA/thDnSPcvDL4g1wzIGmk1FbHDWBCoagthsIdjX/MUH84d17DrHl6a76f5ILJ+p11KQj3RA5LcF6bUaVy0A0tklPZ0VdK7Yk9wvkD8E474XPGq9cKM0ZuZDCFMH0BEv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=CSeOBOCN; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-115-175.bstnma.fios.verizon.net [173.48.115.175])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6161gnkV008050
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 5 Feb 2026 20:42:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1770342171; bh=AvMWEpZg4iHn8Z0xWBGlU70PiNkutClixV8HTgR+xTE=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=CSeOBOCNzj+skziXWUMwTn3r+9G3e/C/PXZcJRteIbtOLoK2/ZKveVx9UzS1mSsUU
+	 BW76NVOvASq/0yYpWB6lOhiWhR7/v+ptBXfTv/E9lJ2+iVHrNSgOQsJkNDGTMPC36X
+	 SuBWWGdGW4f3XwtuKu9CDYi7i2JOg/gAi3G/pgUn1ymkpEYhfxQpKJFw74H8bPKFNo
+	 FmGdSxoam1V6S9kqpTdLwqoBtCgIWdnKwWe/20Cq6K/4mAZCgyVATw5GcYcamzZk4q
+	 aJ6Cr8wZ/uCb4wmXKdLrBHwdKhUB5mdeT3WLSsQZlY8je6ACq1wHNi2zCgPPBfMOqS
+	 0ExqKBTKy4ahA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 521A157674A6; Thu,  5 Feb 2026 20:42:49 -0500 (EST)
+Date: Thu, 5 Feb 2026 20:42:49 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Mario Lohajner <mario_lohajner@rocketmail.com>
+Cc: Baokun Li <libaokun1@huawei.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Erkun <yangerkun@huawei.com>, libaokun9@gmail.com
+Subject: Re: [PATCH] ext4: add optional rotating block allocation policy
+Message-ID: <20260206014249.GH31420@macsyma.lan>
+References: <20260204033112.406079-1-mario_lohajner.ref@rocketmail.com>
+ <20260204033112.406079-1-mario_lohajner@rocketmail.com>
+ <c6a3faa7-299a-4f10-981d-693cdf55b930@huawei.com>
+ <069704a4-2417-470a-bf32-0ee3afd1be6a@rocketmail.com>
+ <9fc3443b-0eea-4917-909b-709113f5e706@huawei.com>
+ <606941c7-2a0d-44c7-a848-188212686a78@rocketmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially block
- truncating down
-Content-Language: en-GB
-To: Jan Kara <jack@suse.cz>
-CC: Zhang Yi <yi.zhang@huaweicloud.com>, <linux-ext4@vger.kernel.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<tytso@mit.edu>, <adilger.kernel@dilger.ca>, <ojaswin@linux.ibm.com>,
-	<ritesh.list@gmail.com>, <hch@infradead.org>, <djwong@kernel.org>, Zhang Yi
-	<yi.zhang@huawei.com>, <yizhang089@gmail.com>, <yangerkun@huawei.com>,
-	<yukuai@fnnas.com>, <libaokun9@gmail.com>, <libaokun9@gmail.com>
-References: <20260203062523.3869120-1-yi.zhang@huawei.com>
- <20260203062523.3869120-4-yi.zhang@huawei.com>
- <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
- <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
- <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
- <9b7e93da-65dd-4574-be7f-4ec88bce4da7@huawei.com>
- <s434ifpengcthkmohmc6vvmvppx4o2k2ctk2p3it55ncgce3je@irbt7xpdnnzu>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <s434ifpengcthkmohmc6vvmvppx4o2k2ctk2p3it55ncgce3je@irbt7xpdnnzu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- dggpemf500013.china.huawei.com (7.185.36.188)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <606941c7-2a0d-44c7-a848-188212686a78@rocketmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13565-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[huaweicloud.com,vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com];
+	FREEMAIL_CC(0.00)[huawei.com,dilger.ca,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-13566-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FREEMAIL_TO(0.00)[rocketmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[mit.edu:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[libaokun1@huawei.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[huawei.com:+];
+	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
-X-Rspamd-Queue-Id: 63974F8E6E
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[macsyma.lan:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 762AEF8FF4
 X-Rspamd-Action: no action
 
-On 2026-02-05 22:07, Jan Kara wrote:
-> On Thu 05-02-26 11:27:09, Baokun Li wrote:
->> On 2026-02-04 22:18, Jan Kara wrote:
->>> Hi Zhang!
->>>
->>> On Wed 04-02-26 14:42:46, Zhang Yi wrote:
->>>> On 2/3/2026 5:59 PM, Jan Kara wrote:
->>>>> On Tue 03-02-26 14:25:03, Zhang Yi wrote:
->>>>>> Currently, __ext4_block_zero_page_range() is called in the following
->>>>>> four cases to zero out the data in partial blocks:
->>>>>>
->>>>>> 1. Truncate down.
->>>>>> 2. Truncate up.
->>>>>> 3. Perform block allocation (e.g., fallocate) or append writes across a
->>>>>>    range extending beyond the end of the file (EOF).
->>>>>> 4. Partial block punch hole.
->>>>>>
->>>>>> If the default ordered data mode is used, __ext4_block_zero_page_range()
->>>>>> will write back the zeroed data to the disk through the order mode after
->>>>>> zeroing out.
->>>>>>
->>>>>> Among the cases 1,2 and 3 described above, only case 1 actually requires
->>>>>> this ordered write. Assuming no one intentionally bypasses the file
->>>>>> system to write directly to the disk. When performing a truncate down
->>>>>> operation, ensuring that the data beyond the EOF is zeroed out before
->>>>>> updating i_disksize is sufficient to prevent old data from being exposed
->>>>>> when the file is later extended. In other words, as long as the on-disk
->>>>>> data in case 1 can be properly zeroed out, only the data in memory needs
->>>>>> to be zeroed out in cases 2 and 3, without requiring ordered data.
->>>>> Hum, I'm not sure this is correct. The tail block of the file is not
->>>>> necessarily zeroed out beyond EOF (as mmap writes can race with page
->>>>> writeback and modify the tail block contents beyond EOF before we really
->>>>> submit it to the device). Thus after this commit if you truncate up, just
->>>>> zero out the newly exposed contents in the page cache and dirty it, then
->>>>> the transaction with the i_disksize update commits (I see nothing
->>>>> preventing it) and then you crash, you can observe file with the new size
->>>>> but non-zero content in the newly exposed area. Am I missing something?
->>>>>
->>>> Well, I think you are right! I missed the mmap write race condition that
->>>> happens during the writeback submitting I/O. Thank you a lot for pointing
->>>> this out. I thought of two possible solutions:
->>>>
->>>> 1. We also add explicit writeback operations to the truncate-up and
->>>>    post-EOF append writes. This solution is the most straightforward but
->>>>    may cause some performance overhead. However, since at most only one
->>>>    block is written, the impact is likely limited. Additionally, I
->>>>    observed that the implementation of the XFS file system also adopts a
->>>>    similar approach in its truncate up and down operation. (But it is
->>>>    somewhat strange that XFS also appears to have the same issue with
->>>>    post-EOF append writes; it only zero out the partial block in
->>>>    xfs_file_write_checks(), but it neither explicitly writeback zeroed
->>>>    data nor employs any other mechanism to ensure that the zero data
->>>>    writebacks before the metadata is written to disk.)
->>>>
->>>> 2. Resolve this race condition, ensure that there are no non-zero data
->>>>    in the post-EOF partial blocks on the disk. I observed that after the
->>>>    writeback holds the folio lock and calls folio_clear_dirty_for_io(),
->>>>    mmap writes will re-trigger the page fault. Perhaps we can filter out
->>>>    the EOF folio based on i_size in ext4_page_mkwrite(),
->>>>    block_page_mkwrite() and iomap_page_mkwrite(), and then call
->>>>    folio_wait_writeback() to wait for this partial folio writeback to
->>>>    complete. This seems can break the race condition without introducing
->>>>    too much overhead (no?).
->>>>
->>>> What do you think? Any other suggestions are also welcome.
->>> Hum, I like the option 2 because IMO non-zero data beyond EOF is a
->>> corner-case quirk which unnecessarily complicates rather common paths. But
->>> I'm not sure we can easily get rid of it. It can happen for example when
->>> you do appending write inside a block. The page is written back but before
->>> the transaction with i_disksize update commits we crash. Then again we have
->>> a non-zero content inside the block beyond EOF.
->>>
->>> So the only realistic option I see is to ensure tail of the block gets
->>> zeroed on disk before the transaction with i_disksize update commits in the
->>> cases of truncate up or write beyond EOF. data=ordered mode machinery is an
->>> asynchronous way how to achieve this. We could also just synchronously
->>> writeback the block where needed but the latency hit of such operation is
->>> going to be significant so I'm quite sure some workload somewhere will
->>> notice although the truncate up / write beyond EOF operations triggering this
->>> are not too common. So why do you need to get rid of these data=ordered
->>> mode usages? I guess because with iomap keeping our transaction handle ->
->>> folio lock ordering is complicated? Last time I looked it seemed still
->>> possible to keep it though.
->>>
->>> Another possibility would be to just *submit* the write synchronously and
->>> use data=ordered mode machinery only to wait for IO to complete before the
->>> transaction commits. That way it should be safe to start a transaction
->>> while holding folio lock and thus the iomap conversion would be easier.
->>>
->>> 								Honza
->> Can we treat EOF blocks as metadata and update them in the same
->> transaction as i_disksize? Although this would introduce some
->> management and journaling overhead, it could avoid the deadlock
->> of "writeback -> start handle -> trigger writeback".
-> No, IMHO that would get too difficult. Just look at the hoops data=journal
-> mode has to jump through to make page cache handling work with the
-> journalling machinery. And you'd now have that for all the inodes. So I
-> think some form of data=ordered machinery is much simpler to reason about.
->
-> 								Honza
+On Thu, Feb 05, 2026 at 01:23:18PM +0100, Mario Lohajner wrote:
+> Let me briefly restate the intent, focusing on the fundamentals.
+> 
+> Rotalloc is not wear leveling (and is intentionally not named as such).
+> It is a allocation policy whose goal is to reduce allocation hotspots by
+> enforcing mount-wide sequential allocation. Wear leveling, if any,
+> remains a device/firmware concern and is explicitly out of scope.
+> While WL motivated part of this work,
 
-Indeed, this is a bit tricky.
+Yes, but *why* are you trying to reduce allocation hotspots?  What
+problem are you trying to solve?  And actually, you are making
+allocation hotspots *worse* since with global cursor, by definition
+there is a single, super-hotspot.  This will cause scalability issues
+on a system with multiple CPU's trying to write in parallel.
 
+> the main added value of this patch is allocator separation.
+> The policy indirection (aka vectored allocator) allows allocation
+> strategies that are orthogonal to the regular allocator to operate
+> outside the hot path, preserving existing heuristics and improving
+> maintainability.
 
-Regards,
-Baokun
+Allocator separation is not necessarily that an unalloyed good thing.
+By having duplicated code, it means that if we need to make a change
+in infrastructure code, we might now need to make it in multiple code
+paths.  It is also one more code path that we have to test and
+maintain.  So there is a real cost from the perspctive of the upstream
+maintenance perspective.
 
+Also, because having a single global allocation point (your "cursor")
+is going to absolutely *trash* performance, especially for high speed
+NVMe devices connected to high count CPU's, it's not clear to me why
+performance is necessary for rotalloc.
+
+> The rotating allocator itself is a working prototype.
+> It was written with minimal diff and clarity in mind to make the policy
+> reviewable. Refinements and simplifications are expected and welcome.
+
+OK, so this sounds like it's not ready for prime time....
+
+> Regarding discard/trim: while discard prepares blocks for reuse and
+> signals that a block is free, it does not implement wear leveling by
+> itself. Rotalloc operates at a higher layer; by promoting sequentiality,
+> it reduces block/group allocation hotspots regardless of underlying
+> device behavior.
+> Since it is not in line with the current allocator goals, it is
+> implemented as an optional policy.
+
+Again, what is the high level goal of rotalloc?  What specific
+hardware and workload are you trying to optimize for?  If you want to
+impose a maintaince overhead on upstream, you need to justify why the
+mainteance overhead is worth it.  And so that means you need to be a
+bit more explicit about what specific real-world solution you are
+trying to solve....
+
+						- Ted
 
