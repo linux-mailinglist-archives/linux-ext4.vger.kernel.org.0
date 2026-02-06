@@ -1,185 +1,225 @@
-Return-Path: <linux-ext4+bounces-13564-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13565-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wDaiL1gohWkk9QMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13564-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 00:31:36 +0100
+	id MPDsM6BAhWme+gMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13565-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:15:12 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8DFF859E
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 00:31:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63974F8E6E
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Feb 2026 02:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 21F83300F9DD
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Feb 2026 23:31:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7B3A230166D8
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Feb 2026 01:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223C232D0EE;
-	Thu,  5 Feb 2026 23:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E2DD234966;
+	Fri,  6 Feb 2026 01:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rKDB32HS"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="ABe+Ds0i"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout04.his.huawei.com (canpmsgout04.his.huawei.com [113.46.200.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF551482E8;
-	Thu,  5 Feb 2026 23:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E5019C54E;
+	Fri,  6 Feb 2026 01:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770334282; cv=none; b=gsE0J67bT/us9Io+ofxtwrPeEGkm3xGCx0Ihs2QJjJlBVEX9BBjlJS/38/iYnwgWaU1zRFQ/WTnV5Li1RaNCBLnZgPK6EYXR+fAKNga5dDftHuZlXHjBX7xU5+SJwHp3wIkHn0Hgg5DOm0HOaPH8xkI0eM9+DxFQqWXY+/o27F0=
+	t=1770340505; cv=none; b=ppXUMM97sFWJ+GhbCK31EZ7WhPgHd/OiuJlFMuY6kUWNLujrMiAYSp+Xo0arDWwLqqNoFLtzVFwNQ9iiPlWQNX3PP5kxkzzuvNkCMLZNT4Kv27slAjVOxSY7z7nfQz8a+/eNr1dZTMmAwcFc/J/0NvZo31/dsNuqSa9xZ9HZwvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770334282; c=relaxed/simple;
-	bh=iCDgJoiD5xz25rrxLG1jdG7Q+jqN/Ke5+qD+/CUNwhA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T5ptqSK4KwrdNOy8NwiU1Mhg0pgMv/0Llc1v830rRIdScA/71cYZjX6RgwZqCr8CPjx4tf4JqGObJP5qCF3ZEkhLtFMGEukMit1EjRVbbRShMX9ulHbuTDdREYSaMu/6hlYboPmzQ12Jc28tJO5vK3gSeBS+6XdOFfAVmmcR4oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rKDB32HS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62BEDC4CEF7;
-	Thu,  5 Feb 2026 23:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770334282;
-	bh=iCDgJoiD5xz25rrxLG1jdG7Q+jqN/Ke5+qD+/CUNwhA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rKDB32HSkZG6QLIDxvpdAcPV+ahCPGdHSaiEB5/YIdUbudCPNvN/cDUsmzf/8C6nz
-	 KTOTdloUH5nXrD2irZSyrsrX607ozTLgspwu2rkRCZTdLTijJ6fUcvtAVnmpD2Y/n0
-	 AncJz7hcZZeRDthIRK/u24V4cGtuNr8GKATi4QF7a6i7PwW2E4cow2PejQzyGba0VD
-	 4TjTy/eUe3D8hlGyuEWF9FD3vcV+6Og8n04DZEb+hADA/nov99VFRMo7ft21Ue41uT
-	 WPm8IYkD8BBsJCXg+y0fYDT5+8kMVrcvrMqSWOy3rK0eVSwEw43oStD2N6Rzt0ZDAv
-	 1dNvLQcpBAypQ==
-Date: Thu, 5 Feb 2026 15:31:21 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Chris Mason <clm@meta.com>
-Cc: miklos@szeredi.hu, joannelkoong@gmail.com, bernd@bsbernd.com,
-	neal@gompa.dev, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/31] fuse: implement the basic iomap mechanisms
-Message-ID: <20260205233121.GD7686@frogsfrogsfrogs>
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <176169810371.1424854.3010195280915622081.stgit@frogsfrogsfrogs>
- <20260205192550.2124130-1-clm@meta.com>
+	s=arc-20240116; t=1770340505; c=relaxed/simple;
+	bh=A0AjAjUsGSSu5NFAHmcb2Nj/utizFM0hGfJTsGlv1dU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iepVUqLBHb14bQSyXkmKSZJuVdQW+Pji+LtBuRyhYBbWuxv5igAIDCQbZLXlCEtsr2IlsI3VT5naz7QGrr3JSmFCZRm1TlyZkqRw8Ip/bx2anEp50IDe9j4S437LzEOipVryfcK9Iw9X1gyVFcc08dJ066YSgCOsWOj5Je3cXcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=ABe+Ds0i; arc=none smtp.client-ip=113.46.200.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=sQ8ZYm9EKNt348xD3uEYD5yQpwEtVLoM1aN86AiBAxA=;
+	b=ABe+Ds0imj040vkRYzyHi2HGsgfk8ivxdDHrk2ni3E2N5oZ6RqptAnbPbEEa5nKltWfji+o4k
+	DLHNPBECZNmrcniAuMCydPM3S7G/edovD+Q50oahr3K3l+AZTRMKM2Yagvc4xVKlNbflpQ+4V8l
+	uEiISooKC6KVpxiZjkbctPc=
+Received: from mail.maildlp.com (unknown [172.19.163.0])
+	by canpmsgout04.his.huawei.com (SkyGuard) with ESMTPS id 4f6bc948Cdz1prKt;
+	Fri,  6 Feb 2026 09:10:17 +0800 (CST)
+Received: from dggpemf500013.china.huawei.com (unknown [7.185.36.188])
+	by mail.maildlp.com (Postfix) with ESMTPS id 40F5E4036C;
+	Fri,  6 Feb 2026 09:14:55 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.254) by dggpemf500013.china.huawei.com
+ (7.185.36.188) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 6 Feb
+ 2026 09:14:53 +0800
+Message-ID: <6b3fddd2-047b-4639-b54f-554b16a0ef36@huawei.com>
+Date: Fri, 6 Feb 2026 09:14:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260205192550.2124130-1-clm@meta.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially block
+ truncating down
+Content-Language: en-GB
+To: Jan Kara <jack@suse.cz>
+CC: Zhang Yi <yi.zhang@huaweicloud.com>, <linux-ext4@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<tytso@mit.edu>, <adilger.kernel@dilger.ca>, <ojaswin@linux.ibm.com>,
+	<ritesh.list@gmail.com>, <hch@infradead.org>, <djwong@kernel.org>, Zhang Yi
+	<yi.zhang@huawei.com>, <yizhang089@gmail.com>, <yangerkun@huawei.com>,
+	<yukuai@fnnas.com>, <libaokun9@gmail.com>, <libaokun9@gmail.com>
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
+ <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+ <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
+ <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
+ <9b7e93da-65dd-4574-be7f-4ec88bce4da7@huawei.com>
+ <s434ifpengcthkmohmc6vvmvppx4o2k2ctk2p3it55ncgce3je@irbt7xpdnnzu>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <s434ifpengcthkmohmc6vvmvppx4o2k2ctk2p3it55ncgce3je@irbt7xpdnnzu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ dggpemf500013.china.huawei.com (7.185.36.188)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13564-lists,linux-ext4=lfdr.de];
-	FREEMAIL_CC(0.00)[szeredi.hu,gmail.com,bsbernd.com,gompa.dev,vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	TAGGED_FROM(0.00)[bounces-13565-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 2A8DFF859E
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[huaweicloud.com,vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[libaokun1@huawei.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: 63974F8E6E
 X-Rspamd-Action: no action
 
-On Thu, Feb 05, 2026 at 11:22:44AM -0800, Chris Mason wrote:
-> "Darrick J. Wong" <djwong@kernel.org> wrote:
-> > From: Darrick J. Wong <djwong@kernel.org>
-> > 
-> > Implement functions to enable upcalling of iomap_begin and iomap_end to
-> > userspace fuse servers.
-> > 
-> 
-> Hi everyone,
-> 
-> I'm trying out my AI review prompts on a few more trees, and I ran it
-> on the fuse-iomap-cache branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/log/?h=fuse-iomap-cache
-> 
-> This was the latest email lore could find, apologies if I grabbed the wrong one.
-> 
-> Hopefully the review below is useful, please let me know if there are places it
-> has gone wildly wrong.  I kept the header to make it obvious exactly which
-> commit I'd run through:
-> 
-> (I don't fully understand why it calls out commit b3f5bd5243, looks like
-> it's probably just the last place that changes nearby code)
-> 
-> commit 99dffae5966f9647a430fa4c9198e2d2dacae172
-> Author: Darrick J. Wong <djwong@kernel.org>
-> 
-> fuse: implement the basic iomap mechanisms
-> 
-> Implement functions to enable upcalling of iomap_begin and iomap_end to
-> userspace fuse servers.
-> 
-> > diff --git a/fs/fuse/fuse_iomap.c b/fs/fuse/fuse_iomap.c
-> > new file mode 100644
-> > index 0000000000000..d1c2c2e1e68b8
-> > --- /dev/null
-> > +++ b/fs/fuse/fuse_iomap.c
-> 
-> [ ... ]
-> 
-> > @@ -0,0 +1,430 @@
-> 
-> [ ... ]
-> 
-> > +/* Convert a mapping from the server into something the kernel can use */
-> > +static inline void fuse_iomap_from_server(struct iomap *iomap,
-> > +					  const struct fuse_iomap_io *fmap)
-> > +{
-> > +	iomap->addr = fmap->addr;
-> > +	iomap->offset = fmap->offset;
-> > +	iomap->length = fmap->length;
-> > +	iomap->type = fuse_iomap_type_from_server(fmap->type);
-> > +	iomap->flags = fuse_iomap_flags_from_server(fmap->flags);
-> > +	iomap->bdev = NULL; /* XXX */
-> > +}
-> > +
-> > +/* Convert a mapping from the kernel into something the server can use */
-> > +static inline void fuse_iomap_to_server(struct fuse_iomap_io *fmap,
-> > +					const struct iomap *iomap)
-> > +{
-> > +	fmap->addr = fmap->addr;
->                      ^^^^
-> 
-> Does fmap->addr get the wrong value here? Looking at
-> fuse_iomap_from_server() just above, it correctly does iomap->addr =
-> fmap->addr. This function appears to have the reverse bug, assigning
-> fmap->addr to itself instead of fmap->addr = iomap->addr. The other
-> fields (offset, length, type, flags) all correctly copy from iomap.
-> 
-> This would cause fuse_iomap_end() to send uninitialized or garbage data
-> in the addr field when calling fuse_iomap_to_server(&inarg.map, iomap).
-> 
-> This bug persists unfixed through commit b3f5bd524315 later in the
-> series.
+On 2026-02-05 22:07, Jan Kara wrote:
+> On Thu 05-02-26 11:27:09, Baokun Li wrote:
+>> On 2026-02-04 22:18, Jan Kara wrote:
+>>> Hi Zhang!
+>>>
+>>> On Wed 04-02-26 14:42:46, Zhang Yi wrote:
+>>>> On 2/3/2026 5:59 PM, Jan Kara wrote:
+>>>>> On Tue 03-02-26 14:25:03, Zhang Yi wrote:
+>>>>>> Currently, __ext4_block_zero_page_range() is called in the following
+>>>>>> four cases to zero out the data in partial blocks:
+>>>>>>
+>>>>>> 1. Truncate down.
+>>>>>> 2. Truncate up.
+>>>>>> 3. Perform block allocation (e.g., fallocate) or append writes across a
+>>>>>>    range extending beyond the end of the file (EOF).
+>>>>>> 4. Partial block punch hole.
+>>>>>>
+>>>>>> If the default ordered data mode is used, __ext4_block_zero_page_range()
+>>>>>> will write back the zeroed data to the disk through the order mode after
+>>>>>> zeroing out.
+>>>>>>
+>>>>>> Among the cases 1,2 and 3 described above, only case 1 actually requires
+>>>>>> this ordered write. Assuming no one intentionally bypasses the file
+>>>>>> system to write directly to the disk. When performing a truncate down
+>>>>>> operation, ensuring that the data beyond the EOF is zeroed out before
+>>>>>> updating i_disksize is sufficient to prevent old data from being exposed
+>>>>>> when the file is later extended. In other words, as long as the on-disk
+>>>>>> data in case 1 can be properly zeroed out, only the data in memory needs
+>>>>>> to be zeroed out in cases 2 and 3, without requiring ordered data.
+>>>>> Hum, I'm not sure this is correct. The tail block of the file is not
+>>>>> necessarily zeroed out beyond EOF (as mmap writes can race with page
+>>>>> writeback and modify the tail block contents beyond EOF before we really
+>>>>> submit it to the device). Thus after this commit if you truncate up, just
+>>>>> zero out the newly exposed contents in the page cache and dirty it, then
+>>>>> the transaction with the i_disksize update commits (I see nothing
+>>>>> preventing it) and then you crash, you can observe file with the new size
+>>>>> but non-zero content in the newly exposed area. Am I missing something?
+>>>>>
+>>>> Well, I think you are right! I missed the mmap write race condition that
+>>>> happens during the writeback submitting I/O. Thank you a lot for pointing
+>>>> this out. I thought of two possible solutions:
+>>>>
+>>>> 1. We also add explicit writeback operations to the truncate-up and
+>>>>    post-EOF append writes. This solution is the most straightforward but
+>>>>    may cause some performance overhead. However, since at most only one
+>>>>    block is written, the impact is likely limited. Additionally, I
+>>>>    observed that the implementation of the XFS file system also adopts a
+>>>>    similar approach in its truncate up and down operation. (But it is
+>>>>    somewhat strange that XFS also appears to have the same issue with
+>>>>    post-EOF append writes; it only zero out the partial block in
+>>>>    xfs_file_write_checks(), but it neither explicitly writeback zeroed
+>>>>    data nor employs any other mechanism to ensure that the zero data
+>>>>    writebacks before the metadata is written to disk.)
+>>>>
+>>>> 2. Resolve this race condition, ensure that there are no non-zero data
+>>>>    in the post-EOF partial blocks on the disk. I observed that after the
+>>>>    writeback holds the folio lock and calls folio_clear_dirty_for_io(),
+>>>>    mmap writes will re-trigger the page fault. Perhaps we can filter out
+>>>>    the EOF folio based on i_size in ext4_page_mkwrite(),
+>>>>    block_page_mkwrite() and iomap_page_mkwrite(), and then call
+>>>>    folio_wait_writeback() to wait for this partial folio writeback to
+>>>>    complete. This seems can break the race condition without introducing
+>>>>    too much overhead (no?).
+>>>>
+>>>> What do you think? Any other suggestions are also welcome.
+>>> Hum, I like the option 2 because IMO non-zero data beyond EOF is a
+>>> corner-case quirk which unnecessarily complicates rather common paths. But
+>>> I'm not sure we can easily get rid of it. It can happen for example when
+>>> you do appending write inside a block. The page is written back but before
+>>> the transaction with i_disksize update commits we crash. Then again we have
+>>> a non-zero content inside the block beyond EOF.
+>>>
+>>> So the only realistic option I see is to ensure tail of the block gets
+>>> zeroed on disk before the transaction with i_disksize update commits in the
+>>> cases of truncate up or write beyond EOF. data=ordered mode machinery is an
+>>> asynchronous way how to achieve this. We could also just synchronously
+>>> writeback the block where needed but the latency hit of such operation is
+>>> going to be significant so I'm quite sure some workload somewhere will
+>>> notice although the truncate up / write beyond EOF operations triggering this
+>>> are not too common. So why do you need to get rid of these data=ordered
+>>> mode usages? I guess because with iomap keeping our transaction handle ->
+>>> folio lock ordering is complicated? Last time I looked it seemed still
+>>> possible to keep it though.
+>>>
+>>> Another possibility would be to just *submit* the write synchronously and
+>>> use data=ordered mode machinery only to wait for IO to complete before the
+>>> transaction commits. That way it should be safe to start a transaction
+>>> while holding folio lock and thus the iomap conversion would be easier.
+>>>
+>>> 								Honza
+>> Can we treat EOF blocks as metadata and update them in the same
+>> transaction as i_disksize? Although this would introduce some
+>> management and journaling overhead, it could avoid the deadlock
+>> of "writeback -> start handle -> trigger writeback".
+> No, IMHO that would get too difficult. Just look at the hoops data=journal
+> mode has to jump through to make page cache handling work with the
+> journalling machinery. And you'd now have that for all the inodes. So I
+> think some form of data=ordered machinery is much simpler to reason about.
+>
+> 								Honza
 
-Yep, that's a copy-paste error from above; good catch!
+Indeed, this is a bit tricky.
 
---D
 
-> > +	fmap->offset = iomap->offset;
-> > +	fmap->length = iomap->length;
-> > +	fmap->type = fuse_iomap_type_to_server(iomap->type);
-> > +	fmap->flags = fuse_iomap_flags_to_server(iomap->flags);
-> > +	fmap->dev = FUSE_IOMAP_DEV_NULL; /* XXX */
-> > +}
-> 
-> 
+Regards,
+Baokun
+
 
