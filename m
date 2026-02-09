@@ -1,221 +1,254 @@
-Return-Path: <linux-ext4+bounces-13623-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13624-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YLFeJqFBiWke5QQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13623-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 09 Feb 2026 03:08:33 +0100
+	id qD4+CKWaiWkv/gQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13624-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Feb 2026 09:28:21 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBDBD10AFAD
-	for <lists+linux-ext4@lfdr.de>; Mon, 09 Feb 2026 03:08:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB0A10CF19
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Feb 2026 09:28:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 80B673008A4C
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Feb 2026 02:08:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 14BC3300F181
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Feb 2026 08:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C485428AAEB;
-	Mon,  9 Feb 2026 02:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BBD309EE6;
+	Mon,  9 Feb 2026 08:28:13 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7081DE8AD
-	for <linux-ext4@vger.kernel.org>; Mon,  9 Feb 2026 02:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE73308F34;
+	Mon,  9 Feb 2026 08:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770602908; cv=none; b=UIUHrV9KjwLHsMbxSBdB5zObp65llIufKdPNIo2NG0Xqr0FuZI0YUUGdhkGMZ8Fibmb4f2twBUHutx9osn8/14vzicDHa2Q+spJoQoUUfyUXb2AUq72QsOUMyLXOzRk9zkLiNxPNlVjxVI79jY5XRb55xiBCHm+yUHz00mH4F3w=
+	t=1770625693; cv=none; b=mUI+IooRfeD+YgY/2U/siwSvRd93bgfNdgWASCkn3n09s2cHszEZwJBCv5/ZeLq9w3O1fHs/fJ6Pt+FimzVt7UTPj+MPFLiIklXhBVHp9b1GdR88MdTCuHwq+qj0J48ghvoyGcBGXaGcMd28Do0N3nC9cUqwbIn1zNDh0R37K8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770602908; c=relaxed/simple;
-	bh=N8aGlm6zztvsDONjwxrYfE3jVaBN3efl471A/QdOMmY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kziX0HKNcYpWGvtjWe/X8Q0yrPLqQZe3BHqPK2P5WLTUR55pKby/iqJ1/HMl6YAsnFChSfV4ZMDqTSw4jwLFkYE9xYC2TOK2CThuhKBf0yJXACW3l9IlMUIIDLlLB7NWr5kLwEhy3k/3Yp9yWtUO7sVc9ZT7jRb7ol+rI8rxMUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-663019e3e05so4903026eaf.3
-        for <linux-ext4@vger.kernel.org>; Sun, 08 Feb 2026 18:08:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770602907; x=1771207707;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oU2iPtTs/u4Kq0wydeiESwq+NnkbLIM31WDSj8uz7nM=;
-        b=feggc4zILx38FrWCFGZmfqCZJ74jd4wxHmeOo7CdbN/mcSG/8ZVUWCOD2NZ286rt+d
-         s/Ah5XCdiCgaiGpLQBZ5mBnqd8zA6gA2rZycnaEAVrIRud9yMdm7LfBtvBdEKWf7otRn
-         /ywvJm72svKw64Oe8xADxasXytGA838rT/9KTSZaw7XHrzEUJqJmdDCZO0k1DTfB1O4H
-         7hHl90sbjU/S1o05oiZupmHZWIk90bjZ4orJ4FLa+5WDbBORkSQ8tldiXAMMM/b1+Che
-         wmDriq5bkFNzNhhBnlxhJVbvs5DfuFQ3ZtUXagxvMzt5aZIdKEkVmRb2xiLUNjMeygcA
-         03ng==
-X-Forwarded-Encrypted: i=1; AJvYcCXYt8tithwY8A1wfBFItHtiXnsMensLKI3yNLCJqC/chk9xE1ExPPz7Vb4na7h7QDLFRyuYzdy7ZSUB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxgnizprFRJ/G1dGzrX74ZFrcyOdlu6rGl0FoDQ2wLBg0wLx6K0
-	iebrAmeiZxrXkhuymmIEgSllVb2Q1WLC8eMgBo23lma2asKQ5JW6u23EIyOlWCN1x0k/rsO4tTU
-	GurVJz7wynyx7HrYlqZrdf++dgImzPKM3JUxAAJYQ2p1B8GLl+Tm3OdgWM6U=
+	s=arc-20240116; t=1770625693; c=relaxed/simple;
+	bh=YETcwavk85wQHDnaLKbov3ELSZ81zv+k5Di6YMEXv3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iwnVb5yPQpvC7or8TEXueypenycqImasObSoXblGsAGLZaXboF1dmbsizqRt3bWxB8m296GST573C5f7LLbNaNX85tctCqKiH5KgHMASoUXRflxLqR6kd9kTiSplCl0p70movnjsMn2edF5v2cmL4VrGirbTMIO4+3trJgBcx24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f8d9P64mLzKHMjX;
+	Mon,  9 Feb 2026 16:27:37 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 86F0440579;
+	Mon,  9 Feb 2026 16:28:08 +0800 (CST)
+Received: from [10.174.178.152] (unknown [10.174.178.152])
+	by APP4 (Coremail) with SMTP id gCh0CgC3ZPWWmolpY6I2Gw--.34976S3;
+	Mon, 09 Feb 2026 16:28:08 +0800 (CST)
+Message-ID: <665b8293-60a2-4d4d-aef5-cb1f9c3c0c13@huaweicloud.com>
+Date: Mon, 9 Feb 2026 16:28:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:818b:b0:662:f42e:7cfe with SMTP id
- 006d021491bc7-66d0bea535fmr4513048eaf.54.1770602907333; Sun, 08 Feb 2026
- 18:08:27 -0800 (PST)
-Date: Sun, 08 Feb 2026 18:08:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6989419b.050a0220.3b3015.0065.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_es_cache_extent (4)
-From: syzbot <syzbot+ccf1421545dbe5caa20c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially block
+ truncating down
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, hch@infradead.org,
+ djwong@kernel.org, Zhang Yi <yi.zhang@huawei.com>, yizhang089@gmail.com,
+ libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
+ <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+ <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
+ <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
+ <1dad3113-7b84-40a0-8c7e-da30ae5cba8e@huaweicloud.com>
+ <7hy5g3bp5whis4was5mqg3u6t37lwayi6j7scvpbuoqsbe5adc@mh5zxvml3oe7>
+ <3ea033c1-8d32-4c82-baea-c383fa1d9e2a@huaweicloud.com>
+ <yhy4cgc4fnk7tzfejuhy6m6ljo425ebpg6khss6vtvpidg6lyp@5xcyabxrl6zm>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <yhy4cgc4fnk7tzfejuhy6m6ljo425ebpg6khss6vtvpidg6lyp@5xcyabxrl6zm>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgC3ZPWWmolpY6I2Gw--.34976S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Aw1UtFW7XF43Xw1UGw1kAFb_yoW7Zr4xpr
+	W5K3WDKr1Dt345Arn2vF1xtryFy3y5Jr1UGFyrWr42vr98u3W0qFWSg3yFgrWUArn3Ka42
+	vr4DuFWkCFyFvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=c09aefae2687abea];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13623-lists,linux-ext4=lfdr.de,ccf1421545dbe5caa20c];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-13624-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[huaweicloud.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_DN_NONE(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-0.929];
+	MID_RHS_MATCH_FROM(0.00)[];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlegroups.com:email,appspotmail.com:email,goo.gl:url]
-X-Rspamd-Queue-Id: EBDBD10AFAD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:mid]
+X-Rspamd-Queue-Id: BDB0A10CF19
 X-Rspamd-Action: no action
 
-Hello,
+On 2/6/2026 11:35 PM, Jan Kara wrote:
+> On Fri 06-02-26 19:09:53, Zhang Yi wrote:
+>> On 2/5/2026 11:05 PM, Jan Kara wrote:
+>>> So how about the following:
+>>
+>> Let me see, please correct me if my understanding is wrong, ana there are
+>> also some points I don't get.
+>>
+>>> We expand our io_end processing with the
+>>> ability to journal i_disksize updates after page writeback completes. Then
+>>> when doing truncate up or appending writes, we keep i_disksize at the old
+>>> value and just zero folio tails in the page cache, mark the folio dirty and
+>>> update i_size.
+>>
+>> I think we need to submit this zeroed folio here as well. Because,
+>>
+>> 1) In the case of truncate up, if we don't submit, the i_disksize may have to
+>>    wait a long time (until the folio writeback is complete, which takes about
+>>    30 seconds by default) before being updated, which is too long.
+> 
+> Correct but I'm not sure it matters. Current delalloc writes behave in the
+> same way already. For simplicity I'd thus prefer to not treat truncate up
+> in a special way but if we decide this indeed desirable, we can either
+> submit the tail folio immediately, or schedule work with earlier writeback.
+> 
+>> 2) In the case of appending writes. Assume that the folio written beyond this
+>>    one is written back first, we have to wait this zeroed folio to be write
+>>    back and then update i_disksize, so we can't wait too long either.
+> 
+> Correct, update of i_disksize after writeback of folios beyond current
+> i_disksize is blocked by the writeback of the tail folio.
+> 
+>>> When submitting writeback for a folio beyond current
+>>> i_disksize we make sure writepages submits IO for all the folios from
+>>> current i_disksize upwards.
+>>
+>> Why "all the folios"? IIUC, we only wait the zeroed EOF folio is sufficient.
+> 
+> I was worried about a case like:
+> 
+> We have 4k blocksize, file is i_disksize 2k. Now you do:
+> pwrite(file, buf, 1, 6k);
+> pwrite(file, buf, 1, 10k);
+> pwrite(file, buf, 1, 14k);
+> 
+> The pwrite at offset 6k needs to zero the tail of the folio with index 0,
+> pwrite at 10k needs to zero the tail of the folio with index 1, etc. And
+> for us to safely advance i_disksize to 14k+1, I though all the folios (and
+> zeroed out tails) need to be written out. But that's actually not the case.
+> We need to make sure the zeroed tail is written out only if the underlying
+> block is already allocated and marked as written at the time of zeroing.
+> And the blocks underlying intermediate i_size values will never be allocated
+> and written without advancing i_disksize to them. So I think you're
+> correct, we always have at most one tail folio - the one surrounding
+> current i_disksize - which needs to be written out to safely advance
+> i_disksize and we don't care about folios inbetween.
+> 
+>>> When io_end processing happens after completed
+>>> folio writeback, we update i_disksize to min(i_size, end of IO).
+>>
+>> Yeah, in the case of append write back. Assume we append write the folio 2
+>> and folio 3,
+>>
+>>        old_idisksize  new_isize
+>>        |             |
+>>      [WWZZ][WWWW][WWWW]
+>>        1  |  2     3
+>>           A
+>>
+>> Assume that folio 1 first completes the writeback, then we update i_disksize
+>> to pos A when the writeback is complete. Assume that folio 2 or 3 completes
+>> first, we should wait(e.g. call filemap_fdatawait_range_keep_errors() or
+>> something like) folio 1 to complete and then update i_disksize to new_isize.
+>>
+>> But in the case of truncate up, We will only write back this zeroed folio. If
+>> the new i_size exceeds the end of this folio, how should we update i_disksize
+>> to the correct value?
+>>
+>> For example, we truncate the file from old old_idisksize to new_isize, but we
+>> only zero and writeback folio 1, in the end_io processing of folio 1, we can
+>> only update the i_disksize to A, but we can never update it to new_isize. Am
+>> I missing something ?
+>>
+>>        old_idisksize new_isize
+>>        |             |
+>>      [WWZZ]...hole ...
+>>        1  |
+>>           A
+> 
+> Good question. Based on the analysis above one option would be to setup
+> writeback of page straddling current i_disksize to update i_disksize to
+> current i_size on completion. That would be simple but would have an
+> unpleasant side effect that in case of a crash after append write we could
+> see increased i_disksize but zeros instead of written data. Another option
+> would be to update i_disksize on completion to the beginning of the first
+> dirty folio behind the written back range or i_size of there's not such
+> folio. This would still be relatively simple and mostly deal with "zeros
+> instead of data" problem.
 
-syzbot found the following issue on:
+Ha, good idea! I think it should work. I will try the second option, thank
+you a lot for this suggestion. :)
 
-HEAD commit:    0f8a890c4524 Add linux-next specific files for 20260204
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d547fa580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c09aefae2687abea
-dashboard link: https://syzkaller.appspot.com/bug?extid=ccf1421545dbe5caa20c
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16420a52580000
+> 
+>>> This
+>>> should take care of non-zero data exposure issues and with "delay map"
+>>> processing Baokun works on all the inode metadata updates will happen after
+>>> IO completion anyway so it will be nicely batched up in one transaction.
+>>
+>> Currently, my iomap convert implementation always enables dioread_nolock,
+> 
+> Yes, BTW I think you could remove no-dioread_nolock paths before doing the
+> conversion to simplify matters a bit. I don't think it's seriously used
+> anywhere anymore.
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3c923d50ef46/disk-0f8a890c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3a560206fcf3/vmlinux-0f8a890c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e0826a2ee028/bzImage-0f8a890c.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/4532e6e390d7/mount_0.gz
-  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=1533aa5a580000)
+Sure. After removing the no-dioread_nolock paths, the behavior of the
+buffer_head path (extents-based and no-journal data mode) and the iomap path
+in append write and truncate operations can be made consistent.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ccf1421545dbe5caa20c@syzkaller.appspotmail.com
+Cheers,
+Yi.
 
-EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #18: comm syz.0.37: ES cache extent failed: add [22,10,230,0x1] conflict with existing [17,15,145,0x2]
-EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #18: comm syz.0.37: ES cache extent failed: add [32,1,353,0x1] conflict with existing [32,1,161,0x2]
-EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #18: comm syz.0.37: ES cache extent failed: add [33,15,353,0x1] conflict with existing [33,15,161,0x2]
-------------[ cut here ]------------
-kernel BUG at fs/ext4/extents_status.c:1044!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 0 UID: 0 PID: 6168 Comm: syz.0.37 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/24/2026
-RIP: 0010:ext4_es_cache_extent+0x875/0x9e0 fs/ext4/extents_status.c:1044
-Code: e1 07 80 c1 03 38 c1 0f 8c 5c fe ff ff 48 8b 7c 24 18 e8 7e 15 ae ff e9 4d fe ff ff e8 a4 32 44 ff 90 0f 0b e8 9c 32 44 ff 90 <0f> 0b 65 8b 1d f6 c4 99 10 bf 07 00 00 00 89 de e8 c6 36 44 ff 83
-RSP: 0018:ffffc90003dedb80 EFLAGS: 00010293
-RAX: ffffffff82816b34 RBX: 0000000000000023 RCX: ffff8880271c9e40
-RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000000000023
-RBP: ffffc90003dedcc8 R08: ffffc90003dedc37 R09: 0000000000000000
-R10: ffffc90003dedc20 R11: fffff520007bdb87 R12: ffffc90003dedc20
-R13: 0000000000000030 R14: 000000000000000f R15: dffffc0000000000
-FS:  000055556ddfe500(0000) GS:ffff88812546d000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f56b9c15000 CR3: 0000000079388000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- ext4_cache_extents fs/ext4/extents.c:539 [inline]
- __read_extent_tree_block+0x4b4/0x890 fs/ext4/extents.c:586
- ext4_find_extent+0x76b/0xcc0 fs/ext4/extents.c:941
- ext4_ext_map_blocks+0x283/0x58b0 fs/ext4/extents.c:4263
- ext4_map_create_blocks+0x11d/0x540 fs/ext4/inode.c:616
- ext4_map_blocks+0x7cd/0x11d0 fs/ext4/inode.c:809
- _ext4_get_block+0x1e3/0x470 fs/ext4/inode.c:909
- ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:942
- ext4_block_write_begin+0xb14/0x1950 fs/ext4/inode.c:1196
- ext4_write_begin+0xb40/0x18c0 fs/ext4/ext4_jbd2.h:-1
- ext4_da_write_begin+0x355/0xd80 fs/ext4/inode.c:3123
- generic_perform_write+0x2e2/0x8f0 mm/filemap.c:4314
- ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:300
- ext4_file_write_iter+0x298/0x1bf0 fs/ext4/file.c:-1
- __kernel_write_iter+0x41e/0x880 fs/read_write.c:621
- dump_emit_page fs/coredump.c:1299 [inline]
- dump_user_range+0xb89/0x12d0 fs/coredump.c:1373
- elf_core_dump+0x34c2/0x3ad0 fs/binfmt_elf.c:2111
- coredump_write+0x1219/0x1950 fs/coredump.c:1050
- do_coredump fs/coredump.c:1127 [inline]
- vfs_coredump+0x36a9/0x4280 fs/coredump.c:1201
- get_signal+0x1107/0x1330 kernel/signal.c:3019
- arch_do_signal_or_restart+0xbc/0x830 arch/x86/kernel/signal.c:337
- __exit_to_user_mode_loop kernel/entry/common.c:64 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:98 [inline]
- __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
- irqentry_exit_to_user_mode_prepare include/linux/irq-entry-common.h:270 [inline]
- irqentry_exit_to_user_mode include/linux/irq-entry-common.h:339 [inline]
- irqentry_exit+0x176/0x620 kernel/entry/common.c:219
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
-RIP: 0033:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 002b:0000200000000548 EFLAGS: 00010217
-RAX: 0000000000000000 RBX: 00007efd00215fa0 RCX: 00007efcfff9aeb9
-RDX: 0000000000000000 RSI: 0000200000000540 RDI: 0000000000000000
-RBP: 00007efd00008c1f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007efd00215fac R14: 00007efd00215fa0 R15: 00007efd00215fa0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_es_cache_extent+0x875/0x9e0 fs/ext4/extents_status.c:1044
-Code: e1 07 80 c1 03 38 c1 0f 8c 5c fe ff ff 48 8b 7c 24 18 e8 7e 15 ae ff e9 4d fe ff ff e8 a4 32 44 ff 90 0f 0b e8 9c 32 44 ff 90 <0f> 0b 65 8b 1d f6 c4 99 10 bf 07 00 00 00 89 de e8 c6 36 44 ff 83
-RSP: 0018:ffffc90003dedb80 EFLAGS: 00010293
-RAX: ffffffff82816b34 RBX: 0000000000000023 RCX: ffff8880271c9e40
-RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000000000023
-RBP: ffffc90003dedcc8 R08: ffffc90003dedc37 R09: 0000000000000000
-R10: ffffc90003dedc20 R11: fffff520007bdb87 R12: ffffc90003dedc20
-R13: 0000000000000030 R14: 000000000000000f R15: dffffc0000000000
-FS:  000055556ddfe500(0000) GS:ffff88812556d000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c00426e000 CR3: 0000000079388000 CR4: 00000000003526f0
+>> so I feel that this solution can be achieved even without the "delay map"
+>> feature. After we have the "delay map", we can extend this to the
+>> buffer_head path.
+> 
+> I agree, delay map is not necessary for this to work. But it will make
+> things likely faster.
+> 
+> 								Honza
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
