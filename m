@@ -1,190 +1,307 @@
-Return-Path: <linux-ext4+bounces-13648-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13649-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cYv2FR3OimkUOAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13648-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 07:20:13 +0100
+	id UCcqJzDZimnrOAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13649-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 08:07:28 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0DCB11752E
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 07:20:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09993117A9F
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 08:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 433743014579
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 06:20:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BD266303817F
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 07:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D382E7164;
-	Tue, 10 Feb 2026 06:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2091D32F742;
+	Tue, 10 Feb 2026 07:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AL+i7A8l"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267252459E5
-	for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 06:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661C732ED29;
+	Tue, 10 Feb 2026 07:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770704405; cv=none; b=OBUAwUqEhj9SKRim2Xfowhljalu1MghONMaFCBIrcQauWukaMpnoAo3cgxZxdHTet1lHMa5FcIlF6x5zdN/nEXE6yxzSJgsmZc6nhUJfmRMmrIV2nlXB6NuthuvSNq8n/gZVgEt0JT1Fp2PbNsEaxhA7tMIRWFZP7cPZkBc+xPk=
+	t=1770707175; cv=none; b=T5R55zXrzssUzKQ5QZzp4TveswBIeklr7SuChO97XnRrIajhvaRQeyzPM5OlAIC6wsvPpm7Vc9PyBloHVxh3bB3pltuWicZlJczH3e4Snk5ZrPCv2NK0KXgeKibnMfvZQnsFtB8wj/G/RSBzcoXgTN/yuuCalhmLUGs/m52AFXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770704405; c=relaxed/simple;
-	bh=u/pQwJA1FcnbozV7Ute7l4O+0hdXMEZxCkijnCXlg18=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=MKpPJQ9Owg18hk7dsAdFEfVXY93TDNbH6n9gNvISFSb3FL/s38PWF4+M+sJ4JGefCuzzDZhVP3XMet+VIGm0Mwdw0NuKA3LywyYTlFU0LAPaThn+vGZPHX1Gw11jdkq3Itb6IWCrIxYnib5xWgY1NMzWWv2ZXZU+T988AvpZpHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-663126bb42dso2203702eaf.1
-        for <linux-ext4@vger.kernel.org>; Mon, 09 Feb 2026 22:20:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770704403; x=1771309203;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=70ipFTJzInwy1wthBH7bNAPYA2X+vPYs2ELBGcT3CWo=;
-        b=aa3h6Jmim2/8TvpbpC7Ip7f7MYKtBfoDJNk/9YCcTLvjRYpew/BOjuplP8eAVJST59
-         XH0ZWmHt5uffi5+UMcblCx+ruoAQAUwwJ5eh1jpbhwwALVREyDplyfD7FNwt0XfWQt1L
-         g7lLvdPPPYHYP8uoo/uVPHpze5HdEW9iLBTYaEApRD/3KjI16ssNz+zdz8uJ8tHdKF4f
-         WbXQyZYMjVjrxOVjr+6D0qn9gOMnaQU2pwZyt45WF6qFxAlillDpCyPJZlR+jjPQL8Kb
-         XbusU84deO2NuU/0UbREX8L3ylvsyM5k/HVNObpDjhNMbixwgKaas9mCLodwlAqhtwhc
-         JjTw==
-X-Forwarded-Encrypted: i=1; AJvYcCX9R/rk/53xoEjTUNdbhOZNFo7oQqz5bl4ukNKlYTKS9qWEZKYoc0cqjthBzcXTJgnFpVFXpPwb3dhi@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/Let4IigCUuQErSrkbrVIgZc/62kIQFEpWEMeLHPVdxUuOngS
-	YY5eJZsL6lqQ3A0xNZx0VTsqZUkOaDQ9EvxCHAsn7c48oJa+zRoESz8h8huomANtqSGlUU+e21L
-	EpbNMa7H1jUtr7b0ZJol1XqWieNRVa5MZfJOX00C8/2t6tUCy70dzaG5JTBM=
+	s=arc-20240116; t=1770707175; c=relaxed/simple;
+	bh=jwsv2/KtgFMkKHil0XDlMSA5/KLwQXAsmOj1m8Km++I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qAZeiOJJUdB0CqfZ3PG7zjksbE7LnBhr7d+o0nKgDu4+nm4MVDnhjrncns6LXbzYTaFBZpQRClPXW3+MHTYi770qRJSCYPt4u+/Qh7cJ10gFPXaVH2KIwxvQqDrmN3YlbEe97c+mARe4IVEqV+cbnUHLIjBAdpTj4TFRl/dqJe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AL+i7A8l; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 619KE8FV2412224;
+	Tue, 10 Feb 2026 07:05:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=5OjoYUPE3yK/YinjqtBe8xGXMDL85l
+	aQJ0o8ZZGfjOg=; b=AL+i7A8lEevLghY0FzytrAi2mjsap3EV2+bmnsd8feFZ45
+	aAuv1cpOC6pwKDLZXpbJqN0WVucemhqhBkBmxxFNUkRXPg1Se7IMCTbfh/jRp8hk
+	FJImVkZMkQULXC+A1mMNiEro+h+n8sKgMdblRy/r1N6zThzYeqiT+Y86CqUlADpc
+	6Tp3U4YeHbwRPj3SfOcUi5YsByMFkhq4l+3U5IpdQck84Q63TfPwUviK2fIUWcfp
+	wdv4ikz/nsAiOyZSbyclEX6/hDR7xgjZgIr/3ycY6ZVPfx3NWC5GF3K1Tlbnc6Dp
+	+ec8+3SQAcdkF6an0bLJsAzZthAPPPAh3MX9gkMw==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4c696v1004-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Feb 2026 07:05:30 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61A62IBH019221;
+	Tue, 10 Feb 2026 07:05:29 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4c6hxk03b6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Feb 2026 07:05:29 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61A75RrE47710572
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 10 Feb 2026 07:05:27 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8770C20043;
+	Tue, 10 Feb 2026 07:05:27 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 66CB22004F;
+	Tue, 10 Feb 2026 07:05:24 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.109.219.158])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 10 Feb 2026 07:05:24 +0000 (GMT)
+Date: Tue, 10 Feb 2026 12:35:38 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zhang Yi <yi.zhang@huawei.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, ritesh.list@gmail.com, hch@infradead.org,
+        djwong@kernel.org, yi.zhang@huaweicloud.com, yizhang089@gmail.com,
+        libaokun1@huawei.com, yangerkun@huawei.com, yukuai@fnnas.com
+Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially
+ block truncating down
+Message-ID: <aYrYwhO5LvIYbxWg@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <20260203062523.3869120-1-yi.zhang@huawei.com>
+ <20260203062523.3869120-4-yi.zhang@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:1843:b0:662:f90e:ce02 with SMTP id
- 006d021491bc7-66d09cabfd3mr6927064eaf.14.1770704403108; Mon, 09 Feb 2026
- 22:20:03 -0800 (PST)
-Date: Mon, 09 Feb 2026 22:20:03 -0800
-In-Reply-To: <aYrG032GU9Nesjsz@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <698ace13.050a0220.1ad825.004f.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_es_cache_extent (4)
-From: syzbot <syzbot+ccf1421545dbe5caa20c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203062523.3869120-4-yi.zhang@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-GUID: xrnWYPAb_WWWp3nTvsajyB6nsqL1Kt23
+X-Proofpoint-ORIG-GUID: cUootUO0_1JFpKkNdOG_TWzKn3Vbv28w
+X-Authority-Analysis: v=2.4 cv=JdWxbEKV c=1 sm=1 tr=0 ts=698ad8ba cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=kj9zAlcOel0A:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=i0EeH86SAAAA:8
+ a=1d5E5kGQmFa6-cc4gocA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjEwMDA1NSBTYWx0ZWRfX1vZyyCyaXbjb
+ RS8b+SiZXoxFvMvfpL+3yZeVQV/zgAN0qb2XjOdZYGw7NvVDQBfDViooBml8UWM1YKOzTzqVGY6
+ 9h8FQ6uI6CEHVjEuufDrhHF2ZA4VCweDEJjULOCplSGT4cDbzU+Xb2Wcmz+//s+9AHlDvKwZMJP
+ op1QkCQVwzSovrsdtci3BomzK4dz11dVdN4PgtOoS4QP/J+88pcEHtt5laYQsgvFFJ3bKTxHUZH
+ ScpLd+f6wQXaYohPtsxM+jRI/tSF7qCiX8WldEddO8UOJGsaQ4lZwiUyg0jd1ilvPKhqXyYfRJz
+ Pm9UL8ETOHQDA41C8pW+GqUaOZyibs9eZhPUT2FnXof672BWnzwgn2qe1Tqw2lt81ZuxLPHi6Bh
+ YcTpJBJRqAgXQF3Nl/eogksStXp94y5uCoPxDi3y/D0IjTyEB60jOKhk/778M4lvYAgOkUDtxQu
+ DekylsoWQBlrIef8GKw==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-09_01,2026-02-09_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 clxscore=1011 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 adultscore=0 spamscore=0 malwarescore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2602100055
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=a535ad5429f72a2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13649-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13648-lists,linux-ext4=lfdr.de,ccf1421545dbe5caa20c];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,infradead.org,kernel.org,huaweicloud.com,huawei.com,fnnas.com];
 	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email,li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com:mid];
 	MISSING_XM_UA(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	R_DKIM_NA(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ojaswin@linux.ibm.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: A0DCB11752E
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 09993117A9F
 X-Rspamd-Action: no action
 
-Hello,
+On Tue, Feb 03, 2026 at 02:25:03PM +0800, Zhang Yi wrote:
+> Currently, __ext4_block_zero_page_range() is called in the following
+> four cases to zero out the data in partial blocks:
+> 
+> 1. Truncate down.
+> 2. Truncate up.
+> 3. Perform block allocation (e.g., fallocate) or append writes across a
+>    range extending beyond the end of the file (EOF).
+> 4. Partial block punch hole.
+> 
+> If the default ordered data mode is used, __ext4_block_zero_page_range()
+> will write back the zeroed data to the disk through the order mode after
+> zeroing out.
+> 
+> Among the cases 1,2 and 3 described above, only case 1 actually requires
+> this ordered write. Assuming no one intentionally bypasses the file
+> system to write directly to the disk. When performing a truncate down
+> operation, ensuring that the data beyond the EOF is zeroed out before
+> updating i_disksize is sufficient to prevent old data from being exposed
+> when the file is later extended. In other words, as long as the on-disk
+> data in case 1 can be properly zeroed out, only the data in memory needs
+> to be zeroed out in cases 2 and 3, without requiring ordered data.
+> 
+> Case 4 does not require ordered data because the entire punch hole
+> operation does not provide atomicity guarantees. Therefore, it's safe to
+> move the ordered data operation from __ext4_block_zero_page_range() to
+> ext4_truncate().
+> 
+> It should be noted that after this change, we can only determine whether
+> to perform ordered data operations based on whether the target block has
+> been zeroed, rather than on the state of the buffer head. Consequently,
+> unnecessary ordered data operations may occur when truncating an
+> unwritten dirty block. However, this scenario is relatively rare, so the
+> overall impact is minimal.
+> 
+> This is prepared for the conversion to the iomap infrastructure since it
+> doesn't use ordered data mode and requires active writeback, which
+> reduces the complexity of the conversion.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-kernel BUG in ext4_es_cache_extent
+Hi Yi,
 
-EXT4-fs warning (device loop7): ext4_es_cache_extent:1081: inode #18: comm syz.7.209: ES cache extent failed: add [33,3,18446744073709551615,0x8] conflict with existing [33,15,257,0x2]
-EXT4-fs warning (device loop7): ext4_es_cache_extent:1081: inode #18: comm syz.7.209: ES cache extent failed: add [36,12,292,0x1] conflict with existing [33,15,257,0x2]
-------------[ cut here ]------------
-kernel BUG at fs/ext4/extents_status.c:1043!
-Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-CPU: 1 UID: 0 PID: 9040 Comm: syz.7.209 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/24/2026
-RIP: 0010:ext4_es_cache_extent+0x86e/0x990 fs/ext4/extents_status.c:1043
-Code: e1 07 80 c1 03 38 c1 0f 8c 5d fe ff ff 48 8b 7c 24 20 e8 25 4d af ff e9 4e fe ff ff e8 1b 12 47 ff 90 0f 0b e8 13 12 47 ff 90 <0f> 0b 65 8b 1d 9d 73 6e 10 bf 07 00 00 00 89 de e8 3d 16 47 ff 83
-RSP: 0018:ffffc900054fdba0 EFLAGS: 00010293
-RAX: ffffffff827d2c8d RBX: 0000000000000023 RCX: ffff88801dfe8000
-RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000000000023
-RBP: ffffc900054fdce8 R08: ffffc900054fdc57 R09: 0000000000000000
-R10: ffffc900054fdc40 R11: fffff52000a9fb8b R12: 0000000000000030
-R13: dffffc0000000000 R14: 000000000000000f R15: ffff88807d100638
-FS:  00007efd221aa6c0(0000) GS:ffff888125866000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbc5c5e8600 CR3: 000000007569c000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- ext4_cache_extents fs/ext4/extents.c:544 [inline]
- __read_extent_tree_block+0x4b4/0x840 fs/ext4/extents.c:591
- ext4_find_extent+0x76b/0xcc0 fs/ext4/extents.c:944
- ext4_ext_map_blocks+0x29d/0x6cd0 fs/ext4/extents.c:4239
- ext4_map_create_blocks fs/ext4/inode.c:613 [inline]
- ext4_map_blocks+0x8da/0x1830 fs/ext4/inode.c:816
- _ext4_get_block+0x1e3/0x470 fs/ext4/inode.c:916
- ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:949
- ext4_block_write_begin+0xb14/0x1950 fs/ext4/inode.c:1203
- ext4_write_begin+0xb40/0x1870 fs/ext4/ext4_jbd2.h:-1
- ext4_da_write_begin+0x355/0xd30 fs/ext4/inode.c:3130
- generic_perform_write+0x2e2/0x8f0 mm/filemap.c:4314
- ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:299
- ext4_file_write_iter+0x298/0x1c10 fs/ext4/file.c:-1
- __kernel_write_iter+0x41e/0x880 fs/read_write.c:619
- dump_emit_page fs/coredump.c:1298 [inline]
- dump_user_range+0xb89/0x12d0 fs/coredump.c:1372
- elf_core_dump+0x34c2/0x3ad0 fs/binfmt_elf.c:2111
- coredump_write+0x1219/0x1950 fs/coredump.c:1049
- do_coredump fs/coredump.c:1126 [inline]
- vfs_coredump+0x369e/0x4270 fs/coredump.c:1200
- get_signal+0x1107/0x1330 kernel/signal.c:3019
- arch_do_signal_or_restart+0xbc/0x830 arch/x86/kernel/signal.c:337
- __exit_to_user_mode_loop kernel/entry/common.c:41 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:75 [inline]
- __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
- irqentry_exit_to_user_mode_prepare include/linux/irq-entry-common.h:270 [inline]
- irqentry_exit_to_user_mode include/linux/irq-entry-common.h:339 [inline]
- irqentry_exit+0x176/0x620 kernel/entry/common.c:196
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
-RIP: 0033:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 002b:0000200000000548 EFLAGS: 00010217
-RAX: 0000000000000000 RBX: 00007efd21615fa0 RCX: 00007efd2139aeb9
-RDX: 0000000000000000 RSI: 0000200000000540 RDI: 0000000000000000
-RBP: 00007efd21408c1f R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007efd21616038 R14: 00007efd21615fa0 R15: 00007ffc2b2553f8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_es_cache_extent+0x86e/0x990 fs/ext4/extents_status.c:1043
-Code: e1 07 80 c1 03 38 c1 0f 8c 5d fe ff ff 48 8b 7c 24 20 e8 25 4d af ff e9 4e fe ff ff e8 1b 12 47 ff 90 0f 0b e8 13 12 47 ff 90 <0f> 0b 65 8b 1d 9d 73 6e 10 bf 07 00 00 00 89 de e8 3d 16 47 ff 83
-RSP: 0018:ffffc900054fdba0 EFLAGS: 00010293
-RAX: ffffffff827d2c8d RBX: 0000000000000023 RCX: ffff88801dfe8000
-RDX: 0000000000000000 RSI: 0000000000000030 RDI: 0000000000000023
-RBP: ffffc900054fdce8 R08: ffffc900054fdc57 R09: 0000000000000000
-R10: ffffc900054fdc40 R11: fffff52000a9fb8b R12: 0000000000000030
-R13: dffffc0000000000 R14: 000000000000000f R15: ffff88807d100638
-FS:  00007efd221aa6c0(0000) GS:ffff888125766000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f82eec0f000 CR3: 000000007569c000 CR4: 00000000003526f0
+Took me quite some time to understand what we are doing here, I'll
+just add my understanding here to confirm/document :) 
 
+So your argument is that currently all paths that change the i_size take
+care of zeroing the (newsize, eof block boundary) before i_size change
+is seen by users:
+  - dio does it in iomap_dio_bio_iter if IOMAP_UNWRITTEN (true for first allocation)
+	- buffered IO/mmap write does it in ext4_da_write_begin() ->
+		ext4_block_write_begin() for buffer_new (true for first allocation)
+	- falloc doesn't zero the new eof block but it allocates an unwrit
+		extent so no stale data issue. When an allocation happens from the
+		above 2 methods then we anyways will zero it.
+	- truncate down also takes care of this via ext4_truncate() ->
+		ext4_block_truncate_page()
 
-Tested on:
+Now, parallely there are also codepaths that say grow the i_size but
+then also zero the (old_size, block boundary) range before the i_size
+commits. This is so that they want to be sure the newly visible range
+doesn't expose stale data.
+For example:
+  - truncate up from 2kb to 8kb will zero (2kb,4kb) via ext4_block_truncate_page()
+  - with i_size = 2kb, buffered IO at 6kb would zero 2kb,4kb in ext4_da_write_end()
+  - I'm unable to see if/where we do it via dio path.
 
-commit:         26f260ce ext4: remove unnecessary zero-initialization ..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12dcd78a580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a535ad5429f72a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=ccf1421545dbe5caa20c
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+You originally proposed that we can remove the logic to zeroout
+(old_size, block_boundary) in data=ordered fashion, ie we don't need to
+trigger the zeroout IO before the i_size change commits, we can just zero the
+range in memory because we would have already zeroed them earlier when
+we had allocated at old_isize, or truncated down to old_isize.
 
-Note: no patches were applied.
+To this Jan pointed out that although we take care to zeroout (new_size,
+block_boundary) its not enough because we could still end up with data
+past eof:
+
+1. race of buffered write vs mmap write past eof. i_size = 2kb,
+   we write (2kb, 3kb). 
+2. The write goes through but we crash before i_size=3kb txn can commit.
+   Again we have data past 2kb ie the eof block.
+
+Now, Im still looking into this part but the reason we want to get rid of
+this data=ordered IO is so that we don't trigger a writeback due to
+journal commit which tries to acquire folio_lock of a folio already
+locked by iomap. However we will now try an alternate way to get past
+this.
+
+Is my understanding correct?
+
+Regards,
+ojaswin
+
+PS: -g auto tests are passing (no regressions) with 64k and 4k bs on
+powerpc 64k pagesize box so thats nice :D 
+
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/inode.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index f856ea015263..20b60abcf777 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4106,19 +4106,10 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+>  	folio_zero_range(folio, offset, length);
+>  	BUFFER_TRACE(bh, "zeroed end of block");
+>  
+> -	if (ext4_should_journal_data(inode)) {
+> +	if (ext4_should_journal_data(inode))
+>  		err = ext4_dirty_journalled_data(handle, bh);
+> -	} else {
+> +	else
+>  		mark_buffer_dirty(bh);
+> -		/*
+> -		 * Only the written block requires ordered data to prevent
+> -		 * exposing stale data.
+> -		 */
+> -		if (!buffer_unwritten(bh) && !buffer_delay(bh) &&
+> -		    ext4_should_order_data(inode))
+> -			err = ext4_jbd2_inode_add_write(handle, inode, from,
+> -					length);
+> -	}
+>  	if (!err && did_zero)
+>  		*did_zero = true;
+>  
+> @@ -4578,8 +4569,23 @@ int ext4_truncate(struct inode *inode)
+>  		goto out_trace;
+>  	}
+>  
+> -	if (inode->i_size & (inode->i_sb->s_blocksize - 1))
+> -		ext4_block_truncate_page(handle, mapping, inode->i_size);
+> +	if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
+> +		unsigned int zero_len;
+> +
+> +		zero_len = ext4_block_truncate_page(handle, mapping,
+> +						    inode->i_size);
+> +		if (zero_len < 0) {
+> +			err = zero_len;
+> +			goto out_stop;
+> +		}
+> +		if (zero_len && !IS_DAX(inode) &&
+> +		    ext4_should_order_data(inode)) {
+> +			err = ext4_jbd2_inode_add_write(handle, inode,
+> +					inode->i_size, zero_len);
+> +			if (err)
+> +				goto out_stop;
+> +		}
+> +	}
+>  
+>  	/*
+>  	 * We add the inode to the orphan list, so that if this
+> -- 
+> 2.52.0
+> 
 
