@@ -1,84 +1,84 @@
-Return-Path: <linux-ext4+bounces-13660-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13661-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SFD2DIxVi2k1UAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13660-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 16:58:04 +0100
+	id QF26AgFZi2ljUAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13661-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 17:12:49 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A636911CD89
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 16:58:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7ED11CF5D
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 17:12:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 370F130532B5
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 15:57:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4FCFD30500EB
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 16:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6953D3876CD;
-	Tue, 10 Feb 2026 15:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2641838885B;
+	Tue, 10 Feb 2026 16:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="InO6h68u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eJL2NnRZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9EE385ECC
-	for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 15:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B403876D0
+	for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 16:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770739038; cv=none; b=HNsSmaOfH5vwVm8SKqr5Unt6VjSfgUQXB426N9zzdhXHucJ4xUESlFz0aihFiQqKR6fjcc4qxOHpnn2eNZmpJiGVTRi6YqD7EXl2MM6cWJs9OR6RduF+Z/kBiNwwQqoM0NTdlPO1hzwiV+DpX50fb/S4x4POXfqpxTY8JxMzqdQ=
+	t=1770739921; cv=none; b=DEVSyjgAGECU2faeFUuYL18vt/eApNpcXyNfHXN6dQSPHIMq3Gxllc6Rsuwsvb5P3ApO5SMsBLVimaq2VHjFXq8dwsJC8L7oayzmqp1uqYP9jJ5SegbbWQZuGBiKce6RXCxtllYEase6k9zR0xfetrKE5wDiAaH05gX7P2KImU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770739038; c=relaxed/simple;
-	bh=ZjnvTuiYbrA1uIqajO+7i2psmuxO7DSmNzcrr8AuSt8=;
+	s=arc-20240116; t=1770739921; c=relaxed/simple;
+	bh=rcwUUzRQ+nNfp/Q0W2b52PC8lI1R+ayfS5CWHPkazsk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cy3pUWThx/h9yI5MW5R/NzWAEEEs/B5IVNMJhIAV45cJyHT+HFM9biiLkjmFZRoM07iKDIkPa3WET2N6y7KkID1rXu4+juPwPii+MBZF7y88Qmfg0OVmMlA8WoP+kp7/MZSnj0oAJpvLMbTbEHdIG8vVQMb5XoAUVyzIrI1YYU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=InO6h68u; arc=none smtp.client-ip=209.85.210.173
+	 In-Reply-To:Content-Type; b=FAo+5bbdyC5FIyAP7iyWbPYEEjtm+Wc9bQ3QErdseCZ+k0y67jfoNOzWSOZ3+56SIVguWIxdR0MaFlVpz6ihC2uhji69Ra0+Y+pIgZTdhYWzNy67MD9AcZjVmQV7cbrSMVElqcc576DWzCSYAYWVvP3SUva5M453NifjtM1Op4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eJL2NnRZ; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-823075fed75so3416104b3a.1
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 07:57:15 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-b4755f37c3eso2766800a12.3
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 08:12:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770739035; x=1771343835; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770739920; x=1771344720; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bVZRNpm49w3gc4RCu4RyEyFBgJ9/rzWmQll910jJSYo=;
-        b=InO6h68uWUDRBnUYwcDbR8iSmyskLWlyz5hkOJUrdBa2BWgXXeNAIDrnd4V92UfFQZ
-         JGmrdf4RoAyzERFL0pUnFEBnOUE1XTfDKF0SnlIi52lcg4HBrqzN1gAP2Tg/aB0glI7m
-         yLTJe+1r5fQHIowahCj/XkdWwGPBBuQJ0H9KXHxHRBEgvBXI3wZrL1+6Q/+nKl/E1ZoF
-         JgZiqEOqTflHTy26jDt5hZYQC8udOY9Ib44zpi5pZRCIkoTnHHYT4gNW4qSTF6BAWY/J
-         taq4eR1+4hXSGSN/esWXzuSbNL+KsLMTnVotyO1fYEZeiMkZFYXH5ad7JnQdouPijuhe
-         b7fw==
+        bh=0r2fUEvWGlF2e7USxRILxffKA5SaIfZKmd2JjKgC7zU=;
+        b=eJL2NnRZY6Fx8GvLATrf+ifT8QISnqJfnXBO0cfd9xT7HEmCYZucF+B6MEbXvO+Gna
+         zj5rdX7CEDOFb93Jh3+ByrytkmGtb+UqLtLKdF/DmeLk2FXLGh7gjlCNVEfbcM9X5LTE
+         ifI1rm+djcMgDJPGe6E6rCXkcGqWnTDCeCKtPGp7lcGELdKvK+LQYq82vgprUDL4o3AR
+         CYDCjbwx6CYVP9c63pNN4/Fltz8tn+1g6b2qzyivNkkclVxDnBJPMf4VzFkONk4rOKdo
+         AkRBpuwGB3QK1YPt2lNZHg6IumwXXgNgwoDIiU2Y9FRamfyiRxh/ge+54Vt34EwVZiz/
+         VVOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770739035; x=1771343835;
+        d=1e100.net; s=20230601; t=1770739920; x=1771344720;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bVZRNpm49w3gc4RCu4RyEyFBgJ9/rzWmQll910jJSYo=;
-        b=WXLG85lPmW6NxGwl1WNKNZRkVU2EOrteWSPGJZB48V0wFJUucGmC6GTzAovTThj7hF
-         4uMpI/8YL31J4fikKsBCd2adI46o5kOMJN21b029ATOy30z2SL/DTDk9MgKOmRWnwezy
-         x9d4CgbRBsnLq6vjCq6VVKUdgdtT401iioXeARE+TDk6Q+ayGvTnpiiLPQ14MkwE41U+
-         5B86AAtrm2XYvz5mTdbaFvA+zzLh6oZUSXZKlPCFT8DPDeLTFgPlnIVFbiy/rOa8X9fI
-         5GgjHd0UxqD44bnhlstURj9Mpp0NQicc0Dwy5QWNEYue57GDC2BgEZTEuNFBVxCJtnC+
-         OYYQ==
-X-Gm-Message-State: AOJu0YytPX2S+Mj9ZU/7oQSsiodxyJcZ30K1E8NZYRImiafN9QmO0eSh
-	kKTdkMzdLn+9Bp1To1dGP1OkRg+4cN4MPIeB1NW32rdFW9KGBvNH9f3z
-X-Gm-Gg: AZuq6aKXcSXj1uxUhw/RqbjR7zP7JWz8+ut9oxyLiUlrbYgc/21LRJDlGSzm0eF6FVQ
-	HqlHqTHYwZjU/II8PHSz+56bpCbztykWLFhRrWvLEzugnJpIFoWmzX7JON0v+/1U4HLPsT6WHeD
-	oA7i3tfFas3q7Cr16qA7w2bzRuvLtTaBGdNGl9NPNSx/pECRnEalwFubiXyLUkI8LEsa63aSYOM
-	MjO3ECgU3EDCH3Q8taIR0WilL78d6EI/Zvs3Zk6/rpDESUVEDABDhwhdSK4qyZwtPjil1mqdYMl
-	HAsKmK2lml8YBePYPG6/Oj1RSJS8rl7nq0xW5S27XiFgb7vdyBLPsq2AcfEaQBANLMGAElFSviy
-	XHjHMPnMu6E2q7TP1b5wg2q0Q+LPTO2RuYYLOrk5H1G3V3JCwSIXhAS2/CSwOZtU7gcV91CEbUP
-	90pWVB28VTUU+tkDa3aRA7HgQ3ypEvkJNrYl4LqK/jMhgSHpXvtQUvIDSY7kB/akE9VSCGm8na5
-	Q==
-X-Received: by 2002:a05:6a00:399b:b0:81f:4708:b46e with SMTP id d2e1a72fcca58-824877cafd2mr2557597b3a.20.1770739035023;
-        Tue, 10 Feb 2026 07:57:15 -0800 (PST)
+        bh=0r2fUEvWGlF2e7USxRILxffKA5SaIfZKmd2JjKgC7zU=;
+        b=DvJJnLnFhKXbRhIWJgbjQqZqV+Pz9pdK6QuHMD+GucBAFtUCtMkbXyb29pUZENehuY
+         IBRyph/oO3AkuuNiGuzXoQWgRP3tqz+0yDppzfufCH2mVOoIZfpg77OIEVNRcN+3eMbs
+         N5ljbFIUqn/u8lmhzVDWK0T9/e3cLMz9NAF7OPoXuCDQlFf7w3E08Zp8vaJHfLoNei9S
+         naCUlAUn/UNf5oEJsLpPnTviuGzc43Lkz9RaTp5PxK8SB+6YLeBOX5BVk6WrU2ZlNiGJ
+         /lUUJw/OlrvOjSQQN4UfjbZTZW1+bE7arR7vm3kqKLdecS20Pt1m76TnZarv2BSzJ/PX
+         97hw==
+X-Gm-Message-State: AOJu0Yzk7YKedixCwbRT3woqpkS9kG+qmyJg5YGY6vaWPrsfiIY37m0Y
+	oOhBAD+ThHYTBSy+KSrZfSqgDZZUxwcuf22BEiGiFUd1WPdDxvw6IojF
+X-Gm-Gg: AZuq6aL5ZZI9cR7MsVoKDSqwVeN1T4n36Rk2POHQwQdjtgQNPq3GtuLeEfbXXl2rjQK
+	AAPU3cbUi9hq5D5+v5ZW0qBj8E5xqrHEQ5pR6ngf4OIDTxw5LNnHlpzsIAYyt++/SS2pBszh0yq
+	6xdUp0Oz8YNdJzozcEFWkcwjTdjxHBfYEsfUHKnbDdRGnfnnNKv2Xc5I9eRrM78rogL/FUuLv6v
+	4IBqoeu6QxGrpvhF4qqLiE3CgHhEJe7QUO5sxNJqctWiyd1+iGQwHZDY55qQJXZd8AMIwFChGEO
+	1HdI2JWzGsxjEYSG7p8lU0qcRYqUAtZbCOZdKXFrtP/Crzhud+AVR3+MY945CmLlqVXl7CcfqAp
+	RzIBWVPlgAoU0FYBfQlfg+FkrnF6P9C+24/DfSKuGXVx3WGP3qNwDyGecJDnr+PM7KJOTZrUt08
+	DwQJ4g2cPwpYfIh9/tW0Ofgav6SJhShZHMsHtORv0HgYnD4zBoHA3BCVLt3g0pOWD+hBAGGWiox
+	g==
+X-Received: by 2002:a17:903:38c5:b0:2a9:5db8:d659 with SMTP id d9443c01a7336-2a95db8e070mr135977875ad.31.1770739920092;
+        Tue, 10 Feb 2026 08:12:00 -0800 (PST)
 Received: from ?IPV6:240e:390:a90:6d21:e579:6116:b665:1484? ([240e:390:a90:6d21:e579:6116:b665:1484])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8244168fdf5sm14013049b3a.17.2026.02.10.07.57.10
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a9521ec43bsm189495745ad.72.2026.02.10.08.11.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Feb 2026 07:57:14 -0800 (PST)
-Message-ID: <04b0a510-0a97-464f-a6d3-8410fff9243d@gmail.com>
-Date: Tue, 10 Feb 2026 23:57:03 +0800
+        Tue, 10 Feb 2026 08:11:59 -0800 (PST)
+Message-ID: <d8b84bb5-8fb4-48fe-9ccb-7a0b724eb4b9@gmail.com>
+Date: Wed, 11 Feb 2026 00:11:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,18 +88,26 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH -next v2 03/22] ext4: only order data when partially block
  truncating down
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Zhang Yi <yi.zhang@huawei.com>
+To: Jan Kara <jack@suse.cz>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
- yi.zhang@huaweicloud.com, libaokun1@huawei.com, yangerkun@huawei.com,
- yukuai@fnnas.com
-References: <20260203062523.3869120-1-yi.zhang@huawei.com>
- <20260203062523.3869120-4-yi.zhang@huawei.com>
- <aYrYwhO5LvIYbxWg@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+ ojaswin@linux.ibm.com, ritesh.list@gmail.com, hch@infradead.org,
+ djwong@kernel.org, libaokun1@huawei.com, yangerkun@huawei.com,
+ yukuai@fnnas.com, Zhang Yi <yi.zhang@huaweicloud.com>
+References: <20260203062523.3869120-4-yi.zhang@huawei.com>
+ <jgotl7vzzuzm6dvz5zfgk6haodxvunb4hq556pzh4hqqwvnhxq@lr3jiedhqh7c>
+ <b889332b-9c0c-46d1-af61-1f2426c8c305@huaweicloud.com>
+ <ocwepmhnw45k5nwwrooe2li2mzavw5ps2ncmowrc32u4zeitgp@gqsz3iee3axr>
+ <1dad3113-7b84-40a0-8c7e-da30ae5cba8e@huaweicloud.com>
+ <7hy5g3bp5whis4was5mqg3u6t37lwayi6j7scvpbuoqsbe5adc@mh5zxvml3oe7>
+ <3ea033c1-8d32-4c82-baea-c383fa1d9e2a@huaweicloud.com>
+ <yhy4cgc4fnk7tzfejuhy6m6ljo425ebpg6khss6vtvpidg6lyp@5xcyabxrl6zm>
+ <665b8293-60a2-4d4d-aef5-cb1f9c3c0c13@huaweicloud.com>
+ <ac1f8bd8-926e-4182-a5a3-a111b49ecafc@huaweicloud.com>
+ <yrnt4wyocyik4nwcamwk5noc7ilninlt7cmyggzwhwzjjsjzfc@uxdht432fgzm>
 Content-Language: en-US
 From: Zhang Yi <yizhang089@gmail.com>
-In-Reply-To: <aYrYwhO5LvIYbxWg@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+In-Reply-To: <yrnt4wyocyik4nwcamwk5noc7ilninlt7cmyggzwhwzjjsjzfc@uxdht432fgzm>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
@@ -108,17 +116,17 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13660-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13661-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,infradead.org,kernel.org,huaweicloud.com,huawei.com,fnnas.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,linux.ibm.com,gmail.com,infradead.org,kernel.org,huawei.com,fnnas.com,huaweicloud.com];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -129,202 +137,53 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A636911CD89
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5A7ED11CF5D
 X-Rspamd-Action: no action
 
-On 2/10/2026 3:05 PM, Ojaswin Mujoo wrote:
-> On Tue, Feb 03, 2026 at 02:25:03PM +0800, Zhang Yi wrote:
->> Currently, __ext4_block_zero_page_range() is called in the following
->> four cases to zero out the data in partial blocks:
+On 2/10/2026 10:07 PM, Jan Kara wrote:
+> On Tue 10-02-26 20:02:51, Zhang Yi wrote:
+>> On 2/9/2026 4:28 PM, Zhang Yi wrote:
+>>> On 2/6/2026 11:35 PM, Jan Kara wrote:
+>>>> On Fri 06-02-26 19:09:53, Zhang Yi wrote:
+>>>>> On 2/5/2026 11:05 PM, Jan Kara wrote:
+>>>>>> So how about the following:
+>>>>>
+>>>>> Let me see, please correct me if my understanding is wrong, ana there are
+>>>>> also some points I don't get.
+>>>>>
+>>>>>> We expand our io_end processing with the
+>>>>>> ability to journal i_disksize updates after page writeback completes. Then
 >>
->> 1. Truncate down.
->> 2. Truncate up.
->> 3. Perform block allocation (e.g., fallocate) or append writes across a
->>     range extending beyond the end of the file (EOF).
->> 4. Partial block punch hole.
+>> While I was extending the end_io path of buffered_head to support updating
+>> i_disksize, I found another problem that requires discussion.
 >>
->> If the default ordered data mode is used, __ext4_block_zero_page_range()
->> will write back the zeroed data to the disk through the order mode after
->> zeroing out.
->>
->> Among the cases 1,2 and 3 described above, only case 1 actually requires
->> this ordered write. Assuming no one intentionally bypasses the file
->> system to write directly to the disk. When performing a truncate down
->> operation, ensuring that the data beyond the EOF is zeroed out before
->> updating i_disksize is sufficient to prevent old data from being exposed
->> when the file is later extended. In other words, as long as the on-disk
->> data in case 1 can be properly zeroed out, only the data in memory needs
->> to be zeroed out in cases 2 and 3, without requiring ordered data.
->>
->> Case 4 does not require ordered data because the entire punch hole
->> operation does not provide atomicity guarantees. Therefore, it's safe to
->> move the ordered data operation from __ext4_block_zero_page_range() to
->> ext4_truncate().
->>
->> It should be noted that after this change, we can only determine whether
->> to perform ordered data operations based on whether the target block has
->> been zeroed, rather than on the state of the buffer head. Consequently,
->> unnecessary ordered data operations may occur when truncating an
->> unwritten dirty block. However, this scenario is relatively rare, so the
->> overall impact is minimal.
->>
->> This is prepared for the conversion to the iomap infrastructure since it
->> doesn't use ordered data mode and requires active writeback, which
->> reduces the complexity of the conversion.
+>> Supporting updates to i_disksize in end_io requires starting a handle, which
+>> conflicts with the data=ordered mode because folios written back through the
+>> journal process cannot initiate any handles; otherwise, this may lead to a
+>> deadlock. This limitation does not affect the iomap path, as it does not use
+>> the data=ordered mode at all.  However, in the buffered_head path, online
+>> defragmentation (if this change works, it should be the last user) still uses
+>> the data=ordered mode.
 > 
-> Hi Yi,
+> Right and my intention was to use reserved handle for the i_disksize update
+> similarly as we currently use reserved handle for unwritten extent
+> conversion after page writeback is done.
 > 
-> Took me quite some time to understand what we are doing here, I'll
-> just add my understanding here to confirm/document :)
+> 								Honza
 
-Hi, Ojaswin!
+IIUC, reserved handle only works for ext4_jbd2_inode_add_wait(). It 
+doesn't work for ext4_jbd2_inode_add_write() because writebacks 
+triggered by the journaling process cannot initiate any handles, 
+including reserved handles. So, I guess you're suggesting that within 
+mext_move_extent(), we should proactively submit the blocks after 
+swapping, and then call ext4_jbd2_inode_add_wait() to replace the 
+existing ext4_jbd2_inode_add_write(). Is that correct?
 
-Thank you for review and test this series.
-
-> 
-> So your argument is that currently all paths that change the i_size take
-> care of zeroing the (newsize, eof block boundary) before i_size change
-> is seen by users:
->    - dio does it in iomap_dio_bio_iter if IOMAP_UNWRITTEN (true for first allocation)
-> 	- buffered IO/mmap write does it in ext4_da_write_begin() ->
-> 		ext4_block_write_begin() for buffer_new (true for first allocation)
-> 	- falloc doesn't zero the new eof block but it allocates an unwrit
-> 		extent so no stale data issue. When an allocation happens from the
-> 		above 2 methods then we anyways will zero it.
-
-These two zeroing operations mentioned above are mainly used to 
-initialize newly allocated blocks, which is not the main focus of this 
-discussion.
-
-The focus of this discussion is how to clear the portions of allocated 
-blocks that extend beyond the EOF.
-
-> 	- truncate down also takes care of this via ext4_truncate() ->
-> 		ext4_block_truncate_page()
-> 
-> Now, parallely there are also codepaths that say grow the i_size but
-> then also zero the (old_size, block boundary) range before the i_size
-> commits. This is so that they want to be sure the newly visible range
-> doesn't expose stale data.
-> For example:
->    - truncate up from 2kb to 8kb will zero (2kb,4kb) via ext4_block_truncate_page()
->    - with i_size = 2kb, buffered IO at 6kb would zero 2kb,4kb in ext4_da_write_end()
-
-Yes, you are right.
-
->    - I'm unable to see if/where we do it via dio path.
-
-I don't see it too, so I think this is also a problem.
-
-> 
-> You originally proposed that we can remove the logic to zeroout
-> (old_size, block_boundary) in data=ordered fashion, ie we don't need to
-> trigger the zeroout IO before the i_size change commits, we can just zero the
-> range in memory because we would have already zeroed them earlier when
-> we had allocated at old_isize, or truncated down to old_isize.
-
-Yes.
-
-> 
-> To this Jan pointed out that although we take care to zeroout (new_size,
-> block_boundary) its not enough because we could still end up with data
-> past eof:
-> 
-> 1. race of buffered write vs mmap write past eof. i_size = 2kb,
->     we write (2kb, 3kb).
-> 2. The write goes through but we crash before i_size=3kb txn can commit.
->     Again we have data past 2kb ie the eof block.
-> 
-
-Yes.
-
-> Now, Im still looking into this part but the reason we want to get rid of
-> this data=ordered IO is so that we don't trigger a writeback due to
-> journal commit which tries to acquire folio_lock of a folio already
-> locked by iomap.
-
-Yes, and iomap will start a new transaction under the folio lock, which 
-may also wait the current committing transaction to finish.
-
-> However we will now try an alternate way to get past
-> this.
-> 
-> Is my understanding correct?
-
-Yes.
-
-Cheers,
+Thanks,
 Yi.
 
-> 
-> Regards,
-> ojaswin
-> 
-> PS: -g auto tests are passing (no regressions) with 64k and 4k bs on
-> powerpc 64k pagesize box so thats nice :D
-> 
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->> ---
->>   fs/ext4/inode.c | 32 +++++++++++++++++++-------------
->>   1 file changed, 19 insertions(+), 13 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index f856ea015263..20b60abcf777 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -4106,19 +4106,10 @@ static int __ext4_block_zero_page_range(handle_t *handle,
->>   	folio_zero_range(folio, offset, length);
->>   	BUFFER_TRACE(bh, "zeroed end of block");
->>   
->> -	if (ext4_should_journal_data(inode)) {
->> +	if (ext4_should_journal_data(inode))
->>   		err = ext4_dirty_journalled_data(handle, bh);
->> -	} else {
->> +	else
->>   		mark_buffer_dirty(bh);
->> -		/*
->> -		 * Only the written block requires ordered data to prevent
->> -		 * exposing stale data.
->> -		 */
->> -		if (!buffer_unwritten(bh) && !buffer_delay(bh) &&
->> -		    ext4_should_order_data(inode))
->> -			err = ext4_jbd2_inode_add_write(handle, inode, from,
->> -					length);
->> -	}
->>   	if (!err && did_zero)
->>   		*did_zero = true;
->>   
->> @@ -4578,8 +4569,23 @@ int ext4_truncate(struct inode *inode)
->>   		goto out_trace;
->>   	}
->>   
->> -	if (inode->i_size & (inode->i_sb->s_blocksize - 1))
->> -		ext4_block_truncate_page(handle, mapping, inode->i_size);
->> +	if (inode->i_size & (inode->i_sb->s_blocksize - 1)) {
->> +		unsigned int zero_len;
->> +
->> +		zero_len = ext4_block_truncate_page(handle, mapping,
->> +						    inode->i_size);
->> +		if (zero_len < 0) {
->> +			err = zero_len;
->> +			goto out_stop;
->> +		}
->> +		if (zero_len && !IS_DAX(inode) &&
->> +		    ext4_should_order_data(inode)) {
->> +			err = ext4_jbd2_inode_add_write(handle, inode,
->> +					inode->i_size, zero_len);
->> +			if (err)
->> +				goto out_stop;
->> +		}
->> +	}
->>   
->>   	/*
->>   	 * We add the inode to the orphan list, so that if this
->> -- 
->> 2.52.0
->>
+
 
 
