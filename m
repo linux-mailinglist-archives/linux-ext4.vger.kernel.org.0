@@ -1,150 +1,201 @@
-Return-Path: <linux-ext4+bounces-13645-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13646-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oAgZEb6QimkQMAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13645-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 02:58:22 +0100
+	id 4NjjDbC7imlmNQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13646-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 06:01:36 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8662211619B
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 02:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF37116F28
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 06:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2CCD43011BD1
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 01:58:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BB0033014C3D
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Feb 2026 05:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BF4287268;
-	Tue, 10 Feb 2026 01:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6C029BDAB;
+	Tue, 10 Feb 2026 05:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HsJ0Z2EL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7IJxP28"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F91C2868B5
-	for <linux-ext4@vger.kernel.org>; Tue, 10 Feb 2026 01:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37ACE19CC14;
+	Tue, 10 Feb 2026 05:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770688697; cv=none; b=IhH3GhqrY1K7B4B4GtIcbBb11cymbMqvQ/7caAKhI5PHjgcc1G/qKRnFoTzQeBuxHoeAAWZCoS3Rr3+PKDw32U28cd2qzb9pvNv2UBBYy3bCA03+n/tQe2MC0x7M8sFPz7tdrt5Tbf16IB/KmwIGTzJRJ3mla3trxHuvhzUUVzw=
+	t=1770699685; cv=none; b=OB4SzEvYFahrgMAi2CUj251gttqAWhJ1QVaWpqslzeN5PajEnpZi8BLjI6QH3fDW1iU0OIZ4L5H0Ufs43/r0QJOKMMSCwfTBOcAhutZVZbh0ZMQ5V3psI+SQV1AWNzcumnpHz4ZNelHDwOJr4wrfaS4nys6RjFbY5AtlOwaJPe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770688697; c=relaxed/simple;
-	bh=fxOR8cBPTz4O1lFBtABQzd4/PSoG3icSJx8KrWcLszc=;
+	s=arc-20240116; t=1770699685; c=relaxed/simple;
+	bh=rM6QjJtKoKs0itasWEpHjPkPV3940T+T4PgqfmckEtM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WSrrlddnCnDCrSfCsJY830oEuiUMUNMI+9Cq+ktXmAFd3XQka8Yd/8KkysqpippwfubPxSRCfp9bM+mFrasI1NFRnU9k0AbiraOP9WEilqbbW0Ur96GxiQsja3EaomQBLgFxyPdPL08JdAEvVLbdoQOFq4y10FQ3TaW8+7ITPi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HsJ0Z2EL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09567C116C6;
-	Tue, 10 Feb 2026 01:58:17 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=KeVBOu/w4DG7rN2RV2M08NqFV/x6MX5H/fuGjGdRTTmehdFc2R9Kgtke8hsNyaOqB5O7tplBmjktHKesTnoqTed+U+FmcJ1aSPPaQGpkNbMtCOKK2jtDbjWD9S3qp76uRDFOAq12fhhjFuy1+KF0N9y2asy21FWY/yvu/IZt2cA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7IJxP28; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC284C116C6;
+	Tue, 10 Feb 2026 05:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770688697;
-	bh=fxOR8cBPTz4O1lFBtABQzd4/PSoG3icSJx8KrWcLszc=;
+	s=k20201202; t=1770699684;
+	bh=rM6QjJtKoKs0itasWEpHjPkPV3940T+T4PgqfmckEtM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HsJ0Z2EL9gRG16C0Ti2ec/DwyA4RjTuhkU/Obe79tsEv5yzKKZfQi13QXL9Qz+Rwu
-	 qtNrSX6jzv9ncTGUwzkQ9JJtGR0y2c8vSyUD5TWpIRocOM4wxc8UyrjiP/jCmKOQZ4
-	 4UjOhAJNaDSJ7GSHQJuTNzFeJ+SweeH42NnKm4Ok3DCZbHVaGGa+5wp/+iZlq8Cz5j
-	 SXeLKtYOgRIk2giDXLMAQwjg+8CmdthNpU9IpeiQPM/l7LQvIMY18L+9ZEG9cnzLFc
-	 mOQr6p853n0TG/wGdpmGskmYQVSqAT5oRIRuqon/TN8tC67o/Yo4BTI0NFB4JVjU3v
-	 Wzwfe+69eZLtw==
-Date: Mon, 9 Feb 2026 17:58:16 -0800
+	b=b7IJxP28lbjIAUp5jP7mXFUxw56TGA2+FfMUB2ISerOb3jPXTlHDQdRvwFmf6O0nM
+	 ekmB0BhFaMuRGKIU2Uj+yqhJRaA1wWHucPkRbNqqNTs/ki3wd2esmOhXVXGfRNhKLF
+	 Xp3Na7+CeXUfrwJ4y8giOjg2nsSsGxEX6wpOloE6Kz3THJgtVxA/rIb235M+IIoILM
+	 PLP0D3A2xo10dVLF3eCLd2Qaa7wD2+Q+8hMJH4li7GvTH7iWXGRKbjyzT1kQyQf4Ym
+	 RWrntbLSJuatw/N3DN/iSBKBY3azGGgch8/yqZtHMkjP6jJmeX8bR2dnrc3MlMQap/
+	 01xCDYyphucPg==
+Date: Mon, 9 Feb 2026 21:01:24 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Tso <tytso@mit.edu>
-Cc: 294772273 <zy931031@vip.qq.com>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	"adilger.kernel" <adilger.kernel@dilger.ca>
-Subject: Re: [QUESTION] ext4: Why does fsconfig allow repeated mounting?
-Message-ID: <20260210015816.GQ7686@frogsfrogsfrogs>
-References: <tencent_2462A2D2BBD1792040E4BF74D8EE146E9D08@qq.com>
- <20260209183822.GA15302@macsyma.lan>
+To: Kees Cook <kees@kernel.org>
+Cc: Fedor Pchelkin <pchelkin@ispras.ru>, Theodore Ts'o <tytso@mit.edu>,
+	=?utf-8?B?5p2O6b6Z5YW0?= <coregee2000@gmail.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Andy Shevchenko <andriy.shevchenko@intel.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: Reject on-disk mount options with missing
+ NUL-terminator
+Message-ID: <20260210050124.GR7686@frogsfrogsfrogs>
+References: <20260206212654.work.035-kees@kernel.org>
+ <20260209193945-80d9bfc8aa82b0eb1b764c7f-pchelkin@ispras>
+ <202602091148.EDBFECE686@keescook>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260209183822.GA15302@macsyma.lan>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202602091148.EDBFECE686@keescook>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	SUBJECT_ENDS_QUESTION(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13645-lists,linux-ext4=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vip.qq.com,vger.kernel.org,dilger.ca];
-	RCPT_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13646-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[ispras.ru,mit.edu,gmail.com,dilger.ca,intel.com,vger.kernel.org,suse.cz];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[djwong@kernel.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kvm-xfstests:email]
-X-Rspamd-Queue-Id: 8662211619B
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8FF37116F28
 X-Rspamd-Action: no action
 
-On Mon, Feb 09, 2026 at 01:38:22PM -0500, Theodore Tso wrote:
-> On Tue, Feb 10, 2026 at 12:07:27AM +0800, 294772273 wrote:
+On Mon, Feb 09, 2026 at 12:00:36PM -0800, Kees Cook wrote:
+> On Mon, Feb 09, 2026 at 08:27:50PM +0300, Fedor Pchelkin wrote:
+> > Kees Cook wrote:
+> > > ee5a977b4e77 ("ext4: fix string copying in parse_apply_sb_mount_options()")
+> > >   Notices the loud failures of strscpy_pad() introduced by 8ecb790ea8c3,
+> > >   and attempted to silence them by making the destination 64 and rejecting
+> > >   too-long strings from the on-disk copy of s_mount_opts, but didn't
+> > >   actually solve it at all, since the problem was always the over-read
+> > >   of the source seen by strnlen(). (Note that the report quoted in this
+> > >   commit exactly matches the report today.)
+> > > 
+> > 
+> > [...]
+> > 
+> > > Reported-by: 李龙兴 <coregee2000@gmail.com>
+> > > Closes: https://lore.kernel.org/lkml/CAHPqNmzBb2LruMA6jymoHXQRsoiAKMFZ1wVEz8JcYKg4U6TBbw@mail.gmail.com/
+> > > Fixes: ee5a977b4e77 ("ext4: fix string copying in parse_apply_sb_mount_options()")
+> > 
+> > Hi there,
+> > 
+> > [ I'd better be Cc'ed as the author of the commit in Fixes ]
 > 
-> > The mount interface will report an error for repeated mounting, but
-> > fsconfig seems to allow this. Why is that?
+> Agreed! Sorry I missed adding you to Cc.
 > 
-> The mount interface does allow repeated mounting:
+> > The mentioned reports are for v6.18.2 kernel while ee5a977b4e77 ("ext4:
+> > fix string copying in parse_apply_sb_mount_options()") landed in v6.18.3.
+> > Back at the time I've tested the patch with different bogus s_mount_opts
+> > values and the fortify warnings should have been gone.
 > 
-> root@kvm-xfstests:~# mount /dev/vdc /vdc
-> [248226.221469] EXT4-fs (vdc): mounted filesystem 06dd464f-1c3a-4a2b-b3dd-e937c1e7
-> 624f r/w with ordered data mode. Quota mode: none.
-> root@kvm-xfstests:~# mount /dev/vdc /vdc
-> root@kvm-xfstests:~# grep vdc  /proc/mounts  
-> /dev/vdc /vdc ext4 rw,relatime 0 0
-> /dev/vdc /vdc ext4 rw,relatime 0 0
+> Ah-ha! Okay, thank you for catching this versioning issue. I had been
+> scratching my head over how it could have been the same warning. This
+> report is effectively a duplicate of the report you fixed with
+> ee5a977b4e77.
 > 
-> This is related to mounting the same block device in multiple places:
+> > I don't think there is an error in ee5a977b4e77 unless these warnings
+> > actually appear on the latest kernels with ee5a977b4e77 applied.
+> > 
+> > > @@ -2485,6 +2485,13 @@ static int parse_apply_sb_mount_options(struct super_block *sb,
+> > >  	if (!sbi->s_es->s_mount_opts[0])
+> > >  		return 0;
+> > >  
+> > > +	if (strnlen(sbi->s_es->s_mount_opts, sizeof(sbi->s_es->s_mount_opts)) ==
+> > > +	    sizeof(sbi->s_es->s_mount_opts)) {
+> > > +		ext4_msg(sb, KERN_ERR,
+> > > +			 "Mount options in superblock are not NUL-terminated");
+> > > +		return -EINVAL;
+> > > +	}
+> > 
+> > strscpy_pad() returns -E2BIG if the source string was truncated.  This
+> > happens for the above condition as well - the last byte is truncated and
+> > replaced with a NUL-terminator.
 > 
-> root@kvm-xfstests:~# mount /dev/vdc /mnt/b
-> root@kvm-xfstests:~# grep vdc /proc/mounts
-> /dev/vdc /mnt/a ext4 rw,relatime 0 0
-> /dev/vdc /mnt/b ext4 rw,relatime 0 0
-> root@kvm-xfstests:~#
+> Yeah, I've double-checked this now. The second half of the overflow
+> check in the fortified strnlen eluded by eyes when I went through this
+> originally. Thanks for sanity checking this!
 > 
-> ... which in turn is related to using bind mounts:
+> > The check at 3db63d2c2d1d ("ext4: check if mount_opts is NUL-terminated in
+> > ext4_ioctl_set_tune_sb()") was done in that manner as there is currently
+> > no way to propagate strscpy_pad() return value up from ext4_sb_setparams().
+> > So the string is independently checked inside ext4_ioctl_set_tune_sb()
+> > directly.
+> > 
+> > 
+> > As for the 64/65 byte length part, now the rationale of the checks works
+> > as Darrick Wong described at the other part of this thread and corresponds
+> > to how relevant userspace stuff treats the s_mount_opts field: the buffer
+> > is at most 63 payload characters long + NUL-terminator.  Jan Kara also
+> > shared similar thoughts during the discussion of ee5a977b4e77 [1].
+> > 
+> > [1]: https://lore.kernel.org/linux-ext4/yq6rbx54jt4btntsh37urd6u63wwcd3lyhovbrm6w7occaveea@riljfkx5jmhi/
 > 
-> root@kvm-xfstests:~# mount /dev/vdc /mnt/a
-> [248574.078106] EXT4-fs (vdc): mounted filesystem 06dd464f-1c3a-4a2b-b3dd-e937c1
-> e7624f r/w with ordered data mode. Quota mode: none.
-> root@kvm-xfstests:~# mount --bind /mnt/a /mnt/b
-> root@kvm-xfstests:~# grep vdc /proc/mounts
-> /dev/vdc /mnt/a ext4 rw,relatime 0 0
-> /dev/vdc /mnt/b ext4 rw,relatime 0 0
-> root@kvm-xfstests:~#
+> Okay, great. I figure I can do two things:
 > 
-> In both of these cases, you have to unmount the file system all of the
-> mount points (and if applicable, in all namespaces) before the struct
-> super for the block device is really unmounted.
+> 1) rework this patch with adjusted commit log to reflect the notes
+>    raised so far, so that we reject mounts that lack a NUL-terminated
+>    s_mount_opts (as silent truncation may induce an unintended option
+>    string, e.g. "...,journal_path=/dev/sda2" into "...,journal_path=/dev/sda"
+>    or something weird like that).
 > 
-> root@kvm-xfstests:~# umount /mnt/a
-> root@kvm-xfstests:~# umount /mnt/b
-> [248743.872394] EXT4-fs (vdc): unmounting filesystem 06dd464f-1c3a-4a2b-b3dd-e937c1e7624f.
-> root@kvm-xfstests:~# 
+> 2) Leave everything as-is, live with above corner case since it should
+>    be unreachable with userspace tooling as they have always existed.
+> 
+> I'm fine either way! :)
 
-This is a fun new feature of the post-fsconfig mount(8) binary, as I
-discovered when some of my newer fstests exploded after the D12->13
-transition.
+I'd pick #1, unless someone knows of a userspace program that could have
+set a 64-byte s_mount_ops string with no null terminator.  I didn't find
+any, but there are many implementations of ext4 out there. :/
+
+(and yes, it's better to reject an unterminated s_mount_opts than
+accidentally point the kernel at the wrong block device)
 
 --D
 
-> 						- Ted
+> -Kees
+> 
+> -- 
+> Kees Cook
 > 
 
