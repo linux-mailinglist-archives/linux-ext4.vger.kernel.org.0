@@ -1,248 +1,178 @@
-Return-Path: <linux-ext4+bounces-13683-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13684-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QNgTEIiujWmz5wAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13683-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 11:42:16 +0100
+	id IBAWBeO+jWkZ6gAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13684-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 12:52:03 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2BC012CA02
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 11:42:15 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E96E12D2F0
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 12:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8D5F0303F076
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 10:42:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 877AA303D895
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 11:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FAE42BDC1C;
-	Thu, 12 Feb 2026 10:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8157235028D;
+	Thu, 12 Feb 2026 11:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="szoykUKH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+E6bMDa5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="szoykUKH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+E6bMDa5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FhQMjqt9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97F02882B2
-	for <linux-ext4@vger.kernel.org>; Thu, 12 Feb 2026 10:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E949F2EFD8F
+	for <linux-ext4@vger.kernel.org>; Thu, 12 Feb 2026 11:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770892924; cv=none; b=as1tR2o/MDne6vAIFdKOQBV6BLRBlfzaEuy1PDw4mN1hKYsNKCdg9SiHQpkh8vLrZyaElVyGLkz1QSlAESqgJWJIPS0//zLbCEJl8FkEJzXddgvVBBY6W11mYMWN/4VXjLUStzAsTofstRfA6lj1OZMUukP7Mqw/QxmAf0fmmno=
+	t=1770897113; cv=none; b=WC5Mtsv+sv+0ieTB+xv89/TiEaTmfrWNgNJkozfEeW3vBxq8mwnur0EBRbp+avNp7XIkoCJWEgfTWmgMkZgbWmvWZoysaqp0YXr0DIMAnWo9t3HgX9Hj8nRpFZc7za1W/uu/RyL/V0AJZL4gOLefIgc9Cc2iU9dwMoiSdnyF8Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770892924; c=relaxed/simple;
-	bh=mv2ooTFnpte7OX5FS7AVDcn7T+zhkjdMkOi97RDw8Po=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HuepZO2C6E+8GIOArzWVPS06YisBnJH+AjA6CLeRdTYGWdIUouFM6Uf+4UJUQklYmmsvrVd+WGsapBYjoSqyLaalj5y6n2wB72uuFs0vu//XIAKNuM8gr2dpjlUIJyf/agBNAw5tCZx5UfvFpui39e2hwp0r4PCGEdZKfk+AXu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=szoykUKH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+E6bMDa5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=szoykUKH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+E6bMDa5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 068865BCDB;
-	Thu, 12 Feb 2026 10:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770892920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B8tSzUkagDQHxUmZWW3obG+1BxZuYAeWeNIG1IuZZpk=;
-	b=szoykUKH70uwJRMMbRfsDtB9IwqPcQLRzMH9h8ug/HkOW//4FcsC+pKagrMnbWT7AiedRs
-	7LTPmzanqnOtHDbWbCL3u51/mWOmNiZnF9kphc/NXmG5l4A3tNGqyi+eycttq9Po8tAtNR
-	rX3YFufSDGTSROrAYB/aARuEfDItw/E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770892920;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B8tSzUkagDQHxUmZWW3obG+1BxZuYAeWeNIG1IuZZpk=;
-	b=+E6bMDa5KVJNBWHNHLMEpBMn+lopiBTnRGYjp1lJKtvR5ZghGb1ZJh1KbhCCTiudwT0NF5
-	UEhctG71xWxOM5Ag==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770892920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B8tSzUkagDQHxUmZWW3obG+1BxZuYAeWeNIG1IuZZpk=;
-	b=szoykUKH70uwJRMMbRfsDtB9IwqPcQLRzMH9h8ug/HkOW//4FcsC+pKagrMnbWT7AiedRs
-	7LTPmzanqnOtHDbWbCL3u51/mWOmNiZnF9kphc/NXmG5l4A3tNGqyi+eycttq9Po8tAtNR
-	rX3YFufSDGTSROrAYB/aARuEfDItw/E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770892920;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B8tSzUkagDQHxUmZWW3obG+1BxZuYAeWeNIG1IuZZpk=;
-	b=+E6bMDa5KVJNBWHNHLMEpBMn+lopiBTnRGYjp1lJKtvR5ZghGb1ZJh1KbhCCTiudwT0NF5
-	UEhctG71xWxOM5Ag==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E62BF3EA62;
-	Thu, 12 Feb 2026 10:41:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id RKUqOHeujWmAewAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 12 Feb 2026 10:41:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id ABFDBA0A4C; Thu, 12 Feb 2026 11:41:59 +0100 (CET)
-Date: Thu, 12 Feb 2026 11:41:59 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zorro Lang <zlang@redhat.com>
-Cc: Jan Kara <jack@suse.cz>, fstests@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] Avoid failing shutdown tests without a journal
-Message-ID: <zh372qbq2tq722476eaqrirmi55hxwzfs6msmzxfj6zv3jws5y@rdip5a6twsf6>
-References: <20260210111707.17132-1-jack@suse.cz>
- <20260212084050.uim52ck6zhffd5kl@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+	s=arc-20240116; t=1770897113; c=relaxed/simple;
+	bh=XjSWJvCqXNs6KFHlJCEjDBXFilEFAsp8RQ/y0dAQPl8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=fuPAF4BwAbPU531X/BDoHCxe2h7BLvypbSmkkavFipDeVdnwgPndx86DXm1TQLI+UEQhmPS2/8FdWB7neKKi0TLy5AkovyPhcaS1AXzgqR1S2tZf4agprnO/9EN1AZjBHZuSAESzT3SYWn4RDe1PmfB72B8P5jGiyp8EYEuobeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FhQMjqt9; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-38709888abbso10970841fa.1
+        for <linux-ext4@vger.kernel.org>; Thu, 12 Feb 2026 03:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770897110; x=1771501910; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=icNB5xuvo+j+qezx7gqf5Y6Yw5qJ0+ofGzzhpNwJwdA=;
+        b=FhQMjqt90S68QJBXL9jHocY7B1/g5ZRIw4R14Jz+q8ubrflb3FFjMjVVlBxz2Hi0VC
+         0dnIBz/gzOseJszrl/f6To9dnq3zIQmBrE2uq6bq0Ovnr3t6Ia26bEm/EL3ZVhgKGiZZ
+         wQ//I9DlDaDkl9wDQF/XYTMzSS6V1ph0rqylYdQcs3t19ho+cjMCq+OqV9gLICvEpsZr
+         Y06Sm3TKWgqdUHJhAHoRcyfWmegywK32x990iLePGZFvgtE1Fpv0CJZ08tt3/hZBJNDx
+         yMjYZXUOv1u0ya1pDSipjc908Q1650HRawkTSMMf6GcDdJb2iLZfYEMQYvDiMb9kVIex
+         /d8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770897110; x=1771501910;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=icNB5xuvo+j+qezx7gqf5Y6Yw5qJ0+ofGzzhpNwJwdA=;
+        b=WmMakjgDPS0RjJGfQ65mnX+XDZxuWGbR5Qo8SpD4bHBLShP8yyIBwWyUqvnGR0YRw9
+         SR36r0Jg4D8+qpz/1tLoY2CKI1ISBwA80DEpxMBo3JYM1KUtM8T5Ir2uoqw6x98Ikfp5
+         806XzTTZfPOqxSqEwF/AkAF2GdZzJYA3UmZpaeFggHiPd1wnP4zGls/puZf8JaZ5btVO
+         fdHw3q85XZZe/XFipjMjfEJXYTGqJusBSoDA9amoNz7sSgS63WYm3sy5cbEMqWMueDBt
+         OsDGD6LIzeVwaHC1edtzg6n9vDe/t5drDUEFItQ1iRbBB8Ik2s7nMag+ffGRSoZjBymA
+         jqRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoJo6ePU+7iz77UTNibqMin3pMyC60oHKj2Ni8ImJX8yri8e/hf0DS0IZrkaBTlTwoglDC3K4vCac8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzija//2SRtBm6ho9cl6hyyK4O4eY1ApXW/jlekQs0in4A+nRHk
+	mG7nYn/1Q5LQjTOSRDXWTJqll0k+aiu3gXO5GidrvIqFI7QGkpckpWPJ
+X-Gm-Gg: AZuq6aLWKXxm3t7C9kw59hE1XcyxwciWpF052ivPog/31xA0UfBvH72EVeHmSvP+FxM
+	se8eO/D9Chu0JPTLAIm0pBRCG6a5v9kNOpRa5YYZ9k9YBPGQLWbLlXpBIY/pWqfWnButxDHZl3Q
+	AAYCAhZaGDwT1az3eP7SiAvO1aDfsmHsBmmJpWSLcr3ydAMIuLLoYZnTASjIrHISeg5I7SvenDF
+	3NS0CJ6Y5cfjv2qz2WiXk9bfrvjTzth5zUq7DbLL3tE+KZPenfvJTxjSHZx2Whb7B/1Bw86RGAg
+	IdWWiGUHdHZQ4yqAPt4BqQqqcGO1WapLEfoygO2q5gMd8dlKLv6+/XNwDfnBYaZtREDxUB6lJfm
+	4Zo5JSO52zGbcXLvaerEsauXiJOq/jAbAiL4X4TrY6iXERmRlSYV/Nh8SQZYSdrZEAWdG8OEwDH
+	M1LLIGQWmk/xATl5GQYynOAGqftBFmbOthVmG3cl8pc/RJ
+X-Received: by 2002:a05:651c:4193:b0:382:624d:a703 with SMTP id 38308e7fff4ca-38712c1064amr7134971fa.45.1770897109932;
+        Thu, 12 Feb 2026 03:51:49 -0800 (PST)
+Received: from [10.128.170.182] ([77.234.210.12])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3870689e107sm7206681fa.14.2026.02.12.03.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Feb 2026 03:51:48 -0800 (PST)
+Message-ID: <4b207a36-5789-41d2-ac17-df86d4cde6da@gmail.com>
+Date: Thu, 12 Feb 2026 14:51:47 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260212084050.uim52ck6zhffd5kl@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org
+From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Subject: File name is not persisted if opened with O_SYNC and O_TRUNC flags
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13683-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_FROM(0.00)[bounces-13684-lists,linux-ext4=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[slavakovalevskiy2014@gmail.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: D2BC012CA02
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7E96E12D2F0
 X-Rspamd-Action: no action
 
-On Thu 12-02-26 16:40:50, Zorro Lang wrote:
-> On Tue, Feb 10, 2026 at 12:20:17PM +0100, Jan Kara wrote:
-> > Hello,
-> > 
-> > this patch series adds requirement for metadata journalling to couple
-> > of tests using filesystem shutdown. After shutdown a filesystem without
-> > a journal is not guaranteed to be consistent and thus tests often fail.
-> 
-> Hi Jan,
-> 
-> This patchset makes sense to me, thanks for fixing them :)
-> 
-> Since you brought this up, I just tried to check all cases using _require_scratch_shutdown
-> but lack _require_metadata_journaling, I got this:
-> 
-> $ for f in `grep -rsnl _require_scratch_shutdown tests/`;do grep -q _require_metadata_journaling $f || echo $f;done
-> tests/ext4/051       <=== fixed by this patchset
-> tests/generic/050
-> tests/generic/461
-> tests/generic/474
-> tests/generic/536
-> tests/generic/599
-> tests/generic/622
-> tests/generic/635    <=== fixed by this patchset
-> tests/generic/646    <=== fixed by this patchset
-> tests/generic/705    <=== fixed by this patchset
-> tests/generic/722
-> tests/generic/730
-> tests/generic/737
-> tests/generic/775
-> tests/generic/778
-> tests/overlay/078
-> tests/overlay/087
-> tests/xfs/270
-> tests/xfs/546
-> 
-> g/050 tests ro mount, so it might not need _require_metadata_journaling.
+Detailed description
+====================
 
-Yes, g/050 checks using _has_metadata_journaling and treats the fs
-accordingly.
+Hello, there seems to be an issue with O_SYNC flag when used together 
+with O_TRUNC on various file systems.
+Opening a file with O_SYNC (or using fsync(fd)) should persist directory 
+entry.
+However, if O_SYNC is used together with O_TRUNC the file will be 
+missing if system crashes.
+According to POSIX this is OK, but most file systems provide stronger 
+guarantees (would be actually nice to have a more recent documentation 
+on this behavior).
+This happens on Btrfs, ext4, XFS, F2FS and likely other file systems.
 
-> g/461 doesn't care the fs consistency, so ignore it too.
 
-Ack.
+System info
+===========
 
-> g/730 looks like doesn't need _require_metadata_journaling.
+Linux version 6.19-rc7, also tested on 6.17
 
-Ack.
 
-> overlay/087 looks like can ignore _require_metadata_journaling.
+How to reproduce
+================
 
-I think this actually needs it since we shutdown the fs and then mount it
-again which may fail with inconsistent fs.
+```
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-> Others, include g/474, g/536, g/599, g/622, g/722, g/737, g/775, g/778,
-> overlay/078
-> look like all need a journal fs.
+int main() {
+   int status;
 
-g/474 seems good to test without metadata journalling it does syncfs and
-then shutdown. In that case the data checksums should be valid even without
-journalling.
+   status = creat("file", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+   printf("CREAT: %d\n", status);
+   close(status);
 
-g/599 should be also fine - we shutdown after remounting ro so that should
-be working even without journalling.
+   status = open("file", O_RDWR | O_TRUNC | O_SYNC);
+   printf("OPEN: %d\n", status);
+}
+// after the crash `file` is missing
+```
 
-g/622 - some bits should work even without journalling but for now I guess
-we should just require it for simplicity.
+Steps:
+1. Create and mount new file system in default configuration.
+2. Change directory to root of the file system and run the compiled test.
+3. Cause hard system crash (e.g. QEMU `system_reset` command).
+4. Remount file system after crash.
+5. Observe that file is missing.
 
-g/737 - uses O_SYNC - should work even without journalling (perhaps the
-test should be extended to fsync also the parent dir for complete correctness).
-
-g/775 - tests atomic writes - should work even without journalling if the
-fs claims to support atomic writes
-
-g/778 - ditto
-
-overlay/078 - this fsyncs the file before shutdown so it should work even
-without journalling (but might need to fsync the parent dir for complete
-correctness).
-
-> About x/270 and x/546, if we don't suppose other fs would like to run
-> xfs cases, then xfs always support journal.
-
-Correct.
-
-> I initially considered calling _require_metadata_journaling directly inside
-> _require_scratch_shutdown. However, I decided against it because some cases might
-> only need the shutdown ioctl and don't strictly require a journal.
-
-Absolutely. I think they should stay separate.
-
-So to summarize I think we should still add _require_metadata_journaling to:
-
-overlay/087
-g/536
-g/622
-g/722
-
-and we might add fsync of parent directory before shutdown to g/737 and
-overlay/078. Does this sound good?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
