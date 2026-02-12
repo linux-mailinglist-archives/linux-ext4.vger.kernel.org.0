@@ -1,162 +1,183 @@
-Return-Path: <linux-ext4+bounces-13679-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13680-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yNERGF4qjWl8zgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-13679-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 02:18:22 +0100
+	id wAf6M4osjWnxzgAAu9opvQ
+	(envelope-from <linux-ext4+bounces-13680-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 02:27:38 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2CDE128ECB
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 02:18:21 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AFD9128F59
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 02:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EE56C30B241C
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 01:15:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DBC00301F033
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Feb 2026 01:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 215DF23717F;
-	Thu, 12 Feb 2026 01:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850FD1E8826;
+	Thu, 12 Feb 2026 01:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A4PbZEfn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VC8TyQBQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yx1-f41.google.com (mail-yx1-f41.google.com [74.125.224.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC2F226CEB
-	for <linux-ext4@vger.kernel.org>; Thu, 12 Feb 2026 01:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770858885; cv=pass; b=HuapII+FhkJqDnVVFaPBPDac8I46LTPiVli/vosWAuty7hpZGcJ7Itkk69uwNrcTAbJpTCh4W8QmzCqL9nWW2CvzHO20x3UFFDs34dHkeLEKRz7l6FTOQQF+NSGVqoiAXjkro0bX/kjoecCAQ+Rl9eMCWPcPkq0LpNxZb9z90jI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770858885; c=relaxed/simple;
-	bh=ukLfsVajvOFxj38PQtxW0aK5YrmphSGnllz5uCb339Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZlmoJeMKFaNJ/5igtb3oMc8WClxFrw4WTgD1k+UUQwbx/Ai+3nHKddgq/WQOyFYtPcNi79wi3B1Mdx/MdPdTsbzDufJnBo8QELaTLG2NpQja9hRdG0iS+DlOha1SQmFjQm8ghgSrGC42HRXUQYVDJPo6/Wi8xU+oEbzMRZoIibw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A4PbZEfn; arc=pass smtp.client-ip=74.125.224.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f41.google.com with SMTP id 956f58d0204a3-649d4c77a32so6953983d50.2
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Feb 2026 17:14:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770858883; cv=none;
-        d=google.com; s=arc-20240605;
-        b=NepKKK018RUXlYOq6juBLSR8NloU8n0vm3w1fw6OP/VdqX5zWVY3eYTj6G5KybciEG
-         MlpM/2f9fffJwgLswdspR5p32zE8e2ChznOdd96x0L1aul69rVdpqZ2Bwj1fmwixeW82
-         ScyFiuQIdaXBhZwWDQhsq4nTyJavqPBT7m5y57XMD0LzFpmwatkIMp8kjvZw7cRe6HUZ
-         OB6vt30sn3a5rgNDk+5gjPo0jpm6pCkDR1zTKjdI7H7IPmoo9AqLEXk2gboVujmJZUV1
-         6CJOA2HDtheMe9SrkhGbjuRvW2Te0mcGlJc8NAda1fRceantdlK2mztk7uNUFkTxBIrq
-         pU7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=ukLfsVajvOFxj38PQtxW0aK5YrmphSGnllz5uCb339Q=;
-        fh=DBn49HQkvdPks6VpiZ3IJd/XumX9A/fQZGaVfshwUQ4=;
-        b=OhPCCDHvhytPF9moigNBksVoX3g5l2BL5O+elSOxg4SCXpExZe5DL+EcWNVsdA9uMk
-         S0KER62/pRziybzTtZcO2Kg+bihOMXdT8NN4UjeejLI3jn/1q4GZe5R2xBtEraM8FPya
-         iEJf/hxHyMSFiAh9VpckqFmadFT2JJLhspvN4mOcljONTViBvlLtOCQpTTRAHpsDdTHP
-         AETgjXpNOgwW05ZDU86MfFGFztFSBkZgSEn3zHoxgohxGypYIEpRHxMOzvWIR0SHU1V3
-         KyIyhLdO29gzi8Ws8oywYPOcb9xe1XpZ3U36KjbD5vNJYnx0JpL065tBSDT0icPDEKIY
-         H+6Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770858883; x=1771463683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ukLfsVajvOFxj38PQtxW0aK5YrmphSGnllz5uCb339Q=;
-        b=A4PbZEfnYjK9JDt2Zl5KlR+owiO5LwfQrYcxr35p1Bh2FlmCA1rhOSk1vGiEz1vOuP
-         wA4oVxNmkamnyL/PYHH91erO2p3NI179mxkVFNm+L1fneG/Bbk5NkqrRwwtlBkmfzeMQ
-         OWKPGjnEal10eM+t6l1sOc+LpK+phACbux7g6uqw9rTElmx/nkGyDZhV6vogNnieMx7H
-         BS+1dnbxPeZtTYjUC8gM8wbAcpPaTv8BLJykugQ++Vr2FeHJkyAW/yg35QOCEAZLMrTI
-         k4iGlRxsDuVYjnh8bAkv420nM27LwIDfrUeDqHTRZY4D/RkIngDBt4iSRtXbyaWpx4zK
-         EzSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770858883; x=1771463683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ukLfsVajvOFxj38PQtxW0aK5YrmphSGnllz5uCb339Q=;
-        b=xPRaJbrK3z60JG5Zyq3Njy8xdBnw+6c7gOEWX6jLIRwT4KI4GmnLtbw4dqIV614gg0
-         cfxRuCU597ai8EOhrJUj4unPZcO4Bjtn8K9LKu7PRU6bIX7qRFbrPGB362ZTEzOZY4mY
-         1qQ3wO2SGm2ej0ayqvtJSIc/9hI3F9EAf1szqzm7s0fhaXmgFAF/KIpO3f9fxBA+4PSK
-         6aB98zf3xxLzg72l3TAp2QVGJ6II0cVlrG/ntap28KVLMxxhjXLsMFA83+h3oJkSYzct
-         /kUldbd6Mj3hU1kpjVJjtCyIhcbk/Z224XLb45F1FAcSby8F3EJuS5WJz2iMtXDuNz6y
-         m+EQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUoUdiEilCRCpwxq0Nxr72OYzSZPuVun8VBs3Hu/fjpRmiSewTYdYvy/TUcQX5iS4qdWWL/EXcqzGfa@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWJHt1iI4iwlaPKIxnD/B85lAIojEPfiikEqd/VEvuxM3VbrPd
-	uU6G5sccIBKostO1k3LZOKaeGNACaGnl2pxkKV+HlT2z5lNSXMrHGK7mb+89oZM2Q4NQHSINFDh
-	Is+fOv5+wCbK4tNNWl4TyAshDLrddHIdW9Wx6
-X-Gm-Gg: AZuq6aKgNDxQNnUpO3YmG0iaSqGwk888GJyuzTps0OrK1ay9V7WhMNuAK+Zsl5O5f3G
-	Cxq5zUcV+GUd012lh8O2f71PuUdmTQfD8Z8I+nYto4lvjsborgO1JhSMU+IgXAJLWX5C8Sp9Y2O
-	cgNbHmYrUWUxslo+YOOdbC3wlES6+6UUEN/+IZ2MRJIWKOmfJVawJsbiy8ch6pv6q5WXMVa1YbH
-	TQRTQv8N5A12MPsYdVJTM3LuOQ0Z1fV9p8UxS3kN2c3cp6488BewSItbAfORRX3X/KU7CpB8v4P
-	JzdSq5ugSw1hHLORZPx92ONPU3vdEHwvueZ5/9jQC3C2x4+cPAjVOY+DZpvoIAxp/Qcf85KNnub
-	nwAhP
-X-Received: by 2002:a05:690e:48f:b0:649:f0e5:fab1 with SMTP id
- 956f58d0204a3-64bbaa483f8mr928298d50.23.1770858883542; Wed, 11 Feb 2026
- 17:14:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B52C8E6;
+	Thu, 12 Feb 2026 01:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770859655; cv=none; b=hn3HZwPGLk/obQxhVJ3EQzuR3GLL6XMkBXHPjUp20d7GmJq+nS6fXa4F+OUIEBCphG9t+ciiVJL7xsII8Ztie04hikjVacTi/3yLRcC29LXHDTNCHoLtyCaZLtsWl21hacvLNAX/2UHIn+xVR/y19U9gbp7RZZr4cK4Svb80ido=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770859655; c=relaxed/simple;
+	bh=LI9T8ckO6uZfvbB4i3LQ04OePVTEa752sUaYTpdWXPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Z1vBNWmoOiL0g/3vSWTsXMzqGsYMskHZJDkwAVKJ3P1wRW0lEoNXbXPVIDi5PCjcIm0RPwjXbJvmB8AvIAIW2yGTPtshSGbwS0jlO5+ibz7TpT+3C6YwkKs5k7sL415jPGg0XwO43g39VcHjxstPy89NPp0GXLT+KyKgW4+AX30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VC8TyQBQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF65C19423;
+	Thu, 12 Feb 2026 01:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770859654;
+	bh=LI9T8ckO6uZfvbB4i3LQ04OePVTEa752sUaYTpdWXPk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=VC8TyQBQCl1ZNhvI97b3cMj0k5IKOhdi2Okelw9VVkk7vUJDiZ3dT48KDUuxLXv10
+	 xu6SI0aberuBRiUDCEFe2gbVLhYUq9NT+mc303UfLpGJ7BOZf/ZEUhYvLReS7i2qcT
+	 pIcUEvauojisi7uZBoWGx/Uni8GhfjBobkSGrio6+7yGMvkKeSZmMILVJrHYzXo1jP
+	 noWt5UlfqbSLMoUWlxFKjtRjbKlQ2g4Sc9pKo/gIutBZsrG4qLK6688ODfTQjzfNA5
+	 FsfL0F7pNpEYcTo/5jyFtG4573sqMz4vtmq1WCa2rBHhIo95wehrQHDH8UzSXYZdqu
+	 BPAvuQLionkcA==
+Date: Wed, 11 Feb 2026 17:26:52 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Christoph Hellwig <hch@lst.de>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>
+Subject: [GIT PULL] fsverity updates for 7.0
+Message-ID: <20260212012652.GA8885@sol>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260207043607.1175976-1-kartikey406@gmail.com> <aYykSCvhtYRGxCi3@infradead.org>
-In-Reply-To: <aYykSCvhtYRGxCi3@infradead.org>
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-Date: Thu, 12 Feb 2026 06:44:31 +0530
-X-Gm-Features: AZwV_Qhbw26w65-_qbehiXP_5-8fQ2coGwCQum9ABrGzCY2RDJB2xkIdeq9j3R8
-Message-ID: <CADhLXY4__=t98fVLP15vWVPyBnfkevnERBXRwH+A20KbeNSS+Q@mail.gmail.com>
-Subject: Re: [PATCH] ext4: convert inline data to extents when truncate
- exceeds inline size
-To: Christoph Hellwig <hch@infradead.org>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+7de5fe447862fc37576f@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13679-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13680-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kartikey406@gmail.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[linux-ext4,7de5fe447862fc37576f];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: D2CDE128ECB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7AFD9128F59
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 9:16=E2=80=AFPM Christoph Hellwig <hch@infradead.or=
-g> wrote:
->
-> On Sat, Feb 07, 2026 at 10:06:07AM +0530, Deepanshu Kartikey wrote:
-> > Without this fix, the following sequence causes a kernel BUG_ON():
-> >
-> > 1. Mount filesystem with inode that has inline flag set and small size
-> > 2. truncate(file, 50MB) - grows size but inline flag remains set
-> > 3. sendfile() attempts to write data
-> > 4. ext4_write_inline_data() hits BUG_ON(write_size > inline_capacity)
->
-> Can you wirte this up in an xfstests test, please?
->
-I will write the test case and share the patch shortly.
+The following changes since commit 63804fed149a6750ffd28610c5c1c98cce6bd377:
+
+  Linux 6.19-rc7 (2026-01-25 14:11:24 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
+
+for you to fetch changes up to 433fbcac9ebe491b518b21c7305fba9a748c7d2c:
+
+  fsverity: remove inode from fsverity_verification_ctx (2026-02-04 11:31:54 -0800)
+
+----------------------------------------------------------------
+
+fsverity cleanups, speedup, and memory usage optimization from
+Christoph Hellwig:
+
+- Move some logic into common code
+
+- Fix btrfs to reject truncates of fsverity files
+
+- Improve the Merkle tree readahead implementation
+
+- Store each inode's fsverity_info in a hash table instead of using a
+  pointer in the filesystem-specific part of the inode.
+
+  This optimizes for memory usage in the usual case where most files
+  don't have fsverity enabled.
+
+- Look up the fsverity_info fewer times during verification, to
+  amortize the hash table overhead
+
+----------------------------------------------------------------
+Christoph Hellwig (17):
+      fs,fsverity: reject size changes on fsverity files in setattr_prepare
+      fs,fsverity: clear out fsverity_info from common code
+      ext4: don't build the fsverity work handler for !CONFIG_FS_VERITY
+      f2fs: don't build the fsverity work handler for !CONFIG_FS_VERITY
+      fsverity: pass struct file to ->write_merkle_tree_block
+      fsverity: start consolidating pagecache code
+      fsverity: don't issue readahead for non-ENOENT errors from __filemap_get_folio
+      readahead: push invalidate_lock out of page_cache_ra_unbounded
+      ext4: move ->read_folio and ->readahead to readpage.c
+      fsverity: kick off hash readahead at data I/O submission time
+      fsverity: deconstify the inode pointer in struct fsverity_info
+      fsverity: push out fsverity_info lookup
+      fs: consolidate fsverity_info lookup in buffer.c
+      ext4: consolidate fsverity_info lookup
+      f2fs: consolidate fsverity_info lookup
+      btrfs: consolidate fsverity_info lookup
+      fsverity: use a hashtable to find the fsverity_info
+
+Eric Biggers (1):
+      fsverity: remove inode from fsverity_verification_ctx
+
+ fs/attr.c                    |  12 ++-
+ fs/btrfs/btrfs_inode.h       |   4 -
+ fs/btrfs/extent_io.c         |  53 +++++++-----
+ fs/btrfs/inode.c             |  13 +--
+ fs/btrfs/verity.c            |  11 +--
+ fs/buffer.c                  |  25 +++---
+ fs/ext4/ext4.h               |   8 +-
+ fs/ext4/inode.c              |  31 -------
+ fs/ext4/readpage.c           |  64 +++++++++++----
+ fs/ext4/super.c              |   4 -
+ fs/ext4/verity.c             |  34 +++-----
+ fs/f2fs/compress.c           |   7 +-
+ fs/f2fs/data.c               | 100 ++++++++++++++---------
+ fs/f2fs/f2fs.h               |  12 +--
+ fs/f2fs/file.c               |   6 +-
+ fs/f2fs/inode.c              |   1 -
+ fs/f2fs/super.c              |   3 -
+ fs/f2fs/verity.c             |  34 +++-----
+ fs/inode.c                   |   9 ++
+ fs/verity/Makefile           |   1 +
+ fs/verity/enable.c           |  41 ++++++----
+ fs/verity/fsverity_private.h |  20 +++--
+ fs/verity/open.c             |  84 +++++++++++--------
+ fs/verity/pagecache.c        |  58 +++++++++++++
+ fs/verity/read_metadata.c    |  19 +++--
+ fs/verity/verify.c           |  91 +++++++++++++--------
+ include/linux/fsverity.h     | 190 +++++++++++++++++--------------------------
+ mm/readahead.c               |  15 ++--
+ 28 files changed, 516 insertions(+), 434 deletions(-)
+ create mode 100644 fs/verity/pagecache.c
 
