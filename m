@@ -1,62 +1,60 @@
-Return-Path: <linux-ext4+bounces-13698-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13699-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +EQAIt3pkGkOdwEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13698-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:13 +0100
+	id KHabEfLpkGkfdwEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13699-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:34 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 020F413D923
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5CC013D961
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BC70C30B4F8F
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 21:27:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BE775302B81A
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 21:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7183313293;
-	Sat, 14 Feb 2026 21:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABAF2309B9;
+	Sat, 14 Feb 2026 21:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gcq47aLC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zr0bemsT"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0B9309DB1;
-	Sat, 14 Feb 2026 21:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9D72FDC20;
+	Sat, 14 Feb 2026 21:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771104423; cv=none; b=FfE+mivRqDbEctu0278pZ3y3hwGa8LdsJwcs2zAsMKy2CKIvH8hffeshDTcFAtDS/JgrXWkngNt8pxMNPrzhuoXyXYFS8coX9czbuiSoegD3F91492HOJIR39kGCj9hOic+MnflEwNVI5mpo8/vG5MlajChjfF7jsFaB033ATvY=
+	t=1771104435; cv=none; b=LCYY6q1U98zjs5LHaF3o6ylFn7zO/R2hHVFgA6uBk5+69V1lDTqxRYzT52dw3I6wbXZ4SDtO5JOlRlBn0BTNTKcGjMxHjAjqubOwcx+cqEQOkt462hGGbQcmvucnvQenZCiJHDER81f6VsPf/OHdzM0xOhnxZcdNAkyYYB3yT7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771104423; c=relaxed/simple;
-	bh=j88ihCWn0Rg3H31RZvvLFcG5R1vRQN4ClT5ZFfmu8Ac=;
+	s=arc-20240116; t=1771104435; c=relaxed/simple;
+	bh=U+tA0vkY6vpqXtXMkjENXllx3tPQws0mO8+SdxXCtMo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ng++APLfQL8nx9cxLgAq5j9qutNL+fzzE2rJcR+w5yV/n8u61FrYeqpzJ4cUb1j90sTJVtQ7TEvlhHOeDYaptC/3NDNWwMO+CQTi6zVkQcvPrZxtX4DjHiywjY401qM1onIo816GyI2TP63BLtTUuBFvsBJYy44GoyR+C2O/oKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gcq47aLC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E975C19423;
-	Sat, 14 Feb 2026 21:27:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=d6/ixl5MJu0OKOnkN+FhHzUyiKg/krG6YWsswo1v0zJLCGmYHOphqhYuTptM2FU0Yt6KQZSiGD6pL1fF7ocaa9lBlZEpilwAmB4dG3uUOoLR97d36S3eYE5TaJ1WxzNwD6SQKQJWMcgUaY6V11VikWTviAtfrfrqhZKZ6vcv3J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zr0bemsT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46EDC16AAE;
+	Sat, 14 Feb 2026 21:27:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771104423;
-	bh=j88ihCWn0Rg3H31RZvvLFcG5R1vRQN4ClT5ZFfmu8Ac=;
+	s=k20201202; t=1771104435;
+	bh=U+tA0vkY6vpqXtXMkjENXllx3tPQws0mO8+SdxXCtMo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gcq47aLCRTCmMruHlSzw1tAEcA6J4IyrI2T47vJNZCQAvLkapnn/8Y1pfPmpo4Z9y
-	 h/hKrb06DMm1YC4Ak6JumbmCbFFERdk/bXWUfrpxvMcD635uOJSQGtBOPPPn8Ay2qI
-	 7hBuxWvbwNT9TyoRwD5Js1DkJTLOTSE5JrB02xkL9Wpna58nieQKc96BDuRha+KxNw
-	 RzYOSlCu11aXXgc4W7kxlDVYPIRswoOVFS4bydT6BgdwW7JZznSfO7UxzRdnBz6i0M
-	 BF5k0JBwB+cOY4RhEFtQJby8Tzm6OLT5cJoxJx3+qO4oPkk1bNv6xCtojyZsuykfJe
-	 yvn+tUD+gl5QA==
+	b=Zr0bemsTJBGExQlNcYboNX5rDuv0if6cMPvq5qVrnNrq5W3HInCNfm2gmM5UpxqdU
+	 MscBFedcPs4eDIqtlMnfMDs1TFsJj78b0R6Jum7r2rqU8P3ubsUvMUcNOuhqHiZyhF
+	 N4j3D9cjQmc098I04Ezd1TXJfslIinupMA24VWmJQ0TpwxIyj394ck+tJwrIswequp
+	 fpRiC9mG7y9Qs01QkgIZBWiwNvXR/E/5UsJ8uLXY/yX69HvjTP1FeSa6XEICQdWFrd
+	 ZmGg9/D4QxkNKtN1bGyt+3b62UvvfUMI2w1J99WioqZpgDvkGQRB3wTFpl7lBC2aNO
+	 O+CaAa3KnmXYQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Zhang Yi <yi.zhang@huawei.com>,
-	Jan Kara <jack@suse.cz>,
+Cc: Li Chen <me@linux.beauty>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.19-6.12] ext4: propagate flags to convert_initialized_extent()
-Date: Sat, 14 Feb 2026 16:23:42 -0500
-Message-ID: <20260214212452.782265-77-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.19-5.15] ext4: mark group extend fast-commit ineligible
+Date: Sat, 14 Feb 2026 16:23:47 -0500
+Message-ID: <20260214212452.782265-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260214212452.782265-1-sashal@kernel.org>
 References: <20260214212452.782265-1-sashal@kernel.org>
@@ -69,186 +67,199 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.19
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13698-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13699-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,suse.cz:email,msgid.link:url]
-X-Rspamd-Queue-Id: 020F413D923
+	TAGGED_RCPT(0.00)[linux-ext4];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.beauty:email]
+X-Rspamd-Queue-Id: C5CC013D961
 X-Rspamd-Action: no action
 
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+From: Li Chen <me@linux.beauty>
 
-[ Upstream commit 3fffa44b6ebf65be92a562a5063303979385a1c9 ]
+[ Upstream commit 1f8dd813a1c771b13c303f73d876164bc9b327cc ]
 
-Currently, ext4_zero_range passes EXT4_EX_NOCACHE flag to avoid caching
-extents however this is not respected by convert_initialized_extent().
-Hence, modify it to accept flags from the caller and to pass the flags
-on to other extent manipulation functions it calls. This makes
-sure the NOCACHE flag is respected throughout the code path.
+Fast commits only log operations that have dedicated replay support.
+EXT4_IOC_GROUP_EXTEND grows the filesystem to the end of the last
+block group and updates the same on-disk metadata without going
+through the fast commit tracking paths.
+In practice these operations are rare and usually followed by further
+updates, but mixing them into a fast commit makes the overall
+semantics harder to reason about and risks replay gaps if new call
+sites appear.
 
-Also, we no longer explicitly pass CONVERT_UNWRITTEN as the caller takes
-care of this.
+Teach ext4 to mark the filesystem fast-commit ineligible when
+EXT4_IOC_GROUP_EXTEND grows the filesystem.
+This forces those transactions to fall back to a full commit,
+ensuring that the group extension changes are captured by the normal
+journal rather than partially encoded in fast commit TLVs.
+This change should not affect common workloads but makes online
+resize via GROUP_EXTEND safer and easier to reason about under fast
+commit.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Link: https://patch.msgid.link/07008fbb14db727fddcaf4c30e2346c49f6c8fe0.1769149131.git.ojaswin@linux.ibm.com
+Testing:
+1. prepare:
+    dd if=/dev/zero of=/root/fc_resize.img bs=1M count=0 seek=256
+    mkfs.ext4 -O fast_commit -F /root/fc_resize.img
+    mkdir -p /mnt/fc_resize && mount -t ext4 -o loop /root/fc_resize.img /mnt/fc_resize
+2. Extended the filesystem to the end of the last block group using a
+   helper that calls EXT4_IOC_GROUP_EXTEND on the mounted filesystem
+   and checked fc_info:
+    ./group_extend_helper /mnt/fc_resize
+    cat /proc/fs/ext4/loop0/fc_info
+   shows the "Resize" ineligible reason increased.
+3. Fsynced a file on the resized filesystem and confirmed that the fast
+   commit ineligible counter incremented for the resize transaction:
+    touch /mnt/fc_resize/file
+    /root/fsync_file /mnt/fc_resize/file
+    sync
+    cat /proc/fs/ext4/loop0/fc_info
+
+Signed-off-by: Li Chen <me@linux.beauty>
+Link: https://patch.msgid.link/20251211115146.897420-6-me@linux.beauty
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-### 4. Deeper Analysis: Is This Just Performance or Correctness?
+### 4. DETAILED FINDINGS
 
-The investigation reveals important nuances:
+This is extremely revealing. The investigation shows:
 
-**EXT4_EX_NOCACHE** prevents populating the extent status (ES) tree
-cache during operations like `ext4_zero_range`. The purpose is stated in
-the code: "we shouldn't be caching the extents when reading from the
-extent tree while a truncate or punch hole operation is in progress."
+**A real gap exists:** `EXT4_IOC_RESIZE_FS` already has
+`ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE, NULL)`, but
+`EXT4_IOC_GROUP_EXTEND` (and `EXT4_IOC_GROUP_ADD` in a sibling commit)
+do **not**. This is an inconsistency — all three ioctls perform
+filesystem geometry changes that are not supported by fast commit
+replay.
 
-The reason is **correctness, not just performance**: During operations
-that modify the extent tree (like zero_range, which splits/converts
-extents), caching intermediate extent states can leave **stale entries**
-in the ES tree. Recent fixes (commits `6d882ea3b0931` and
-`c2b3575dfcc7f` from Nov 2025, both Cc: stable) explicitly address data
-corruption from stale extent cache entries during these exact
-operations.
+**No replay support for geometry changes:** The fast commit replay logic
+only handles file-level operations (add_range, del_range, link, unlink,
+creat, inode). There are NO replay tags for superblock or group
+descriptor changes. If `GROUP_EXTEND` runs and a fast commit is used
+instead of a full journal commit, the geometry changes would not be
+replayed on crash recovery.
 
-**However**, the specific code path in this commit:
+**This is a data integrity issue:** If a fast commit transaction
+includes both file operations (which are tracked) and geometry changes
+from `GROUP_EXTEND` (which are untracked), crash recovery could replay
+the file operations against stale filesystem geometry, leading to silent
+metadata inconsistency or corruption.
 
-1. `ext4_find_extent()` with flags=0 instead of flags with NOCACHE -
-   this means extents get cached when they shouldn't be during
-   `convert_initialized_extent()`
-2. `ext4_split_convert_extents()` was getting hardcoded
-   `EXT4_GET_BLOCKS_CONVERT_UNWRITTEN` instead of the caller's flags
-   (which include both `CONVERT_UNWRITTEN` and `NOCACHE`)
+### 5. CLASSIFICATION
 
-### 5. Risk and Scope Assessment
+This is a **correctness/data integrity fix**, not a feature addition. It
+closes a gap where filesystem metadata changes could be lost or
+inconsistently replayed after a crash. The `EXT4_FC_REASON_RESIZE` enum
+value already exists — only the missing call site is added.
 
-**Changes are small and surgical:**
-- Only 1 file changed (fs/ext4/extents.c)
-- Function signature change: adding `int flags` parameter
-- 3 call sites modified: passing `flags` instead of hardcoded values
-- Net code change is minimal
+### 6. SCOPE AND RISK
 
-**Risk of regression:** LOW
-- The flags being propagated are the same flags the caller already has
-- The hardcoded `EXT4_GET_BLOCKS_CONVERT_UNWRITTEN` was already included
-  in the `flags` from the caller (the call site check `flags &
-  EXT4_GET_BLOCKS_CONVERT_UNWRITTEN` confirms this)
-- The main behavioral change is that `EXT4_EX_NOCACHE` now reaches these
-  inner functions
+- **Size:** 2 lines added. Minimal.
+- **Risk:** Extremely low. The only effect is forcing a full journal
+  commit instead of a fast commit during `GROUP_EXTEND`. Full commits
+  are always correct; fast commits are the optimization. This is a
+  fallback to the safe path.
+- **Subsystem:** ext4 filesystem — widely used, data integrity matters
+  enormously.
+- **Could it break anything?** No. A full commit is strictly more
+  conservative than a fast commit. The worst case is a minor performance
+  impact during online resize, which is an infrequent operation.
 
-**Subsystem impact:** HIGH - ext4 is the most widely used Linux
-filesystem
+### 7. USER IMPACT
 
-### 6. Does It Fix a Real Bug?
+- **Who is affected?** Anyone using ext4 with fast_commit enabled who
+  performs online resize via `GROUP_EXTEND`. While this is not a common
+  operation, when it does happen, data integrity on crash recovery is
+  critical.
+- **Severity if triggered:** Without this fix, crash recovery after
+  `GROUP_EXTEND` + fast commit could result in filesystem metadata
+  inconsistency — potentially data corruption.
+- **Practical likelihood:** Low frequency, but high severity when it
+  occurs.
 
-Yes. While the commit message is understated, the actual bug is:
-- `ext4_zero_range` deliberately sets `EXT4_EX_NOCACHE` to prevent stale
-  extent cache entries during extent tree modifications
-- But `convert_initialized_extent()` was dropping this flag, leading to
-  extents being cached during the modification operation
-- This can cause stale extent cache entries, which related commits have
-  proven can lead to **data corruption**
+### 8. DEPENDENCY CHECK
 
-The commit message says "makes sure the NOCACHE flag is respected
-throughout the code path" - this is a correctness fix for extent cache
-consistency.
+- The `EXT4_FC_REASON_RESIZE` enum already exists in stable trees (it
+  was added when `RESIZE_FS` was given this marking).
+- The `ext4_fc_mark_ineligible()` function already exists.
+- This is a self-contained, standalone fix with no dependencies on other
+  commits.
+- There is a sibling commit for `GROUP_ADD` that would be good to
+  backport together, but each stands alone.
 
-### 7. Dependency Check
-
-The commit is self-contained. It modifies a static function and its
-single call site within the same file. No external dependencies.
-
-### 8. Summary
+### 9. STABLE KERNEL RULES ASSESSMENT
 
 | Criterion | Assessment |
 |-----------|-----------|
-| Fixes real bug | YES - stale extent cache during zero_range can cause
-corruption |
-| Obviously correct | YES - propagating caller flags is the right
-pattern |
-| Small and contained | YES - minimal changes to one file |
-| Risk of regression | LOW - only adds flag propagation that was already
-intended |
-| Subsystem importance | HIGH - ext4 filesystem |
-| User impact | MEDIUM-HIGH - affects anyone using fallocate/zero_range
-on ext4 |
+| Obviously correct and tested | Yes — mirrors existing pattern for
+RESIZE_FS, tested by author |
+| Fixes a real bug | Yes — missing fast-commit ineligibility marking can
+lead to incomplete crash recovery |
+| Important issue | Yes — data integrity / potential corruption on crash
+recovery |
+| Small and contained | Yes — 2 lines in one file |
+| No new features | Correct — uses existing infrastructure |
+| Applies cleanly | Very likely — minimal change to stable code |
 
-This commit fixes a real correctness issue in ext4's extent cache
-management during `ext4_zero_range` operations. The NOCACHE flag was
-being dropped, which could lead to stale extent cache entries - a class
-of bug that has been directly linked to data corruption in related
-recent fixes. The change is small, surgical, obviously correct, and
-carries minimal regression risk.
+### 10. RISK vs BENEFIT
+
+- **Risk:** Near zero. Forces a safe fallback path for a rare operation.
+- **Benefit:** Prevents potential filesystem metadata inconsistency
+  after crash during online resize with fast commit enabled.
+
+### CONCLUSION
+
+This is a small, surgical, correctness fix for a real gap in ext4's fast
+commit mechanism. The `RESIZE_FS` ioctl already had this protection, but
+`GROUP_EXTEND` was missed. The fix prevents potential data integrity
+issues during crash recovery. It uses existing infrastructure
+(`EXT4_FC_REASON_RESIZE` and `ext4_fc_mark_ineligible()`), is self-
+contained, and has effectively zero regression risk. It meets all stable
+kernel criteria.
 
 **YES**
 
- fs/ext4/extents.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ext4/ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f1322f64071ff..4e97d1e7213f3 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3818,6 +3818,7 @@ static struct ext4_ext_path *
- convert_initialized_extent(handle_t *handle, struct inode *inode,
- 			   struct ext4_map_blocks *map,
- 			   struct ext4_ext_path *path,
-+			   int flags,
- 			   unsigned int *allocated)
- {
- 	struct ext4_extent *ex;
-@@ -3843,11 +3844,11 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 5109b005e0286..e5e197ac7d88b 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1612,6 +1612,8 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
  
- 	if (ee_block != map->m_lblk || ee_len > map->m_len) {
- 		path = ext4_split_convert_extents(handle, inode, map, path,
--				EXT4_GET_BLOCKS_CONVERT_UNWRITTEN, NULL);
-+						  flags, NULL);
- 		if (IS_ERR(path))
- 			return path;
- 
--		path = ext4_find_extent(inode, map->m_lblk, path, 0);
-+		path = ext4_find_extent(inode, map->m_lblk, path, flags);
- 		if (IS_ERR(path))
- 			return path;
- 		depth = ext_depth(inode);
-@@ -4259,7 +4260,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 			if ((!ext4_ext_is_unwritten(ex)) &&
- 			    (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN)) {
- 				path = convert_initialized_extent(handle,
--					inode, map, path, &allocated);
-+					inode, map, path, flags, &allocated);
- 				if (IS_ERR(path))
- 					err = PTR_ERR(path);
- 				goto out;
+ 		err = ext4_group_extend(sb, EXT4_SB(sb)->s_es, n_blocks_count);
+ 		if (EXT4_SB(sb)->s_journal) {
++			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE,
++						NULL);
+ 			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
+ 			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, 0);
+ 			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
 -- 
 2.51.0
 
