@@ -1,266 +1,284 @@
-Return-Path: <linux-ext4+bounces-13699-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13700-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KHabEfLpkGkfdwEAu9opvQ
-	(envelope-from <linux-ext4+bounces-13699-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:34 +0100
+	id AAiwGh5rkWkGigEAu9opvQ
+	(envelope-from <linux-ext4+bounces-13700-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Feb 2026 07:43:42 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5CC013D961
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 22:32:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40CF13E240
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Feb 2026 07:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BE775302B81A
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Feb 2026 21:27:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9178F3020009
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Feb 2026 06:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABAF2309B9;
-	Sat, 14 Feb 2026 21:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4C027A904;
+	Sun, 15 Feb 2026 06:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zr0bemsT"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=dirk.behme@gmx.de header.b="kxYs6qEq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9D72FDC20;
-	Sat, 14 Feb 2026 21:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1C74C97;
+	Sun, 15 Feb 2026 06:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771104435; cv=none; b=LCYY6q1U98zjs5LHaF3o6ylFn7zO/R2hHVFgA6uBk5+69V1lDTqxRYzT52dw3I6wbXZ4SDtO5JOlRlBn0BTNTKcGjMxHjAjqubOwcx+cqEQOkt462hGGbQcmvucnvQenZCiJHDER81f6VsPf/OHdzM0xOhnxZcdNAkyYYB3yT7A=
+	t=1771137784; cv=none; b=Ex9SixDSK4nkrTcoq044famr0e5WY3Do2/whVLwQnckdAaOZQDs59vKN60TgrCUi8kutD2yGo3eLWLYQVGV2wTayLSL77tWhnvzxgZXvX3dxVWVfhY1MwE2qMsgyJyXI+NLvrfELEz7qJlPPjKjfPiSld3EgAVmXBzvZz9ioDeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771104435; c=relaxed/simple;
-	bh=U+tA0vkY6vpqXtXMkjENXllx3tPQws0mO8+SdxXCtMo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d6/ixl5MJu0OKOnkN+FhHzUyiKg/krG6YWsswo1v0zJLCGmYHOphqhYuTptM2FU0Yt6KQZSiGD6pL1fF7ocaa9lBlZEpilwAmB4dG3uUOoLR97d36S3eYE5TaJ1WxzNwD6SQKQJWMcgUaY6V11VikWTviAtfrfrqhZKZ6vcv3J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zr0bemsT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B46EDC16AAE;
-	Sat, 14 Feb 2026 21:27:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771104435;
-	bh=U+tA0vkY6vpqXtXMkjENXllx3tPQws0mO8+SdxXCtMo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Zr0bemsTJBGExQlNcYboNX5rDuv0if6cMPvq5qVrnNrq5W3HInCNfm2gmM5UpxqdU
-	 MscBFedcPs4eDIqtlMnfMDs1TFsJj78b0R6Jum7r2rqU8P3ubsUvMUcNOuhqHiZyhF
-	 N4j3D9cjQmc098I04Ezd1TXJfslIinupMA24VWmJQ0TpwxIyj394ck+tJwrIswequp
-	 fpRiC9mG7y9Qs01QkgIZBWiwNvXR/E/5UsJ8uLXY/yX69HvjTP1FeSa6XEICQdWFrd
-	 ZmGg9/D4QxkNKtN1bGyt+3b62UvvfUMI2w1J99WioqZpgDvkGQRB3wTFpl7lBC2aNO
-	 O+CaAa3KnmXYQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.19-5.15] ext4: mark group extend fast-commit ineligible
-Date: Sat, 14 Feb 2026 16:23:47 -0500
-Message-ID: <20260214212452.782265-82-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260214212452.782265-1-sashal@kernel.org>
-References: <20260214212452.782265-1-sashal@kernel.org>
+	s=arc-20240116; t=1771137784; c=relaxed/simple;
+	bh=7cFx0wxiBt2oOL6vallIz5WVa9qyZze8EQtIXIrvi3I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z88etidK5uXXch8R+6Cs1VBqbF1AebyGb3gzJudEV47EO3QK/bj2oEM1rVhviO3+aE2jr0ShFJ6T9POxJx4tMQSYaoPhAMXkr6dDDXIlkUPZs+YXFJt9DTQkndJLdpVCfVoqOxv/jRrLxER9tB+CMuazNKGsQiWUCHxFywHpO+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=dirk.behme@gmx.de header.b=kxYs6qEq; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1771137759; x=1771742559; i=dirk.behme@gmx.de;
+	bh=AdcHYF4G/k6Zrjgfn4uMhaEygzOQ4eiFPqSXvL8Shyw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=kxYs6qEqggL4ULenD08/H++rJS0Qa/he2vbgbQgsRcdvarSVx5NCEuvol5nZwqF1
+	 gMmKWgicGg4pKMqidqBV9UV9zpqaX4hWeJ/okoQKhAXHSFzRaNopdmIEt/7T5nsPf
+	 P6Zn6sCQjN5LXQ6Ki/BZY2JqtYZIIH4rDUFAQzWdw00Po45heUOMN1R7uaTRpt4KD
+	 LFsXG6c25x4RjQb8bDxc9Wj/uJv5oDgu42hMlr0sqZuP1sf1bjpK1eLbG5GsRhiLq
+	 rwbDKh3cMZ2k1p/mz3PK56xYvZyaEtSslfwY3WbwIdo0k1DijkkubS+3volbhR5Tk
+	 L6HHLjNGIwoifE21sw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.42] ([84.129.20.229]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MRmjq-1wKXx63E5K-00OJ5P; Sun, 15
+ Feb 2026 07:42:39 +0100
+Message-ID: <ab0b9f9c-3a05-42f3-b4a7-ddb6ab0d37a4@gmx.de>
+Date: Sun, 15 Feb 2026 07:42:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.19
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 31/42] dept: assign unique dept_key to each distinct
+ wait_for_completion() caller
+To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+ damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+ dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+ chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+ max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com,
+ yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com,
+ netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com,
+ corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+ gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org,
+ arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, petr.pavlu@suse.com,
+ da.gomez@kernel.org, samitolvanen@google.com, paulmck@kernel.org,
+ frederic@kernel.org, neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com,
+ josh@joshtriplett.org, urezki@gmail.com, mathieu.desnoyers@efficios.com,
+ jiangshanlai@gmail.com, qiang.zhang@linux.dev, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
+ mgorman@suse.de, vschneid@redhat.com, chuck.lever@oracle.com,
+ neil@brown.name, okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com,
+ trondmy@kernel.org, anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+ clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+ kristina.martsenko@arm.com, wangkefeng.wang@huawei.com, broonie@kernel.org,
+ kevin.brodsky@arm.com, dwmw@amazon.co.uk, shakeel.butt@linux.dev,
+ ast@kernel.org, ziy@nvidia.com, yuzhao@google.com,
+ baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+ chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com,
+ link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org
+References: <20251205071855.72743-1-byungchul@sk.com>
+ <20251205071855.72743-32-byungchul@sk.com>
+Content-Language: de-AT-frami, en-US
+From: Dirk Behme <dirk.behme@gmx.de>
+In-Reply-To: <20251205071855.72743-32-byungchul@sk.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aWhWMgelEECPmC8s4cDGobXX6S7QtiNME6Biy1AWp+3e//5sbQ5
+ y9wEC0GO6LExJy0TTxPgi7hn9knznFwU+a3hirtKlPOCAxJAmR+f4VZcqBi5p6St8Nc30fU
+ oiV/7SpKGjIQCoOsBc01ZMd0fVmfFXBllNez+QIS6oLVPBXw4NlthHwsLkGV+AXk0sSs7K4
+ GRT5XuyhIHBhQJdzZpoIw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:OmiIocz3wZw=;W0wkBau9AOTYHToDyhFSvTXvQnG
+ ktupZxA8HsfktabnmCUkAXCnc+XMSALQKpW631c0kt2am2tZnRB1KjAIp3KTJEwEQcWmtZwOW
+ 808Yxf+pi/6r7GMawedCihBhQ233U5qPg9D8jc6NykgzJOMqNsRqStqtkvVFsWhegw6ULiX1r
+ VSLxrplZ38oP+1rSeYsFycBHFC22j+D2f09IRPV2KYmK9Gx1L70uWx6J6+lFSLrNYS/YoYAD+
+ GuZ93/Z2hf8ILPatGoNSvF4seXichTzB4WwvHQmeBUKoQyqL8b9t/RAULgIFxPy2acPMt0Tsr
+ xTtG/P7iM/qkFRXcJR6P9wZ9Zflmd/i0x2Vsb5QNsyHy88hp0BG1Qe83TSKiKd3A6OCu1qMV2
+ MQRuKX29p9QqPEDD4XxdIeuj5rC+WTJLAc17bHRydHjwJ1l9ZdmjyiR5jPRXZ8rPggjJnuNhg
+ jlfdVygBFSFLZCkjz1BVkllRerFzH2WlYxq4eiyChxWGzHykvvHoNPIksdUFs5vw6TEtfEhGU
+ bKf8iRgM83MbMCnQUgqBXmyeEwS8cfoSEwbEFxauXyxGB6JdemXE8/apMI63CDsA72jeaXhIO
+ dWAUOeHB3Pcfe7+IKMbi2hsV5kxDPVmZwGUulBHWb35H6qgI7UDk6wlOeAxzI0xQtvkg2nMno
+ 92OVuXFcv68Edqrau0VZn5M+rYrBqmzzZnNxU/JOs4oQB2iLarTihBYHY/HNTPi5qkinCjCg+
+ xYeR90jcnRaXTuZ/qNQ23qNfvZ3anKFegJ6SNxD21S1d5VLolk+Z6+aurfSJkBW/emlpiSMtX
+ m2jjBfTCzv91XM4rKK+qKWJWqMWsyGrzea+IR68L9HZsVizu1gWT9m6Rxbr4PhnfpVtUjrlOZ
+ inPyUbNP2lpijbnRP7bwvuVwgXVy7O621f72Eby1tGzof2DqBpEuNSmG32ss3GMxu0uWdRvKV
+ bXXlRJQGWYqAWCoijXlqW1cqqYwDullRLNomJp8YdTxqDkb1ZHHqCKkhOjHNF5yfn33amIKcq
+ DbActjMrdSGAaGgmBcbxqnu5BrVCAKIm2vHyj0SzFIp1qbNdRTPedqad2wRS45m2V1w3HdKPQ
+ QuFUjaEMpMZKoTKLBFxoa4Fv+6BGS9aaGCKVRBejRyor3/Cc48Tm24wJQyGjg5a45Uqmiu1PB
+ +8Y/62dUfhV3IlZvrRL3PAlsYNRzG2mTtBiA7u3LyGKV12qVWGBfgjvY2W2a9tYlHYtbdJIgs
+ zmAGlp12mTpMv5ZVYCexVzyo8+x/RdB+gqLq5EPGbUawAIo4ghGmsbR4bjKXNof0fsahPQFd0
+ Lt+FS08gXu315RXz7XAq2EK0ZHDkD3lL6X6uq6087bnDatQrnjXo/GdZdCxwNIfsdbM7CuhDN
+ yOuoHX8h0nkx/XslRCuqa3rFZ94kzYpDMnFyERim+9YmP/G3/ABDo295kQZ3KbAhx/z+X5GIV
+ WCOPA21RqqfP4WUmRIFs1mTwVefBY/DU+ZJBXEVUZK3Fn5+syt40mvYvg5FQlXKxZANNgTFtn
+ nQf/RidORDlXCZmO2ntjHRp6ug1ANSVnxnwLVvtD6698tfi/zgmJu6VcmZ5rWco1DLqC06Lzd
+ QSWRJEGIYHcH6OyiW/dVQ3O+WTGALnMn2Q5E3Nr9Iy4c9cPnTZd41FnMt4ukQWX77tiTrTAVC
+ lW6YVp1qetLxxZV8wbENhyRZa3lckgZ0ioQvuICk2fqtolJf0AgooY8Me4yrpKXy+SXpqVDk3
+ mre9t60IeawvjKa6CeF08ogQ50ssXHyjiWtloY3+4OjjJxwkJ23ZI8LZr1rwqFVq8jLXbU8pG
+ l2/wFhPIsknb2v1R1xWtoXZ+3tI1qolReEFcyJHFXbLI3Xkx8EAWVO1kIURls+znezrhFAeub
+ eyyr63igG+Lyn7lsXeDSbrDZr2CWK8xrNwP0uiZ89K/YaYDttxp87iKsfhePQCJpBzE5eLBuS
+ aAhsHUJlfCXd0BDHqOFnegNBKgGoG83tIE4Km+foHvYYOs44eOWl8Tcgirm1Tt4eoBwcdhTsp
+ Oc6VoCvhrgyMd+9FBrP9caWb/EOoFOWlj3hUGPiRwMDSbZk5Zjgs/fQxn410s/m09fj/f7Mjn
+ Yq3QUbxlQZ06yDKGiB19M6Na1kJ0k7Xz8TFZcUSDk3T8Sf/J3zPnsXSl7RWz4Bs5x8xWGhaTK
+ bOz4tTuqkzcikhwc9kzsNxgNYEKmLAKgAv6ZyryZRAJ8OUCg6Ge0ELj6egZt4ckOTj4dZKSqo
+ zJ8P8JXFLmDBU65uz8QrocOOq19joCl+A5x1brNGZsAIN6NsO4PHVC7wBOSUCZe5w4ZavM307
+ 7GzbXD+7oxgWuDe8Lsbu8+D7hnml1ggFzq/cczlZCXlJWb8CAaGRrLgoZduUwXBU+SUv2jskE
+ fANulh/KRpc6DksNkbxHqwCl8rW5ouywO9Ju9QvTVFoAEWB/VPGZkEAs4E565rc0JYHqmbFec
+ MpPgFI6WxXonFgYLvcL5FgI/Py1uOD2wKfuTrT32RKJ2QHH8jV081Bx/arKVpKb3x+fYqjNP0
+ nPFUL0PyVKgkFWg9tSYDFwhYAHZLNBoWDVeH94X31vXn2gyXbY7/flArEZa74nD3OeniaR5NG
+ FNwgc+Wc57KdVehUwOTxlKoOrUgcP9LkMfzdWDWocmKms+plACpAD3+RFpXp7Re8ap4C4tl5x
+ PmlGB4EZmw4QRlI3+5ShalEk7XvC5q65KjWmqekNJ1FFI8w0T2R65dQZxrz4Qyv7vbrEd8mUc
+ MGjg0FeCulONvq5OAga6hN16LrfYNX2wf1VRpAkgmdb8DyzABpGFhmCgzLv/yS4XAI/VYadA0
+ tNWD/CIPd2QhEK2CbP3JTfh3UggZ2Y6MEM9LFFrI1qFJaJrFghl8mCXVkVjmeDJ+KslgvWMSd
+ IuZoMuJifsLuWJ/Y4u14Eo3cD0iC4+B8dzW2LLz7AoElI2vzvrSqPcSDpaUtpyJkQvW7+un2b
+ 4EGH4oyUkNTmp/kfS8TBjHl6zQA5PtJEQ1ScXAk4vtOhMo7PStp0avZ8QRSXsdygscMOJlf2t
+ DuIceqWsnoDbQtDWcyghixKZrGbQGAVifNSve4mly1QgEUjgekWwvBE6iRNvpJLPAG9pEkNcg
+ 38zVrWctUOEMkN45pnCGgyaoZZCLzZshmv2VXMnq0oE+Pp10dswm8JP2OJMXzOxih+AmDKB0v
+ fKXhMYulthDSmFULwLNPx113334FJq+LZ3u9C3UtaiRkhZRX5oBjc7Cuz3JK80ZsjPS/TdWao
+ f3jrOk1wMCWDO6gEqF0IhJxGwLDmuHu40/Vb83GDdJPD3dtx3vD0J0b0GE+oJW40RksjQR5ec
+ EyGHjaAB/JnEixmc4LwNwhO1DvWaaHOkMEqzyeGM9l/j4cCF1Xej5DBfSaiFXQb8GjDTSiARM
+ RC3jDB0kK081tQXGYqBmkaNWLUSDdiGbcvqwRWt/QcYan+2l68INijPPFpRQqwugw7TUKJuEM
+ 2t7dVsCzjrUzejMx/q0xltpVup9LhcPNfnn+auwZU/Md696zjnJG+qqpslEIhY42Q7ZsVqMRJ
+ ezbp3YE9oMyWn4lftbcS2eaXXl6x4J5UzTCohA/08rFLUdxGUfH41IYbTEgvRfabe52MeyvVE
+ twnLNUsrjux2M1BV1daxgLbEdkhJvCfB7E85ctCeyod/UvTaDy+d6ul6ZuCHGXltXDuY9nfuC
+ zsDGr2stfhOii9ldWa1/SdaRtEgad9BOcPfJLY3ZUqpvWalfOwwLP36H1AB5re35RjiS7BIwR
+ fb7hprOGOMtHAogX4hyTKamcFSVpjo26WARFf0q/nxUlkzFfi2QkjIUWSiT7fkGGQWYbVqVxD
+ P3koYV31X5WIGfpFcquSlppmsWY6GfcZwhz+qleDObQ10/vWcABB1EWQSSDkyOJFbx6hw4s7q
+ Jwm3/Qlw5OdRkn5Z9E9or9gzazbDWwKZSoyGLIDodRBdu+LlU5JeCNmkO6l2QNL2yr7hMpjjY
+ bSjI/aKJerHL8yyGUeDlh4DNFt8My5MgRAZCN8lQglBWh0ocE+qNfu/Ex1XhrofMR02NYQJjm
+ 7XtIVVyP505mYzzFhUj1AZyGwBbmCCI1HOjY5yjEd7TEJbNQPJbeRBM9sWmt9QDEuD3Wb3FnA
+ +6kuIdbCvpNs/F6MhwWJxy8FK6jioI6dLCLOyo9rQ5iQiynEDGY2Gg+YZWjpYa4kIE7o/VpUw
+ 1b2qQSmAotVzBbuZD/ME5OZegEEdeUZGDYTO1qP3+Ol/biDKNHm6ySsv9S+K9+U2OgLX3NL0k
+ 3DvAo8//vtW3uJ1QqzFO5xdtXIrkmtZ+K0LyXeh2AniMhUQOeNA7z3GbAwYUalqnnl/QoPvD2
+ QT/yBep3pPC1TH159m7c2ePwA9YsyLu89ZohEYb25o7Le3Qp14UK9dHtWpMe2ts2uYi4r97V3
+ PZWKE7nWAqULaqnaSMKe0L+AYBeiaRNkMZzk6ajz9FVFlp3hclnp+8gG38MBgLLDg8BhCnoLL
+ QFsQkBPtkQx0Lht81Psc0er9CqSssFyritRcIvyD/KDZtJ0cYkj0t2yb3tOzFgBov4P8Fi5gD
+ WfuF7rE2dkWtHcFnrO/nlWRf+Ros9l6sIUBsSbZH9KCFrTfc6BM2uHZZnHPGKpKoKba2fCcoh
+ GYf/h6HJb76Yt5imPyztzbqecRE6yHeUFETetxxij0xMU8KxyZ/mQUPvVngRPs3595wl7GKiu
+ POwnTxaseqJ4qhbx88li7v1A60KiS/qlo+NYItJIwnwTTknMekh3rqZD2ahFYr3bnWrid1mcJ
+ 0twHtgK9i54jkSX6SM66kLApB73gjcWtbYKhuGgZjAQ/s0FGVXn8wlbxnlI7bRlDeznn2Wr+P
+ imaDdRQTRBmMrXlAWYR+e56GJE/nxPaOs0Q7NyXM12GalGFrk3U1lSFOPfGEVVnjcpRHLZZ9o
+ +hMCDm0FpTyk6jVLKyM1QX0JX8yvuYJ8iBfXmt4H/nBthTU3lwPE7tjRCsuTFNXgA0g74UMLp
+ BSAZKcM7H/98ODGXw0bpW4b7MZ3uk4AyKewW1lt7wLn41Fz7O+CHXwwxpisoeEf7JOMWnTbzk
+ pK34qdoTD1dwcpqBLqE/popcto6u6GP7mleIhJtuUeF3cM7RslHjczgWVCeiFUxurjjIufo8W
+ h16Ry8wE6hbTg1OO0tIuRXasqcSYYZ9yZVED/QEzdbdVwsTdgvbr7h+l5AEymx23xgZ6S9WBo
+ g3F6rwa/6mvE7vIKC+ZARtYb/O/KLB+T9ay6OhgBl0jbKPDuVtw==
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13699-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13700-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	FREEMAIL_CC(0.00)[skhynix.com,linux-foundation.org,opensource.wdc.com,vger.kernel.org,dilger.ca,redhat.com,infradead.org,kernel.org,linutronix.de,goodmis.org,joelfernandes.org,ffwll.ch,gmail.com,intel.com,mit.edu,fromorbit.com,linuxfoundation.org,lge.com,kvack.org,cmpxchg.org,linux.com,google.com,suse.cz,vflare.org,toxicpanda.com,lists.freedesktop.org,oracle.com,ericsson.com,kzalloc.com,arm.com,lwn.net,alien8.de,zytor.com,linaro.org,padovan.org,amd.com,arndb.de,suse.com,nvidia.com,joshtriplett.org,efficios.com,linux.dev,suse.de,brown.name,talpey.com,huawei.com,amazon.co.uk,linux.alibaba.com,glider.be,linux.intel.com,treblig.org,star-ark.net,valla.it,vivo.com,baidu.com,lists.infradead.org,lists.linaro.org,lists.linux.dev,qq.com,ownmail.net,sang-engineering.com,linux-m68k.org,garyguo.net,protonmail.com,umich.edu];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.beauty:email]
-X-Rspamd-Queue-Id: C5CC013D961
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmx.de];
+	RCPT_COUNT_GT_50(0.00)[166];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dirk.behme@gmx.de,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.de:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4,renesas];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:mid,gmx.de:dkim,sk.com:email]
+X-Rspamd-Queue-Id: C40CF13E240
 X-Rspamd-Action: no action
 
-From: Li Chen <me@linux.beauty>
+On 05.12.25 08:18, Byungchul Park wrote:
+> wait_for_completion() can be used at various points in the code and it's
+> very hard to distinguish wait_for_completion()s between different usages=
+.
+> Using a single dept_key for all the wait_for_completion()s could trigger
+> false positive reports.
+>=20
+> Assign unique dept_key to each distinct wait_for_completion() caller to
+> avoid false positive reports.
+>=20
+> While at it, add a rust helper for wait_for_completion() to avoid build
+> errors.
+>=20
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  include/linux/completion.h | 100 +++++++++++++++++++++++++++++++------
+>  kernel/sched/completion.c  |  60 +++++++++++-----------
+>  rust/helpers/completion.c  |   5 ++
+>  3 files changed, 120 insertions(+), 45 deletions(-)
+>=20
+...
+> diff --git a/rust/helpers/completion.c b/rust/helpers/completion.c
+> index b2443262a2ae..5bae5e749def 100644
+> --- a/rust/helpers/completion.c
+> +++ b/rust/helpers/completion.c
+> @@ -6,3 +6,8 @@ void rust_helper_init_completion(struct completion *x)
+>  {
+>  	init_completion(x);
+>  }
+> +
+> +void rust_helper_wait_for_completion(struct completion *x)
 
-[ Upstream commit 1f8dd813a1c771b13c303f73d876164bc9b327cc ]
+Please add `__rust_helper`:
 
-Fast commits only log operations that have dedicated replay support.
-EXT4_IOC_GROUP_EXTEND grows the filesystem to the end of the last
-block group and updates the same on-disk metadata without going
-through the fast commit tracking paths.
-In practice these operations are rare and usually followed by further
-updates, but mixing them into a fast commit makes the overall
-semantics harder to reason about and risks replay gaps if new call
-sites appear.
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit=
+/rust/helpers/completion.c?h=3Dnext-20260213&id=3D1c7a6f48f7eeb3014584d2fc=
+55fc67f0cbaeef69
 
-Teach ext4 to mark the filesystem fast-commit ineligible when
-EXT4_IOC_GROUP_EXTEND grows the filesystem.
-This forces those transactions to fall back to a full commit,
-ensuring that the group extension changes are captured by the normal
-journal rather than partially encoded in fast commit TLVs.
-This change should not affect common workloads but makes online
-resize via GROUP_EXTEND safer and easier to reason about under fast
-commit.
+Best regards
 
-Testing:
-1. prepare:
-    dd if=/dev/zero of=/root/fc_resize.img bs=1M count=0 seek=256
-    mkfs.ext4 -O fast_commit -F /root/fc_resize.img
-    mkdir -p /mnt/fc_resize && mount -t ext4 -o loop /root/fc_resize.img /mnt/fc_resize
-2. Extended the filesystem to the end of the last block group using a
-   helper that calls EXT4_IOC_GROUP_EXTEND on the mounted filesystem
-   and checked fc_info:
-    ./group_extend_helper /mnt/fc_resize
-    cat /proc/fs/ext4/loop0/fc_info
-   shows the "Resize" ineligible reason increased.
-3. Fsynced a file on the resized filesystem and confirmed that the fast
-   commit ineligible counter incremented for the resize transaction:
-    touch /mnt/fc_resize/file
-    /root/fsync_file /mnt/fc_resize/file
-    sync
-    cat /proc/fs/ext4/loop0/fc_info
-
-Signed-off-by: Li Chen <me@linux.beauty>
-Link: https://patch.msgid.link/20251211115146.897420-6-me@linux.beauty
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-### 4. DETAILED FINDINGS
-
-This is extremely revealing. The investigation shows:
-
-**A real gap exists:** `EXT4_IOC_RESIZE_FS` already has
-`ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE, NULL)`, but
-`EXT4_IOC_GROUP_EXTEND` (and `EXT4_IOC_GROUP_ADD` in a sibling commit)
-do **not**. This is an inconsistency — all three ioctls perform
-filesystem geometry changes that are not supported by fast commit
-replay.
-
-**No replay support for geometry changes:** The fast commit replay logic
-only handles file-level operations (add_range, del_range, link, unlink,
-creat, inode). There are NO replay tags for superblock or group
-descriptor changes. If `GROUP_EXTEND` runs and a fast commit is used
-instead of a full journal commit, the geometry changes would not be
-replayed on crash recovery.
-
-**This is a data integrity issue:** If a fast commit transaction
-includes both file operations (which are tracked) and geometry changes
-from `GROUP_EXTEND` (which are untracked), crash recovery could replay
-the file operations against stale filesystem geometry, leading to silent
-metadata inconsistency or corruption.
-
-### 5. CLASSIFICATION
-
-This is a **correctness/data integrity fix**, not a feature addition. It
-closes a gap where filesystem metadata changes could be lost or
-inconsistently replayed after a crash. The `EXT4_FC_REASON_RESIZE` enum
-value already exists — only the missing call site is added.
-
-### 6. SCOPE AND RISK
-
-- **Size:** 2 lines added. Minimal.
-- **Risk:** Extremely low. The only effect is forcing a full journal
-  commit instead of a fast commit during `GROUP_EXTEND`. Full commits
-  are always correct; fast commits are the optimization. This is a
-  fallback to the safe path.
-- **Subsystem:** ext4 filesystem — widely used, data integrity matters
-  enormously.
-- **Could it break anything?** No. A full commit is strictly more
-  conservative than a fast commit. The worst case is a minor performance
-  impact during online resize, which is an infrequent operation.
-
-### 7. USER IMPACT
-
-- **Who is affected?** Anyone using ext4 with fast_commit enabled who
-  performs online resize via `GROUP_EXTEND`. While this is not a common
-  operation, when it does happen, data integrity on crash recovery is
-  critical.
-- **Severity if triggered:** Without this fix, crash recovery after
-  `GROUP_EXTEND` + fast commit could result in filesystem metadata
-  inconsistency — potentially data corruption.
-- **Practical likelihood:** Low frequency, but high severity when it
-  occurs.
-
-### 8. DEPENDENCY CHECK
-
-- The `EXT4_FC_REASON_RESIZE` enum already exists in stable trees (it
-  was added when `RESIZE_FS` was given this marking).
-- The `ext4_fc_mark_ineligible()` function already exists.
-- This is a self-contained, standalone fix with no dependencies on other
-  commits.
-- There is a sibling commit for `GROUP_ADD` that would be good to
-  backport together, but each stands alone.
-
-### 9. STABLE KERNEL RULES ASSESSMENT
-
-| Criterion | Assessment |
-|-----------|-----------|
-| Obviously correct and tested | Yes — mirrors existing pattern for
-RESIZE_FS, tested by author |
-| Fixes a real bug | Yes — missing fast-commit ineligibility marking can
-lead to incomplete crash recovery |
-| Important issue | Yes — data integrity / potential corruption on crash
-recovery |
-| Small and contained | Yes — 2 lines in one file |
-| No new features | Correct — uses existing infrastructure |
-| Applies cleanly | Very likely — minimal change to stable code |
-
-### 10. RISK vs BENEFIT
-
-- **Risk:** Near zero. Forces a safe fallback path for a rare operation.
-- **Benefit:** Prevents potential filesystem metadata inconsistency
-  after crash during online resize with fast commit enabled.
-
-### CONCLUSION
-
-This is a small, surgical, correctness fix for a real gap in ext4's fast
-commit mechanism. The `RESIZE_FS` ioctl already had this protection, but
-`GROUP_EXTEND` was missed. The fix prevents potential data integrity
-issues during crash recovery. It uses existing infrastructure
-(`EXT4_FC_REASON_RESIZE` and `ext4_fc_mark_ineligible()`), is self-
-contained, and has effectively zero regression risk. It meets all stable
-kernel criteria.
-
-**YES**
-
- fs/ext4/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 5109b005e0286..e5e197ac7d88b 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1612,6 +1612,8 @@ static long __ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 
- 		err = ext4_group_extend(sb, EXT4_SB(sb)->s_es, n_blocks_count);
- 		if (EXT4_SB(sb)->s_journal) {
-+			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_RESIZE,
-+						NULL);
- 			jbd2_journal_lock_updates(EXT4_SB(sb)->s_journal);
- 			err2 = jbd2_journal_flush(EXT4_SB(sb)->s_journal, 0);
- 			jbd2_journal_unlock_updates(EXT4_SB(sb)->s_journal);
--- 
-2.51.0
+Dirk
 
 
