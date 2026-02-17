@@ -1,53 +1,85 @@
-Return-Path: <linux-ext4+bounces-13710-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13711-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cI65CwfblGl7IQIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13710-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 22:17:59 +0100
+	id +EPaFh7ilGmWIgIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13711-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 22:48:14 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C42EF150AA6
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 22:17:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06138150E97
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 22:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DA42430745D1
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 21:14:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8585B302617E
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Feb 2026 21:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3080437BE93;
-	Tue, 17 Feb 2026 21:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284222FB630;
+	Tue, 17 Feb 2026 21:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nYDLMu4E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kIzruJhN"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69D237BE81;
-	Tue, 17 Feb 2026 21:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C064D2F5308;
+	Tue, 17 Feb 2026 21:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771362880; cv=none; b=gN6Aax/TfZDbfMDdGh2w9TiYoHCLKDSrwtPVylpY7EGyb15L4yR0a73ku7kLCIifmjC1XKQBrmQwX5vSlgKhxQzb6Yo1y2zU/3Ga/TctSN5t4mwE0Y120y3iA6Ss9TMlY8SXPfd7YZUx1Bb/Gf8ukxqZfOycf++IMpEoeoHTg/k=
+	t=1771364866; cv=none; b=KEOIfs3XEQwhgFxBxK7hlcC28NM2laTekmVhpn81pcETKU4gaUDd9mt7jWYd7QN9yU6MDUTKUkyRG9N3OhLccKBDh8HSmHTFp98ce3Mg5wN3H6v8byV3uQHFi3NH7dBDO1tRsTqk8l8L1VvlSk2rNiCCHBRXrZX4qFLInTVpsM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771362880; c=relaxed/simple;
-	bh=5PKRA6JisViHy/Wt+cxaLmoaEMt0eP0saSrcTq0zDDI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=s4c6R1RXfMrw6j8xL36caE97FZOcOWYBf1N49FLN7ZathaaJiWurbhxctj1Uw82tT6K1451+jP1L79T/SSYnvxTMzuO3aZ8A7sTdGTeFJZrZNyT+Tu12MlMT/6iBxL64SjrsqbB8eeFADrTgQKeBuIsPdkKUjGn4pENMuNDqIv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nYDLMu4E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7486AC2BC86;
-	Tue, 17 Feb 2026 21:14:40 +0000 (UTC)
+	s=arc-20240116; t=1771364866; c=relaxed/simple;
+	bh=uFarXmlAvCx7b/yKLd2k3+58CR08lbeRk5TkvQs+/0A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HlMSptfcODhj+J7P26x2IMFqCLI2YGqYl/KGlTVs6oil95mw/ZkLGVSxxS7fHRu9ZHL6rjYa5NUK0RZ0hK2gITZN75GWtqsEHP89av3b011xxlA+f60cz+KSziDcP3h7fgl3avqQXMW9Z4G7I8w5SH9gMefEV3XrQK2VIx6R40s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kIzruJhN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20653C4CEF7;
+	Tue, 17 Feb 2026 21:47:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771362880;
-	bh=5PKRA6JisViHy/Wt+cxaLmoaEMt0eP0saSrcTq0zDDI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=nYDLMu4EsZ+ybxrnDEGJ0hhXnV3XzXDcAUNSHNW9WD1vmFRw7eK7sqfsOKZchNkdQ
-	 iWsJ/BLiHUb1zxwbZEL53A4ROd5F5RqRP9DFRpxoPZxC1FyR+kM5x1EwCQVgd0y0uo
-	 tspuUfkt+BOs6dctpP9v3K+aCf6rjdPBDyjEQQT9bBrqPfcwCo5B1KQWUmvdM4Lp0c
-	 zidBp52jkgRn1EPdGPglSWNzNvdbSO+PMCdsh2+ny+JiD15l1swPfNY04ev2WRqD5o
-	 BZwhk4buxzsV5HQ2f8JLto9W73xXwKDf1PPvdYpP9zuTIMFL0ZPl1XwUKdMii+xqQM
-	 82YR0p6MUHM2A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 84FE23806667;
-	Tue, 17 Feb 2026 21:14:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1771364866;
+	bh=uFarXmlAvCx7b/yKLd2k3+58CR08lbeRk5TkvQs+/0A=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kIzruJhNO4cS4+JtGZE7/hXD1JcWKjVgWD2RAuLpE9FMTZYBbThGG6LTSUbnPCeP/
+	 yW28Wceq4gziBpRxYmKoWIBIPu+gq627IXmtV9vubGkoPR9gfQ9AXVFcNEySjRhVsV
+	 Sctbj1BoiWbThrTw5ErOYyg6d+sKi15pyJg5ptfIBQecMeTsE8SZaYG6B0FXR3j1Tz
+	 EKFaxCFfwq1+khuL39yNVwTTREW2nTOGwrPdJ5AOOCGZAkxWocBF0+WOA/y3sYUgZH
+	 reyhUsSf3ntIMtApoeWWghJHKzmgKwadrTfjZFq6PBLYMVvQNAwbToQZWJvpCbH0oY
+	 m01n2mn6owqrQ==
+From: Chuck Lever <cel@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	hirofumi@mail.parknet.co.jp,
+	linkinjeon@kernel.org,
+	sj1557.seo@samsung.com,
+	yuezhang.mo@sony.com,
+	almaz.alexandrovich@paragon-software.com,
+	slava@dubeyko.com,
+	glaubitz@physik.fu-berlin.de,
+	frank.li@vivo.com,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	cem@kernel.org,
+	sfrench@samba.org,
+	pc@manguebit.org,
+	ronniesahlberg@gmail.com,
+	sprasad@microsoft.com,
+	trondmy@kernel.org,
+	anna@kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	hansg@kernel.org,
+	senozhatsky@chromium.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH v8 00/17] Subject: Exposing case folding behavior
+Date: Tue, 17 Feb 2026 16:47:24 -0500
+Message-ID: <20260217214741.1928576-1-cel@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,92 +87,202 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH 01/11] fsverity: don't issue readahead for
- non-ENOENT errors from __filemap_get_folio
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <177136287232.643511.13012047389860653614.git-patchwork-notify@kernel.org>
-Date: Tue, 17 Feb 2026 21:14:32 +0000
-References: <20260202060754.270269-2-hch@lst.de>
-In-Reply-To: <20260202060754.270269-2-hch@lst.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: ebiggers@kernel.org, fsverity@lists.linux.dev, brauner@kernel.org,
- tytso@mit.edu, aalbersh@redhat.com, willy@infradead.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- viro@zeniv.linux.org.uk, jaegeuk@kernel.org, dsterba@suse.com, jack@suse.cz,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13710-lists,linux-ext4=lfdr.de,f2fs];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,kernel.org,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,mit.edu,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13711-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[32];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[cel@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C42EF150AA6
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 06138150E97
 X-Rspamd-Action: no action
 
-Hello:
+From: Chuck Lever <chuck.lever@oracle.com>
 
-This series was applied to jaegeuk/f2fs.git (dev)
-by Eric Biggers <ebiggers@kernel.org>:
+Following on from
 
-On Mon,  2 Feb 2026 07:06:30 +0100 you wrote:
-> Issuing more reads on errors is not a good idea, especially when the
-> most common error here is -ENOMEM.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/verity/pagecache.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+https://lore.kernel.org/linux-nfs/20251021-zypressen-bazillus-545a44af57fd@brauner/T/#m0ba197d75b7921d994cf284f3cef3a62abb11aaa
 
-Here is the summary with links:
-  - [f2fs-dev,01/11] fsverity: don't issue readahead for non-ENOENT errors from __filemap_get_folio
-    https://git.kernel.org/jaegeuk/f2fs/c/23eec9fd64b2
-  - [f2fs-dev,02/11] readahead: push invalidate_lock out of page_cache_ra_unbounded
-    (no matching commit)
-  - [f2fs-dev,03/11] ext4: move ->read_folio and ->readahead to readahead.c
-    (no matching commit)
-  - [f2fs-dev,04/11] fsverity: kick off hash readahead at data I/O submission time
-    (no matching commit)
-  - [f2fs-dev,05/11] fsverity: deconstify the inode pointer in struct fsverity_info
-    https://git.kernel.org/jaegeuk/f2fs/c/7e36e044958d
-  - [f2fs-dev,06/11] fsverity: push out fsverity_info lookup
-    (no matching commit)
-  - [f2fs-dev,07/11] fs: consolidate fsverity_info lookup in buffer.c
-    https://git.kernel.org/jaegeuk/f2fs/c/f6ae956dfb34
-  - [f2fs-dev,08/11] ext4: consolidate fsverity_info lookup
-    (no matching commit)
-  - [f2fs-dev,09/11] f2fs: consolidate fsverity_info lookup
-    (no matching commit)
-  - [f2fs-dev,10/11] btrfs: consolidate fsverity_info lookup
-    https://git.kernel.org/jaegeuk/f2fs/c/b0160e4501bb
-  - [f2fs-dev,11/11] fsverity: use a hashtable to find the fsverity_info
-    (no matching commit)
+I'm attempting to implement enough support in the Linux VFS to
+enable file services like NFSD and ksmbd (and user space
+equivalents) to provide the actual status of case folding support
+in local file systems. The default behavior for local file systems
+not explicitly supported in this series is to reflect the usual
+POSIX behaviors:
 
-You are awesome, thank you!
+  case-insensitive = false
+  case-nonpreserving = true
+
+The case-insensitivity and case-nonpreserving booleans can be
+consumed immediately by NFSD. These two attributes have been part of
+the NFSv3 and NFSv4 protocols for decades, in order to support NFS
+client implementations on non-POSIX systems.
+
+Support for user space file servers is why this series exposes case
+folding information via a user-space API. I don't know of any other
+category of user-space application that requires access to case
+folding info.
+
+
+The Linux NFS community has a growing interest in supporting NFS
+clients on Windows and MacOS platforms, where file name behavior does
+not align with traditional POSIX semantics.
+
+One example of a Windows-based NFS client is [1]. This client
+implementation explicitly requires servers to report
+FATTR4_WORD0_CASE_INSENSITIVE = TRUE for proper operation, a hard
+requirement for Windows client interoperability because Windows
+applications expect case-insensitive behavior. When an NFS client
+knows the server is case-insensitive, it can avoid issuing multiple
+LOOKUP/READDIR requests to search for case variants, and applications
+like Win32 programs work correctly without manual workarounds or
+code changes.
+
+Even the Linux client can take advantage of this information. Trond
+merged patches 4 years ago [2] that introduce support for case
+insensitivity, in support of the Hammerspace NFS server. In
+particular, when a client detects a case-insensitive NFS share,
+negative dentry caching must be disabled (a lookup for "FILE.TXT"
+failing shouldn't cache a negative entry when "file.txt" exists)
+and directory change invalidation must clear all cached case-folded
+file name variants.
+
+Hammerspace servers and several other NFS server implementations
+operate in multi-protocol environments, where a single file service
+instance caters to both NFS and SMB clients. In those cases, things
+work more smoothly for everyone when the NFS client can see and adapt
+to the case folding behavior that SMB users rely on and expect. NFSD
+needs to support the case-insensitivity and case-nonpreserving
+booleans properly in order to participate as a first-class citizen
+in such environments.
+
+Series based on 9702969978695d9a699a1f34771580cdbb153b33
+
+[1] https://github.com/kofemann/ms-nfs41-client
+
+[2] https://patchwork.kernel.org/project/linux-nfs/cover/20211217203658.439352-1-trondmy@kernel.org/
+
+---
+
+Changes since v7:
+- Split file_attr initialization changes into a separate patch
+
+Changes since v6:
+- Remove the memset from vfs_fileattr_get
+
+Changes since v5:
+- Finish the conversion to FS_XFLAGs
+- NFSv4 GETATTR now clears the attr mask bit if nfsd_get_case_info()
+  fails
+
+Changes since v4:
+- Observe the MSDOS "nocase" mount option
+- Define new FS_XFLAGs for the user API
+
+Changes since v3:
+- Change fa->case_preserving to fa_case_nonpreserving
+- VFAT is case preserving
+- Make new fields available to user space
+
+Changes since v2:
+- Remove unicode labels
+- Replace vfs_get_case_info
+- Add support for several more local file system implementations
+- Add support for in-kernel SMB server
+
+Changes since RFC:
+- Use file_getattr instead of statx
+- Postpone exposing Unicode version until later
+- Support NTFS and ext4 in addition to FAT
+- Support NFSv4 fattr4 in addition to NFSv3 PATHCONF
+
+
+Chuck Lever (17):
+  fs: Move file_kattr initialization to callers
+  fs: Add case sensitivity flags to file_kattr
+  fat: Implement fileattr_get for case sensitivity
+  exfat: Implement fileattr_get for case sensitivity
+  ntfs3: Implement fileattr_get for case sensitivity
+  hfs: Implement fileattr_get for case sensitivity
+  hfsplus: Report case sensitivity in fileattr_get
+  ext4: Report case sensitivity in fileattr_get
+  xfs: Report case sensitivity in fileattr_get
+  cifs: Implement fileattr_get for case sensitivity
+  nfs: Implement fileattr_get for case sensitivity
+  f2fs: Add case sensitivity reporting to fileattr_get
+  vboxsf: Implement fileattr_get for case sensitivity
+  isofs: Implement fileattr_get for case sensitivity
+  nfsd: Report export case-folding via NFSv3 PATHCONF
+  nfsd: Implement NFSv4 FATTR4_CASE_INSENSITIVE and
+    FATTR4_CASE_PRESERVING
+  ksmbd: Report filesystem case sensitivity via FS_ATTRIBUTE_INFORMATION
+
+ fs/exfat/exfat_fs.h      |  2 ++
+ fs/exfat/file.c          | 16 ++++++++++++++--
+ fs/exfat/namei.c         |  1 +
+ fs/ext4/ioctl.c          |  7 +++++++
+ fs/f2fs/file.c           |  7 +++++++
+ fs/fat/fat.h             |  3 +++
+ fs/fat/file.c            | 22 ++++++++++++++++++++++
+ fs/fat/namei_msdos.c     |  1 +
+ fs/fat/namei_vfat.c      |  1 +
+ fs/file_attr.c           | 18 +++++++++---------
+ fs/hfs/dir.c             |  1 +
+ fs/hfs/hfs_fs.h          |  2 ++
+ fs/hfs/inode.c           | 13 +++++++++++++
+ fs/hfsplus/inode.c       |  8 ++++++++
+ fs/isofs/dir.c           | 15 +++++++++++++++
+ fs/nfs/client.c          |  9 +++++++--
+ fs/nfs/inode.c           | 20 ++++++++++++++++++++
+ fs/nfs/internal.h        |  3 +++
+ fs/nfs/nfs3proc.c        |  2 ++
+ fs/nfs/nfs3xdr.c         |  7 +++++--
+ fs/nfs/nfs4proc.c        |  2 ++
+ fs/nfs/proc.c            |  3 +++
+ fs/nfs/symlink.c         |  3 +++
+ fs/nfsd/nfs3proc.c       | 18 ++++++++++--------
+ fs/nfsd/nfs4xdr.c        | 31 +++++++++++++++++++++++++++----
+ fs/nfsd/vfs.c            | 25 +++++++++++++++++++++++++
+ fs/nfsd/vfs.h            |  2 ++
+ fs/ntfs3/file.c          | 23 +++++++++++++++++++++++
+ fs/ntfs3/inode.c         |  1 +
+ fs/ntfs3/namei.c         |  2 ++
+ fs/ntfs3/ntfs_fs.h       |  1 +
+ fs/smb/client/cifsfs.c   | 20 ++++++++++++++++++++
+ fs/smb/server/smb2pdu.c  | 25 +++++++++++++++++++------
+ fs/vboxsf/dir.c          |  1 +
+ fs/vboxsf/file.c         |  6 ++++--
+ fs/vboxsf/super.c        |  4 ++++
+ fs/vboxsf/utils.c        | 31 +++++++++++++++++++++++++++++++
+ fs/vboxsf/vfsmod.h       |  6 ++++++
+ fs/xfs/xfs_ioctl.c       |  9 ++++++++-
+ include/linux/fileattr.h |  3 ++-
+ include/linux/nfs_xdr.h  |  2 ++
+ include/uapi/linux/fs.h  |  7 +++++++
+ 42 files changed, 346 insertions(+), 37 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.53.0
 
 
