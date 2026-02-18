@@ -1,440 +1,303 @@
-Return-Path: <linux-ext4+bounces-13741-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13742-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QDOdCIswlmktcAIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13741-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 22:35:07 +0100
+	id OEFbOoQ1lmkkcQIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13742-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 22:56:20 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD5715A2A7
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 22:35:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E23615A741
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 22:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D9C02300D638
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 21:34:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7A57D3036D55
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 21:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADF92E6CAB;
-	Wed, 18 Feb 2026 21:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0D832BF4B;
+	Wed, 18 Feb 2026 21:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="KeuNmF5o"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="MEK9q3kk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00364e01.pphosted.com (mx0b-00364e01.pphosted.com [148.163.139.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB7328C87C
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 21:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.139.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CE4324B1F
+	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 21:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771450494; cv=none; b=aBiH2biIaCTnevaDSvP2fxBkaF/gIrfPNlfv6BA1tRF7c/7SYxAvR6QqXv7NIP2RBsofoMj4idbfh5jrRndvvhUaU7clAWZUw8sIik+jDcrhwZmKVak7s14p6Zn02R6Kx//axl1im956cjcXeeS7NNS4qjY+QYSPiV+xLMdUwD4=
+	t=1771451728; cv=none; b=pbeg+yxEWlqqCpfoWeSVh2P4By++OdZtOmuf5SqYAJeOwsQ4Ly68vED9dUmpgww2ZopX+HXXaO74QV7Wk8GfQZbNCctYBu4YGs4yLuA07xaUre/d/P3q+YQTTW1kcOvZn8K6XAYJVGh0YgZJGMG7EObtIYsNVxnN2jB2xjjr4Rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771450494; c=relaxed/simple;
-	bh=T0LvtdehGbkNJTSiNQgmirD033nsR1VjUZyYykwDeYI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=f6A9OKbIMuV021mJgrzqpFWZxBnjPvJGuxqwg81rnEHCWJ/OmZcLrZtLWF+Fh1E1rLwh8B2FBwpJULCpW///8qgzuXlye2c1iCUUeOrsTYSnmfPxiSzKDvEJsWdBlt5swzUsvgRmCSs3r0QLkIHpiDxYimeuuE8EgkvhKRhOC6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=KeuNmF5o; arc=none smtp.client-ip=148.163.139.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
-Received: from pps.filterd (m0167074.ppops.net [127.0.0.1])
-	by mx0b-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61ILDWEm1097045
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 16:13:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=pps01; bh=uuJ79dh9olk4pYGV3v3Dl4Z5kR
-	JT1ZZ5CX7FO3lNziY=; b=KeuNmF5oPATHpJ95S8DRfxBbTUWTy53j/ULgNAxQWU
-	0ybJCdDUX8KamSqaD++34v507hflbquC/BwZaas9fSXXivIpGKw/MSm+qUZUB5By
-	Zg47BJ93bNc1Msqqr18QqBYryLWctBDCM/7OfotBLr82TvVNoq6nw5xOFTPojuE6
-	njW9YWrIVgH9yBajGp7dN5y+dpo8AST5XOhyH8M7rHqFE1Q4LU7Goaj18A3+4DnO
-	cxsp6MVO19RCoKXTk43qGsZYKR4eaYV7RSul6t5XySvt1JTiLN4rLf+pFjT3XU8r
-	lxRdk6Edk9tpF2NfOCzmYVt6vUvNEw8JTi5xsF+H9GdQ==
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-	by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 4cdk3hh7vm-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 16:13:31 -0500 (EST)
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-506b3fb32a1so30614531cf.0
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 13:13:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771449205; x=1772054005;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1771451728; c=relaxed/simple;
+	bh=Kx2AaXgaj3rQv+JA68P1eMLG1NNOf74Luz9qW6wfM4I=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=RpHcr3GV5B65R0Zf4vFE4Slp5xCLKM2EYxm0PwwY/cMsVum6VnoXBOVzksKu476SclfFmy2zU8ftLw9369D0a32GkXl5jsZ5ihxj7yVTAb9JLI/6waayOdLTADUUY1PSfSD6ZAfVlHUGF+Ai7uuwxu5rYcvIem5vmqREzO4qc2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=MEK9q3kk; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2a91215c158so1759015ad.0
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 13:55:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1771451726; x=1772056526; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uuJ79dh9olk4pYGV3v3Dl4Z5kRJT1ZZ5CX7FO3lNziY=;
-        b=Tkdp0ZnivPnvWytHDDRTXdpVglRXrp1nPdBav+9fAHrUg3jXYdoi/44s4ivVajqGEV
-         SG01Opq0fmSKbVdSulTmZJQHNK64I96upZbUZGBu9g56NN+9llAq2BxpVSf4XISgaSdM
-         5SzgGDRHl1+eFfr2xqNd9CZI58BRM2BsIa12RyUj9/IhsE1ejHEPd5HZ7SdAX+GoVhDC
-         Ksx39TW9AG97hiePSEdTQeyG/44f9Xd1M5oV4p/kdnG2GW3TfXWy/jFTylqc4APhYLaZ
-         KxL+GTMPjOSt5BeOU8r4K2clQYK4GB89a08KLjM/qBci1ngkIwhMQqz5QFoBOkA6gsyW
-         BooQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXjQ26/KoXLOMVK71yor0X198aplHqm7j+lrt/FquvPet0W6xiv04XPMC08D983/KIKOyFcOjDWSjTi@vger.kernel.org
-X-Gm-Message-State: AOJu0YyaphDmu7XCbo+XVqNoknw/5epH15332sHfVlUkgNYoJXIa8gfF
-	yQbsxmE5PH49kGhrEHkJNDdXVX8Qn5eoxqr+2nRliGe23l2HtYpPeCqPCsFXtjNaFr2Tnb8afQ+
-	S95Wbl421h0QV2Xw9Ys/YcZ2xTEzQBYHBu3HFlovX/SGd+7x+mRdc4bbQh4Q=
-X-Gm-Gg: AZuq6aIoFBsTAzTOY4XSv2lyRsiF6xrcy15VcDfl5KP9NvYCw6rATrzWBBLX+eH/IN8
-	ZznV2D9GthSsijTVfJ3EKuBGox+h5Iybii76nWfP/ZRibT1q8UMAwHqj3FxzY3m6SphHpvNykBb
-	kZTcIsnC2pzuSphHemegvYFHS+VOm628PfJbPdsLnr0LQ33oqyhvGDZFPfL2AjiI/29zdSoWFji
-	AwB9fH208Rh/nRyaBlWVKsQzFU6bWmv0Cjtb7oYOT++hQ6P88MaJDhPCKACT6BB3k9xiWx9UBKE
-	c2dzqg4bevZ9brgLpvYhu6xEkCydi7SQ0T/Z4uALKNorVS9Q1g/Z7AkIXWVVMfR68Vd78wMfbyo
-	y9xSWCXcxrNxQG19E7ofa7nBl2rE0wc8K
-X-Received: by 2002:ac8:5ac3:0:b0:501:13b1:14cd with SMTP id d75a77b69052e-506b3f7dc4amr210923891cf.3.1771449204959;
-        Wed, 18 Feb 2026 13:13:24 -0800 (PST)
-X-Received: by 2002:ac8:5ac3:0:b0:501:13b1:14cd with SMTP id d75a77b69052e-506b3f7dc4amr210923401cf.3.1771449204472;
-        Wed, 18 Feb 2026 13:13:24 -0800 (PST)
-Received: from [127.0.1.1] ([216.158.158.246])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8972a23c824sm180233646d6.34.2026.02.18.13.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Feb 2026 13:13:23 -0800 (PST)
-From: Tal Zussman <tz2294@columbia.edu>
-Date: Wed, 18 Feb 2026 16:13:17 -0500
-Subject: [PATCH RFC] block: enable RWF_DONTCACHE for block devices
+        bh=iRG4xP26nKbDvnlyjY+547RwecNljgQyfG7S2lbj+nY=;
+        b=MEK9q3kkTeQqFc6mpZQ/ynze1f1oeh4UEtrXZsmDrpWJSdR0f3Zh0Jz/lXoqtWlWHB
+         7EzJ6dSkwd6N1nNkoazNLx3aD9l/d2dDJk65SW8ouknjQg0gPhfI52g471R6p+aevgts
+         z9tpB7q1MI5h6ad8snngOVsD2G+a1713DYSn3TiJ1A5RaI98rNqNS6wWON4JFJmQF1i6
+         wiHebvyZlviSC9PWALdvcvUEzP3nE4VM07qoBrOJ9liD3DQRQc6w2j22036JQrKJl1wo
+         JHAEMISsYLHEkzPh4uFXO4aTFI00rgr79BgGl85de//p5OwX+iKcug7dc72jRgyERzA9
+         VCuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771451726; x=1772056526;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iRG4xP26nKbDvnlyjY+547RwecNljgQyfG7S2lbj+nY=;
+        b=gNJG/Q1b60RxYR+fwGremTPa8YFQjaTFoNAVAavCgTfJH+aq20xnm4my4hz1ketF/k
+         kw2WHuTFBRqsM88t1mLiDYm2FhWmZiqudJPWOiFMMytCeGDhT6kY+06F9NaPDt2QNfDN
+         7pE1Eu20MSjeJEuY68DBgcfHisYGh86ppv2ruNzPzqFEKGr20PexBWh2YRZeasXtsHmM
+         gmdEMJadJ0CCXfntpejK+aHH7uDf+hKRCqC70/41cJrSQvuPDkxrarFoAqRFw1SFJSDx
+         DKonjmRjcqlWXG4aOBmBn6zCaqdb1cNyj6JQ3c8sYpXFp0nh/41E5pmQJfCMytLZBOlh
+         ZBUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUeehNwCsYSHAEj9DBxAZ6lk1Pa8JuyyUnyvsIUor4txAMkLJqE/OGNP/HQWYFADl6qjshB15sIKbO3@vger.kernel.org
+X-Gm-Message-State: AOJu0YyA5/MXx23qPjARzXhbtxU9hKIsWZ9+MuP3dZDL/JlwOjkgZ9Y5
+	8JFL2qTcZw0335zzt7P/Ct68nGhIdtQk5GzBAupOAvHxvHG361b0TMR3Ku1EK2kU8CXxp9Ft41k
+	gRZHKadU=
+X-Gm-Gg: AZuq6aKbLh2gQFZd5owOVSp25yLPucw8jUh3SMBl1iMssUlVMzIDUqYoU0WSEcKZa1w
+	o3FwrcDpLBxi/kRw61LqNVZj7lNZVS1spQ8R/Jz0u0xu2xMT9lexwvxIcyYtPuN5LMKmudgSLwF
+	z4QQ9KG4BBpEhUhKWr+j2rrWqHqmZW7i5ViAs//Ehg853Yo3Bjwia0M1KhaNZyq59WWfnTE2PjL
+	cKOVrIN5IxikRHgd9u+wfyJ7/TB8ry634JPUoNSAsQCleXgsLmg5rDKZpi8eJg5kxQigd3aZ3m7
+	Rp1Qr1xhJ0F05FZIt3Ec6fJaJiNNSbCNXADjclzOGPbd8QQvAKEASuj18M+OucI39/tIIwvrNRf
+	QDX5vDxKqYUB5vGUqEXO82QUeICnvTNreZfGId46DfKM2wwdc1hYNkmf7fn4+YRuSYzPFCj9LA/
+	FvjmLa9DZgC4Q556e6Qd9CyVvlNqtBZmwKswY3W1pKNeJdWShsq3txlCa8j+HYCBLAMhRFDTPyy
+	OBJkg==
+X-Received: by 2002:a17:903:2282:b0:2aa:daf7:84ea with SMTP id d9443c01a7336-2ad50f93ed5mr31942085ad.45.1771451725628;
+        Wed, 18 Feb 2026 13:55:25 -0800 (PST)
+Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad1aaddc46sm143053935ad.73.2026.02.18.13.55.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Feb 2026 13:55:25 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260218-blk-dontcache-v1-1-fad6675ef71f@columbia.edu>
-X-B4-Tracking: v=1; b=H4sIAGwrlmkC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDI0ML3aScbN2U/LyS5MTkjFRdY2MLQ2PjlBQDE9NUJaCegqLUtMwKsHn
- RSkFuzkqxtbUAJdTZe2QAAAA=
-X-Change-ID: 20260218-blk-dontcache-338133dd045e
-To: Jens Axboe <axboe@kernel.dk>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Yuezhang Mo <yuezhang.mo@sony.com>, Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Bob Copeland <me@bobcopeland.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
-        Tal Zussman <tz2294@columbia.edu>
-X-Mailer: b4 0.14.3-dev-d7477
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1771449202; l=9869;
- i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
- bh=T0LvtdehGbkNJTSiNQgmirD033nsR1VjUZyYykwDeYI=;
- b=ncr9b3Og8wbWU8LbF6spEUvNolCpc/Omr1KB8euffU2v938xtBKSpJRbDWzlQXyoEaqvB7eBM
- EkxUdWlF2bvBic15lk0/0ypTHQFiFDCMJEjYAAgimrx91gq1j8YjEKy
-X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
- pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjE4MDE4MiBTYWx0ZWRfXxfA0geiamx2v
- /T/rlgErvQCbHNb2GCF28QBXimt5BjlQsaOMrPJXI2TCUFKBIX81gQRYpot0HR1X0lGFtLXte6J
- ybj8v9sJX32/N0yQMyrn432nRgMZiIGLswUH49z6ctvWw3VZIKpgR/s3mWWqiKjQU4v4UWU0EuJ
- kvt7FbPHVGtlw1Os6GHYhf9Fi1LwWlBwwPQT361I3Lgq1rRcqM5aMjS71OcabrO+lT9wze20uxk
- KBmW7JgS3MUvAqfsMI7/uuC/VHTJ+CQDOsaWB7ZR3cn624yFxfPQpk9U9rPVkdGQfXj39DYxKUN
- eZztbnxJkQuAkvQpv7sjj395ohLGhRbKU8Pe3ekhMDLHRH1sKgWjQcQapv45QHHVBkbUmV+gDLu
- S8WcP/bt3r6qqQVctoGE9HQJsedzxRnrmN2ywEFruIzKPE9qRJon9gND+tMsH+a0vXQvCcyX1zd
- 4O+JDq/X0/T4O/shTQw==
-X-Proofpoint-GUID: nu6pipxOS2A3l9-8ZweqvdT2U6gTWVrR
-X-Authority-Analysis: v=2.4 cv=doXWylg4 c=1 sm=1 tr=0 ts=69962b7b cx=c_pps
- a=WeENfcodrlLV9YRTxbY/uA==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22
- a=Omgu3vtQbb9kFtOpCJYA:9 a=QEXdDO2ut3YA:10 a=kacYvNCVWA4VmyqE58fU:22
-X-Proofpoint-ORIG-GUID: nu6pipxOS2A3l9-8ZweqvdT2U6gTWVrR
-X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11705
- signatures=596818
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 clxscore=1011 suspectscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 impostorscore=10 adultscore=0 lowpriorityscore=10 bulkscore=10
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2602180182
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+Date: Wed, 18 Feb 2026 14:55:13 -0700
+Cc: tytso@mit.edu,
+ linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+X-Mailer: Apple Mail (2.3864.100.1.1.5)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[columbia.edu,none];
-	R_DKIM_ALLOW(-0.20)[columbia.edu:s=pps01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13741-lists,linux-ext4=lfdr.de];
-	FREEMAIL_TO(0.00)[kernel.dk,gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,samsung.com,sony.com,dubeyko.com,paragon-software.com,bobcopeland.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_FROM(0.00)[bounces-13742-lists,linux-ext4=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tz2294@columbia.edu,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[columbia.edu:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[dilger.ca];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_THREE(0.00)[4];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: BCD5715A2A7
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 4E23615A741
 X-Rspamd-Action: no action
 
-Block device buffered reads and writes already pass through
-filemap_read() and iomap_file_buffered_write() respectively, both of
-which handle IOCB_DONTCACHE. Enable RWF_DONTCACHE for block device files
-by setting FOP_DONTCACHE in def_blk_fops.
+On Feb 18, 2026, at 06:29, Vyacheslav Kovalevsky =
+<slava.kovalevskiy.2014@gmail.com> wrote:
+>=20
+> Detailed description
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Hello, there seems to be an issue with ext4 crash behavior:
+>=20
+> 1. Create and sync a new file.
+> 2. Open the file and write some data (must be more than 4096 bytes).
+> 3. Close the file.
+> 4. Open the file with O_SYNC flag and write some data.
+>=20
+> After system crash the file will have the wrong size and some =
+previously written data will be lost.
+>=20
+> According to Linux manual =
+<https://man7.org/linux/man-pages/man2/open.2.html> O_SYNC can replaced =
+with fsync() call after each write operation:
+>=20
+> ```
+> By the time write(2) (or similar) returns, the output data
+> and associated file metadata have been transferred to the
+> underlying hardware (i.e., as though each write(2) was
+> followed by a call to fsync(2)).
+> ```
+>=20
+> In this case it is not true, using O_SYNC does not persist the data =
+like fsync() does (see test below).
+>=20
+> Notes:
+> - This also seems to affect XFS in the same way.
 
-For CONFIG_BUFFER_HEAD paths, thread the kiocb through
-block_write_begin() so that buffer_head-based I/O can use DONTCACHE
-behavior as well. Callers without a kiocb context (e.g. nilfs2 recovery)
-pass NULL, which preserves the existing behavior.
+Well, the O_SYNC flag has to be on the file descriptor where writes are =
+done.
+In your case, the "write some data" at the start is done on a file =
+descriptor
+that does *not* have O_SYNC, so the semantics of that flag do not apply =
+to
+those initial writes.  It is the same as O_TRUNC or O_DIRECT or other =
+flags
+only affecting the file descriptor where it is used, not some earlier or =
+later
+file descriptor.
 
-This support is useful for databases that operate on raw block devices,
-among other userspace applications.
+Either the "write some data" phase must also use O_SYNC, or call fsync() =
+on
+that file descriptor before closing it, or call fsync() on the later =
+file
+descriptor (assuming persistence of the initial writes do not matter =
+until
+the later writes are done).
 
-Signed-off-by: Tal Zussman <tz2294@columbia.edu>
----
-This is based on v6.19. Please let me know if there's a different tree I
-should base this on.
+If anything, the man page should be updated to be more concise, like:
 
-I wasn't sure if the block_write_begin() changes were necessary for
-block device support if CONFIG_BUFFER_HEAD is set (hence the RFC tag). I
-can remove those if they're not necessary.
----
- block/fops.c                |  4 ++--
- fs/bfs/file.c               |  2 +-
- fs/buffer.c                 | 12 ++++++++----
- fs/exfat/inode.c            |  2 +-
- fs/ext2/inode.c             |  2 +-
- fs/jfs/inode.c              |  2 +-
- fs/minix/inode.c            |  2 +-
- fs/nilfs2/inode.c           |  2 +-
- fs/nilfs2/recovery.c        |  2 +-
- fs/ntfs3/inode.c            |  2 +-
- fs/omfs/file.c              |  2 +-
- fs/udf/inode.c              |  2 +-
- fs/ufs/inode.c              |  2 +-
- include/linux/buffer_head.h |  5 +++--
- 14 files changed, 24 insertions(+), 19 deletions(-)
+    "the *just written* output data *on that file descriptor* and =
+associated
+     file metadata have been transferred to the underlying hardware =
+(i.e.
+     as though each write(2) was followed by a call to =
+sync_file_range(2)
+     for the corresponding file offset(s))"
 
-diff --git a/block/fops.c b/block/fops.c
-index 4d32785b31d9..6bc727f8b252 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -505,7 +505,7 @@ static int blkdev_write_begin(const struct kiocb *iocb,
- 			      unsigned len, struct folio **foliop,
- 			      void **fsdata)
- {
--	return block_write_begin(mapping, pos, len, foliop, blkdev_get_block);
-+	return block_write_begin(iocb, mapping, pos, len, foliop, blkdev_get_block);
- }
- 
- static int blkdev_write_end(const struct kiocb *iocb,
-@@ -967,7 +967,7 @@ const struct file_operations def_blk_fops = {
- 	.splice_write	= iter_file_splice_write,
- 	.fallocate	= blkdev_fallocate,
- 	.uring_cmd	= blkdev_uring_cmd,
--	.fop_flags	= FOP_BUFFER_RASYNC,
-+	.fop_flags	= FOP_BUFFER_RASYNC | FOP_DONTCACHE,
- };
- 
- static __init int blkdev_init(void)
-diff --git a/fs/bfs/file.c b/fs/bfs/file.c
-index d33d6bde992b..f2804e38b8a7 100644
---- a/fs/bfs/file.c
-+++ b/fs/bfs/file.c
-@@ -177,7 +177,7 @@ static int bfs_write_begin(const struct kiocb *iocb,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, bfs_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, bfs_get_block);
- 	if (unlikely(ret))
- 		bfs_write_failed(mapping, pos + len);
- 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 838c0c571022..33c3580b85d8 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2241,14 +2241,18 @@ EXPORT_SYMBOL(block_commit_write);
-  *
-  * The filesystem needs to handle block truncation upon failure.
-  */
--int block_write_begin(struct address_space *mapping, loff_t pos, unsigned len,
--		struct folio **foliop, get_block_t *get_block)
-+int block_write_begin(const struct kiocb *iocb, struct address_space *mapping,
-+		loff_t pos, unsigned len, struct folio **foliop, get_block_t *get_block)
- {
- 	pgoff_t index = pos >> PAGE_SHIFT;
-+	fgf_t fgp_flags = FGP_WRITEBEGIN;
- 	struct folio *folio;
- 	int status;
- 
--	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
-+	if (iocb && iocb->ki_flags & IOCB_DONTCACHE)
-+		fgp_flags |= FGP_DONTCACHE;
-+
-+	folio = __filemap_get_folio(mapping, index, fgp_flags,
- 			mapping_gfp_mask(mapping));
- 	if (IS_ERR(folio))
- 		return PTR_ERR(folio);
-@@ -2591,7 +2595,7 @@ int cont_write_begin(const struct kiocb *iocb, struct address_space *mapping,
- 		(*bytes)++;
- 	}
- 
--	return block_write_begin(mapping, pos, len, foliop, get_block);
-+	return block_write_begin(iocb, mapping, pos, len, foliop, get_block);
- }
- EXPORT_SYMBOL(cont_write_begin);
- 
-diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c
-index f9501c3a3666..39d36e8fdfd6 100644
---- a/fs/exfat/inode.c
-+++ b/fs/exfat/inode.c
-@@ -456,7 +456,7 @@ static int exfat_write_begin(const struct kiocb *iocb,
- 	if (unlikely(exfat_forced_shutdown(mapping->host->i_sb)))
- 		return -EIO;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, exfat_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, exfat_get_block);
- 
- 	if (ret < 0)
- 		exfat_write_failed(mapping, pos+len);
-diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-index dbfe9098a124..11aab03de752 100644
---- a/fs/ext2/inode.c
-+++ b/fs/ext2/inode.c
-@@ -930,7 +930,7 @@ ext2_write_begin(const struct kiocb *iocb, struct address_space *mapping,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, ext2_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, ext2_get_block);
- 	if (ret < 0)
- 		ext2_write_failed(mapping, pos + len);
- 	return ret;
-diff --git a/fs/jfs/inode.c b/fs/jfs/inode.c
-index 4709762713ef..ae52db437771 100644
---- a/fs/jfs/inode.c
-+++ b/fs/jfs/inode.c
-@@ -303,7 +303,7 @@ static int jfs_write_begin(const struct kiocb *iocb,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, jfs_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, jfs_get_block);
- 	if (unlikely(ret))
- 		jfs_write_failed(mapping, pos + len);
- 
-diff --git a/fs/minix/inode.c b/fs/minix/inode.c
-index 51ea9bdc813f..9075c0ba2f20 100644
---- a/fs/minix/inode.c
-+++ b/fs/minix/inode.c
-@@ -465,7 +465,7 @@ static int minix_write_begin(const struct kiocb *iocb,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, minix_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, minix_get_block);
- 	if (unlikely(ret))
- 		minix_write_failed(mapping, pos + len);
- 
-diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
-index 51bde45d5865..d9d57eeecc5d 100644
---- a/fs/nilfs2/inode.c
-+++ b/fs/nilfs2/inode.c
-@@ -230,7 +230,7 @@ static int nilfs_write_begin(const struct kiocb *iocb,
- 	if (unlikely(err))
- 		return err;
- 
--	err = block_write_begin(mapping, pos, len, foliop, nilfs_get_block);
-+	err = block_write_begin(iocb, mapping, pos, len, foliop, nilfs_get_block);
- 	if (unlikely(err)) {
- 		nilfs_write_failed(mapping, pos + len);
- 		nilfs_transaction_abort(inode->i_sb);
-diff --git a/fs/nilfs2/recovery.c b/fs/nilfs2/recovery.c
-index a9c61d0492cb..2f5fe44bf736 100644
---- a/fs/nilfs2/recovery.c
-+++ b/fs/nilfs2/recovery.c
-@@ -541,7 +541,7 @@ static int nilfs_recover_dsync_blocks(struct the_nilfs *nilfs,
- 		}
- 
- 		pos = rb->blkoff << inode->i_blkbits;
--		err = block_write_begin(inode->i_mapping, pos, blocksize,
-+		err = block_write_begin(NULL, inode->i_mapping, pos, blocksize,
- 					&folio, nilfs_get_block);
- 		if (unlikely(err)) {
- 			loff_t isize = inode->i_size;
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index 0a9ac5efeb67..8c788feb319e 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -966,7 +966,7 @@ int ntfs_write_begin(const struct kiocb *iocb, struct address_space *mapping,
- 			goto out;
- 	}
- 
--	err = block_write_begin(mapping, pos, len, foliop,
-+	err = block_write_begin(iocb, mapping, pos, len, foliop,
- 				ntfs_get_block_write_begin);
- 
- out:
-diff --git a/fs/omfs/file.c b/fs/omfs/file.c
-index 49a1de5a827f..3bade632e36e 100644
---- a/fs/omfs/file.c
-+++ b/fs/omfs/file.c
-@@ -317,7 +317,7 @@ static int omfs_write_begin(const struct kiocb *iocb,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, omfs_get_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, omfs_get_block);
- 	if (unlikely(ret))
- 		omfs_write_failed(mapping, pos + len);
- 
-diff --git a/fs/udf/inode.c b/fs/udf/inode.c
-index 7fae8002344a..aec9cdc938be 100644
---- a/fs/udf/inode.c
-+++ b/fs/udf/inode.c
-@@ -259,7 +259,7 @@ static int udf_write_begin(const struct kiocb *iocb,
- 	int ret;
- 
- 	if (iinfo->i_alloc_type != ICBTAG_FLAG_AD_IN_ICB) {
--		ret = block_write_begin(mapping, pos, len, foliop,
-+		ret = block_write_begin(iocb, mapping, pos, len, foliop,
- 					udf_get_block);
- 		if (unlikely(ret))
- 			udf_write_failed(mapping, pos + len);
-diff --git a/fs/ufs/inode.c b/fs/ufs/inode.c
-index e2b0a35de2a7..dfba985265a8 100644
---- a/fs/ufs/inode.c
-+++ b/fs/ufs/inode.c
-@@ -481,7 +481,7 @@ static int ufs_write_begin(const struct kiocb *iocb,
- {
- 	int ret;
- 
--	ret = block_write_begin(mapping, pos, len, foliop, ufs_getfrag_block);
-+	ret = block_write_begin(iocb, mapping, pos, len, foliop, ufs_getfrag_block);
- 	if (unlikely(ret))
- 		ufs_write_failed(mapping, pos + len);
- 
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index b16b88bfbc3e..4b07dec5f8eb 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -258,8 +258,9 @@ int __block_write_full_folio(struct inode *inode, struct folio *folio,
- 		get_block_t *get_block, struct writeback_control *wbc);
- int block_read_full_folio(struct folio *, get_block_t *);
- bool block_is_partially_uptodate(struct folio *, size_t from, size_t count);
--int block_write_begin(struct address_space *mapping, loff_t pos, unsigned len,
--		struct folio **foliop, get_block_t *get_block);
-+int block_write_begin(const struct kiocb *iocb, struct address_space *mapping,
-+		loff_t pos, unsigned len, struct folio **foliop,
-+		get_block_t *get_block);
- int __block_write_begin(struct folio *folio, loff_t pos, unsigned len,
- 		get_block_t *get_block);
- int block_write_end(loff_t pos, unsigned len, unsigned copied, struct folio *);
 
----
-base-commit: 05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
-change-id: 20260218-blk-dontcache-338133dd045e
+Cheers, Andreas
 
-Best regards,
--- 
-Tal Zussman <tz2294@columbia.edu>
+>=20
+> System info
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Linux version 6.19.2
+>=20
+>=20
+> How to reproduce
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> ```
+> #include <errno.h>
+> #include <fcntl.h>
+> #include <stdio.h>
+> #include <string.h>
+> #include <sys/stat.h>
+> #include <sys/types.h>
+> #include <unistd.h>
+>=20
+> #define BUFFER_LEN 5000 // should be at least ~ 4096+1
+>=20
+> int main() {
+>   int status;
+>   int file_fd0;
+>   int file_fd1;
+>   int file_fd2;
+>=20
+>   char buffer[BUFFER_LEN + 1] =3D {};
+>   for (int i =3D 0; i <=3D BUFFER_LEN; ++i) {
+>     buffer[i] =3D (char)i;
+>   }
+>=20
+>   status =3D creat("file", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+>   printf("CREAT: %d\n", status);
+>   file_fd0 =3D status;
+>=20
+>   status =3D close(file_fd0);
+>   printf("CLOSE: %d\n", status);
+>=20
+>   sync();
+>=20
+>   status =3D open("file", O_WRONLY);
+>   printf("OPEN: %d\n", status);
+>   file_fd1 =3D status;
+>=20
+>   status =3D write(file_fd1, buffer, BUFFER_LEN);
+>   printf("WRITE: %d\n", status);
+>=20
+>   status =3D close(file_fd1);
+>   printf("CLOSE: %d\n", status);
+>=20
+>   status =3D open("file", O_WRONLY | O_SYNC);
+>   printf("OPEN: %d\n", status);
+>   file_fd2 =3D status;
+>=20
+>   status =3D write(file_fd2, "Test data!", 10);
+>   printf("WRITE: %d\n", status);
+>=20
+>   status =3D close(file_fd2);
+>   printf("CLOSE: %d\n", status);
+> }
+> // after crash file size is 4096 instead of 5000
+> ```
+>=20
+> Output:
+>=20
+> ```
+> CREAT: 3
+> CLOSE: 0
+> OPEN: 3
+> WRITE: 5000
+> CLOSE: 0
+> OPEN: 3
+> WRITE: 10
+> CLOSE: 0
+> ```
+>=20
+> File content after crash:
+>=20
+> ```
+> $ xxd file
+> 00000000: 5465 7374 2064 6174 6121 0a0b 0c0d 0e0f  Test data!......
+> 00000010: 1011 1213 1415 1617 1819 1a1b 1c1d 1e1f ................
+> 00000020: 2021 2223 2425 2627 2829 2a2b 2c2d 2e2f  !"#$%&'()*+,-./
+>=20
+> .........
+>=20
+> 00000ff0: f0f1 f2f3 f4f5 f6f7 f8f9 fafb fcfd feff ................
+> ```
+>=20
+> Steps:
+>=20
+> 1. Create and mount new ext4 file system in default configuration.
+> 2. Change directory to root of the file system and run the compiled =
+test.
+> 3. Cause hard system crash (e.g. QEMU `system_reset` command).
+> 4. Remount file system after crash.
+> 5. Observe that file size is 4096 instead of 5000.
+>=20
+> Notes:
+>=20
+> - This also seems to affect XFS in the same way.
+>=20
 
 
