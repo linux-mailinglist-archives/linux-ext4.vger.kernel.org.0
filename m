@@ -1,203 +1,253 @@
-Return-Path: <linux-ext4+bounces-13738-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13739-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IN51J19ZlWnQPAIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13738-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 07:17:03 +0100
+	id 4Hp8Bce+lWkfUgIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13739-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 14:29:43 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 451BB153642
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 07:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 827B6156A6F
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 14:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 701393069E72
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 06:16:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0BA85300E5CD
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 13:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75F530B502;
-	Wed, 18 Feb 2026 06:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BBC2FD68B;
+	Wed, 18 Feb 2026 13:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ST4LAGda"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZcyhhGT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67ECB29BD8C;
-	Wed, 18 Feb 2026 06:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08932D8DD9
+	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 13:29:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771395384; cv=none; b=W1+NGMtxRS/vVUHezqPcyYv4rImPNLFnWlefs+cbB3o9X3y1WkLhPjjO3b+OCYsqkmJuZy3BCMDG5QeiXZSBSb1DXXIuiuEMPlMhHv+cK66K5Pyr3N09oSjErm31dFNqdThby+FklBEbG/JWz/O5Jit1wz2WUgSn2dTkiU2BvSM=
+	t=1771421376; cv=none; b=cmRjvMRP3WIZhg4zshEIcy3JdwvZplx+Xq+7FQzw07aUN+PCmMEe8asp+tbmTWBkK5G5cMaia9D1p/6Wzfb0KA3kA7X8yhRbmXM5mezQ7epoHFgvkmZZrnj4adqTRPvvLKA/rupo3T3+maRrXHYAbx0zBL1OMrvcNVPr7aUMktI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771395384; c=relaxed/simple;
-	bh=BqUJteWLQUbC5yASL8jviCB7vcELDlrPpnMPHAwveRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XZXHZrdxmMx7jdeWfzN+2J9cpuTJnYACnFl38XiEwRpaNW6QRFSp7veDMf+S6xfQNZSXZtQds+7zdyDxrl5T8f1SzsmDMsnaydj0SZugFeA1GzhAGer4bQ8X1fDJQs3u38w/UWOLuQdSnnhq5cyycxVIKYWpKh/E3ZGkp27yW/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ST4LAGda; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=VcvKWVedtLFNeUePzxyg9ziacX2X2/mCVUWs+sJncbQ=; b=ST4LAGdabcaNmy0VRLTitYXFkw
-	mWwVBPp/gsZnpmmZpcS3jTLT0J0zb/LeFcDvjjb2vaPjTgm8hVa1eN15hdxJLqTrBkHw5q2jx+kX9
-	DcbGDFq5rlqmfFmzARyHN+VH5F4fGRdL6XeWWLKpcylokcrUSKP3qcpV2mlaBvrG7QnSy5WEgwnK9
-	dCY538bIGaf0x6wTTQ5a2nzG9Our6GukIF6hgN+xeSovhmIXee0IWOVxSQWRNz7CdWGrio77F9f4L
-	COMGec3wOCeL6+BXgjacgK0r5dd0Rg88sRJBbq0LtewcMBycNbsNsW/xTs9pAdd8tnoB+ly9AWNO2
-	ZIefMhQg==;
-Received: from [2001:4bb8:2dc:9863:1842:9381:9c0f:de32] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vsarG-00000009Lim-3CYJ;
-	Wed, 18 Feb 2026 06:16:23 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chao Yu <chao@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	linux-fscrypt@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH 9/9] fscrypt: pass a real sector_t to fscrypt_zeroout_range
-Date: Wed, 18 Feb 2026 07:14:47 +0100
-Message-ID: <20260218061531.3318130-10-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260218061531.3318130-1-hch@lst.de>
-References: <20260218061531.3318130-1-hch@lst.de>
+	s=arc-20240116; t=1771421376; c=relaxed/simple;
+	bh=0PkuZoUk+Tc3pZq5oW4s6ngtVAHdr+f9SP6oIha8QwY=;
+	h=Message-ID:Date:MIME-Version:From:Cc:Subject:To:Content-Type; b=N0i9aR33Fwnkv0lyyB5mvDWC+N4GRLGpqQhyWe+UftaT0UVojY/FPBjFu4QqMHdUZM6EoqS63tr2KeDaexDEviBAPJGYPqxHqF4xVCb/gVWAK10Itr3FsLPK324CTsGfKRG2Tly8pwMqm4vn/TTPDMdKHChcs571hNSFntjWNs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aZcyhhGT; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-48372efa020so39384615e9.2
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 05:29:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771421373; x=1772026173; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:cc:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yBIoPuTMi/6ruSqVzRLcP1R/zZrBDdqVk2s3C2l9HiI=;
+        b=aZcyhhGTObSeaUtCg1TFn9VgsnmJvgaBannKgaoVl5NTCuwYg07UeSwcFO9yBnpRai
+         ynoLV1g5Mtv9TLcZ92FMLP5VRS6mvM/x5Ln5zQDft7TvXCILcqC7t9lPmk56Rl2l1eFy
+         fOkRpqpod37WgoH/evdEtRu/hb1bIeRmc6f6W9ZyRheIUfX8AeEwsEGFSKy7RUy2bgyM
+         Mg28sC4IpKhXYAQtPg5kZpCV+5GJZRn556di4VuPk9IRQ7oj1xTecRJSTF361qlOCjMz
+         /5Zcw0kJ3etLH+u2GY5QUAR7/mCe72KbqBoWH6ei2H2f0FAHwyv+UQEdaaQ72LzVPImQ
+         i/cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771421373; x=1772026173;
+        h=content-transfer-encoding:to:subject:cc:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yBIoPuTMi/6ruSqVzRLcP1R/zZrBDdqVk2s3C2l9HiI=;
+        b=Xzub1ogX6gSbhuBYLHn4GNLffFSnEnnAKhcdQTTOwwy/KoHVzNmAA+4Ks/rJ1leiGs
+         Ae+/bJISM89M2RJIdD3InXRGtoTFhai8CjUEVXb6rmblE1HYtSRXjw1L8+5J99XTFcrQ
+         EfzM59lgYCVevque+RP3ZPU0WMePkBMQUnU7EzasrkMuqScRzGbkHiNkha9ET0uyzNdr
+         7++Ya/Ricb8spc2I/Zj5gjHv6QVxT9TZhR07rOifRFGc0nEuXsqbagF0nWPD3/XcXn76
+         qa2SQJavR67Wk+xI/aGkkdEZVdkC5SLezf/cO/D7x2nGKJAuTeQWgO/Ly0J5iTFG09Gk
+         VOfg==
+X-Gm-Message-State: AOJu0YwsqSt7pL/JBcoS5968teq/5KEYLpo1MaPwjL59fUozYJ5lC6p/
+	XDPZSSxGZYO4O9K+fCFaxiMBQR9TDhYtD4kdydwfyBOIrpZjnV9udSmC
+X-Gm-Gg: AZuq6aK/mqx9EP3JpRQHl4rRYCT70KMn9o7LXmYIWjvU5cVEvq9NsJEHrCA+5IkTzcx
+	1Gk/lFWF9xRZV0LMIMAKPSP0WSKwEpGa43mwEp6QGQp6zDJn/0g1wlt/O+SQfcjGn6ATlef6Cp7
+	TF8gmqtZ/pKe2CzaHoJ7VVNi6fRh3Bb1fj8DBZrV6/5cbJ4poJPikJPctSmLJW8mpWBpMWMIdX8
+	zSQss8Xfw28rXc2vrzE1GwRELSUoKSZwkTFB3LEBn4i7E/RdwpO38Ler6BVlYlDSNFyhwbsZwpy
+	xc1SAtJnN47uGl4874+6915UmfQQtj5hf2ClNUgQoDAwEU4GSDzdon9WTTzE4eHh/qb2aVey2HH
+	iE05yL1x9PES2j6HGJZN86ESl72kPYBWykZXRoDoMQa3s3o9S7MPhVUjOUu3bkAZZcfTsj0m3aF
+	Hk53sOE6KteYhKpex3mMfns6WoNA00XzREQxpo9/ZUzomy
+X-Received: by 2002:a05:600c:609a:b0:483:7020:864 with SMTP id 5b1f17b1804b1-48379c178eamr258480935e9.25.1771421372830;
+        Wed, 18 Feb 2026 05:29:32 -0800 (PST)
+Received: from [10.128.170.182] ([77.234.210.12])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4837e565f5esm419668495e9.10.2026.02.18.05.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Feb 2026 05:29:32 -0800 (PST)
+Message-ID: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+Date: Wed, 18 Feb 2026 16:29:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Writing more than 4096 bytes with O_SYNC flag does not persist all
+ previously written data if system crashes
+To: tytso@mit.edu, adilger.kernel@dilger.ca
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.06 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13738-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13739-lists,linux-ext4=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[slavakovalevskiy2014@gmail.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:dkim,lst.de:mid,lst.de:email]
-X-Rspamd-Queue-Id: 451BB153642
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,man7.org:url]
+X-Rspamd-Queue-Id: 827B6156A6F
 X-Rspamd-Action: no action
 
-While the pblk argument to fscrypt_zeroout_range is declared as a
-sector_t, it actually is interpreted as a logical block size unit, which
-is highly unusual.  Switch to passing the 512 byte units that sector_t is
-defined for.
+Detailed description
+====================
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/crypto/bio.c         | 6 ++----
- fs/ext4/inode.c         | 3 ++-
- fs/f2fs/file.c          | 2 +-
- include/linux/fscrypt.h | 4 ++--
- 4 files changed, 7 insertions(+), 8 deletions(-)
+Hello, there seems to be an issue with ext4 crash behavior:
 
-diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
-index cea931620c04..45fe74aa8366 100644
---- a/fs/crypto/bio.c
-+++ b/fs/crypto/bio.c
-@@ -114,7 +114,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * fscrypt_zeroout_range() - zero out a range of blocks in an encrypted file
-  * @inode: the file's inode
-  * @pos: the first file logical offset (in bytes) to zero out
-- * @pblk: the first filesystem physical block to zero out
-+ * @sector: the first sector to zero out
-  * @len: bytes to zero out
-  *
-  * Zero out filesystem blocks in an encrypted regular file on-disk, i.e. write
-@@ -128,7 +128,7 @@ static int fscrypt_zeroout_range_inline_crypt(const struct inode *inode,
-  * Return: 0 on success; -errno on failure.
-  */
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len)
-+			  sector_t sector, unsigned int len)
- {
- 	const struct fscrypt_inode_info *ci = fscrypt_get_inode_info_raw(inode);
- 	const unsigned int du_bits = ci->ci_data_unit_bits;
-@@ -137,8 +137,6 @@ int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
- 	const unsigned int du_per_page = 1U << du_per_page_bits;
- 	u64 du_index = pos >> du_bits;
- 	u64 du_remaining = len >> du_bits;
--	loff_t pos = (loff_t)lblk << inode->i_blkbits;
--	sector_t sector = pblk << (inode->i_blkbits - SECTOR_SHIFT);
- 	struct page *pages[16]; /* write up to 16 pages at a time */
- 	unsigned int nr_pages;
- 	unsigned int i;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 675ef741cb30..d0028d6d3de1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -406,7 +406,8 @@ int ext4_issue_zeroout(struct inode *inode, ext4_lblk_t lblk, ext4_fsblk_t pblk,
- 
- 	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
- 		return fscrypt_zeroout_range(inode,
--				(loff_t)lblk << inode->i_blkbits, pblk,
-+				(loff_t)lblk << inode->i_blkbits,
-+				pblk << (inode->i_blkbits - SECTOR_SHIFT),
- 				len << inode->i_blkbits);
- 
- 	ret = sb_issue_zeroout(inode->i_sb, pblk, len, GFP_NOFS);
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 5b7013f7f6a1..ad435dea656a 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -4163,7 +4163,7 @@ static int f2fs_secure_erase(struct block_device *bdev, struct inode *inode,
- 	if (!ret && (flags & F2FS_TRIM_FILE_ZEROOUT)) {
- 		if (IS_ENCRYPTED(inode))
- 			ret = fscrypt_zeroout_range(inode,
--					(loff_t)off << inode->i_blkbits, block,
-+					(loff_t)off << inode->i_blkbits, sector,
- 					len << inode->i_blkbits);
- 		else
- 			ret = blkdev_issue_zeroout(bdev, sector, nr_sects,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 065f909ebda2..11464bf0a241 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -451,7 +451,7 @@ u64 fscrypt_fname_siphash(const struct inode *dir, const struct qstr *name);
- /* bio.c */
- bool fscrypt_decrypt_bio(struct bio *bio);
- int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--			  sector_t pblk, unsigned int len);
-+			  sector_t sector, unsigned int len);
- 
- /* hooks.c */
- int fscrypt_file_open(struct inode *inode, struct file *filp);
-@@ -756,7 +756,7 @@ static inline bool fscrypt_decrypt_bio(struct bio *bio)
- }
- 
- static inline int fscrypt_zeroout_range(const struct inode *inode, loff_t pos,
--					sector_t pblk, unsigned int len)
-+					sector_t sector, unsigned int len)
- {
- 	return -EOPNOTSUPP;
- }
--- 
-2.47.3
+1. Create and sync a new file.
+2. Open the file and write some data (must be more than 4096 bytes).
+3. Close the file.
+4. Open the file with O_SYNC flag and write some data.
+
+After system crash the file will have the wrong size and some previously 
+written data will be lost.
+
+According to Linux manual 
+<https://man7.org/linux/man-pages/man2/open.2.html> O_SYNC can replaced 
+with fsync() call after each write operation:
+
+```
+By the time write(2) (or similar) returns, the output data
+and associated file metadata have been transferred to the
+underlying hardware (i.e., as though each write(2) was
+followed by a call to fsync(2)).
+```
+
+In this case it is not true, using O_SYNC does not persist the data like 
+fsync() does (see test below).
+
+
+System info
+===========
+
+Linux version 6.19.2
+
+
+How to reproduce
+================
+
+```
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#define BUFFER_LEN 5000 // should be at least ~ 4096+1
+
+int main() {
+   int status;
+   int file_fd0;
+   int file_fd1;
+   int file_fd2;
+
+   char buffer[BUFFER_LEN + 1] = {};
+   for (int i = 0; i <= BUFFER_LEN; ++i) {
+     buffer[i] = (char)i;
+   }
+
+   status = creat("file", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+   printf("CREAT: %d\n", status);
+   file_fd0 = status;
+
+   status = close(file_fd0);
+   printf("CLOSE: %d\n", status);
+
+   sync();
+
+   status = open("file", O_WRONLY);
+   printf("OPEN: %d\n", status);
+   file_fd1 = status;
+
+   status = write(file_fd1, buffer, BUFFER_LEN);
+   printf("WRITE: %d\n", status);
+
+   status = close(file_fd1);
+   printf("CLOSE: %d\n", status);
+
+   status = open("file", O_WRONLY | O_SYNC);
+   printf("OPEN: %d\n", status);
+   file_fd2 = status;
+
+   status = write(file_fd2, "Test data!", 10);
+   printf("WRITE: %d\n", status);
+
+   status = close(file_fd2);
+   printf("CLOSE: %d\n", status);
+}
+// after crash file size is 4096 instead of 5000
+```
+
+Output:
+
+```
+CREAT: 3
+CLOSE: 0
+OPEN: 3
+WRITE: 5000
+CLOSE: 0
+OPEN: 3
+WRITE: 10
+CLOSE: 0
+```
+
+File content after crash:
+
+```
+$ xxd file
+00000000: 5465 7374 2064 6174 6121 0a0b 0c0d 0e0f  Test data!......
+00000010: 1011 1213 1415 1617 1819 1a1b 1c1d 1e1f ................
+00000020: 2021 2223 2425 2627 2829 2a2b 2c2d 2e2f  !"#$%&'()*+,-./
+
+.........
+
+00000ff0: f0f1 f2f3 f4f5 f6f7 f8f9 fafb fcfd feff ................
+```
+
+Steps:
+
+1. Create and mount new ext4 file system in default configuration.
+2. Change directory to root of the file system and run the compiled test.
+3. Cause hard system crash (e.g. QEMU `system_reset` command).
+4. Remount file system after crash.
+5. Observe that file size is 4096 instead of 5000.
+
+Notes:
+
+- This also seems to affect XFS in the same way.
 
 
