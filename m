@@ -1,81 +1,78 @@
-Return-Path: <linux-ext4+bounces-13739-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13740-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4Hp8Bce+lWkfUgIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13739-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 14:29:43 +0100
+	id gJF8KzfWlWlLVQIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13740-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 16:09:43 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 827B6156A6F
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 14:29:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BAAB1574CC
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 16:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0BA85300E5CD
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 13:29:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 618AD3061BFA
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Feb 2026 15:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BBC2FD68B;
-	Wed, 18 Feb 2026 13:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1275C34029E;
+	Wed, 18 Feb 2026 15:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZcyhhGT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gldyKQL6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gldyKQL6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08932D8DD9
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 13:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682A0303A02
+	for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 15:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771421376; cv=none; b=cmRjvMRP3WIZhg4zshEIcy3JdwvZplx+Xq+7FQzw07aUN+PCmMEe8asp+tbmTWBkK5G5cMaia9D1p/6Wzfb0KA3kA7X8yhRbmXM5mezQ7epoHFgvkmZZrnj4adqTRPvvLKA/rupo3T3+maRrXHYAbx0zBL1OMrvcNVPr7aUMktI=
+	t=1771427318; cv=none; b=YoJvENcRBhAkq5f+hvjlGYLHJ45f0S9RiFJpzCbUPVGdHXGMKLdNiIwKU8xjMUAZ8NS7Nl6IupOEqDH+EiQmxPFvfHJw7Csa0d1YtICi2u7RLyb4AJRqADG4QtrAAl2UNQqcyylHS6Oepq6o1+zAmgCSDDqUSNLbhhkVkGJPIG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771421376; c=relaxed/simple;
-	bh=0PkuZoUk+Tc3pZq5oW4s6ngtVAHdr+f9SP6oIha8QwY=;
-	h=Message-ID:Date:MIME-Version:From:Cc:Subject:To:Content-Type; b=N0i9aR33Fwnkv0lyyB5mvDWC+N4GRLGpqQhyWe+UftaT0UVojY/FPBjFu4QqMHdUZM6EoqS63tr2KeDaexDEviBAPJGYPqxHqF4xVCb/gVWAK10Itr3FsLPK324CTsGfKRG2Tly8pwMqm4vn/TTPDMdKHChcs571hNSFntjWNs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aZcyhhGT; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-48372efa020so39384615e9.2
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Feb 2026 05:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771421373; x=1772026173; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:cc:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yBIoPuTMi/6ruSqVzRLcP1R/zZrBDdqVk2s3C2l9HiI=;
-        b=aZcyhhGTObSeaUtCg1TFn9VgsnmJvgaBannKgaoVl5NTCuwYg07UeSwcFO9yBnpRai
-         ynoLV1g5Mtv9TLcZ92FMLP5VRS6mvM/x5Ln5zQDft7TvXCILcqC7t9lPmk56Rl2l1eFy
-         fOkRpqpod37WgoH/evdEtRu/hb1bIeRmc6f6W9ZyRheIUfX8AeEwsEGFSKy7RUy2bgyM
-         Mg28sC4IpKhXYAQtPg5kZpCV+5GJZRn556di4VuPk9IRQ7oj1xTecRJSTF361qlOCjMz
-         /5Zcw0kJ3etLH+u2GY5QUAR7/mCe72KbqBoWH6ei2H2f0FAHwyv+UQEdaaQ72LzVPImQ
-         i/cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771421373; x=1772026173;
-        h=content-transfer-encoding:to:subject:cc:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yBIoPuTMi/6ruSqVzRLcP1R/zZrBDdqVk2s3C2l9HiI=;
-        b=Xzub1ogX6gSbhuBYLHn4GNLffFSnEnnAKhcdQTTOwwy/KoHVzNmAA+4Ks/rJ1leiGs
-         Ae+/bJISM89M2RJIdD3InXRGtoTFhai8CjUEVXb6rmblE1HYtSRXjw1L8+5J99XTFcrQ
-         EfzM59lgYCVevque+RP3ZPU0WMePkBMQUnU7EzasrkMuqScRzGbkHiNkha9ET0uyzNdr
-         7++Ya/Ricb8spc2I/Zj5gjHv6QVxT9TZhR07rOifRFGc0nEuXsqbagF0nWPD3/XcXn76
-         qa2SQJavR67Wk+xI/aGkkdEZVdkC5SLezf/cO/D7x2nGKJAuTeQWgO/Ly0J5iTFG09Gk
-         VOfg==
-X-Gm-Message-State: AOJu0YwsqSt7pL/JBcoS5968teq/5KEYLpo1MaPwjL59fUozYJ5lC6p/
-	XDPZSSxGZYO4O9K+fCFaxiMBQR9TDhYtD4kdydwfyBOIrpZjnV9udSmC
-X-Gm-Gg: AZuq6aK/mqx9EP3JpRQHl4rRYCT70KMn9o7LXmYIWjvU5cVEvq9NsJEHrCA+5IkTzcx
-	1Gk/lFWF9xRZV0LMIMAKPSP0WSKwEpGa43mwEp6QGQp6zDJn/0g1wlt/O+SQfcjGn6ATlef6Cp7
-	TF8gmqtZ/pKe2CzaHoJ7VVNi6fRh3Bb1fj8DBZrV6/5cbJ4poJPikJPctSmLJW8mpWBpMWMIdX8
-	zSQss8Xfw28rXc2vrzE1GwRELSUoKSZwkTFB3LEBn4i7E/RdwpO38Ler6BVlYlDSNFyhwbsZwpy
-	xc1SAtJnN47uGl4874+6915UmfQQtj5hf2ClNUgQoDAwEU4GSDzdon9WTTzE4eHh/qb2aVey2HH
-	iE05yL1x9PES2j6HGJZN86ESl72kPYBWykZXRoDoMQa3s3o9S7MPhVUjOUu3bkAZZcfTsj0m3aF
-	Hk53sOE6KteYhKpex3mMfns6WoNA00XzREQxpo9/ZUzomy
-X-Received: by 2002:a05:600c:609a:b0:483:7020:864 with SMTP id 5b1f17b1804b1-48379c178eamr258480935e9.25.1771421372830;
-        Wed, 18 Feb 2026 05:29:32 -0800 (PST)
-Received: from [10.128.170.182] ([77.234.210.12])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4837e565f5esm419668495e9.10.2026.02.18.05.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Feb 2026 05:29:32 -0800 (PST)
-Message-ID: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
-Date: Wed, 18 Feb 2026 16:29:30 +0300
+	s=arc-20240116; t=1771427318; c=relaxed/simple;
+	bh=2fr/OCZ8cFVBHcDNDyV5zLQo4aqIHZtJeIp6unn02Vg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hbBwYZnIWHT8cIJIs7nrsay03V78WRh6FiVLZiJ+kluxRF/Dj/+Wk/m/k3sgTfI6xgRvNbwHvlhoaEo/ZKN85wes/TpjidTCNrReRlMwIi3lrZTo9XBRRv12xBA28fwNBvJdP5zSVn3j7Or6lL6XyI+eNi3JPlvwWmB+1mJ8C1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gldyKQL6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gldyKQL6; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3EAF23E6DD;
+	Wed, 18 Feb 2026 15:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771427308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5lyt323+HbZYpoX64Rl3vcxfunKzUx7dWbFHruMcR5o=;
+	b=gldyKQL6ACDQdncmwMAad+Z99WShbTJgDNbsPhcbC0DQiA3KedeIyVic93hD8vv78dtV5k
+	mpXWOEOKQDyHkeA1GRi52v9RwnG2zVxhkBv7o7JMU+8dwRIwmS7XltK2XFgm+L7TqcdAoi
+	1nUoIbVbEo1ghf+4y8+Ad7p6+tMf3RI=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771427308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5lyt323+HbZYpoX64Rl3vcxfunKzUx7dWbFHruMcR5o=;
+	b=gldyKQL6ACDQdncmwMAad+Z99WShbTJgDNbsPhcbC0DQiA3KedeIyVic93hD8vv78dtV5k
+	mpXWOEOKQDyHkeA1GRi52v9RwnG2zVxhkBv7o7JMU+8dwRIwmS7XltK2XFgm+L7TqcdAoi
+	1nUoIbVbEo1ghf+4y8+Ad7p6+tMf3RI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8B3DA3EA65;
+	Wed, 18 Feb 2026 15:08:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4AnNIevVlWkRRwAAD6G6ig
+	(envelope-from <petr.pavlu@suse.com>); Wed, 18 Feb 2026 15:08:27 +0000
+Message-ID: <7765df86-b08a-4f70-900d-4b4d85c07d49@suse.com>
+Date: Wed, 18 Feb 2026 16:08:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -83,171 +80,282 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 34/42] dept: add module support for struct
+ dept_event_site and dept_event_site_dep
+To: Byungchul Park <byungchul@sk.com>
+Cc: kernel_team@skhynix.com, torvalds@linux-foundation.org,
+ damien.lemoal@opensource.wdc.com, linux-ide@vger.kernel.org,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, will@kernel.org, tglx@linutronix.de,
+ rostedt@goodmis.org, joel@joelfernandes.org, sashal@kernel.org,
+ daniel.vetter@ffwll.ch, duyuyang@gmail.com, johannes.berg@intel.com,
+ tj@kernel.org, tytso@mit.edu, willy@infradead.org, david@fromorbit.com,
+ amir73il@gmail.com, gregkh@linuxfoundation.org, kernel-team@lge.com,
+ linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+ minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+ sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+ dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, hamohammed.sa@gmail.com, harry.yoo@oracle.com,
+ chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+ max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com,
+ yunseong.kim@ericsson.com, ysk@kzalloc.com, yeoreum.yun@arm.com,
+ netdev@vger.kernel.org, matthew.brost@intel.com, her0gyugyu@gmail.com,
+ corbet@lwn.net, catalin.marinas@arm.com, bp@alien8.de, x86@kernel.org,
+ hpa@zytor.com, luto@kernel.org, sumit.semwal@linaro.org,
+ gustavo@padovan.org, christian.koenig@amd.com, andi.shyti@kernel.org,
+ arnd@arndb.de, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mcgrof@kernel.org, da.gomez@kernel.org,
+ samitolvanen@google.com, paulmck@kernel.org, frederic@kernel.org,
+ neeraj.upadhyay@kernel.org, joelagnelf@nvidia.com, josh@joshtriplett.org,
+ urezki@gmail.com, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+ qiang.zhang@linux.dev, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, chuck.lever@oracle.com, neil@brown.name,
+ okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, trondmy@kernel.org,
+ anna@kernel.org, kees@kernel.org, bigeasy@linutronix.de,
+ clrkwllms@kernel.org, mark.rutland@arm.com, ada.coupriediaz@arm.com,
+ kristina.martsenko@arm.com, wangkefeng.wang@huawei.com, broonie@kernel.org,
+ kevin.brodsky@arm.com, dwmw@amazon.co.uk, shakeel.butt@linux.dev,
+ ast@kernel.org, ziy@nvidia.com, yuzhao@google.com,
+ baolin.wang@linux.alibaba.com, usamaarif642@gmail.com,
+ joel.granados@kernel.org, richard.weiyang@gmail.com,
+ geert+renesas@glider.be, tim.c.chen@linux.intel.com, linux@treblig.org,
+ alexander.shishkin@linux.intel.com, lillian@star-ark.net,
+ chenhuacai@kernel.org, francesco@valla.it, guoweikang.kernel@gmail.com,
+ link@vivo.com, jpoimboe@kernel.org, masahiroy@kernel.org,
+ brauner@kernel.org, thomas.weissschuh@linutronix.de, oleg@redhat.com,
+ mjguzik@gmail.com, andrii@kernel.org, wangfushuai@baidu.com,
+ linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+ linux-i2c@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-modules@vger.kernel.org, rcu@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ 2407018371@qq.com, dakr@kernel.org, miguel.ojeda.sandonis@gmail.com,
+ neilb@ownmail.net, bagasdotme@gmail.com, wsa+renesas@sang-engineering.com,
+ dave.hansen@intel.com, geert@linux-m68k.org, ojeda@kernel.org,
+ alex.gaynor@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
+ lossin@kernel.org, a.hindborg@kernel.org, aliceryhl@google.com,
+ tmgross@umich.edu, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20251205071855.72743-1-byungchul@sk.com>
+ <20251205071855.72743-35-byungchul@sk.com>
+ <7afb6666-43b6-4d17-b875-e585c7a5ac99@suse.com>
+ <20260213055006.GA55430@system.software.com>
 Content-Language: en-US
-From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Writing more than 4096 bytes with O_SYNC flag does not persist all
- previously written data if system crashes
-To: tytso@mit.edu, adilger.kernel@dilger.ca
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20260213055006.GA55430@system.software.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -0.80
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[skhynix.com,linux-foundation.org,opensource.wdc.com,vger.kernel.org,dilger.ca,redhat.com,infradead.org,kernel.org,linutronix.de,goodmis.org,joelfernandes.org,ffwll.ch,gmail.com,intel.com,mit.edu,fromorbit.com,linuxfoundation.org,lge.com,kvack.org,cmpxchg.org,linux.com,google.com,suse.cz,vflare.org,toxicpanda.com,lists.freedesktop.org,oracle.com,ericsson.com,kzalloc.com,arm.com,lwn.net,alien8.de,zytor.com,linaro.org,padovan.org,amd.com,arndb.de,nvidia.com,joshtriplett.org,efficios.com,linux.dev,suse.de,brown.name,talpey.com,huawei.com,amazon.co.uk,linux.alibaba.com,glider.be,linux.intel.com,treblig.org,star-ark.net,valla.it,vivo.com,baidu.com,lists.infradead.org,lists.linaro.org,lists.linux.dev,qq.com,ownmail.net,sang-engineering.com,linux-m68k.org,garyguo.net,protonmail.com,umich.edu];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13739-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-13740-lists,linux-ext4=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[slavakovalevskiy2014@gmail.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	FROM_NEQ_ENVFROM(0.00)[petr.pavlu@suse.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_GT_50(0.00)[165];
+	TAGGED_RCPT(0.00)[linux-ext4,renesas];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,man7.org:url]
-X-Rspamd-Queue-Id: 827B6156A6F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sk.com:email,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: 4BAAB1574CC
 X-Rspamd-Action: no action
 
-Detailed description
-====================
+On 2/13/26 6:50 AM, Byungchul Park wrote:
+> On Wed, Jan 07, 2026 at 01:19:00PM +0100, Petr Pavlu wrote:
+>> On 12/5/25 8:18 AM, Byungchul Park wrote:
+>>> struct dept_event_site and struct dept_event_site_dep have been
+>>> introduced to track dependencies between multi event sites for a single
+>>> wait, that will be loaded to data segment.  Plus, a custom section,
+>>> '.dept.event_sites', also has been introduced to keep pointers to the
+>>> objects to make sure all the event sites defined exist in code.
+>>>
+>>> dept should work with the section and segment of module.  Add the
+>>> support to handle the section and segment properly whenever modules are
+>>> loaded and unloaded.
+>>>
+>>> Signed-off-by: Byungchul Park <byungchul@sk.com>
+>>
+>> Below are a few comments from the module loader perspective.
+> 
+> Sorry about the late reply.  I've been going through some major life
+> changes lately. :(
+> 
+> Thank you sooooo~ much for your helpful feedback.  I will leave my
+> opinion below.
+> 
+[...]
+>>> diff --git a/kernel/dependency/dept.c b/kernel/dependency/dept.c
+>>> index b14400c4f83b..07d883579269 100644
+>>> --- a/kernel/dependency/dept.c
+>>> +++ b/kernel/dependency/dept.c
+>>> @@ -984,6 +984,9 @@ static void bfs(void *root, struct bfs_ops *ops, void *in, void **out)
+>>>   * event sites.
+>>>   */
+>>>
+>>> +static LIST_HEAD(dept_event_sites);
+>>> +static LIST_HEAD(dept_event_site_deps);
+>>> +
+>>>  /*
+>>>   * Print all events in the circle.
+>>>   */
+>>> @@ -2043,6 +2046,33 @@ static void del_dep_rcu(struct rcu_head *rh)
+>>>       preempt_enable();
+>>>  }
+>>>
+>>> +/*
+>>> + * NOTE: Must be called with dept_lock held.
+>>> + */
+>>> +static void disconnect_event_site_dep(struct dept_event_site_dep *esd)
+>>> +{
+>>> +     list_del_rcu(&esd->dep_node);
+>>> +     list_del_rcu(&esd->dep_rev_node);
+>>> +}
+>>> +
+>>> +/*
+>>> + * NOTE: Must be called with dept_lock held.
+>>> + */
+>>> +static void disconnect_event_site(struct dept_event_site *es)
+>>> +{
+>>> +     struct dept_event_site_dep *esd, *next_esd;
+>>> +
+>>> +     list_for_each_entry_safe(esd, next_esd, &es->dep_head, dep_node) {
+>>> +             list_del_rcu(&esd->dep_node);
+>>> +             list_del_rcu(&esd->dep_rev_node);
+>>> +     }
+>>> +
+>>> +     list_for_each_entry_safe(esd, next_esd, &es->dep_rev_head, dep_rev_node) {
+>>> +             list_del_rcu(&esd->dep_node);
+>>> +             list_del_rcu(&esd->dep_rev_node);
+>>> +     }
+>>> +}
+>>> +
+>>>  /*
+>>>   * NOTE: Must be called with dept_lock held.
+>>>   */
+>>> @@ -2384,6 +2414,8 @@ void dept_free_range(void *start, unsigned int sz)
+>>>  {
+>>>       struct dept_task *dt = dept_task();
+>>>       struct dept_class *c, *n;
+>>> +     struct dept_event_site_dep *esd, *next_esd;
+>>> +     struct dept_event_site *es, *next_es;
+>>>       unsigned long flags;
+>>>
+>>>       if (unlikely(!dept_working()))
+>>> @@ -2405,6 +2437,24 @@ void dept_free_range(void *start, unsigned int sz)
+>>>       while (unlikely(!dept_lock()))
+>>>               cpu_relax();
+>>>
+>>> +     list_for_each_entry_safe(esd, next_esd, &dept_event_site_deps, all_node) {
+>>> +             if (!within((void *)esd, start, sz))
+>>> +                     continue;
+>>> +
+>>> +             disconnect_event_site_dep(esd);
+>>> +             list_del(&esd->all_node);
+>>> +     }
+>>> +
+>>> +     list_for_each_entry_safe(es, next_es, &dept_event_sites, all_node) {
+>>> +             if (!within((void *)es, start, sz) &&
+>>> +                 !within(es->name, start, sz) &&
+>>> +                 !within(es->func_name, start, sz))
+>>> +                     continue;
+>>> +
+>>> +             disconnect_event_site(es);
+>>> +             list_del(&es->all_node);
+>>> +     }
+>>> +
+>>>       list_for_each_entry_safe(c, n, &dept_classes, all_node) {
+>>>               if (!within((void *)c->key, start, sz) &&
+>>>                   !within(c->name, start, sz))
+>>> @@ -3337,6 +3387,7 @@ void __dept_recover_event(struct dept_event_site_dep *esd,
+>>>
+>>>       list_add(&esd->dep_node, &es->dep_head);
+>>>       list_add(&esd->dep_rev_node, &rs->dep_rev_head);
+>>> +     list_add(&esd->all_node, &dept_event_site_deps);
+>>>       check_recover_dl_bfs(esd);
+>>>  unlock:
+>>>       dept_unlock();
+>>> @@ -3347,6 +3398,23 @@ EXPORT_SYMBOL_GPL(__dept_recover_event);
+>>>
+>>>  #define B2KB(B) ((B) / 1024)
+>>>
+>>> +void dept_mark_event_site_used(void *start, void *end)
+>>
+>> Nit: I suggest that dept_mark_event_site_used() take pointers to
+>> dept_event_site_init, which would catch the type mismatch with
+> 
+> IMO, this is the easiest way to get all the pointers from start to the
+> end, or I can't get the number of the pointers.  It's similar to the
+> initcalls section for device drivers.
 
-Hello, there seems to be an issue with ext4 crash behavior:
+This was a minor suggestion.. The idea is to simply change the function
+signature to:
 
-1. Create and sync a new file.
-2. Open the file and write some data (must be more than 4096 bytes).
-3. Close the file.
-4. Open the file with O_SYNC flag and write some data.
+void dept_mark_event_site_used(struct dept_event_site_init **start,
+			       struct dept_event_site_init **end))
 
-After system crash the file will have the wrong size and some previously 
-written data will be lost.
+This way, the compiler can provide proper type checking to ensure that
+correct pointers are passed to dept_mark_event_site_used(). It would
+catch the type mismatch with module::dept_event_sites.
 
-According to Linux manual 
-<https://man7.org/linux/man-pages/man2/open.2.html> O_SYNC can replaced 
-with fsync() call after each write operation:
+> 
+>> module::dept_event_sites.
+>>
+>>> +{
+>>> +     struct dept_event_site_init **evtinitpp;
+>>> +
+>>> +     for (evtinitpp = (struct dept_event_site_init **)start;
+>>> +          evtinitpp < (struct dept_event_site_init **)end;
+>>> +          evtinitpp++) {
+>>> +             (*evtinitpp)->evt_site->used = true;
+>>> +             (*evtinitpp)->evt_site->func_name = (*evtinitpp)->func_name;
+>>> +             list_add(&(*evtinitpp)->evt_site->all_node, &dept_event_sites);
+>>> +
+>>> +             pr_info("dept_event_site %s@%s is initialized.\n",
+>>> +                             (*evtinitpp)->evt_site->name,
+>>> +                             (*evtinitpp)->evt_site->func_name);
+>>> +     }
+>>> +}
+>>> +
+>>>  extern char __dept_event_sites_start[], __dept_event_sites_end[];
+>>
+>> Related to the above, __dept_event_sites_start and
+>> __dept_event_sites_end can already be properly typed here.
+> 
+> How can I get the number of the pointers?
 
-```
-By the time write(2) (or similar) returns, the output data
-and associated file metadata have been transferred to the
-underlying hardware (i.e., as though each write(2) was
-followed by a call to fsync(2)).
-```
+Similarly here, changing the code to:
 
-In this case it is not true, using O_SYNC does not persist the data like 
-fsync() does (see test below).
+extern struct dept_event_site_init *__dept_event_sites_start[], *__dept_event_sites_end[];
 
+It is the same for the initcalls you mentioned. The declarations of
+their start/end symbols are also already properly typed as
+initcall_entry_t[] in include/linux/init.h.
 
-System info
-===========
-
-Linux version 6.19.2
-
-
-How to reproduce
-================
-
-```
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#define BUFFER_LEN 5000 // should be at least ~ 4096+1
-
-int main() {
-   int status;
-   int file_fd0;
-   int file_fd1;
-   int file_fd2;
-
-   char buffer[BUFFER_LEN + 1] = {};
-   for (int i = 0; i <= BUFFER_LEN; ++i) {
-     buffer[i] = (char)i;
-   }
-
-   status = creat("file", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-   printf("CREAT: %d\n", status);
-   file_fd0 = status;
-
-   status = close(file_fd0);
-   printf("CLOSE: %d\n", status);
-
-   sync();
-
-   status = open("file", O_WRONLY);
-   printf("OPEN: %d\n", status);
-   file_fd1 = status;
-
-   status = write(file_fd1, buffer, BUFFER_LEN);
-   printf("WRITE: %d\n", status);
-
-   status = close(file_fd1);
-   printf("CLOSE: %d\n", status);
-
-   status = open("file", O_WRONLY | O_SYNC);
-   printf("OPEN: %d\n", status);
-   file_fd2 = status;
-
-   status = write(file_fd2, "Test data!", 10);
-   printf("WRITE: %d\n", status);
-
-   status = close(file_fd2);
-   printf("CLOSE: %d\n", status);
-}
-// after crash file size is 4096 instead of 5000
-```
-
-Output:
-
-```
-CREAT: 3
-CLOSE: 0
-OPEN: 3
-WRITE: 5000
-CLOSE: 0
-OPEN: 3
-WRITE: 10
-CLOSE: 0
-```
-
-File content after crash:
-
-```
-$ xxd file
-00000000: 5465 7374 2064 6174 6121 0a0b 0c0d 0e0f  Test data!......
-00000010: 1011 1213 1415 1617 1819 1a1b 1c1d 1e1f ................
-00000020: 2021 2223 2425 2627 2829 2a2b 2c2d 2e2f  !"#$%&'()*+,-./
-
-.........
-
-00000ff0: f0f1 f2f3 f4f5 f6f7 f8f9 fafb fcfd feff ................
-```
-
-Steps:
-
-1. Create and mount new ext4 file system in default configuration.
-2. Change directory to root of the file system and run the compiled test.
-3. Cause hard system crash (e.g. QEMU `system_reset` command).
-4. Remount file system after crash.
-5. Observe that file size is 4096 instead of 5000.
-
-Notes:
-
-- This also seems to affect XFS in the same way.
-
+-- 
+Thanks,
+Petr
 
