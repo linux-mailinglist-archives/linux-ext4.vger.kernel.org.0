@@ -1,128 +1,158 @@
-Return-Path: <linux-ext4+bounces-13748-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13749-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KPwICkcNl2mTuAIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13748-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 14:16:55 +0100
+	id iAOoHCgRl2n7uAIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13749-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 14:33:28 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731A215EF9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 14:16:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD7AC15F1B8
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 14:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A44AC3047BDD
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 13:16:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8C280301AA5D
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Feb 2026 13:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A9233D6FE;
-	Thu, 19 Feb 2026 13:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD1331AA91;
+	Thu, 19 Feb 2026 13:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="QMseGHyh"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="hsXiEdxl"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70B83009DE
-	for <linux-ext4@vger.kernel.org>; Thu, 19 Feb 2026 13:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124BA28DC4
+	for <linux-ext4@vger.kernel.org>; Thu, 19 Feb 2026 13:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771506978; cv=none; b=X4b/Z7/mSMhMvNV57BKThlpy3ihSLSks7IbKeEoT7e/UH2WJ9l6IzbEHz1MKlz2O6lt1lZ5sE2/DmmcZMyOkUAcA6NP0PSC7k2Ck4phNbADj7PtZUJ6/QyFXFxqXTRsGuGz/9NK3FU7ieCyZwKaPCvSzWIvo+yXNSErZJwtl2Xg=
+	t=1771507978; cv=none; b=XNyPlvDWw/R0KjgcU1xXa/KGkUNrdY6HXeN0xWObsguKMUCWp78FaM3wUrrognJ1marsda9/2r7grrLzK4TZzFkwh2T3T0iCv+QTDXwJfRZKuk1XbkKtxzRpm3DD80F28QY3Qv/va5G4t93aoV+AVa4K+pJ7/LSdxeIc/U0ixJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771506978; c=relaxed/simple;
-	bh=DbA0pVvkD81yH1UFr/+teBp0AtmqQoNA59E1qisFcRw=;
+	s=arc-20240116; t=1771507978; c=relaxed/simple;
+	bh=dCck66s0v47ULUUYdlp/cXV9epUOrVjReuinnGfUWx4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pU5jOs0cbFLaTZ+lYR6Dh6knEXjEb5o8pAReXUtbK7540wMoHnrTxVvZqycrcj+/7LhTgAVricy1Cy6TQdk3co4UfrR/Vy4A3mlKWH/vPCNL0YOxPbZ77kjeAsm6zjYmlW2uxfr6NLV+JWjCSVBSw0KjpBTGn/RKK1XtwMJuoB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=QMseGHyh; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=ppv55Oal8lpjzSP5xOkjBvc4EDT+dsrpuljbI+gT6XGTn9A1I4ceMtN0OkwruCY8gs9zji9rnIknvawqm1t1R3lubIegvfkogkO02o5aRnSZDFOHtkYet+GIzsN3yeDbYKvEKslT6RD2Yq/a2EjKV7K41T7MskeIOcTbgoNk9vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=hsXiEdxl; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from macsyma.thunk.org (pool-173-48-113-47.bstnma.fios.verizon.net [173.48.113.47])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 61JDEfrH015259
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 61JDWjIB023264
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 19 Feb 2026 08:14:42 -0500
+	Thu, 19 Feb 2026 08:32:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1771506893; bh=YvzVGXRA9tq4Mexi8H81CMjCPQQmDTjjwr0q5r4ZxjY=;
+	t=1771507967; bh=VdHBiExKqlXg6NHpKYC77q0+QKRJ4W9ibO9DGh60Ubg=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=QMseGHyhfBaFWPX10hbUsMCruhrhgp9Y/y2cMCXsfRSODON0B5P+fIp1gbQDE498j
-	 3kKA0mEvpnBkxC4fOP6ZE400XvESf8AzQ8W4hQYtEoVmenggeiuCZAsgDBp1wUb2cT
-	 X6xiagrW3q1RCtta1iKSfDQKms5OjV5lnfxVAv8Q2AfkIOYoMk37GhEy8mDWLba8oU
-	 +wzfcZxoHjbivvm4nlALGSOE0Sgx0+Y+qu96lZShmvpLYtEHFmEOzfCJdgvL6N1a6T
-	 adL+YMa067AgExO/2xBFBiPTBuMQzJwlEaf6kQsPMFWsEHJLIbYxEGHfhvJQevk+z6
-	 +8ydG6It0w42g==
+	b=hsXiEdxlYaQs13CoTCPwt3iFEy7NpbLKlmR8Sk+gZIVAz2t2DmMyhFfvaIcXphnVd
+	 c7wTxGBfiWYx0JCoJexiOb48wwvhDpBcmnwxx/NPs4ly2AD4ilvVk13ino/I0khsv9
+	 AqlHGnujhAH1p12zGhWOLRa254Zu/hMjubLZiK349mc+yjRAeI5F+Aqp0eyVhnfmn2
+	 d/5RQueX4k1GuU6qJ58t9YV1C2Clg+EpfI2Itt+9atyHEChslNfKGKWYWSz95ncCWU
+	 +88OUw9uhHoC65v/JPH3Qs3wdiKkkh+l3ZISdRQ76ueqt1dAjy4Cxtcg0LyFAdsy2W
+	 m1Vc3y/LQHnag==
 Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 51D465919577; Thu, 19 Feb 2026 08:14:41 -0500 (EST)
-Date: Thu, 19 Feb 2026 08:14:41 -0500
+	id DFD0F591998E; Thu, 19 Feb 2026 08:32:44 -0500 (EST)
+Date: Thu, 19 Feb 2026 08:32:44 -0500
 From: "Theodore Tso" <tytso@mit.edu>
-To: Chuck Lever <cel@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org,
-        sj1557.seo@samsung.com, yuezhang.mo@sony.com,
-        almaz.alexandrovich@paragon-software.com, slava@dubeyko.com,
-        glaubitz@physik.fu-berlin.de, frank.li@vivo.com,
-        adilger.kernel@dilger.ca, cem@kernel.org, sfrench@samba.org,
-        pc@manguebit.org, ronniesahlberg@gmail.com, sprasad@microsoft.com,
-        trondmy@kernel.org, anna@kernel.org, jaegeuk@kernel.org,
-        chao@kernel.org, hansg@kernel.org, senozhatsky@chromium.org,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH v8 08/17] ext4: Report case sensitivity in fileattr_get
-Message-ID: <20260219131441.GA69183@macsyma-wired.lan>
-References: <20260217214741.1928576-1-cel@kernel.org>
- <20260217214741.1928576-9-cel@kernel.org>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <20260219133244.GB69183@macsyma-wired.lan>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+ <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260217214741.1928576-9-cel@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
 	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13748-lists,linux-ext4=lfdr.de];
-	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
+	TAGGED_FROM(0.00)[bounces-13749-lists,linux-ext4=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[32];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[mit.edu:+];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,macsyma-wired.lan:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
-X-Rspamd-Queue-Id: 731A215EF9E
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,macsyma-wired.lan:mid]
+X-Rspamd-Queue-Id: BD7AC15F1B8
 X-Rspamd-Action: no action
 
-On Tue, Feb 17, 2026 at 04:47:32PM -0500, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
-> 
-> Report ext4's case sensitivity behavior via the FS_XFLAG_CASEFOLD
-> flag. ext4 always preserves case at rest.
-> 
-> Case sensitivity is a per-directory setting in ext4. If the queried
-> inode is a casefolded directory, report case-insensitive; otherwise
-> report case-sensitive (standard POSIX behavior).
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
++linux-man
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+On Wed, Feb 18, 2026 at 02:55:13PM -0700, Andreas Dilger wrote:
+> If anything, the man page should be updated to be more concise, like:
+> 
+>     "the *just written* output data *on that file descriptor* and associated
+>      file metadata have been transferred to the underlying hardware (i.e.
+>      as though each write(2) was followed by a call to sync_file_range(2)
+>      for the corresponding file offset(s))"
+
+Yeah, this is an inaccuracy in the man page; the definition of O_SYNC
+from the Single Unix Specification states:
+
+    O_SYNC    Write I/O operations on the file descriptor shall complete
+                                   ^^^^^^^^^^^^^^^^^^^^^^
+              as defined by synchronized I/O file integrity completion.
+
+Compare and contrast this to what's in the Linux manpage:
+
+       O_SYNC Write  operations  on the file will complete according to the re‐
+              quirements of synchronized I/O file integrity completion (by con‐
+              trast with the synchronized I/O data  integrity  completion  pro‐
+              vided by O_DSYNC.)
+
+              By  the  time  write(2) (or similar) returns, the output data and
+              associated file metadata have been transferred to the  underlying
+              hardware (i.e., as though each write(2) was followed by a call to
+              fsync(2)).  See VERSIONS.
+
+The parenthetical comment in the second paragraph needs to be removed,
+since fsync specifices that all dirty information in the page cache
+will be flushed out.  From the fsync man page:
+
+       fsync() transfers ("flushes") all modified in-core data of (i.e.,  modi‐
+       fied buffer cache pages for) the file referred to by the file descriptor
+       fd  to  the  disk device (or other permanent storage device) so that all
+       changed information can be retrieved even if the system  crashes  or  is
+       rebooted.   This  includes  writing  through or flushing a disk cache if
+       present.  The call blocks until the device reports that the transfer has
+       completed.
+
+I'll also mention that the fsync man page doesn't really talk about
+its interaction with O_DIRECT writes.  This is mentioned in the
+open(2) man page, and in general, people who use O_DIRECT are
+generally expected to know what they are doing.  But in the context of
+O_DIRECT writes, the fsync(2) call is also used to make sure that a
+CACHE FLUSH or equivalent command is sent to the storage device, such
+that the O_DIRECT write is guaranteed to persist after a power
+failure.
+
+Cheers,
+
+					- Ted
 
