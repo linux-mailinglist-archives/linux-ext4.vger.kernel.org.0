@@ -1,212 +1,181 @@
-Return-Path: <linux-ext4+bounces-13753-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13754-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MAgPDb4CmGnw/AIAu9opvQ
-	(envelope-from <linux-ext4+bounces-13753-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 07:44:14 +0100
+	id 4Jt5D18HmGmh/QIAu9opvQ
+	(envelope-from <linux-ext4+bounces-13754-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 08:03:59 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72EDA165082
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 07:44:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87FDA165153
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 08:03:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 614B13019827
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 06:44:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 192DF3020A61
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Feb 2026 07:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CC432E138;
-	Fri, 20 Feb 2026 06:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9218A285C8B;
+	Fri, 20 Feb 2026 07:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="L9Ay0Tdg"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YYd5k6DN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DE41862A;
-	Fri, 20 Feb 2026 06:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771569847; cv=pass; b=Cm5yLN8DALUOwaeUV2I9SW6UGljRyX5ynJHGX7nXU/jwP+AUKGWJ6ISUEKe+zcU2jrASf2Kqa821N2AE+xHCp9x357Q/BidMwKdFotN9d8bDdH3YyA8uyrZQyF77cXlQVC8Z/uSdTdkAsb9rpbDEM5JGA63IX2YnghO5LHjvK8U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771569847; c=relaxed/simple;
-	bh=xiLdXXTT77hKWwTz2ZB3HFYX7+Yw674RvCpL9vzzw/Y=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=TfGZFrA+2+a8lOQuzXz5pNwtxNz3W0yWK2ujrrfT1WUb8P0s7cJMc67shJu5UgycHjjsoq4qxcdQGy74XhvjMEvwCwVlDdPnKSvQ/WbRryLbgKAW4ZA/TVL5g82XXReAyQv25ERo59Ml+LPmQmGQhygNh7wm/4+Jy2VxXlMBRDc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=L9Ay0Tdg; arc=pass smtp.client-ip=136.143.188.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1771569826; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=Le0VkAL20hqQDkX6S0FziJY8DUaGgqZhBDg8LOtWF5l95FWV2S0Jd+Le+yjDqYKqAV4+gqSrBm+Br2Ss/rwbCwp4BbfHUIAXuOiNmq+FLnUZfXo7HsWQoTrO7eetfdrbFa0vgUVYY0ZexRXQ5y3iUb7iHC+dSQLw+rN/3jCD6Qs=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1771569826; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=zFnXr7Gv21y89XW/CUX7uI1ixjIhrwQ+bzwEz833C/o=; 
-	b=J8+CS2XAG2TCgRhXJe0xMAtUEPfZUph33826T4oAHtprr+iOlAT0eqqZoDWrKpQ0tSEhC97FE3ZmeSLgYXbyGgmm94S+8KUvpsatiiwoQOJ7lzGX1o6uC9h1jTwgELviXAug6ub6BMnyLkSN08BrsBn4vRVBzx3TVBz3Id4uKBU=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1771569826;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=zFnXr7Gv21y89XW/CUX7uI1ixjIhrwQ+bzwEz833C/o=;
-	b=L9Ay0Tdg8pzsnhGSmjCJPhYvbZ1OUWGrCOyfiPhY4jbmdp1nHXBSXuwZ6j5GzZK1
-	OSX3aE88xqsBCYxBGsqmE3qklutOAJCnuMDioHoNJ2N+ECvFDiIiy5xMtjDTux9xWnw
-	0v7/scWqRUc12Tidk4f5XUsjlmydvMEotD4Bpe/w=
-Received: from mail.zoho.com by mx.zohomail.com
-	with SMTP id 1771569824809302.1211205076038; Thu, 19 Feb 2026 22:43:44 -0800 (PST)
-Date: Fri, 20 Feb 2026 14:43:44 +0800
-From: Li Chen <me@linux.beauty>
-To: "Andreas Dilger" <adilger@dilger.ca>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, "Jan Kara" <jack@suse.cz>,
-	"Mark Fasheh" <mark@fasheh.com>,
-	"linux-ext4" <linux-ext4@vger.kernel.org>,
-	"ocfs2-devel" <ocfs2-devel@lists.linux.dev>,
-	"Matthew Wilcox" <willy@infradead.org>, "Jan Kara" <jack@suse.com>,
-	"linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <19c79ca43a6.6b379cc81360187.4397285579129640737@linux.beauty>
-In-Reply-To: <63C86D0D-9EF6-4D33-95B2-8D0F5B305B0B@dilger.ca>
-References: <20260219114645.778338-1-me@linux.beauty>
- <20260219114645.778338-2-me@linux.beauty> <63C86D0D-9EF6-4D33-95B2-8D0F5B305B0B@dilger.ca>
-Subject: Re: [PATCH v2 1/3] jbd2: store jinode dirty range in PAGE_SIZE
- units
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1875A1C8634
+	for <linux-ext4@vger.kernel.org>; Fri, 20 Feb 2026 07:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771571036; cv=none; b=n3rQZvXtYN8COt1G25L1I79A7OkGqyR6R17v/JEYTvNkmJE2KP60OJ5uYx47uQ3wwCorE3GqgAvk8Nt06LTd6bbFuIMVniOqQWdAeymlF9FyFUh43HFsjtqWZLl/T/IzyUn86lWmayFunU3lMdFPC+gzOHIPmi0dBzj6x3QuS8Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771571036; c=relaxed/simple;
+	bh=Kx7sPLdu5UCFIeduLb4eZ4wjcEotdKgZe9nd7N72nHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q2ws70WLtw/LtF398RCh7nl8req6GJuniyNEYerDtd8ubHxd4x3fOKY2sMquZjwzjApqGqY31uIFiqm09+88IF0SyIJgpf0hfjgsEFVWs5ktw0izQP7OR47pI0njKmMHA4wgP4aSZGhC+HqROe1JT5YmPrlGKYCIUVQX12XcGX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=YYd5k6DN; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61JKOQhD1368483;
+	Fri, 20 Feb 2026 07:03:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=/j5SSJU7Aoosi7qT6UzTHF/ULwy882
+	WSWaZyFIX8zdY=; b=YYd5k6DNnIvyJGqfqWETjQiEF0mexILh0qJJO+aYfcIuGX
+	Fc1np86ShjHP3V5VTLr4t56icaHdwtdtl0Xu+SVhcqe1R9ykxtf81Rxbfa/qy+3j
+	C9d6eSly+2Vo0EtoJQ43SKJQdKEt1EIXLI6fm/5fef0ZJx5f3OKE6Gp5s6kqxFCk
+	IIylq/KPMhScIE98/IymS4Zk5AdKlAD3AZiyXeoXJ2RK0cGilP1ZGq/2eXOu3Hzs
+	WZDDahmZ7q1wjSmJR4uMIefZwb2poquHKXYyTMihc85qC1p3mTtVUZuTuylH02rN
+	oHn94F35xKPzS8M4m6BgpYXN4itIwfHP0xVCXjIg==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cajcjresp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Feb 2026 07:03:52 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61K3mCXx017834;
+	Fri, 20 Feb 2026 07:03:52 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4ccb28qe3d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Feb 2026 07:03:52 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61K73o4I26018132
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 20 Feb 2026 07:03:50 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3FA252004F;
+	Fri, 20 Feb 2026 07:03:50 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 501CE20040;
+	Fri, 20 Feb 2026 07:03:49 +0000 (GMT)
+Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.39.24.78])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 20 Feb 2026 07:03:49 +0000 (GMT)
+Date: Fri, 20 Feb 2026 12:33:45 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH RFC] Update MAINTAINERS file to add reviewers for ext4
+Message-ID: <aZgHUY7L4DgWmsa6@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
+References: <20260219152450.66769-1-tytso@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260219152450.66769-1-tytso@mit.edu>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: mj35-EtRoFcC0WbgOupq8mjoCj2dLTks
+X-Authority-Analysis: v=2.4 cv=Md9hep/f c=1 sm=1 tr=0 ts=69980758 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=kj9zAlcOel0A:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=VwQbUJbxAAAA:8
+ a=RPJ6JBhKAAAA:8 a=i0EeH86SAAAA:8 a=VnNF1IyMAAAA:8 a=pGLkceISAAAA:8
+ a=DxPsj7DoMBh85DXIDEcA:9 a=CjuIK1q_8ugA:10 a=fa_un-3J20JGBB2Tu-mn:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjIwMDA1NyBTYWx0ZWRfX/va65HGi1MCL
+ /QucMB/mtYBr9kXgft00HnGjiB4eu8x4XKBuZwmmEPBlmg1yCKXLI4GvWVLYD0Jamv7p7GDg6bo
+ 28xIwqDAG+pFfLS7AxZcVQLEELGj6RJ8kEk7KmlZLbzoE5cFdCRw3K6NfUEfpOT1WggllCL3AeH
+ 9jTYBmblsyN41MeNHJj3Xa0xh+Je14h/WGvxYFv+P1Oivs9izcqevqGP83Pfb4lHgQ5M12l8YfF
+ vpAozuKVdQxTG2lrRfCbv8hn988hNuXTBehjqj3IDGy+I2qA/ZKyYA9LsFfTytwfIGyCP00Lxgd
+ KXuuIgtT6SVURClPm17z9nuvCN8cgekPQU86d8QloPa3F2xG2mEgIPJwxKCN3SWw5U0qOu0fpV3
+ 0x7WE77xqD+uMURowNQ7NT/t670p/CO+IuHsc2mx19TdB1ckCe9wb8wlksfUJKIta4a6Bfl5v6x
+ hO4iJPakCirvvZtm0og==
+X-Proofpoint-GUID: mj35-EtRoFcC0WbgOupq8mjoCj2dLTks
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-19_06,2026-02-20_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2602200057
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.15 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[linux.beauty,none];
-	R_DKIM_ALLOW(-0.20)[linux.beauty:s=zmail];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13753-lists,linux-ext4=lfdr.de];
-	TO_DN_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email];
+	TAGGED_FROM(0.00)[bounces-13754-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	TO_DN_ALL(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.beauty:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[me@linux.beauty,linux-ext4@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[ojaswin@linux.ibm.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dilger.ca:email]
-X-Rspamd-Queue-Id: 72EDA165082
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 87FDA165153
 X-Rspamd-Action: no action
 
-Hi Andreas,
+On Thu, Feb 19, 2026 at 10:24:50AM -0500, Theodore Ts'o wrote:
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>  MAINTAINERS | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index eaf55e463bb4..481dceb6c122 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9581,7 +9581,12 @@ F:	include/linux/ext2*
+>  
+>  EXT4 FILE SYSTEM
+>  M:	"Theodore Ts'o" <tytso@mit.edu>
+> -M:	Andreas Dilger <adilger.kernel@dilger.ca>
+> +R:	Andreas Dilger <adilger.kernel@dilger.ca>
+> +R:	Baokun Li <libaokun1@huawei.com>
+> +R:	Jan Kara <jack@suse.cz>
+> +R:	Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Thanks a lot for your review!
+Hi Ted,
 
- ---- On Fri, 20 Feb 2026 05:00:13 +0800  Andreas Dilger <adilger@dilger.ca=
-> wrote ---=20
- > On Feb 19, 2026, at 04:46, Li Chen <me@linux.beauty> wrote:
- > >=20
- > > jbd2_inode fields are updated under journal->j_list_lock, but some pat=
-hs
- > > read them without holding the lock (e.g. fast commit helpers and order=
-ed
- > > truncate helpers).
- > >=20
- > > READ_ONCE() alone is not sufficient for i_dirty_start/end as they are
- > > loff_t and 32-bit platforms can observe torn loads. Store the dirty ra=
-nge
- > > in PAGE_SIZE units as pgoff_t so lockless readers can take non-torn
- > > snapshots.
- >=20
- > When making semantic changes like this, it is best to change the variabl=
-e
- > names as well, so that breaks compilation if bisection happens to land
- > between these patches.  Otherwise, that could cause some random behavior
- > if jbd2 is treating these as pages, but ext4/ocfs2 are treating them as
- > bytes or vice versa.
- >=20
- > Something like i_dirty_{start,end} -> i_dirty_{start,end}_page would mak=
-e
- > this very clear what the units are.
+Thanks for adding me as a reviewer :) 
 
-Agreed. I=E2=80=99ll make the units explicit in the field names (e.g. *_pag=
-e).
-
- > To avoid breakage between the patches (which is desirable to avoid probl=
-ems
- > with automated bisection) you should make an initial patch with wrappers=
- to
- > access these values and convert ext4/ocfs2 to use them:
- >=20
- > static inline loff_t jbd2_jinode_dirty_start(struct jbd2_inode *jinode)
- > {
- >     return jinode->i_dirty_start;
- > }
- >=20
- > static inline loff_t jbd2_jinode_dirty_end(struct jbd2_inode *jinode)
- > {
- >     return jinode->i_dirty_end;
- > }
- >=20
- > then change this in the jbd2 patch at the end, which would then be self-=
-contained:
- >=20
- > static inline loff_t jbd2_jinode_dirty_start(struct jbd2_inode *jinode)
- > {
- >     return (loff_t)jinode->i_dirty_start_page << PAGE_SHIFT;
- > }
- >=20
- > static inline loff_t jbd2_jinode_dirty_end(struct jbd2_inode *jinode)
- > {
- >     return ((loff_t)jinode->i_dirty_end_page << PAGE_SHIFT) + ~PAGE_MASK=
-;
- > }
-
-
-Agreed as well. I=E2=80=99ll add an accessor and switch ext4/ocfs2 over to =
-it first,
-Then do the internal representation change later.
-
-I plan to use a single helper that returns the (start,end) pair in
-bytes:
-
-static inline bool jbd2_jinode_get_dirty_range(const struct jbd2_inode *jin=
-ode,
-loff_t *start, loff_t *end)
-{
-    pgoff_t start_page =3D READ_ONCE(jinode->i_dirty_start_page);
-    pgoff_t end_page =3D READ_ONCE(jinode->i_dirty_end_page);
-
-    if (end_page =3D=3D JBD2_INODE_DIRTY_RANGE_NONE)
-      return false;
-
-    *start =3D (loff_t)start_page << PAGE_SHIFT;
-    *end =3D ((loff_t)end_page << PAGE_SHIFT) + PAGE_SIZE - 1;
-    return true;
-
-}
-
-I think this is a bit easier to use correctly than separate start/end helpe=
-rs
-(keeps start/end together, and the end-of-page conversion lives in one plac=
-e).
-
-Does that sound OK, or would you rather see separate
-jbd2_jinode_dirty_start()/jbd2_jinode_dirty_end() helpers?
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
 Regards,
-Li=E2=80=8B
+ojaswin
 
+> +R:	Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> +R:	Zhang Yi <yi.zhang@huawei.com>
+>  L:	linux-ext4@vger.kernel.org
+>  S:	Maintained
+>  W:	http://ext4.wiki.kernel.org
+> -- 
+> 2.51.0
+> 
 
