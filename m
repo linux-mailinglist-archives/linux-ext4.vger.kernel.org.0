@@ -1,235 +1,254 @@
-Return-Path: <linux-ext4+bounces-13769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13770-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2DOBMauam2nU3AMAu9opvQ
-	(envelope-from <linux-ext4+bounces-13769-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 01:09:15 +0100
+	id gEwUH3ybm2lo3QMAu9opvQ
+	(envelope-from <linux-ext4+bounces-13770-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 01:12:44 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27FD9170E53
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 01:09:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D140C170E89
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 01:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A99C5300C90C
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 00:09:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BE65E301CCEF
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 00:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184F6F4F1;
-	Mon, 23 Feb 2026 00:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b="qmUuNlqD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3A634CDD;
+	Mon, 23 Feb 2026 00:12:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sonic316-21.consmr.mail.ne1.yahoo.com (sonic316-21.consmr.mail.ne1.yahoo.com [66.163.187.147])
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AE5DF76
-	for <linux-ext4@vger.kernel.org>; Mon, 23 Feb 2026 00:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC681CAB3
+	for <linux-ext4@vger.kernel.org>; Mon, 23 Feb 2026 00:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771805352; cv=none; b=StR4yoCJMusuJpXn72iigoDknpBJpHaTNVIBLv5fP3yxZqfifty5CalEb56J2o/kp7GT0imBMRNfnY11RIAcfXP0qT1kJFwgIm2tq4MMeiqfjO5c8MEiTHavgR+3mVGVBpMjBL+4oFlnAcA43z83jc4L6NygeQg518wVC5oNrbI=
+	t=1771805553; cv=none; b=OcEzlu9hcOUvBmgkE7fAq5ukTgztAOYuG9GimvZwAhJ3DHslo7fw/IAHCTxc98Rj8pw6xNY0o6AKw+EvXYzf1x2E4F4/9Q4/6CJoYXG0hbLEpx9tnC7cvzIzWAjw1QodgPu+uxMs/W541lExkG/wVAYU2L1Ip9SbeyD6gGJfV3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771805352; c=relaxed/simple;
-	bh=MMlT3BEOkyACfyu/Zb9hs74cDUuueM2SXiCxwxBJwlk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vGSpa6X0/sXTVP2q6khpBaoiAoB0FQy/VEVuzw/WWTJbb1t59rOX6GnF303pJQyNgg5s5PjYyi2yj2IBKqeKSAwwgsHRdq/jxqmqARzelci6FDBeYer9+F7gqDzI9H4pIlDUKumkSnm9xOT90cRCYKX3cVB29gR5/pdOYymXpZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com; spf=pass smtp.mailfrom=rocketmail.com; dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b=qmUuNlqD; arc=none smtp.client-ip=66.163.187.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rocketmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1771805350; bh=sFLpp+jkHBFj41x3oL6S2+LjNIJH1IGhbSOv62gDP54=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=qmUuNlqDmJecFQijlYNwr+whGkXTjFtg4v2OXW61szJ8SzowqUP73INy1BiBcyV8QnWd1rONPLlQbWpnY7O2wrJ5fkDwOwXEfLFhZAHc5RVDrhWAPCK+65PiBIF5SK8Y71+7iGOAPRMYxUAAqiHS1g9IpZP/kb/bypiHAT4B/1BVSyITgAs+f6vVs4dQt8futhhigEShvmOHG21KpLP3kRQGEelNtE/tr291WySEQbAS1XTDTiNxTKIkZFRIKQeq5/poY3IKB2xe+J7JJIxCd+IYZCTbyRQaRn2WjjZR11gjB9lVqfcwrt2L1QNdx+tduSsusVyQRJUHA4Tg+3J/uQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1771805350; bh=S8iaoA3biWasLNi7TnxzOpFblNngSDd+fBQD6DkBS+s=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=jYobDZPAPZi1OBHKQlDi9dGOQCoKyLFtbJXxb+PTafbpHA82+xb1y5P7LSDRaVfhulFaENEjp0uFsl/f0Shr5S7xfWK10Ki4y7uA9Nafo/0RylC2WasAx5DxLeW2TfMtfUE/gMEZ96tyziTdUWOQm+tcFSREtr5BXyz0JZ8HMQwlONE0yMCIwMXKZQ6HqleuYpqlvR2nCF1mM1u7LF2j/6xOwLbyuAV0JWJuK9jnFigCtvptxQ4ntyxMbPkwZMxD37OyUKyCeBBpZzBE/zMAg9S8kP9MXnQnch+YXDUfGwQZYd6o+New8ALqBs7wwIe4AH0VZ9vxWkyF8aaHwa7xBw==
-X-YMail-OSG: 56.txqMVM1kGx15GToT8LpFjjslK45ifZktaIC9OusDZi7n2VXoPIqPH6tNROCe
- s1VSEUoRfq1fDjGLWFtvt5tIdD_Y3DlDpu4qWmt37OBBOhHOFQZKbGKPwxEYy6WwgXMejyAF5N1s
- swkMzCdIi.JRpPOJJ7QVctg3jPDnokQYwSVpKfExY4TItekYTPRZI8MpmcmpE8V9qnyBdzbpIIv_
- Hgw1AN89ttR_ldHWrS3PsoyxrjzQ9R1bUUxkeItrFUVvoVgfwbuDLDr_9ek.d9cCXPX4uh16GVTm
- PTh24hz6ie1UVWs4Orvn6FiermyvO7BK8OwNvO6eMIyY8ED_4fcSvZpRRoU9Oh7R5VuGMIz1AWZO
- YssKQzSrE2P0muErR.21AptlwBL353YWav3tJxrHAqwJm8gws90.OjeziRTH7o3SpeNWKIuEU4Gb
- ugILASZXHL9hx6._skteRm7UtFETd8BSJUfLSA7vCw2T9s4EF9yNzFVTr_nvIqkXBCktEw3YyKE_
- UmvJC8GbIIG6Fn7.PwOzsb0dzPSXLakyqC8r9U2VaCvMs9Odmpvb56zNWbohrdSD7FVxWbLtHboX
- 928kr6GVVQvr332akIFsFh.cHhx6865mBstUHJfEVecJJtso6Xvq.jLSPUipkzAJB7q7k1B3loMe
- K3I7HNE8OuYjdAQm9MdbRRUVvRzBZ5vh2VW6xdqQPqhPXMgvKQnKSEPgIkMzOm7j5Hln5VHEIc7a
- 740MPEI.yLRpZ5iIGPHN9tiBS1KUHP0Nef5KS2jTMU6ZHOMq1eAQQO9SJr4pV5vIydFjjeFbXSAt
- k0E_kyJgLJiryky.D2Inzw41v5AZu_rQ2xzZsvfg8uNBXjUj_qTVG33te7SBBXELWtOUBA5Fj5hi
- LssTZ1ME2VqM0bBxUlVpu8cPTNHN664U2BfY8DBci_b9aXzwVATWOB4aQyl_Z8s4og62Lr3WITU2
- YfnVzBpPSqBKx7gdu2eB8FB10fM8vBDsHRn.gLgbqdR9hFJ14sDt.1v5.MEsku_s4uqjjq1Yhesu
- zw3TOgRho95qW02ML8UXFkOryWCFsSOeMQ4TCCitNwWb6YZ3vWjTBc8w01wZJSZfDvv2eQB2aGuq
- 5IGxNctQfj5Io1.7X6WX3ApIyUbwNaH8GUzrFl1Q40DQ3EkPTfW8O_bnjql0IYhUErXAMgJYi6nh
- xZT6JZPxI8t7Z20RIdhQycMKn0z7Qg.AEkOlV3Yi3xm0TYtxwfLMMqQ6WnRtwksHgIOPauL9fSMR
- KP_njG5trFkx7Bb0lMiFuYwATkpa06QvQTliswaZAJ41DK6t7BGk9Rs6e6Qfi2211FQVaLJwjAcB
- oyO_M4YVd16DoN2B3Nluo.SAD9bP8OuOulH4AG6Ci.L67cMSx6_o_6BkpEUUQL3IrqBkVHaZbo.I
- .0JVHOmEo4lwbfo9EL9OXMnf8P2CZm0_UH9TmXZH6vDN1rTxkKX5Y3AiJ446hqp2wpEgcfcAR7nz
- Pv3dyAcJv_GqTAu.CfD3Sam4008NlmBku_qcLmBR57MUgOB0TOQte3v0FpVzAJhQ5wG7B.A1I1Xs
- bRYoGfVi_Ut6MLnK78Z9afg99HQi5ISf0ivu2lhEQe6ZBL3hyJUmuF_HAsQMYqEMPw_txvo5s_pp
- 529CfpVasDBbhYDjuWALJrVvmVlmr6ZnHpSFdxX7eJJ.dAweGRABcfB7hlP_rUq0fRq8U2ViLZRk
- JkH89sQg0LfOiw1axj0rNqodnLNbsbA4mNFNAguKXS4PLBHw4RATUQHa6Zk2MrbJ8hRKGBKlSr8k
- TMXi0rlO96CSbJCetAYvVbecc4ZahI_KgGpU6x5ZCoOB2guyBaDRlEsOS5Gkf1X8cO8BFMXMdQ4l
- A5Rwe4l0EEWpZtZcmwEL7vmPaiEJQbbN3CAALVqn06803rUZLgFfalGXeHl8UHN1CtGXJGGKTE04
- Q3vV24BS9YKNxEEs6_KIWXj69E9j0cdQNKnDt__NyVyt9lGHTSqFAPUgGyRhwYtlC5UwVrx_XtLl
- 72AN.C_B8ZdKa7ah1hBzb0GiXy33OltEIhO3dtTqjQ5r0a.LYLOjLRig31_QThaz0GKw3V1sGpgU
- 3.puBYm6PBUxRhycX5jYAVZ3Bsjy1Gdk0EDq3KgUkaX_PTy0CMvRvIDl2NTGTGCS9vijufueUBvn
- cRlyOap9vZLWf3iHjrrCqDimsEuKAkdW6QIbT0Y.LKsjMWw2Bqqwrx8rMu1jehzC.Sg4IYc8RoHJ
- 8Lif_w8wi5qtwZI5FgWYdu66uQB8sjtpAYSBW
-X-Sonic-MF: <mario_lohajner@rocketmail.com>
-X-Sonic-ID: 01330c34-d24c-4593-86a8-f70d1269996b
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 23 Feb 2026 00:09:10 +0000
-Received: by hermes--production-ir2-bbcfb4457-4sf65 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 377acfba9804a543d50c2cbd3fe052ad;
-          Sun, 22 Feb 2026 23:08:27 +0000 (UTC)
-Message-ID: <4b19e54a-57aa-4a32-adf8-2dbf07d3d9ed@rocketmail.com>
-Date: Mon, 23 Feb 2026 00:08:24 +0100
+	s=arc-20240116; t=1771805553; c=relaxed/simple;
+	bh=5bUr7sH35IGltrfONE25zKXT4CvmNOONlESAbyC3Vlg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=JK886QPAakahIq1oHcKGz6ZxWDmriXNHfEWKzbO/7zIOmtsB0Eebnr219ORIHgsRMSIKDzl++h71qQ17G6FqRgs8qBhOhlKOydSYqee0oS1rhW1OHunaiYTpqwOzuBN65Xondah2HhTTCFkOLNJtnjUVjwiO9txIfwAUgcJtDmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-679c6ef1538so26566032eaf.3
+        for <linux-ext4@vger.kernel.org>; Sun, 22 Feb 2026 16:12:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771805551; x=1772410351;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FVSwO3WjMzkZD2mJ7wvPOqX/OqMofdVFZgH8wLdFZUM=;
+        b=eLhST95fdQV438IX81MfVtjw/7MktyqV756dl12/Tmoe8rGWJeAG3TOLd1keRF2mWN
+         PG3yYwAGmmXoe8rz4xhh9uK+RbdhD4qAzTXXmCGIYg5O4I8UWnCu5wVbfBqDFNSyZLLl
+         Q9E8qEuGmBHFbmHKd/WOkMVeOD6uciG9c95zbivkKnDMlfnPtjNADQi8Nc+CBMQVjtft
+         DNkZY6If/3GhRdZyl+VxY6CTNgzVJ1/PId/BMrAzQ0q3UgrPhGPp8Cw4y2GyFFDkb3bb
+         tXTAyb5zO5krmjIFqML8Yab4zt66wIE4Z20ZkMZRECbZroyAeEuqrgUm7E8hAUzGdATj
+         Vomw==
+X-Forwarded-Encrypted: i=1; AJvYcCWg+dpMdwDh7soEMDYMf6XXN6PJASC5b1WcXS3ps4qbvZBtMXY8gk+zC71Sr8tSqBYpaZJtwTDecT5E@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4SvYIWUVmqOVv2JJOMDJGb/1jsKxQSlryrgn7e2uIcO2ogtlA
+	Z2FWTCprEbXNsYT507sFkJ4qdAW3rbAXvka2LLDcsrIueZz8Y2jHUmpFw5XuF0AzCioRBGa/dFF
+	shTAnTieb9tNG1my0YZJKJITto9yE7THYYntisLrgkB+awOdwIRCQbBqx4LQ=
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: add optional rotating block allocation policy
-Content-Language: hr
-To: Theodore Tso <tytso@mit.edu>
-Cc: Baokun Li <libaokun1@huawei.com>, adilger.kernel@dilger.ca,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- Yang Erkun <yangerkun@huawei.com>, libaokun9@gmail.com
-References: <c6a3faa7-299a-4f10-981d-693cdf55b930@huawei.com>
- <069704a4-2417-470a-bf32-0ee3afd1be6a@rocketmail.com>
- <9fc3443b-0eea-4917-909b-709113f5e706@huawei.com>
- <606941c7-2a0d-44c7-a848-188212686a78@rocketmail.com>
- <20260206014249.GH31420@macsyma.lan>
- <26d60068-d149-4c53-a432-8b9db6b7e6a5@rocketmail.com>
- <20260207053106.GA87551@macsyma.lan>
- <16f17918-9186-4416-bbde-b93482933d8b@rocketmail.com>
- <20260207175522.GB87551@macsyma.lan>
- <9e520492-9b26-487f-9d60-7e0625c987c9@rocketmail.com>
- <20260208195849.GA74984@macsyma.lan>
-From: Mario Lohajner <mario_lohajner@rocketmail.com>
-In-Reply-To: <20260208195849.GA74984@macsyma.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.25198 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Received: by 2002:a05:6820:2223:b0:677:87ab:a78a with SMTP id
+ 006d021491bc7-679c4507febmr3469431eaf.61.1771805551145; Sun, 22 Feb 2026
+ 16:12:31 -0800 (PST)
+Date: Sun, 22 Feb 2026 16:12:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <699b9b6f.a70a0220.2c38d7.0189.GAE@google.com>
+Subject: [syzbot] [ext4?] KASAN: use-after-free Read in xattr_find_entry (2)
+From: syzbot <syzbot+fb32afec111a7d61b939@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[rocketmail.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[rocketmail.com:s=s2048];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=665cbf0979cda6c5];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[huawei.com,dilger.ca,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-13769-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[rocketmail.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[rocketmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13770-lists,linux-ext4=lfdr.de,fb32afec111a7d61b939];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mario_lohajner@rocketmail.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,rocketmail.com:mid,rocketmail.com:dkim]
-X-Rspamd-Queue-Id: 27FD9170E53
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,goo.gl:url,storage.googleapis.com:url,googlegroups.com:email]
+X-Rspamd-Queue-Id: D140C170E89
 X-Rspamd-Action: no action
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    2961f841b025 Merge tag 'turbostat-2026.02.14' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=156cb15a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=665cbf0979cda6c5
+dashboard link: https://syzkaller.appspot.com/bug?extid=fb32afec111a7d61b939
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a43b3a580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157f895a580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/54d6a30cbc5f/disk-2961f841.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/40003e4ec76c/vmlinux-2961f841.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2db393aba9ff/bzImage-2961f841.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/07bdbcf04dc1/mount_0.gz
+  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=12b95c02580000)
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fb32afec111a7d61b939@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 1024 to 64
+EXT4-fs error (device loop0): ext4_find_dest_de:2050: inode #12: block 7: comm syz.0.17: bad entry in directory: directory entry overrun - offset=0, inode=268435456, rec_len=1280, size=56 fake=0
+==================================================================
+BUG: KASAN: use-after-free in xattr_find_entry+0x1a5/0x280 fs/ext4/xattr.c:334
+Read of size 4 at addr ffff88806ee29004 by task syz.0.17/5997
+
+CPU: 1 UID: 49663 PID: 5997 Comm: syz.0.17 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ print_address_description mm/kasan/report.c:378 [inline]
+ print_report+0xba/0x230 mm/kasan/report.c:482
+ kasan_report+0x117/0x150 mm/kasan/report.c:595
+ xattr_find_entry+0x1a5/0x280 fs/ext4/xattr.c:334
+ ext4_xattr_ibody_get+0x232/0x4c0 fs/ext4/xattr.c:655
+ ext4_xattr_get+0x123/0x6a0 fs/ext4/xattr.c:709
+ ext4_get_acl+0x84/0x930 fs/ext4/acl.c:165
+ __get_acl+0x27e/0x410 fs/posix_acl.c:159
+ check_acl+0x3a/0x150 fs/namei.c:385
+ acl_permission_check fs/namei.c:471 [inline]
+ generic_permission+0x497/0x690 fs/namei.c:524
+ do_inode_permission fs/namei.c:585 [inline]
+ inode_permission+0x243/0x5f0 fs/namei.c:648
+ lookup_inode_permission_may_exec fs/namei.c:-1 [inline]
+ may_lookup fs/namei.c:1973 [inline]
+ link_path_walk+0x1149/0x18d0 fs/namei.c:2595
+ path_lookupat+0xe4/0x8c0 fs/namei.c:2803
+ filename_lookup+0x256/0x5d0 fs/namei.c:2833
+ user_path_at+0x40/0x160 fs/namei.c:3612
+ do_mount fs/namespace.c:4156 [inline]
+ __do_sys_mount fs/namespace.c:4348 [inline]
+ __se_sys_mount+0x2dc/0x420 fs/namespace.c:4325
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f72cdd9c629
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff6aba2c28 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f72ce015fa0 RCX: 00007f72cdd9c629
+RDX: 0000000000000000 RSI: 0000200000000040 RDI: 0000000000000000
+RBP: 00007f72cde32b39 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000002094080 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f72ce015fac R14: 00007f72ce015fa0 R15: 00007f72ce015fa0
+ </TASK>
+
+The buggy address belongs to the physical page:
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x7f3283789 pfn:0x6ee29
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000000 ffffea0001bb8a88 ffffea0001bb8908 0000000000000000
+raw: 00000007f3283789 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 0, migratetype Movable, gfp_mask 0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_ZERO|__GFP_COMP), pid 5981, tgid 5981 (sed), ts 108386366383, free_ts 108399318838
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x231/0x280 mm/page_alloc.c:1888
+ prep_new_page mm/page_alloc.c:1896 [inline]
+ get_page_from_freelist+0x24dc/0x2580 mm/page_alloc.c:3961
+ __alloc_frozen_pages_noprof+0x18d/0x380 mm/page_alloc.c:5249
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2485
+ folio_alloc_mpol_noprof mm/mempolicy.c:2504 [inline]
+ vma_alloc_folio_noprof+0xea/0x210 mm/mempolicy.c:2539
+ folio_prealloc mm/memory.c:-1 [inline]
+ alloc_anon_folio mm/memory.c:5200 [inline]
+ do_anonymous_page mm/memory.c:5257 [inline]
+ do_pte_missing+0x1656/0x3750 mm/memory.c:4467
+ handle_pte_fault mm/memory.c:6308 [inline]
+ __handle_mm_fault mm/memory.c:6446 [inline]
+ handle_mm_fault+0x1bec/0x3310 mm/memory.c:6615
+ do_user_addr_fault+0xa73/0x1340 arch/x86/mm/fault.c:1334
+ handle_page_fault arch/x86/mm/fault.c:1474 [inline]
+ exc_page_fault+0x6a/0xc0 arch/x86/mm/fault.c:1527
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+page last free pid 5981 tgid 5981 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ __free_pages_prepare mm/page_alloc.c:1432 [inline]
+ free_unref_folios+0xd38/0x14c0 mm/page_alloc.c:3039
+ folios_put_refs+0x789/0x8d0 mm/swap.c:1002
+ free_pages_and_swap_cache+0x2e7/0x5b0 mm/swap_state.c:423
+ __tlb_batch_free_encoded_pages mm/mmu_gather.c:138 [inline]
+ tlb_batch_pages_flush mm/mmu_gather.c:151 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:398 [inline]
+ tlb_flush_mmu+0x6d3/0xa30 mm/mmu_gather.c:405
+ tlb_finish_mmu+0xf9/0x230 mm/mmu_gather.c:530
+ exit_mmap+0x453/0xdb0 mm/mmap.c:1290
+ __mmput+0x118/0x430 kernel/fork.c:1174
+ exit_mm+0x168/0x220 kernel/exit.c:581
+ do_exit+0x62e/0x2320 kernel/exit.c:959
+ do_group_exit+0x21b/0x2d0 kernel/exit.c:1112
+ __do_sys_exit_group kernel/exit.c:1123 [inline]
+ __se_sys_exit_group kernel/exit.c:1121 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1121
+ x64_sys_call+0x221a/0x2240 arch/x86/include/generated/asm/syscalls_64.h:232
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Memory state around the buggy address:
+ ffff88806ee28f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88806ee28f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88806ee29000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff88806ee29080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88806ee29100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
 
 
-On 2/8/26 20:58, Theodore Tso wrote:
-> On Sun, Feb 08, 2026 at 12:47:12PM +0100, Mario Lohajner wrote:
->>
->> Someone comes forward with a fork, saying:
->> “Here is 'my fork'. I believe it may work well for 'some dishes'.”
-> 
-> Give me *proof* that it works on 'some dishes' in terms of actual
-> perfomance, specifiying real-world workloads, and real-world devices,
-> and we can talk.  "I believe" is not enough for code that upstream has
-> to test and maintain indefinitely.  If it works for you, it's open
-> source.  You can run with an out-of-tree on your systems.  But if you
-> want us to accept it upstream, you need to provide something more than
-> "I believe".
-> 
-> Cheers,
-> 
-> 					- Ted
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Hi Ted,
-sorry for late but lengthy answer.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Of course — no disagreement there. Getting code upstream is serious
-business, and I fully agree that “I believe” is not sufficient.
-If something is to be merged and maintained long-term, it must be
-justified with measurable data on real workloads and real hardware.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Before going further, let me briefly say thank you:
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-Andreas — thank you for immediately recognizing the core idea and
-potential usefulness of the round-robin policy.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Baokun — thank you for suggesting the per-CPU split cursors and
-reinforcing the stream allocation direction.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Theodore — thank you for pushing me to rethink both the execution and
-the structure of the patch itself.
-
-That feedback directly shaped V2.
-
-*** Whats changed in V2 ***
-
-Stream allocation enforcement:
-To promote sequentiality all files are treated as streams, but instead
-of relying on a hash array of global goals (with unpredictable scaling),
-each inode maintains its own atomic cursor.
-This helps preserve intra-file locality and reduces fragmentation by
-keeping allocations sequential per inode.
-
-Per-CPU cursors:
-It turns out the contention point isn’t the cursor itself, but rather
-all CPUs racing for the same blocks.
-Per-CPU cursors is the way tp a solution but with a small twist:
-
-Allocation starting points are split per-CPU and evenly distributed
-across the LBA space. In effect, this creates LBA zones advancing along
-LBA as allocation progresses, it further helps avoiding allocation
-hotspots while keeping race conditions and contention in check *without*
-mutex or locks.
-
-Preserved is allocator isolation:
-Regular allocator is not modified or burdened in any way.
-The rotating allocator is selected at mount time (-o rralloc) and
-implemented as a separate allocation path.
-This keeps the default behavior untouched and allows independent
-evolution of "rralloc" policy.
-
-The repository below summarizes the motive and result of the current
-design:
-
-https://github.com/mlohajner/RRALLOC
-
-In summary, files are "floating" across the LBA and in-place overwriting
-is greatly reduced. It may look counterintuitive, but that is the goal, 
-tested with v6.18.9 stable.
-
-Best regards,
-manjo
-
-
-P.S.
-On performance evidence
-
-Like V1, V2 is a policy, meaning:
-It relies on established and well-tested ext4 heuristics, adjusted to
-produce round-robin allocation behavior.
-
-As proof of principle, it performs round-robin allocation across the LBA
-space (and wraps around to the start, thus delivering on the promise).
-
-By design - leveraging existing ext4 heuristics and keeping the rotating
-allocator fully separated - performance should remain in line with
-current allocator expectations.
-
-Preliminary results confirm that round-robin allocation can be
-implemented without compromising (regular) allocator efficiency.
+If you want to undo deduplication, reply with:
+#syz undup
 
