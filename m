@@ -1,161 +1,232 @@
-Return-Path: <linux-ext4+bounces-13775-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13776-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SH5BG0JJnGmODAQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13775-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 13:34:10 +0100
+	id sNL3EblMnGnYDQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13776-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 13:48:57 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BFE17624C
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 13:34:09 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B645A176700
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 13:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 407CF300E691
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 12:34:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6A0013054229
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 12:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79BC36073E;
-	Mon, 23 Feb 2026 12:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B77366059;
+	Mon, 23 Feb 2026 12:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="CYhVWaz3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQM1l7+Y"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.83.148.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587FB343D8F;
-	Mon, 23 Feb 2026 12:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.83.148.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BA434E746;
+	Mon, 23 Feb 2026 12:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771850043; cv=none; b=YABKm7TIy7GZYNxLJNCueq/VxR/2Fc876rypH+JzKSdDulF4emKmreV2YZZzTjGtZSOUyvI8ABVbN6NMANU+dvd0KS6YtqrQJQvKSo6UbhkjkRcYZKGTqFRvh7sRwbCSebx+2D0Fi/J2VEhJFifi3u8OywZKFua78g6Wf1pQAPI=
+	t=1771850818; cv=none; b=Lq8OpOrylDao0FjhxfFU7pVjEcamQ0m8uApN9kLq0Bxu3S8BuqIOMi2W8RCIuTftaDIoywLNvSjLRTEsI9xTVwNtAd3a8T/fDPJZJHThaRs6nv5Aj5nIgqfiBg3cBdgtNUeyK8xUiKARfhi3swXi8ehZYXScEJnpKRcJxuYFoFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771850043; c=relaxed/simple;
-	bh=lsewbD6I+rSux6LezybNyII9fOD7541CfZBaa+70dms=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kZtLOmWBLWyw8/NX08qEtQosmTlm05QWyeHGLehlWExYXhySveoDeYKRXUqsWb5CueBPIt6Oo7UXKwXpN54qhaMgbisjuwRc5B5hRMe859c+j1DzeBwzqXVz1iQiWODWX3N+3B8aCAEOjqvHp4aLrviPN7fb/FMhjU8f+E1/kq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=CYhVWaz3; arc=none smtp.client-ip=35.83.148.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1771850042; x=1803386042;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5ozhSRhDXJCXOVBObQmD4X7K/uE6XpdJiQsWhftQtRs=;
-  b=CYhVWaz3qie7F8uiya8YSLG9DAOvbfjZBkJBgrFdVa2VOcUgc6Ctsj/G
-   U8+M5U+YG6RbcWWZyYkCBbcrkPstwSTmNJMnaNpV563b0XgXdZzE5tbqn
-   1Wb6pn/WLV1M2w4zAnN9Bh8/jhoVmr1fHaQRJDkmnWMGNCnOTiMN9Q4de
-   fB2xlZqS6fcuDjrmf5IaWI84L/Jf80yCKkEkxDmu8Y5k28/5FLzjR3Xn0
-   /zveN/9lveTOWOe9NS8AnTpDa0quQdrAy1iNR2IQTwt20zRAHjItdM3HX
-   7vkEoIfiABLiaBLdkbUfDm3FXNAtPe2ANJ9SVDvmsXyWQnmKwFU2jj/LG
-   Q==;
-X-CSE-ConnectionGUID: OStkjPB/To+jrS674xKUTA==
-X-CSE-MsgGUID: vB/uqwGUQUyqQNFvRvkQ2w==
-X-IronPort-AV: E=Sophos;i="6.21,306,1763424000"; 
-   d="scan'208";a="13367537"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2026 12:33:59 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:15992]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.12.129:2525] with esmtp (Farcaster)
- id f8bc6900-77dd-476b-a4f6-c81d61fa31d2; Mon, 23 Feb 2026 12:33:59 +0000 (UTC)
-X-Farcaster-Flow-ID: f8bc6900-77dd-476b-a4f6-c81d61fa31d2
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 23 Feb 2026 12:33:58 +0000
-Received: from c889f3b07a0a.amazon.com (10.106.82.17) by
- EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 23 Feb 2026 12:33:57 +0000
-From: Yuto Ohnuki <ytohnuki@amazon.com>
-To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yuto Ohnuki
-	<ytohnuki@amazon.com>
-Subject: [PATCH] ext4: replace BUG_ON with proper error handling in ext4_read_inline_folio
-Date: Mon, 23 Feb 2026 12:33:46 +0000
-Message-ID: <20260223123345.14838-2-ytohnuki@amazon.com>
-X-Mailer: git-send-email 2.50.0
+	s=arc-20240116; t=1771850818; c=relaxed/simple;
+	bh=vrDf41zTUi7dFIl6BT5+CkOFJTsjrMPk+DAhmB5nBvM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CeMU/LFFv8+zJtZpV+1FftnqrAkdGjPui8UWvI8WlvvRP/ryAjYde0EnIRvDUE+E1cvX6IQwi2lykedsHeWpoE5xg6ur1tFFu0FJVIzh9XWudSvtaxXWH/5a8zC6ogDwTUj0QfXd2UBCt7AeZZ4JKUFhioMd/erc0IeBDT245hA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQM1l7+Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88E0AC116C6;
+	Mon, 23 Feb 2026 12:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771850817;
+	bh=vrDf41zTUi7dFIl6BT5+CkOFJTsjrMPk+DAhmB5nBvM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UQM1l7+YpOa+YQMjzzR8yGEIYuyv0pDvTeORswXyHDdxxj9kNdRnCRVozEfcStKHU
+	 Aitjh161C/N9xScX5a0f9nyyGw4r2CdwQWMgZW8kWM40mRscuLLrPEkz5DXKNxFjv4
+	 JOzZzHOZol40j3ooXEpBUQ6g7J3EcTZ7UWMTU/IEbvV4pkG5vGfiGSRR5R89Urc0ZN
+	 jUnPUGOhs2xVHk3a2FbTb0Aap4lOQ2aGoz5QC2tlzxvVNuEmkCyIQYzJ7s9sP/You4
+	 Gpcvhuch0slPkSVfedXdS/WZJQkIy9KhAMYwQkjJnym50Oy/UkLJUDrLdTaTc+KhMU
+	 UwgK4Sx8t8abw==
+Date: Mon, 23 Feb 2026 13:46:54 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Theodore Tso <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>, 
+	Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-man@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <aZxLxum4WFYKbx2O@devuan>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+ <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
+ <20260219133244.GB69183@macsyma-wired.lan>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ClientProxiedBy: EX19D041UWA001.ant.amazon.com (10.13.139.124) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tx7lxkblhrx3j765"
+Content-Disposition: inline
+In-Reply-To: <20260219133244.GB69183@macsyma-wired.lan>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-8.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+X-Spamd-Result: default: False [-2.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13775-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,iloc.bh:url];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ytohnuki@amazon.com,linux-ext4@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13776-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[amazon.com:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[dilger.ca,gmail.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alx@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.995];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: B8BFE17624C
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,alejandro-colomar.es:url]
+X-Rspamd-Queue-Id: B645A176700
 X-Rspamd-Action: no action
 
-Replace BUG_ON() with proper error handling when inline data size
-exceeds PAGE_SIZE. This prevents kernel panic and allows the system to
-continue running while properly reporting the filesystem corruption.
 
-The error is logged via ext4_error_inode(), the buffer head is released
-to prevent memory leak, and -EFSCORRUPTED is returned to indicate
-filesystem corruption.
+--tx7lxkblhrx3j765
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Theodore Tso <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>, 
+	Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-man@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <aZxLxum4WFYKbx2O@devuan>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+ <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
+ <20260219133244.GB69183@macsyma-wired.lan>
+MIME-Version: 1.0
+In-Reply-To: <20260219133244.GB69183@macsyma-wired.lan>
 
-Signed-off-by: Yuto Ohnuki <ytohnuki@amazon.com>
----
- fs/ext4/inline.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Hi Ted, Andreas,
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 1f6bc05593df..408677fa8196 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -522,7 +522,15 @@ static int ext4_read_inline_folio(struct inode *inode, struct folio *folio)
- 		goto out;
- 
- 	len = min_t(size_t, ext4_get_inline_size(inode), i_size_read(inode));
--	BUG_ON(len > PAGE_SIZE);
-+
-+	if (len > PAGE_SIZE) {
-+		ext4_error_inode(inode, __func__, __LINE__, 0,
-+				 "inline size %zu exceeds PAGE_SIZE", len);
-+		ret = -EFSCORRUPTED;
-+		brelse(iloc.bh);
-+		goto out;
-+	}
-+
- 	kaddr = kmap_local_folio(folio, 0);
- 	ret = ext4_read_inline_data(inode, kaddr, len, &iloc);
- 	kaddr = folio_zero_tail(folio, len, kaddr + len);
--- 
-2.50.1
+On 2026-02-19T08:32:44-0500, Theodore Tso wrote:
+> +linux-man
+>=20
+> On Wed, Feb 18, 2026 at 02:55:13PM -0700, Andreas Dilger wrote:
+> > If anything, the man page should be updated to be more concise, like:
+> >=20
+> >     "the *just written* output data *on that file descriptor* and assoc=
+iated
+> >      file metadata have been transferred to the underlying hardware (i.=
+e.
+> >      as though each write(2) was followed by a call to sync_file_range(=
+2)
+> >      for the corresponding file offset(s))"
+>=20
+> Yeah, this is an inaccuracy in the man page; the definition of O_SYNC
+> from the Single Unix Specification states:
+>=20
+>     O_SYNC    Write I/O operations on the file descriptor shall complete
+>                                    ^^^^^^^^^^^^^^^^^^^^^^
+>               as defined by synchronized I/O file integrity completion.
+>=20
+> Compare and contrast this to what's in the Linux manpage:
+>=20
+>        O_SYNC Write  operations  on the file will complete according to t=
+he re=E2=80=90
+>               quirements of synchronized I/O file integrity completion (b=
+y con=E2=80=90
+>               trast with the synchronized I/O data  integrity  completion=
+  pro=E2=80=90
+>               vided by O_DSYNC.)
+>=20
+>               By  the  time  write(2) (or similar) returns, the output da=
+ta and
+>               associated file metadata have been transferred to the  unde=
+rlying
+>               hardware (i.e., as though each write(2) was followed by a c=
+all to
+>               fsync(2)).  See VERSIONS.
+>=20
+> The parenthetical comment in the second paragraph needs to be removed,
+> since fsync specifices that all dirty information in the page cache
+> will be flushed out.
+
+Would you mind checking the text in VERSIONS (since there's a reference
+to it right next to the text you're proposing to remove)?  I suspect it
+will also need to be updated accordingly.  I don't feel qualified to
+touch that text by myself.
+
+If you'd write a patch, I'd appreciate that.
 
 
+Have a lovely day!
+Alex
 
+>  From the fsync man page:
+>=20
+>        fsync() transfers ("flushes") all modified in-core data of (i.e., =
+ modi=E2=80=90
+>        fied buffer cache pages for) the file referred to by the file desc=
+riptor
+>        fd  to  the  disk device (or other permanent storage device) so th=
+at all
+>        changed information can be retrieved even if the system  crashes  =
+or  is
+>        rebooted.   This  includes  writing  through or flushing a disk ca=
+che if
+>        present.  The call blocks until the device reports that the transf=
+er has
+>        completed.
+>=20
+> I'll also mention that the fsync man page doesn't really talk about
+> its interaction with O_DIRECT writes.  This is mentioned in the
+> open(2) man page, and in general, people who use O_DIRECT are
+> generally expected to know what they are doing.  But in the context of
+> O_DIRECT writes, the fsync(2) call is also used to make sure that a
+> CACHE FLUSH or equivalent command is sent to the storage device, such
+> that the O_DIRECT write is guaranteed to persist after a power
+> failure.
+>=20
+> Cheers,
+>=20
+> 					- Ted
+>=20
 
-Amazon Web Services EMEA SARL, 38 avenue John F. Kennedy, L-1855 Luxembourg, R.C.S. Luxembourg B186284
+--=20
+<https://www.alejandro-colomar.es>
 
-Amazon Web Services EMEA SARL, Irish Branch, One Burlington Plaza, Burlington Road, Dublin 4, Ireland, branch registration number 908705
+--tx7lxkblhrx3j765
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmmcTDcACgkQ64mZXMKQ
+wqnrlBAAu5NZNff14U6pUIrsFi7/6PYuwl1sP2z/WfCpvVo0PPdybWTSk+aNfz5W
+N2vIFG2iAuZeuwlAjmqBSG5Pqp0OniT//rgOfQNb+DsI9698RVWU78czkYFII0Gy
+NH0sRwyC+8BR0pLZV+Ic4UGvAySvS2UDbrl3B4UcBEDUjzn/YsjoH74foZJgwwBG
+j3n08eozaWKFcHQJ8ar4VLpMEu4mHUQmtKUwGcxFIkYDaORAgv3aQSazpZWRq0hG
+wLqgVwxLBzv/kRfqOwrHeR7JrCZIs6Te7V5+19jUBo3qjZBtPXwgR+QUzX5y8hdZ
+tmho3Syfc5jURZ+CS/nmGFMD9GA4vyucC9QdR+yNa+LLoGVKHcUAEwZC+VGOnByL
+ThCMOsaUIo7yYeqhLs2dtxwBayWBgvcs8Y1wXPyq5hTr4YO89E9xq/u4rEDnIIm5
+axeVf8sbB2Rnx9j418TJhLWTjrHHx6h4YnRktgryJZf02gj98EHo46eOZ9Nl/i4q
+9eYAW/N8ysXzuIrzh3jS0zvqJ8Uvj8Y+KPtPRg1oflGCGIvDriTQ6Rytl3lVrpMV
+imeRFQPauUokQwJ6bsaANsYYFR1PyeuW6tLWJvYM4QURKgi7t6gbYqhUGaJdfMhV
+QcC+scUbHUDLZgbjQGofPo4znP/ck3q1hkEtZOFovRiX2tbQjIQ=
+=/TnD
+-----END PGP SIGNATURE-----
 
+--tx7lxkblhrx3j765--
 
