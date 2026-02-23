@@ -1,58 +1,58 @@
-Return-Path: <linux-ext4+bounces-13793-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13794-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6BOvE6ndnGl/LwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13793-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 00:07:21 +0100
+	id QJ8lGQfdnGl/LwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13794-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 00:04:39 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A750C17ED33
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 00:07:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3E2317EBE0
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 00:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BA57A318C8E6
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 23:04:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7A0EB3052451
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Feb 2026 23:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C73137E2E1;
-	Mon, 23 Feb 2026 23:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB5A37D12C;
+	Mon, 23 Feb 2026 23:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnOOyCc8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PrMxnKw1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA8337D11D;
-	Mon, 23 Feb 2026 23:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A955F37D11D;
+	Mon, 23 Feb 2026 23:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771887855; cv=none; b=QdcAXz0wlxLFfP+Zl3WwWa1gFVq4Z9RQ5r5ZxxqAZy5LWUC1KMTu7OZJUMbI4j954lHQdnDYAHjbA3ezAsoARx9w+Qp53b0YQ2G4P0mJbgQRqLF8unCRaR91jlzlT4oaP8JyJSCKXbdh0KV3UBzRkb49sIuFe4wxKutEkBupqCs=
+	t=1771887870; cv=none; b=WhLDZGVS6XFnQsx5wF7AGkLDw3mbtUhuuH3kmnm11D3qJ9t82pkryxEfU+wL8hi1yvf3Ud/UfsAAeLu21/xCSw/dyg3i+qSPF43npOANdR4uKmhBGgOsoifmdbWqAgRTVv8w6d87ojIaOj4hL5hVhXAwyRJhbag+Khc9159dCXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771887855; c=relaxed/simple;
-	bh=RK2wQUhVjXMYMKbuFaa168T85P+VefLVbONdf2pvFz4=;
+	s=arc-20240116; t=1771887870; c=relaxed/simple;
+	bh=sxWYDW8eFLF3+bgHsafMI36dn6LBuYRcKS/otwzVWBM=;
 	h=Date:Subject:From:To:Cc:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gtdIoXZGspe6s7jtBTY5Ei9UK6BEq6Idcco3IRMUMx9LAsmwYMBGvOdXAQEk0xgcA/AqrbWTq/qyGHkXRKFV8PkrjRD0OhwTuoeMh0nHsH6zPlU+L9hAuTyaSlVBZuuewnE5bV4bhQRlbreOyZ/OHk5u3j6cF5KHtWJOK2UsGt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnOOyCc8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE21C116C6;
-	Mon, 23 Feb 2026 23:04:14 +0000 (UTC)
+	 MIME-Version:Content-Type; b=AHdelkFaNXfuVtinMpgTxaa6cLPA6Qcsu/j/WS+lGup16+ZLmyXIDe2rV/e5F+BW0uxvYbfS1X27uuonLZWtZo3ucHBsME/LK1SZaH0CR+8jf7f8II9410Q4PvcMHQWu0MatVwNhKt5VhdT2udM6TBZ5fu7HZstcZZGB1BVd5R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PrMxnKw1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8332EC116C6;
+	Mon, 23 Feb 2026 23:04:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771887854;
-	bh=RK2wQUhVjXMYMKbuFaa168T85P+VefLVbONdf2pvFz4=;
+	s=k20201202; t=1771887870;
+	bh=sxWYDW8eFLF3+bgHsafMI36dn6LBuYRcKS/otwzVWBM=;
 	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=XnOOyCc8/Kt59oBMIbbSKFWI7tgApFEC/3vO1AIayuL0pTbJQygjdRNw+4doViTYJ
-	 SwqjIhwCib3Ilcxc7KJ/wo23VywSndwyLRLRGQ2+o4sZS9MGpcOnWuaCKanKJzuTmj
-	 ZQlAwx1YIN3NJFLJ4g56WU3tSpxmB1Q1MI3fUtVeViicx6K5YIw0XdHRzB1jKK27ED
-	 kAZndD7zLngpasg3QGxBHFwxTf7BaXbudLs0i77qXoMmHCcwsmrYbL01OojEQtdfia
-	 yF/J/4yKlunRTdxw/TmtZ22pmZpumP5a0FogQvdmwLPW0X+muypF71WRvS18m50MV/
-	 T/jSF/rEPMAfg==
-Date: Mon, 23 Feb 2026 15:04:14 -0800
-Subject: [PATCHSET RFC 6/6] fuse: allow fuse servers to upload iomap BPF
- programs
+	b=PrMxnKw1wISG0BjTDbC5LTtB4QrwQygfFEWB6B5nUpqAWarTXWBzGbUrC4zFovg2K
+	 2t9xomhRdrEM/t9wxh3bOrVEP8wepC/P2GFbtzkxoMexWU50qNRbQichw3Zm+kRGQ7
+	 CP7FLvC9sJW4eNGNybRU31KnRWDglGTJey1uBApSPMknckWVZdmwRtAnaYfLmuRQvZ
+	 IiVY3dKXzyjIECDKHYrOZYTPH9rL53FMC38G2BkLHFb9CPVzk9ACR0UoLPgIQ8+faD
+	 kTqBjm6rNxquxWxeS6iX3WIPb616A3h6WvVGg+sJGbF+nH/pbEEuIRrAeA+ZQXMc62
+	 9ixKEwQhRM07A==
+Date: Mon, 23 Feb 2026 15:04:30 -0800
+Subject: [PATCHSET v7 1/8] fuse2fs: use fuse iomap data paths for better file
+ I/O performance
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: djwong@kernel.org, bschubert@ddn.com
-Cc: bernd@bsbernd.com, miklos@szeredi.hu, neal@gompa.dev,
- linux-ext4@vger.kernel.org, john@groves.net, linux-fsdevel@vger.kernel.org,
- bpf@vger.kernel.org, joannelkoong@gmail.com
-Message-ID: <177188741597.3942368.18114094782378370092.stgit@frogsfrogsfrogs>
+To: tytso@mit.edu
+Cc: bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, miklos@szeredi.hu, bernd@bsbernd.com,
+ joannelkoong@gmail.com, neal@gompa.dev
+Message-ID: <177188744403.3943178.7675407203918355137.stgit@frogsfrogsfrogs>
 In-Reply-To: <20260223224617.GA2390314@frogsfrogsfrogs>
 References: <20260223224617.GA2390314@frogsfrogsfrogs>
 Precedence: bulk
@@ -68,20 +68,20 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[bsbernd.com,szeredi.hu,gompa.dev,vger.kernel.org,groves.net,gmail.com];
-	TAGGED_FROM(0.00)[bounces-13793-lists,linux-ext4=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,szeredi.hu,bsbernd.com,gmail.com,gompa.dev];
+	TAGGED_FROM(0.00)[bounces-13794-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -89,59 +89,122 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A750C17ED33
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,configure.ac:url]
+X-Rspamd-Queue-Id: F3E2317EBE0
 X-Rspamd-Action: no action
 
 Hi all,
 
-There are certain fuse servers that might benefit from the ability to
-upload a BPF program into the kernel to respond to ->iomap_begin
-requests instead of upcalling the fuse server itself.
+Switch fuse2fs to use the new iomap file data IO paths instead of
+pushing it very slowly through the /dev/fuse connection.  For local
+filesystems, all we have to do is respond to requests for file to device
+mappings; the rest of the IO hot path stays within the kernel.  This
+means that we can get rid of all file data block processing within
+fuse2fs.
 
-For example, consider a fuse server that abstracts a large amount of
-storage for use as intermediate storage by programs.  If the storage is
-striped across hardware devices (e.g. RAID0 or interleaved memory
-controllers) then the iomapping pattern will be completely regular but
-the mappings themselves might be very small.
+Because we're not pinning dirty pages through a potentially slow network
+connection, we don't need the heavy BDI throttling for which most fuse
+servers have become infamous.  Yes, mapping lookups for writeback can
+stall, but mappings are small as compared to data and this situation
+exists for all kernel filesystems as well.
 
-Performance for large IOs will suck if it is necessary to upcall the
-fuse server every time we cross a mapping boundary.  The fuse server can
-try to mitigate that hit by upserting mappings ahead of time, but
-there's a better solution for this usecase: BPF programs.
+The performance of this new data path is quite stunning: on a warm
+system, streaming reads and writes through the pagecache go from
+60-90MB/s to 2-2.5GB/s.  Direct IO reads and writes improve from the
+same baseline to 2.5-8GB/s.  FIEMAP and SEEK_DATA/SEEK_HOLE now work
+too.  The kernel ext4 driver can manage about 1.6GB/s for pagecache IO
+and about 2.6-8.5GB/s, which means that fuse2fs is about as fast as the
+kernel for streaming file IO.
 
-In this case, the fuse server can compile a BPF program that will
-compute the mapping data for a given request and upload the program.
-This avoids the overhead of cache lookups and server upcalls.  Note that
-the BPF verifier still imposes instruction count and complexity limits
-on the uploaded programs.
+Random 4k buffered IO is not so good: plain fuse2fs pokes along at
+25-50MB/s, whereas fuse2fs with iomap manages 90-1300MB/s.  The kernel
+can do 900-1300MB/s.  Random directio is worse: plain fuse2fs does
+20-30MB/s, fuse-iomap does about 30-35MB/s, and the kernel does
+40-55MB/s.  I suspect that metadata heavy workloads do not perform well
+on fuse2fs because libext2fs wasn't designed for that and it doesn't
+even have a journal to absorb all the fsync writes.  We also probably
+need iomap caching really badly.
 
-Note that I embraced and extended some code from Joanne, but at this
-point I've modified it so heavily that it's not really the original
-anymore.  But she still gets credit for coming up with the idea and
-engaging me in flinging prototypes around.
+These performance numbers are slanted: my machine is 12 years old, and
+fuse2fs is VERY poorly optimized for performance.  It contains a single
+Big Filesystem Lock which nukes multi-threaded scalability.  There's no
+inode cache nor is there a proper buffer cache, which means that fuse2fs
+reads metadata in from disk and checksums it on EVERY ACCESS.  Sad!
+
+Despite these gaps, this RFC demonstrates that it's feasible to run the
+metadata parsing parts of a filesystem in userspace while not
+sacrificing much performance.  We now have a vehicle to move the
+filesystems out of the kernel, where they can be containerized so that
+malicious filesystems can be contained, somewhat.
+
+iomap mode also calls FUSE_DESTROY before unmounting the filesystem, so
+for capable systems, fuse2fs doesn't need to run in fuseblk mode
+anymore.
+
+However, there are some major warts remaining:
+
+1. The iomap cookie validation is not present, which can lead to subtle
+races between pagecache zeroing and writeback on filesystems that
+support unwritten and delalloc mappings.
+
+2. Mappings ought to be cached in the kernel for more speed.
+
+3. iomap doesn't support things like fscrypt or fsverity, and I haven't
+yet figured out how inline data is supposed to work.
+
+4. I would like to be able to turn on fuse+iomap on a per-inode basis,
+which currently isn't possible because the kernel fuse driver will iget
+inodes prior to calling FUSE_GETATTR to discover the properties of the
+inode it just read.
+
+5. ext4 doesn't support out of place writes so I don't know if that
+actually works correctly.
+
+6. iomap is an inode-based service, not a file-based service.  This
+means that we /must/ push ext2's inode numbers into the kernel via
+FUSE_GETATTR so that it can report those same numbers back out through
+the FUSE_IOMAP_* calls.  However, the fuse kernel uses a separate nodeid
+to index its incore inode, so we have to pass those too so that
+notifications work properly.
 
 If you're going to start using this code, I strongly recommend pulling
 from my git trees, which are linked below.
 
-With a bit of luck, this should all go splendidly.
 Comments and questions are, as always, welcome.
 
---D
-
-kernel git tree:
-https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=fuse-iomap-bpf
+e2fsprogs git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/e2fsprogs.git/log/?h=fuse2fs-iomap-fileio
 ---
 Commits in this patchset:
- * libfuse: allow fuse servers to upload bpf code for iomap functions
- * libfuse: add kfuncs for iomap bpf programs to manage the cache
- * libfuse: make fuse_inode opaque to iomap bpf programs
+ * fuse2fs: implement bare minimum iomap for file mapping reporting
+ * fuse2fs: add iomap= mount option
+ * fuse2fs: implement iomap configuration
+ * fuse2fs: register block devices for use with iomap
+ * fuse2fs: implement directio file reads
+ * fuse2fs: add extent dump function for debugging
+ * fuse2fs: implement direct write support
+ * fuse2fs: turn on iomap for pagecache IO
+ * fuse2fs: don't zero bytes in punch hole
+ * fuse2fs: don't do file data block IO when iomap is enabled
+ * fuse2fs: try to create loop device when ext4 device is a regular file
+ * fuse2fs: enable file IO to inline data files
+ * fuse2fs: set iomap-related inode flags
+ * fuse2fs: configure block device block size
+ * fuse4fs: separate invalidation
+ * fuse2fs: implement statx
+ * fuse2fs: enable atomic writes
+ * fuse4fs: disable fs reclaim and write throttling
+ * fuse2fs: implement freeze and shutdown requests
 ---
- include/fuse_iomap_bpf.h |  263 ++++++++++++++++++++++++++++++++++++++++++++++
- include/meson.build      |    3 -
- 2 files changed, 265 insertions(+), 1 deletion(-)
- create mode 100644 include/fuse_iomap_bpf.h
+ configure            |   90 ++
+ configure.ac         |   54 +
+ fuse4fs/fuse4fs.1.in |    6 
+ fuse4fs/fuse4fs.c    | 1917 +++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/config.h.in      |    6 
+ misc/fuse2fs.1.in    |    6 
+ misc/fuse2fs.c       | 1939 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 3991 insertions(+), 27 deletions(-)
 
 
