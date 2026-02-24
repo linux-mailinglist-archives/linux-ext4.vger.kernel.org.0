@@ -1,72 +1,71 @@
-Return-Path: <linux-ext4+bounces-13975-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13976-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YB6fALNunWk9QAQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13975-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 10:26:11 +0100
+	id 8M0HOuBunWk9QAQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13976-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 10:26:56 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F791848B1
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 10:26:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 601B41848FC
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 10:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DD868309623D
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 09:26:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CCC9330ABBBE
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 09:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2B636B05E;
-	Tue, 24 Feb 2026 09:26:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1B736C0B7;
+	Tue, 24 Feb 2026 09:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="tJOqJMyi"
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="hUUrFNIl"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCC4369224;
-	Tue, 24 Feb 2026 09:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4F336B074;
+	Tue, 24 Feb 2026 09:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771925162; cv=pass; b=TUuybatyCvei38LJTVslt0ZmWaelkP65v3BUP5dgQ+1mKC2tQLVZrKU04oM47G56XB0n9aEiD3yGq/cShIXRpTny3XbSbcbWnlp2M86QpSaDUqXky+/L0IiiJRm2i8Ck+c/fYlpeIptY3kQ2ua0U052ID5ky2u0CMHEQrFaTXdA=
+	t=1771925172; cv=pass; b=Iil2zglZ/ginItQVc+bgWSlOLm1ClJxBKs+75vssdewK9mdpmOMTBdnN4enyK5tBziue3H27mROwFQHC2UC4Y/oDcABAcgQDMosYSFojZxQKlp8nNmDcwL/nebQnFmmBGX+STM1fY5/Ab02ozNf5ckTfRxo/DK959lIYrL/rVV8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771925162; c=relaxed/simple;
-	bh=6HnR2vQVyFMxEanvtrB7UYHlNmO1A2TCYspJNnFuYxU=;
+	s=arc-20240116; t=1771925172; c=relaxed/simple;
+	bh=SpEOrG8BruIwlAXoDDQ+sHu2HlZvCFDxLKBd8cGlyCA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EZhFJBjPYNfMKr5Jb7LwpfI5x7D+M2DsiQFjQ1+Bb8KaAuUP9d7/Dfc5QRZuJOmomb36kChAWeWzeRC2ijdkUkjvAujMlLwHzR7Md6GGQr9+1zde2t2vd+OqGIgmnT1gxEULO5HFRrrFJXFN5nKb91tFNO55ruI8E4EWP/RMF34=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=tJOqJMyi; arc=pass smtp.client-ip=136.143.188.15
+	 MIME-Version; b=dnRoOznWDYKHcEKeradDeELYNmVursNI/6LiXX3y16PG15lLtMl3gWpN/MC9AChSdlrjuJIu08P9hSl5O6bvGZfRKo4esJvtDvTgv1mKaJ1UaoCoImScPBoyTjWHglq8IwiiXxdsEfv2TFUcFj3BtPnuAmVLyItkUaS23nyW1Wk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=hUUrFNIl; arc=pass smtp.client-ip=136.143.188.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1771925101; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1771925107; cv=none; 
 	d=zohomail.com; s=zohoarc; 
-	b=gYKI749D5gnkusH9m4h5yE5lm+r0gaD9vups5gCzl+D/0udmui2IRtvOEOc/PeeOS2dddYCrxcQAL5cOjpC8U5Tp+XLW0A9ri/20CoPgHj5cROyoYVlnWUh+BK+wmhbtTn4ayin+OBVoZTHfo8Ufam8eAv7DWiKigyrCk26jFIY=
+	b=iopPRz9hDPZCAnG4PHLVSO4weHW79yL9daTVimG1s3Uqv4D7hLDtyKwHbOVsdM+Wi/okVLwD1vWtbd1iR5cEaE1xOIbr8fPDZXPq4oJ6BANI/e4Ct4TSBfKEU7BdOsAmLNJGDEZOaJnZceIP+FQqolRlv+I30slTWN4trCZd7SQ=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1771925101; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=i4ISv/Mq3feuc2xrr0ho5gyou48ed2HrxZS5FR03aSY=; 
-	b=Ubp4CqatKC9rnHaHsrLKbacG0G2Mw3/mpIMnBQgaCJLa795/x5Rspmwwg2l3uaofSnGpr2dgNE+IHJiM//p5nFjhPpPi+v4qbZjeclG5a445ENhPXqxi90IPpkI+Q4qbVyGnV12IcaRQDjB6IUUA543s5ARLUIdQcnCfyb+WROE=
+	t=1771925107; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=mq6CvdUqWgJ4gBbMc2n/hmzqs6lN6MzptQ2EZaBiaT0=; 
+	b=dYgUA7KgpPK/hEfSakKfQGm6zsf5EuGFUstoMb0gx43BZBDv5yWFgeO6zeBVOQe6DLFBq5WVNdNl8zFhF6iHDP8Jfy5p6M4TXFPva0EWrlHvBsQ3lC6QfNeKclhd1ITwdpdOAUvEVEfUKT2VncdkqETgCW2mXHBuKzSY6ztK4XY=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
 	dkim=pass  header.i=linux.beauty;
 	spf=pass  smtp.mailfrom=me@linux.beauty;
 	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1771925101;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1771925107;
 	s=zmail; d=linux.beauty; i=me@linux.beauty;
 	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=i4ISv/Mq3feuc2xrr0ho5gyou48ed2HrxZS5FR03aSY=;
-	b=tJOqJMyivEmJw9bor3La9WsQh/aRg3xYNTxDjvxMKhFW75uYx6wdI/qYG6ANr6Fv
-	Tpsc5ioRiFvaKnaQbv0lxhAaqFNkAKq0VQt+HZX/aFCzO8JOP+opvlK5H6+nihAjewA
-	c9dd3k1gG79p3KpeUrXY32YJqKzHfUTC6nNoQk4M=
-Received: by mx.zohomail.com with SMTPS id 1771925100358315.28790750738244;
-	Tue, 24 Feb 2026 01:25:00 -0800 (PST)
+	bh=mq6CvdUqWgJ4gBbMc2n/hmzqs6lN6MzptQ2EZaBiaT0=;
+	b=hUUrFNIl5vWVYqys3tBtmj8Mzfhax/QgmZXTsavqo9lIcGHmVyWETEu2cwSgxbkE
+	lNuTRkZUu6mJX9ZNNIMaEKg4fOm9jPM8bxISOu4NlGgKGUSzHC8bqry6JlxfJXy7HKW
+	uULpEVNi4wfwrdsz0Ye104sTrOISKEDIkdCh60VY=
+Received: by mx.zohomail.com with SMTPS id 1771925105176916.3666791846287;
+	Tue, 24 Feb 2026 01:25:05 -0800 (PST)
 From: Li Chen <me@linux.beauty>
 To: Theodore Ts'o <tytso@mit.edu>,
 	Jan Kara <jack@suse.cz>,
 	Mark Fasheh <mark@fasheh.com>,
 	linux-ext4@vger.kernel.org,
 	ocfs2-devel@lists.linux.dev,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Jan Kara <jack@suse.com>,
 	linux-kernel@vger.kernel.org
 Cc: Li Chen <me@linux.beauty>
-Subject: [PATCH v3 3/4] ocfs2: use jbd2 jinode dirty range accessor
-Date: Tue, 24 Feb 2026 17:24:32 +0800
-Message-ID: <20260224092434.202122-4-me@linux.beauty>
+Subject: [PATCH v3 4/4] jbd2: store jinode dirty range in PAGE_SIZE units
+Date: Tue, 24 Feb 2026 17:24:33 +0800
+Message-ID: <20260224092434.202122-5-me@linux.beauty>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260224092434.202122-1-me@linux.beauty>
 References: <20260224092434.202122-1-me@linux.beauty>
@@ -84,7 +83,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.beauty,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.beauty:s=zmail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -93,55 +92,298 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13975-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13976-lists,linux-ext4=lfdr.de];
 	DKIM_TRACE(0.00)[linux.beauty:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[me@linux.beauty,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.cz:email,linux.beauty:mid,linux.beauty:dkim,linux.beauty:email]
-X-Rspamd-Queue-Id: 59F791848B1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.beauty:mid,linux.beauty:dkim,linux.beauty:email,suse.cz:email]
+X-Rspamd-Queue-Id: 601B41848FC
 X-Rspamd-Action: no action
 
-ocfs2 journal commit callback reads jbd2_inode dirty range fields without
-holding journal->j_list_lock.
-Use jbd2_jinode_get_dirty_range() to get the range in bytes.
+jbd2_inode fields are updated under journal->j_list_lock, but some paths
+read them without holding the lock (e.g. fast commit helpers and ordered
+truncate helpers).
+
+READ_ONCE() alone is not sufficient for the dirty range fields when they
+are stored as loff_t because 32-bit platforms can observe torn loads.
+Store the dirty range in PAGE_SIZE units as pgoff_t instead.
+
+Use READ_ONCE() on the read side and WRITE_ONCE() on the write side for the
+dirty range and i_flags to match the existing lockless access pattern.
 
 Suggested-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Li Chen <me@linux.beauty>
 ---
 Changes since v2:
-- Use jbd2_jinode_get_dirty_range() instead of direct i_dirty_* reads.
-- Drop per-caller page->byte conversion (now handled by the accessor).
+- Rename i_dirty_start/end to i_dirty_start_page/end_page.
+- Use jbd2_jinode_get_dirty_range() for byte conversions in commit paths.
 
- fs/ocfs2/journal.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/jbd2/commit.c      | 56 +++++++++++++++++++++++++++++++++----------
+ fs/jbd2/journal.c     |  5 ++--
+ fs/jbd2/transaction.c | 20 ++++++++++------
+ include/linux/jbd2.h  | 31 ++++++++++++++----------
+ 4 files changed, 77 insertions(+), 35 deletions(-)
 
-diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-index 85239807dec78..68c2f567e6e1b 100644
---- a/fs/ocfs2/journal.c
-+++ b/fs/ocfs2/journal.c
-@@ -902,8 +902,13 @@ int ocfs2_journal_alloc(struct ocfs2_super *osb)
- 
- static int ocfs2_journal_submit_inode_data_buffers(struct jbd2_inode *jinode)
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 7203d2d2624d7..514f204aa1db1 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -180,7 +180,13 @@ static int journal_wait_on_commit_record(journal_t *journal,
+ /* Send all the data buffers related to an inode */
+ int jbd2_submit_inode_data(journal_t *journal, struct jbd2_inode *jinode)
  {
--	return filemap_fdatawrite_range(jinode->i_vfs_inode->i_mapping,
--			jinode->i_dirty_start, jinode->i_dirty_end);
-+	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
-+	loff_t range_start, range_end;
+-	if (!jinode || !(jinode->i_flags & JI_WRITE_DATA))
++	unsigned long flags;
 +
-+	if (!jbd2_jinode_get_dirty_range(jinode, &range_start, &range_end))
++	if (!jinode)
 +		return 0;
 +
-+	return filemap_fdatawrite_range(mapping, range_start, range_end);
++	flags = READ_ONCE(jinode->i_flags);
++	if (!(flags & JI_WRITE_DATA))
+ 		return 0;
+ 
+ 	trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
+@@ -191,12 +197,30 @@ EXPORT_SYMBOL(jbd2_submit_inode_data);
+ 
+ int jbd2_wait_inode_data(journal_t *journal, struct jbd2_inode *jinode)
+ {
+-	if (!jinode || !(jinode->i_flags & JI_WAIT_DATA) ||
+-		!jinode->i_vfs_inode || !jinode->i_vfs_inode->i_mapping)
++	struct address_space *mapping;
++	struct inode *inode;
++	unsigned long flags;
++	loff_t start_byte, end_byte;
++
++	if (!jinode)
++		return 0;
++
++	flags = READ_ONCE(jinode->i_flags);
++	if (!(flags & JI_WAIT_DATA))
++		return 0;
++
++	inode = jinode->i_vfs_inode;
++	if (!inode)
++		return 0;
++
++	mapping = inode->i_mapping;
++	if (!mapping)
++		return 0;
++
++	if (!jbd2_jinode_get_dirty_range(jinode, &start_byte, &end_byte))
+ 		return 0;
+ 	return filemap_fdatawait_range_keep_errors(
+-		jinode->i_vfs_inode->i_mapping, jinode->i_dirty_start,
+-		jinode->i_dirty_end);
++		mapping, start_byte, end_byte);
+ }
+ EXPORT_SYMBOL(jbd2_wait_inode_data);
+ 
+@@ -218,7 +242,8 @@ static int journal_submit_data_buffers(journal_t *journal,
+ 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+ 		if (!(jinode->i_flags & JI_WRITE_DATA))
+ 			continue;
+-		jinode->i_flags |= JI_COMMIT_RUNNING;
++		WRITE_ONCE(jinode->i_flags,
++			   jinode->i_flags | JI_COMMIT_RUNNING);
+ 		spin_unlock(&journal->j_list_lock);
+ 		/* submit the inode data buffers. */
+ 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
+@@ -229,7 +254,8 @@ static int journal_submit_data_buffers(journal_t *journal,
+ 		}
+ 		spin_lock(&journal->j_list_lock);
+ 		J_ASSERT(jinode->i_transaction == commit_transaction);
+-		jinode->i_flags &= ~JI_COMMIT_RUNNING;
++		WRITE_ONCE(jinode->i_flags,
++			   jinode->i_flags & ~JI_COMMIT_RUNNING);
+ 		smp_mb();
+ 		wake_up_bit(&jinode->i_flags, __JI_COMMIT_RUNNING);
+ 	}
+@@ -240,10 +266,13 @@ static int journal_submit_data_buffers(journal_t *journal,
+ int jbd2_journal_finish_inode_data_buffers(struct jbd2_inode *jinode)
+ {
+ 	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
++	loff_t start_byte, end_byte;
++
++	if (!jbd2_jinode_get_dirty_range(jinode, &start_byte, &end_byte))
++		return 0;
+ 
+ 	return filemap_fdatawait_range_keep_errors(mapping,
+-						   jinode->i_dirty_start,
+-						   jinode->i_dirty_end);
++						   start_byte, end_byte);
  }
  
- int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
+ /*
+@@ -262,7 +291,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
+ 		if (!(jinode->i_flags & JI_WAIT_DATA))
+ 			continue;
+-		jinode->i_flags |= JI_COMMIT_RUNNING;
++		WRITE_ONCE(jinode->i_flags, jinode->i_flags | JI_COMMIT_RUNNING);
+ 		spin_unlock(&journal->j_list_lock);
+ 		/* wait for the inode data buffers writeout. */
+ 		if (journal->j_finish_inode_data_buffers) {
+@@ -272,7 +301,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 		}
+ 		cond_resched();
+ 		spin_lock(&journal->j_list_lock);
+-		jinode->i_flags &= ~JI_COMMIT_RUNNING;
++		WRITE_ONCE(jinode->i_flags, jinode->i_flags & ~JI_COMMIT_RUNNING);
+ 		smp_mb();
+ 		wake_up_bit(&jinode->i_flags, __JI_COMMIT_RUNNING);
+ 	}
+@@ -288,8 +317,9 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 				&jinode->i_transaction->t_inode_list);
+ 		} else {
+ 			jinode->i_transaction = NULL;
+-			jinode->i_dirty_start = 0;
+-			jinode->i_dirty_end = 0;
++			WRITE_ONCE(jinode->i_dirty_start_page, 0);
++			WRITE_ONCE(jinode->i_dirty_end_page,
++				   JBD2_INODE_DIRTY_RANGE_NONE);
+ 		}
+ 	}
+ 	spin_unlock(&journal->j_list_lock);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index c973162d5b316..eb26c3088a164 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -3020,8 +3020,8 @@ void jbd2_journal_init_jbd_inode(struct jbd2_inode *jinode, struct inode *inode)
+ 	jinode->i_next_transaction = NULL;
+ 	jinode->i_vfs_inode = inode;
+ 	jinode->i_flags = 0;
+-	jinode->i_dirty_start = 0;
+-	jinode->i_dirty_end = 0;
++	jinode->i_dirty_start_page = 0;
++	jinode->i_dirty_end_page = JBD2_INODE_DIRTY_RANGE_NONE;
+ 	INIT_LIST_HEAD(&jinode->i_list);
+ }
+ 
+@@ -3178,4 +3178,3 @@ MODULE_DESCRIPTION("Generic filesystem journal-writing module");
+ MODULE_LICENSE("GPL");
+ module_init(journal_init);
+ module_exit(journal_exit);
+-
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index dca4b5d8aaaa3..f5226b6d47d24 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -2646,6 +2646,7 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
+ {
+ 	transaction_t *transaction = handle->h_transaction;
+ 	journal_t *journal;
++	pgoff_t start_page, end_page;
+ 
+ 	if (is_handle_aborted(handle))
+ 		return -EROFS;
+@@ -2654,15 +2655,20 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
+ 	jbd2_debug(4, "Adding inode %lu, tid:%d\n", jinode->i_vfs_inode->i_ino,
+ 			transaction->t_tid);
+ 
++	start_page = (pgoff_t)(start_byte >> PAGE_SHIFT);
++	end_page = (pgoff_t)(end_byte >> PAGE_SHIFT);
++
+ 	spin_lock(&journal->j_list_lock);
+-	jinode->i_flags |= flags;
++	WRITE_ONCE(jinode->i_flags, jinode->i_flags | flags);
+ 
+-	if (jinode->i_dirty_end) {
+-		jinode->i_dirty_start = min(jinode->i_dirty_start, start_byte);
+-		jinode->i_dirty_end = max(jinode->i_dirty_end, end_byte);
++	if (jinode->i_dirty_end_page != JBD2_INODE_DIRTY_RANGE_NONE) {
++		WRITE_ONCE(jinode->i_dirty_start_page,
++			   min(jinode->i_dirty_start_page, start_page));
++		WRITE_ONCE(jinode->i_dirty_end_page,
++			   max(jinode->i_dirty_end_page, end_page));
+ 	} else {
+-		jinode->i_dirty_start = start_byte;
+-		jinode->i_dirty_end = end_byte;
++		WRITE_ONCE(jinode->i_dirty_start_page, start_page);
++		WRITE_ONCE(jinode->i_dirty_end_page, end_page);
+ 	}
+ 
+ 	/* Is inode already attached where we need it? */
+@@ -2739,7 +2745,7 @@ int jbd2_journal_begin_ordered_truncate(journal_t *journal,
+ 	int ret = 0;
+ 
+ 	/* This is a quick check to avoid locking if not necessary */
+-	if (!jinode->i_transaction)
++	if (!READ_ONCE(jinode->i_transaction))
+ 		goto out;
+ 	/* Locks are here just to force reading of recent values, it is
+ 	 * enough that the transaction was not committing before we started
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 64392baf5f4b4..4fffbd13d38d4 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -390,6 +390,8 @@ static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
+ /* Wait for outstanding data writes for this inode before commit */
+ #define JI_WAIT_DATA (1 << __JI_WAIT_DATA)
+ 
++#define JBD2_INODE_DIRTY_RANGE_NONE	((pgoff_t)-1)
++
+ /**
+  * struct jbd2_inode - The jbd_inode type is the structure linking inodes in
+  * ordered mode present in a transaction so that we can sync them during commit.
+@@ -429,33 +431,38 @@ struct jbd2_inode {
+ 	unsigned long i_flags;
+ 
+ 	/**
+-	 * @i_dirty_start:
++	 * @i_dirty_start_page:
++	 *
++	 * Dirty range start in PAGE_SIZE units.
++	 *
++	 * The dirty range is empty if @i_dirty_end_page is set to
++	 * %JBD2_INODE_DIRTY_RANGE_NONE.
+ 	 *
+-	 * Offset in bytes where the dirty range for this inode starts.
+ 	 * [j_list_lock]
+ 	 */
+-	loff_t i_dirty_start;
++	pgoff_t i_dirty_start_page;
+ 
+ 	/**
+-	 * @i_dirty_end:
++	 * @i_dirty_end_page:
+ 	 *
+-	 * Inclusive offset in bytes where the dirty range for this inode
+-	 * ends. [j_list_lock]
++	 * Dirty range end in PAGE_SIZE units (inclusive).
++	 *
++	 * [j_list_lock]
+ 	 */
+-	loff_t i_dirty_end;
++	pgoff_t i_dirty_end_page;
+ };
+ 
+ static inline bool jbd2_jinode_get_dirty_range(const struct jbd2_inode *jinode,
+ 					       loff_t *start, loff_t *end)
+ {
+-	loff_t start_byte = jinode->i_dirty_start;
+-	loff_t end_byte = jinode->i_dirty_end;
++	pgoff_t start_page = READ_ONCE(jinode->i_dirty_start_page);
++	pgoff_t end_page = READ_ONCE(jinode->i_dirty_end_page);
+ 
+-	if (!end_byte)
++	if (end_page == JBD2_INODE_DIRTY_RANGE_NONE)
+ 		return false;
+ 
+-	*start = start_byte;
+-	*end = end_byte;
++	*start = (loff_t)start_page << PAGE_SHIFT;
++	*end = ((loff_t)end_page << PAGE_SHIFT) + PAGE_SIZE - 1;
+ 	return true;
+ }
+ 
 -- 
 2.52.0
 
