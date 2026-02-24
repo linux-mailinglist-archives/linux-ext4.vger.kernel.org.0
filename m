@@ -1,182 +1,123 @@
-Return-Path: <linux-ext4+bounces-13984-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13985-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iP1yJZ+0nWnURAQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13984-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 15:24:31 +0100
+	id cDRQH6a6nWklRgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13985-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 15:50:14 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F43188537
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 15:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6CA8188ACF
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 15:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EA43930EA5D6
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 14:21:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 206B33198B8D
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 14:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFCE39E6D8;
-	Tue, 24 Feb 2026 14:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08E93806A6;
+	Tue, 24 Feb 2026 14:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Dw6i0uu/";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D4HqaUh8"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o7aYI2uY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E4D3806A5;
-	Tue, 24 Feb 2026 14:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1C23A0B29;
+	Tue, 24 Feb 2026 14:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771942912; cv=none; b=oLV2f2sT4Jn+k9BKsHGR9BG4U+ziJL/P0GwuRO65DKRk02v3srud6Lyx4FVj9pMdQwTCBxf6B7PpPbCEbTS0hQjdh4/rWMkD96MIzxABsls2mlwXOKvAD6HeJg90Cic/GKwRZfUZMZtfDbOt/bK12wI0aSLsLUS6UUaQcp/p+h0=
+	t=1771944441; cv=none; b=qeeiAc5YNzT8f73nzB0LaXJ65WClyNfr1xcSsM3d5KdJvrXt7jEMfevJKtRmF3zirggTisntZC2WmsMbuEDYnMz0+VOn6HcWb/Oxsou+Ro4l4UKZZZRo7gkd7J/djcIezWryzCWLlBsPOhQN0FYoWBLN0qGiTpW10vRIP4fqFUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771942912; c=relaxed/simple;
-	bh=ZY+nfMr6N8IaewZoqjPoliXxqmewibNuEHGDuir7EuE=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=JMDrUxqbjctkEvVeQLnNWbe0CHEFAB1KSt50yTBffxANcUBPUXvNSOW9zV+gCrqP/C5PFm/vb6ZX9oYnNfNJ9k/RxevPDMDcR6de2uxZsid9iHcy9oWYq3F9MCJzDl2gJoBbYU7Gx1eRy3wE0pBqFwzUupahPiaFaCQhtIkpr84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Dw6i0uu/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=D4HqaUh8; arc=none smtp.client-ip=202.12.124.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 25C857A0226;
-	Tue, 24 Feb 2026 09:21:49 -0500 (EST)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Tue, 24 Feb 2026 09:21:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1771942908;
-	 x=1772029308; bh=e7mI4HpymDX2XCi9sMPC+TZYyqhUHKoWZGamGdWnans=; b=
-	Dw6i0uu/cjeEym7qYZbcV8bbha2FtlwyYgq98MmQZqr9KnjS7uBJ4hF+w6kyjMN+
-	bIN0I3pvhaTGXGpghd+AU6p1IzWQmMUNvi8eO+KMu0/fKJNMsxegOGEJCQ6JKneu
-	qe3bcHcIv7bKTWquIdIRbkdwoR+yTBzVW1EAPemTTlsZUZp3+w3Ano3SvDT01HwP
-	V2dHh8ZJfhfdjqS6vORYmFDEj8laqorkj3VTnI80bAOBnAOpG9TRNLKtvvfU5xGR
-	GzIGCzPzCn0bTWbqKTWoR8sGZUkYXgR6TPLK1Gjbf0DnJS4Fk+oqbUMo7LqzGMSO
-	Ih26J+iGO+eOzBON2feLDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1771942908; x=
-	1772029308; bh=e7mI4HpymDX2XCi9sMPC+TZYyqhUHKoWZGamGdWnans=; b=D
-	4HqaUh8ITDXZbf8GK/kuAZjp9g2RXYdcMFppjI76TauqgBYNL3QajIOvip1Ta2T4
-	BUK1vx3YdzsOYxTzlvB+vJlwOTx3QiIhTLaB6TRaGQHZ7OisD/d8cOgy+d12mdNz
-	8b3xly9bkniq4Wm8un21kIRQw7y79aXUJKjkStnvFxTrfZsHRvzEzCJY4dyULPgS
-	r6Xn3Yn2TWglH8F7zZmfjdnEW8l2o5vcnIbzSfWyrIixTOrk7pNw+YHzLBkSetVs
-	es8nkshXWMIpsNJsH/dbRFovvp4lwVIAbWCkr0YNU7QWiMsNI2ZMl+Oq7S//hPga
-	xzw6B12IRUF89fO5d0h/g==
-X-ME-Sender: <xms:_LOdaSWdBJ6d23xA0gDoZ7AJ1ksEorJId6drmWVQ-JIWEnnJFb_a8w>
-    <xme:_LOdaZb60DzGpTE1wrdOAJ5HezkD5jJEgEqKl1_TSU_SCzvq8gFJLLzw1PkAwoams
-    dfd83hhAI8pGRUoeMlePlJOd6zYlddVMP68cy-JHA-X9sCWC88xwXc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgedtfeelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepfefhheetffduvdfgieeghfejtedvkeetkeejfeekkeelffejteevvdeghffhiefh
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgt
-    phhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvsghighhgvghrsh
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhsvhgvrhhithihsehlihhsthhsrdhl
-    ihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqfhdvfhhsqdguvghvvghlsehlih
-    hsthhsrdhsohhurhgtvghfohhrghgvrdhnvghtpdhrtghpthhtohephhgthheslhhsthdr
-    uggvpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtiidprhgtphhtthhopehlih
-    hnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhi
-    nhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
-    hugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
-    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:_LOdaa7nX9WLv9NNYiBHorlVQMKcXox6-7zviO9ey-NUi0MDxSOmgg>
-    <xmx:_LOdacEJ1j4w7csTmSvFz7YWPT_a5R9BfV4xOvGcjR8A5jm0YCOCdQ>
-    <xmx:_LOdaVBPTPMXIHVJD2d5a-PEzLE7qts4oy3tQduIfiShOP8Wjo_0mw>
-    <xmx:_LOdaRwr-AYw4bHcPBNKh-ClEujeHtarlQpPAgkzGWJ24ya_brYw0g>
-    <xmx:_LOdaZG7S_rCFNDrmhQ92Qg41ztV-CaW2xJNisZLfsqAmdktFGh1mpsF>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 180EC70006A; Tue, 24 Feb 2026 09:21:48 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1771944441; c=relaxed/simple;
+	bh=U5w1wlKo5acTDmY9WBr/TK5+1bfT+kvVFz81l1R9bw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tRmScKFkMaGJpug9ny9Zna7reONQLqMitvdakGSxOmBi26FEOaVSRDZyjKuF9CiCJSEPKb5XOT/RE1O9YVBm+SoCb06jCjNU/2X0Qgm3ahSHjmruA2fgZN4dtch36fC2tohrKZDwhCRBjcbExdbu39sF55tR0Gy5HxM1E4RNdJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=o7aYI2uY; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gMZszdzDXVXKpm6MGZK1kQkif74wVORTRDlmSBlZN9Y=; b=o7aYI2uYWmfB9hZbB5Rgv1vTQ6
+	2GwDsgJv80GGEckwo5HGVL3146/lA+QuIhwu6NRMCoxF5Szsjdk/q7quIxD9fL24/RNShRFq6NgWG
+	Qnmhf1PKBsTC/Kna78V1eahQ1HB6ssjcbeh/35+IdJJZvJj0XhIjqLeEdnKEr8UeGZ/F78ShqTJE0
+	parUAGaHZfPP7XarcYmP6JBnlrCW+7/58fodCkUgLFunRZaGeGV+SO+NvPtPjIiXoFU9c/xS539eZ
+	2CYy59MYydMX/tZ0Dy6LmIwpO9zJAfLNM6FPeOGTfPQsXdGbmewUwxxBE5d0j2RcQNWFr1+5+byhh
+	2yZ+tlMA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vuth1-00000002GMx-2mjT;
+	Tue, 24 Feb 2026 14:47:19 +0000
+Date: Tue, 24 Feb 2026 06:47:19 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <aZ2599dwNuqPQgzB@infradead.org>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AcHQldxZr-js
-Date: Tue, 24 Feb 2026 15:19:35 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "David Sterba" <dsterba@suse.cz>, "Eric Biggers" <ebiggers@kernel.org>
-Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
- "Christoph Hellwig" <hch@lst.de>, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
- linux-xfs@vger.kernel.org
-Message-Id: <d02f6b7c-76d5-4239-8a32-8163797a81b0@app.fastmail.com>
-In-Reply-To: <20260224135507.GT26902@twin.jikos.cz>
-References: <20260221204525.30426-1-ebiggers@kernel.org>
- <20260224135507.GT26902@twin.jikos.cz>
-Subject: Re: [PATCH] fsverity: add dependency on 64K or smaller pages
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.15 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[arndb.de,none];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[arndb.de:s=fm3,messagingengine.com:s=fm3];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13984-lists,linux-ext4=lfdr.de];
-	DKIM_TRACE(0.00)[arndb.de:+,messagingengine.com:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13985-lists,linux-ext4=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arnd@arndb.de,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email,arndb.de:dkim,messagingengine.com:dkim]
-X-Rspamd-Queue-Id: 06F43188537
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:mid,infradead.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E6CA8188ACF
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026, at 14:55, David Sterba wrote:
-> On Sat, Feb 21, 2026 at 12:45:25PM -0800, Eric Biggers wrote:
->> Currently, all filesystems that support fsverity (ext4, f2fs, and btrfs)
->> cache the Merkle tree in the pagecache at a 64K aligned offset after the
->> end of the file data.  This offset needs to be a multiple of the page
->> size, which is guaranteed only when the page size is 64K or smaller.
->> 
->> 64K was chosen to be the "largest reasonable page size".  But it isn't
->> the largest *possible* page size: the hexagon and powerpc ports of Linux
->> support 256K pages, though that configuration is rarely used.
->> 
->> For now, just disable support for FS_VERITY in these odd configurations
->> to ensure it isn't used in cases where it would have incorrect behavior.
->> 
->> Fixes: 671e67b47e9f ("fs-verity: add Kconfig and the helper functions for hashing")
->> Reported-by: Christoph Hellwig <hch@lst.de>
->> Closes: https://lore.kernel.org/r/20260119063349.GA643@lst.de
->> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
->
-> Makes sense to me, we have "depends on PAGE_SIZE_LESS_THAN_256KB" since
-> somebody tried to use btrfs on the 256K system.
+A lot of folks have already explained the O_SYNC semantics correctly,
+but I have another major question about your test case.
 
-I wonder if we should just drop the configuration entirely. There
-are very few users on either PowerPC44x (officially orphaned, but
-I know users) and Hexagon (officially supported, but no hardware
-available outside of Qualcomm). My impression is that this was
-implemented purely because the hardware can do it, not because
-anyone actually wants to use 256K pages.
+On Wed, Feb 18, 2026 at 04:29:30PM +0300, Vyacheslav Kovalevsky wrote:
+> Detailed description
+> ====================
+> 
+> Hello, there seems to be an issue with ext4 crash behavior:
+> 
+> 1. Create and sync a new file.
+> 2. Open the file and write some data (must be more than 4096 bytes).
+> 3. Close the file.
+> 4. Open the file with O_SYNC flag and write some data.
+> 
+> After system crash the file will have the wrong size and some previously
+> written data will be lost.
 
-I see that commit "e12401222f74 powerpc/44x: Support for 256KB
-PAGE_SIZE" mentions how one has to patch the linker to support
-larger than 64K pages, and I see that both powerpc and hexagon
-linkers still hardcode the section alignment to 64K pages, for
-obvious reasons.
+The wrong size here seems incorrect.  Even if the old data written
+through the non-O_SYNC fd wasn't written out I absolutely can't see how
+the file would have an incorrect size here.  Can you please share your
+test case?
 
-      Arnd
 
