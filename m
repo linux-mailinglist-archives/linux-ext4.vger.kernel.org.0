@@ -1,59 +1,106 @@
-Return-Path: <linux-ext4+bounces-13980-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-13981-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qHUyBa2gnWlrQwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-13980-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 13:59:25 +0100
+	id aKHnBMatnWmgQwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-13981-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 14:55:18 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0AA18755E
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 13:59:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7782C18813F
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 14:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0EC6E30D9241
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 12:58:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DA78B30721A2
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Feb 2026 13:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9C439A810;
-	Tue, 24 Feb 2026 12:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7371039E182;
+	Tue, 24 Feb 2026 13:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ttQedrwE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MT1kUN+g";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6EFemYbm";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MT1kUN+g";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6EFemYbm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99EEF39A7F7
-	for <linux-ext4@vger.kernel.org>; Tue, 24 Feb 2026 12:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA05139E197
+	for <linux-ext4@vger.kernel.org>; Tue, 24 Feb 2026 13:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771937926; cv=none; b=JXhO40HjDFwGy92cgRuu/0MYzin6dJNWLW7+SCTX88qRRioUZSF4iYA5t+Xtt3RY8kAijl7d7NYZHOfqsSrq4k8uCvR6/f+Wbum97j+UEqmF7olQ6xXJwawZ8uNQUR3in4sUH17AZhJUyPLRReT7grX689QZPKYvmNosDeF5bXg=
+	t=1771941313; cv=none; b=KaVAkcmdZMF7OxpTLaWWREFZ30kF1iR3yZyeJSF36wkJ/U0pZ6hoRo+B56d489BXinoJAXALqivIuNf0UQVVlVHGhAV1zDkQeTs04eKrQZqoTVhwLMnC+eaExRokDtHUJ+jsCUmzoBFT3TzrI5dCcd/BazSYcQvlk2eUT+fzf/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771937926; c=relaxed/simple;
-	bh=DDw96xmoZbUt+zs0MoI3/CFecRPmq/Pl4/MVFM0h0dA=;
+	s=arc-20240116; t=1771941313; c=relaxed/simple;
+	bh=Y83YN3Z+oLSinJ7NVQEsEsHz/fpDH/jnmePEQ8Rq+M4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGdL192ZkZvOq3mjVE18fFOa4oii6D0sI0pGoCt2Lig5kk1KcuFX8rQp5Q4btAbZO/5bCLufd3UI4cf/LsUGbMvAjARPfyhxysXdvj4aUe6U8kBaX+nnPJkK2xBJo1DBN+aQcrDRPEJ5eBK3YtwBKqwYVagpaSzPQPtcNCXlQh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ttQedrwE; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 24 Feb 2026 12:58:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1771937923;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eodzK3fYuLHU4Dwu0bDz/3VALqvqcD3S81kz8xkfWO6zRx0BvSANytIjA6Gee8zZ8IEnnzZXPQ6ZO193DLzahXoTpLeGYVCGZUs2J0CDxw8UDndPtXutauEOY0bUfeeuQMnssYGnW5Po/YNfjE/7ABiJQaIgi/V7On00k7Zo0lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MT1kUN+g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6EFemYbm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MT1kUN+g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6EFemYbm; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 013293F251;
+	Tue, 24 Feb 2026 13:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771941309;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=u+wivhIr528+W6wLESqvbuF0C1RtOB8ByC0jlMyM6cc=;
-	b=ttQedrwEbhqs8TPNzb9B3Y861TAKH54StDmEW8UqoxOWKwPfTGhRbkouy/LuWORW1iTAq6
-	3iX6s7XAptUtrsVJdnqPjv+U6/FPE/E3+kZLl+JhKrSQgHWm2mr9VDj5jIgTonPhNqUJ6H
-	dhUIkRCp0FElxpQjDjSRyKjLXG75it4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Pankaj Raghav (Samsung)" <pankaj.raghav@linux.dev>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: miklos@szeredi.hu, joannelkoong@gmail.com, bpf@vger.kernel.org, 
-	bernd@bsbernd.com, neal@gompa.dev, linux-fsdevel@vger.kernel.org, 
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 29/33] fuse: support atomic writes with iomap
-Message-ID: <ej24ajmh6ltfe37yiy6qzqko5p6y5eecixzybexgxs5oo45iuu@ufvfjxvppc3o>
-References: <177188734044.3935739.1368557343243072212.stgit@frogsfrogsfrogs>
- <177188734865.3935739.5549380606123677673.stgit@frogsfrogsfrogs>
+	bh=IwteX+3st/BoFz5qXCpVjpTwTwtYXckuDq7ibdYt4EA=;
+	b=MT1kUN+gGMsCoUB7Gjf+X+6FRCA4P14szw92f6JxsRV9UMCUBkcWJ/9jC42VOyxmQsQ3Ps
+	iQZMh7ZKItwreVqdT0dkT/MVXaUQUyAzinPYWwXqVuomUEFjzWu09pIxdXe6uVgKTQ9nuj
+	huY1D4lmsDtGpbQaHXgiCDySZqFGOhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771941309;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IwteX+3st/BoFz5qXCpVjpTwTwtYXckuDq7ibdYt4EA=;
+	b=6EFemYbm6sEj3mrcQ6sGZxLXHy3au4fcdkZjOBJZG/c8rQEr1EOhkmXX1kXnTMf41r2YMZ
+	ZGAmaWkNO5ITBFBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MT1kUN+g;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6EFemYbm
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771941309;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IwteX+3st/BoFz5qXCpVjpTwTwtYXckuDq7ibdYt4EA=;
+	b=MT1kUN+gGMsCoUB7Gjf+X+6FRCA4P14szw92f6JxsRV9UMCUBkcWJ/9jC42VOyxmQsQ3Ps
+	iQZMh7ZKItwreVqdT0dkT/MVXaUQUyAzinPYWwXqVuomUEFjzWu09pIxdXe6uVgKTQ9nuj
+	huY1D4lmsDtGpbQaHXgiCDySZqFGOhw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771941309;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IwteX+3st/BoFz5qXCpVjpTwTwtYXckuDq7ibdYt4EA=;
+	b=6EFemYbm6sEj3mrcQ6sGZxLXHy3au4fcdkZjOBJZG/c8rQEr1EOhkmXX1kXnTMf41r2YMZ
+	ZGAmaWkNO5ITBFBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB6473EA68;
+	Tue, 24 Feb 2026 13:55:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6HV7MbytnWkuJwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 24 Feb 2026 13:55:08 +0000
+Date: Tue, 24 Feb 2026 14:55:07 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] fsverity: add dependency on 64K or smaller pages
+Message-ID: <20260224135507.GT26902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20260221204525.30426-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,62 +109,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <177188734865.3935739.5549380606123677673.stgit@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20260221204525.30426-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13980-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_CC(0.00)[szeredi.hu,gmail.com,vger.kernel.org,bsbernd.com,gompa.dev];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pankaj.raghav@linux.dev,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	TAGGED_FROM(0.00)[bounces-13981-lists,linux-ext4=lfdr.de];
+	DKIM_TRACE(0.00)[suse.cz:+];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6B0AA18755E
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[suse.cz];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	HAS_REPLYTO(0.00)[dsterba@suse.cz];
+	RCVD_COUNT_FIVE(0.00)[6];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,twin.jikos.cz:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7782C18813F
 X-Rspamd-Action: no action
 
-> +	}
-> +
->  	/*
->  	 * Unaligned direct writes require zeroing of unwritten head and tail
->  	 * blocks.  Extending writes require zeroing of post-EOF tail blocks.
-> @@ -1873,6 +1909,12 @@ static ssize_t fuse_iomap_buffered_write(struct kiocb *iocb,
->  	if (!iov_iter_count(from))
->  		return 0;
+On Sat, Feb 21, 2026 at 12:45:25PM -0800, Eric Biggers wrote:
+> Currently, all filesystems that support fsverity (ext4, f2fs, and btrfs)
+> cache the Merkle tree in the pagecache at a 64K aligned offset after the
+> end of the file data.  This offset needs to be a multiple of the page
+> size, which is guaranteed only when the page size is 64K or smaller.
+> 
+> 64K was chosen to be the "largest reasonable page size".  But it isn't
+> the largest *possible* page size: the hexagon and powerpc ports of Linux
+> support 256K pages, though that configuration is rarely used.
+> 
+> For now, just disable support for FS_VERITY in these odd configurations
+> to ensure it isn't used in cases where it would have incorrect behavior.
+> 
+> Fixes: 671e67b47e9f ("fs-verity: add Kconfig and the helper functions for hashing")
+> Reported-by: Christoph Hellwig <hch@lst.de>
+> Closes: https://lore.kernel.org/r/20260119063349.GA643@lst.de
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ---
+>  fs/verity/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
+> index 76d1c5971b82..b20882963ffb 100644
+> --- a/fs/verity/Kconfig
+> +++ b/fs/verity/Kconfig
+> @@ -1,9 +1,12 @@
+>  # SPDX-License-Identifier: GPL-2.0
 >  
-> +	if (iocb->ki_flags & IOCB_ATOMIC) {
-> +		ret = fuse_iomap_atomic_write_valid(iocb, from);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
+>  config FS_VERITY
+>  	bool "FS Verity (read-only file-based authenticity protection)"
+> +	# Filesystems cache the Merkle tree at a 64K aligned offset in the
+> +	# pagecache.  That approach assumes the page size is at most 64K.
+> +	depends on PAGE_SHIFT <= 16
 
-I still haven't gone through the whole patch blizzard but I had a
-general question here: we don't give ATOMIC guarantees to buffered IO,
-so I am wondering how we give that here. For example, we might mix
-atomic and non atomic buffered IO during writeback. Am I missing some
-implementation detail that makes it possible here? I don't think we
-should enable this for buffered IO.
-
--- 
-Pankaj
+Makes sense to me, we have "depends on PAGE_SIZE_LESS_THAN_256KB" since
+somebody tried to use btrfs on the 256K system.
 
