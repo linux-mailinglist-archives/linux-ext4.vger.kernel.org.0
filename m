@@ -1,90 +1,92 @@
-Return-Path: <linux-ext4+bounces-14015-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14014-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ILmEKQN7n2lmcQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14015-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:15 +0100
+	id OJsRL/96n2lmcQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14014-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:11 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C7C19E67D
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2836419E676
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 52F8B30D027D
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:41:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D088D30CD908
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9083624A4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CA6361668;
 	Wed, 25 Feb 2026 22:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="RImKPNCZ"
+	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="dk9Jybov"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mx0b-00364e01.pphosted.com (mx0b-00364e01.pphosted.com [148.163.139.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBDE34EEEE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB4534D392
 	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 22:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.139.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772059307; cv=none; b=LbvOgl1Y8C9h6Wc3QUqCEqRErubP5tjoM/+0eNpyaWe89wU/Tc4uGzTBIx1/Bro4uqmArhGLstEeOX5oKNJriTAIZp9eHib/AI3d5CkHbafYezyzn+o9y5536dgKy9KM8426ddS/LgsOTcxg72CSZ3WsplOPyExNLAXBPF8QZ0w=
+	t=1772059307; cv=none; b=B4KbykcY+LKHREz0zROp/E7z74tDHWU+wfiDK5vyyVbfA27JqUYEPsMvSIa4XlGf39EPSdTsbH92CQYioR1soLg/Zf2509is/+LN3tGoiK4H5XWB2oI8fWN8X0BUOBtA8AOvJdgASGEkRNhEKbDDbyTYn7ugzD3z9u/1oU0/Yv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1772059307; c=relaxed/simple;
-	bh=ekfAVbLYcjxp51ZCBzMQhFzplblwqexTK85RlJKVH8w=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=PStY6C1oV7yuc1SRo6acoDKV4DrES98N966eOD44FByWD//dkCin5r4QQiU6Csbh6ulLxtm4+7NSJeTFcJGtMIw0fBp2Ce0BL8R6/g6GUTIuNyHka5RqkbsualMSL6mAcTfH6qW+6b6qWQ9FkW/obl4ZGXW2/4eSB4Li6Fj8J5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=RImKPNCZ; arc=none smtp.client-ip=148.163.139.74
+	bh=wvO7UclkDfOFQdfC1evvQhRGdmzqdeL+WI5Bp8USXg0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=BI7pQGVlA3eyPJ1pi/4eu2tmQzvvuAqqFmRVLXgSdkDEUgml4qf20owgH2tPxybNbWlz06JyCBRtSw2CrqzfLoprdAF9ittAdGtV/lViPwqXb8ClPy06YhtNYEDrl5oO7OL38iv/LR5LdSGZzS8zSZhU/jhlRkLlB+M3Ef2wygQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=dk9Jybov; arc=none smtp.client-ip=148.163.139.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
-Received: from pps.filterd (m0167076.ppops.net [127.0.0.1])
-	by mx0b-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PMC09t3911830
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:38 -0500
+Received: from pps.filterd (m0167074.ppops.net [127.0.0.1])
+	by mx0b-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PME0tW2571728
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=pps01; bh=NwfwFIozanEmKQ2WboEF2eLSp6
-	u+ajjzqhBznl9Xp5k=; b=RImKPNCZ8KR3nDEvDi4Gz9JoREnYDKQllwTLwprPHg
-	EZofUkqZpuHKMfVkzs+LY3j8dY74beRPFZZqhviKCUh1A2aNAYdfXqAiPMNKe6ks
-	loSk5i2FGL9XrTFvsXn+Fj4ikmc+y8v6qRN0pGcWLyoBDKExdlR/F0ck5JmojNjI
-	6CWLc67/eX71ODfjr0b3f1m/+oygS+gHi2JrNGQpDfZmE2mf1hqoIkjHVplkAx94
-	MuZA83rNfSsk951VH5T/nWxyNcGJ7PcZNqaziom5z3Kb+zCPooeJAAz6nS1ZIV6n
-	eVf8ho1hT2KaT6aXMhD0vvQDM44N5ONvCiXmsLg8j3UA==
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 4chsqwxkk7-1
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pps01; bh=B+x8
+	HlKrObJCF5zGXiosgMuiJzbAlNo3I+yj4hi3OCU=; b=dk9Jybovs8IHdEvEGP9P
+	/Q+tTmC5El4AZB2gHDz4eA8v6PeKwiNC27gSP64f3zuophROaYaLhYmmHZXiKwMJ
+	NSRp7hKX/59LhbwItsKVPFd7Crde5MZ4zs3tGudNHcoxx4fALdYT98VxFmtL21u7
+	fGfx2Y40whZsXWbmDY0qeSprynaAbzY7D4ttYLp1lNjUZRCarCpKgXdwbIuqQBKo
+	dAh2ixL7cwqcSMAUrxeiWUHwrgu0D6JUMLqoY/Z34kR3anogYSc0Opb+0Pn0KWVM
+	aWbq5vkVIyD/o2s7Co6n14E/UIIBlvbWXdW76yZm6WRRtPqcpoGOJFPXc2AOxDga
+	cA==
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+	by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 4chv4nx812-1
 	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:38 -0500 (EST)
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-506b4bdde91so19227661cf.2
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 14:41:38 -0800 (PST)
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:39 -0500 (EST)
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-5061d1ef1f3so32446591cf.0
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 14:41:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772059298; x=1772664098;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NwfwFIozanEmKQ2WboEF2eLSp6u+ajjzqhBznl9Xp5k=;
-        b=RlUBAS5wZNlI3zsj3BPsR8zLqDqIYE/y8Ibu/+Ggs5xnKqIOOuRsTJaP9331TjhCKE
-         uzrZEIVascPof2asUpNSjLRdt4Kyoi1Kb8NvCPqnTbllbMyEfRn/AvCHMbSJ6bmLNohV
-         ffbOkNHMaAIrp+lzMku8YAlAik0r+T/gIhWCNRzwAztbCpf5NO/JXx2cnBpQWr/GZXsF
-         1+WJ1baCcatsUVQZuHPuUy8JUS4nW3vDDlUKvO5I683anrqjtNne1hCebQJcbOmDL9h2
-         FaqV5H3LeWl/7IdvDdJDmeAfFL3Pqr+yK8ttGOWXKyLm7lpA3R8SrU7x3/a+MJBesLH2
-         46LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRmnQiedSza4qZVJWFhJaGG8Ld/UHLqAo3cE3yGbpeaSY9DiAYh0XindWK3ishfgb9wREkGGSKQl8U@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFMM5ojwOw/FW58Mx8rzCRHTpf0XGejO9XItdPytMfSHb/LtAp
-	La9y2Uk1OdH5LlObFGkDF0acHHVnFIDrsTp0wi10+RlaGutddNRx4E71ZB0vwSw46ao6DSYTuhd
-	p7HZw/+S2N2o3Co4Nr0tKsGCmzC/eRVU5AtgQdLBZKoWDquQ9VN/hA2jv/2FmmFT6mQI=
-X-Gm-Gg: ATEYQzwcpPrFkTGXbMxuKFVcniUiM2TpWAhFsUZdLVcXiH/aDa/NckcmPL0V3Y9XQcH
-	5NAhLYDEvUxFrnmmZV8T77t/fAQ7TDba1g9U2GN8pcPGDrcnCWcTdzFr5Syzlq1HzGc30x9wQTJ
-	Dq+0alQkZoe7v71a7nIe69x/rA6Huh/N7qiyLQIvggjkvxQNEQEuYkq/1jsHyMmXvx4ObHADrhB
-	qDIV3oysSxVNvQeDYX3T1MiEzEQ4r/SxEHuRT3w3h/p/wsbDzw461DTOYv+45tSpejW+/CZaILu
-	8NG+/+arxwmUBrFwvwd9VQQ0ioecR3uKjCZ7DeyWzDZDGlECJQ/OrQQtx6a5Im4btvFBOKT+2TC
-	onr+IUZ/HFdSSqDR0Jc2mjoez9lQfVXN7
-X-Received: by 2002:ac8:5a10:0:b0:507:3d1:1dd7 with SMTP id d75a77b69052e-5070bba1d4bmr250747221cf.6.1772059297770;
-        Wed, 25 Feb 2026 14:41:37 -0800 (PST)
-X-Received: by 2002:ac8:5a10:0:b0:507:3d1:1dd7 with SMTP id d75a77b69052e-5070bba1d4bmr250746791cf.6.1772059297257;
-        Wed, 25 Feb 2026 14:41:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1772059299; x=1772664099;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=B+x8HlKrObJCF5zGXiosgMuiJzbAlNo3I+yj4hi3OCU=;
+        b=WbkGhZ3wtJblb+lGZO19rUTgWif5UiTcD32g3+yBcp1SFoK8J9/AL10Z/wjImb8mjS
+         SwJnWvkh5tdrFWUwuzxhY2X0fXcP8dEUd1kqMNTdNVT48HyE/c3GFWMrQ6799cibhHW5
+         ATsSBJ6YU4mHi3BM/v4Yq1MRYnx49Asy8cOJcqsv2V0jCsUn4hPRZn7xpa4hVDosNAzG
+         0lWUxPtJVuqGoNzJvOtOkuoAIDUn7N8uyC9sGcTtG6RNF1TKUeu7fTygM/ywSFAwNlcQ
+         8r13fTJ0vu6A602YBdLMQQ8WbBmZBivecd9Wna0N8ejV8+ik7PcAovSxQQML9BMm/tET
+         sujw==
+X-Forwarded-Encrypted: i=1; AJvYcCWIaSlEL1S+Mf1Pgu8/7jN7qK+kJQ8gH4bhHXq5HHon1naludw0KIddeBQVR6/gzTrtiLiJCvZvI87D@vger.kernel.org
+X-Gm-Message-State: AOJu0YwD+fLawVAekjl16O2W3R0BRsqTZG1V2sL29Wgwx29ioQoukpZv
+	EdgF7YGWRgWwo+AZu8GbvxDEMNsDDJc52LXTHZhwO+UEBGA8546rxH2yIAnQE3IrguCkWkgHthI
+	ABFc1JXSpGkP1/zeNmy5qBEcIU7GtETxkEBDY7LStcIdc3eMyJ74EjPfrMB+vqcFPAd4=
+X-Gm-Gg: ATEYQzw/U69aBWAP5ghs7vugp0mq91m6siQlC5Lp7lQvVPm+JlM+O0Z70w8yFnTVaRE
+	UyJYKI8rzI9cwW9y5TtS/lzmES/LSF9Fwytd5qbMhybYDc8etgHmxAXtExE5uv5Q9rimK89bWLt
+	ZvD89dE+FfYYhWYMpwJDZt/Ixfcmezex2WIFcPyl46dGhL98xV6hfESK1LfSIQN18okeLR8aqeh
+	2VVGNGtdAI6hwvJjZ8lXrOBO39YwZv6CMIVxhNV8b22A4/vBxj7Tb/MqTA4sqfoCSJyaVN0xN9l
+	wXVTnrwfcjW4Wen2PJ4wt4JyheVzRsjmcSi7rQn11j+o44lD8UsgYk1vG8lTOOawhbIfZqtn1CP
+	Bp8rV2CYvOhR9gUAtw7H2VXZg7U/mWXxV
+X-Received: by 2002:a05:622a:44:b0:4f3:59c1:768c with SMTP id d75a77b69052e-507460dc42emr758731cf.60.1772059298716;
+        Wed, 25 Feb 2026 14:41:38 -0800 (PST)
+X-Received: by 2002:a05:622a:44:b0:4f3:59c1:768c with SMTP id d75a77b69052e-507460dc42emr758291cf.60.1772059298273;
+        Wed, 25 Feb 2026 14:41:38 -0800 (PST)
 Received: from [127.0.1.1] ([216.158.158.246])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-507449be47dsm4196231cf.15.2026.02.25.14.41.36
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-507449be47dsm4196231cf.15.2026.02.25.14.41.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 14:41:36 -0800 (PST)
+        Wed, 25 Feb 2026 14:41:37 -0800 (PST)
 From: Tal Zussman <tz2294@columbia.edu>
-Subject: [PATCH RFC v2 0/2] block: enable RWF_DONTCACHE for block devices
-Date: Wed, 25 Feb 2026 17:40:55 -0500
-Message-Id: <20260225-blk-dontcache-v2-0-70e7ac4f7108@columbia.edu>
+Date: Wed, 25 Feb 2026 17:40:56 -0500
+Subject: [PATCH RFC v2 1/2] filemap: defer dropbehind invalidation from IRQ
+ context
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -93,11 +95,9 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHd6n2kC/3WNywrCMBREf6XctZEmsQ9cCYIf4Fa6SJMbe7FNJ
- GmLUvLvhu5dnhnmzAYRA2GEc7FBwJUieZdBHArQg3JPZGQygyhFXQresn58MePdrJUekEnZcim
- NKU8VQt68A1r67L4H3G9X6HI4UJx9+O4fK9+rP7qVM86sMnXdVGgbbi/aj8vUkzqiWaBLKf0A3
- ZPdNLIAAAA=
-X-Change-ID: 20260218-blk-dontcache-338133dd045e
+Message-Id: <20260225-blk-dontcache-v2-1-70e7ac4f7108@columbia.edu>
+References: <20260225-blk-dontcache-v2-0-70e7ac4f7108@columbia.edu>
+In-Reply-To: <20260225-blk-dontcache-v2-0-70e7ac4f7108@columbia.edu>
 To: Jens Axboe <axboe@kernel.dk>,
         "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -117,36 +117,35 @@ Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
         linux-mm@kvack.org, Tal Zussman <tz2294@columbia.edu>
 X-Mailer: b4 0.14.3-dev-d7477
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1772059296; l=3435;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772059296; l=4861;
  i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
- bh=ekfAVbLYcjxp51ZCBzMQhFzplblwqexTK85RlJKVH8w=;
- b=2wmi7DKqWa1grTlTD1dZPRjRg04r6SzcKRju6wHkROUyXexSvTsDYhaJkZR7D1wKnD2GYouNO
- 3Rj5CWfTkXjD0Y32lUMXPSG0+DtraUDXS1xjTx+UYD/cLuEYlAV1ClC
+ bh=wvO7UclkDfOFQdfC1evvQhRGdmzqdeL+WI5Bp8USXg0=;
+ b=h4bisF4GoCaCSoqd37/ZfJNSaUymW/3u+9LXcqmZG0KnRoDbGHtk/4qRW+EsLRX8yAk3THDOa
+ S2MblO1dCLPBna+BzWEdZKkpfva3GYEHQU94DPCiujOK2l2fhb+tpu1
 X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
  pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
-X-Proofpoint-GUID: Gaes6nvnI1x-PO8XNNe4SsSQnIv6jtOG
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIxNyBTYWx0ZWRfX4dWuJJCmsnfS
- WaFFS+t6EzAHJVTyU9t7dKHP56RyVMplYosUQFHmxU8ZOIH7Lh8PHJjIMv58mwvabL8938CUo8a
- 3e5KaXZQEL3dFbksA8QkMB6jli3qEyOCa5nkCCSOvnRM8izfgwI92Rfa8j8+ALwhV9wF4nJ7mLL
- 0yl41WY0xQOU5QrIcbuFSPVNtI9gjrQ6fgyNKRfcsdTg+xnnVB+CUausGLYxFxf3WTwpwtkHUPE
- yPuy+YLZxSFQ/rvYccnfLFln2piUyqPJZxzCR41QeydFFIYaVH49bRK9+dnTHkv/X+AiJoG0Ght
- lEN5CAn6q9YW9ihPsPGCXf2JHODd2Ak3R33cLjSCsKbC9BaHW1ANblj3mLJVaUVs1bXCRY/qAtD
- uf8AcBCRzoINZPLiCvcVsRpIJAyRWxXkKDmz5NCxUXGF4+150r3gEKJspIWmyYIKWQx6UslZPi1
- pKQ2QWhZVRBF0Vf9q+A==
-X-Authority-Analysis: v=2.4 cv=Y8b1cxeN c=1 sm=1 tr=0 ts=699f7aa2 cx=c_pps
- a=EVbN6Ke/fEF3bsl7X48z0g==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
+X-Proofpoint-GUID: W9QoSvbnjj2FJA9WMVjyvFTaNj4Ejgf-
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIxNiBTYWx0ZWRfXwhTkyu47zuoH
+ 0ZKT/SF/+s/Pf48tsV2SfENZzcTLtdBJCae3tWUXaUWj3iSn+bSJ5wgYHiz6Kc2CGT6d4CdXz7y
+ g2q5ou9nzjPFOgsfHqUhoUxHpYGR9+gMnOi8ZHQ98q71GIwn8PLuvj9iRnQQG1JT2NHOSGfZJ+e
+ 1lhbs9FnTkk5bGmDQ5t+wDwefEFPuOJ8lXBYg+RUntt6dSPh6lQKoid9zlb7x8KslRDFX8abKt4
+ OIJlHwyNTf6fWJGDX8MukXcQDi5j+7RIFPRfswfIq5UIv1jAzZNuxW/anhlAfDcsBTdq3mnQWx3
+ Mya165PZvKcy6adhGmpzzrQ2ThYke9N46S5ZmWG0LFcznURtXfTBGRTzb9dzPd322tgv2c/7t7H
+ zSQJemV4iyj9LgG80I4xG6T6d/USidTu/RTUvyXolgHuV66+NC5YM8juHluxVWy60a+UT+TAt4+
+ YvbgX2NisUReKBdcO5w==
+X-Authority-Analysis: v=2.4 cv=Cr6ys34D c=1 sm=1 tr=0 ts=699f7aa3 cx=c_pps
+ a=WeENfcodrlLV9YRTxbY/uA==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
  a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=Qm0qsxP7aFY2tkT6R2MF:22
- a=VwQbUJbxAAAA:8 a=sdoS8YJ70VgF2Jk85QkA:9 a=QEXdDO2ut3YA:10
- a=a_PwQJl-kcHnX1M80qC6:22
-X-Proofpoint-ORIG-GUID: Gaes6nvnI1x-PO8XNNe4SsSQnIv6jtOG
+ a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=azVShVRs0zEubeQ0wG0L:22
+ a=wj6egcThClJy_xBgiekA:9 a=QEXdDO2ut3YA:10 a=kacYvNCVWA4VmyqE58fU:22
+X-Proofpoint-ORIG-GUID: W9QoSvbnjj2FJA9WMVjyvFTaNj4Ejgf-
 X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11712
  signatures=596818
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=10 clxscore=1015 priorityscore=1501 bulkscore=10 adultscore=0
- lowpriorityscore=10 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=10 suspectscore=0 adultscore=0 spamscore=0 clxscore=1015
+ bulkscore=10 phishscore=0 priorityscore=1501 impostorscore=10 malwarescore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602250217
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602250216
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -157,7 +156,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14015-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14014-lists,linux-ext4=lfdr.de];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[columbia.edu:mid,columbia.edu:dkim,columbia.edu:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	FREEMAIL_TO(0.00)[kernel.dk,gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,samsung.com,sony.com,dubeyko.com,paragon-software.com,bobcopeland.com,infradead.org,linux-foundation.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -176,104 +175,154 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 39C7C19E67D
+X-Rspamd-Queue-Id: 2836419E676
 X-Rspamd-Action: no action
 
-Add support for using RWF_DONTCACHE with block devices and other
+folio_end_dropbehind() is called from folio_end_writeback(), which can
+run in IRQ context through buffer_head completion.
+
+Previously, when folio_end_dropbehind() detected !in_task(), it skipped
+the invalidation entirely. This meant that folios marked for dropbehind
+via RWF_DONTCACHE would remain in the page cache after writeback when
+completed from IRQ context, defeating the purpose of using it.
+
+Fix this by deferring the dropbehind invalidation to a work item.  When
+folio_end_dropbehind() is called from IRQ context, the folio is added to
+a global folio_batch and the work item is scheduled. The worker drains
+the batch, locking each folio and calling filemap_end_dropbehind(), and
+re-drains if new folios arrived while processing.
+
+This unblocks enabling RWF_UNCACHED for block devices and other
 buffer_head-based I/O.
 
-Dropbehind pruning needs to be done in non-IRQ context, but block
-devices complete writeback in IRQ context. To fix this, we first defer
-dropbehind completion initiated from IRQ context by scheduling a work
-item on the system workqueue to process a batch of folios.
-
-Then, fix up the block_write_begin() interface to allow issuing
-RWF_DONTCACHE I/Os.
-
-This support is useful for databases that operate on raw block devices,
-among other userspace applications.
-
-I tested this (with CONFIG_BUFFER_HEAD=y) for reads and writes on a
-single block device on a VM, so results may be noisy.
-
-Reads were tested on the root partition with a 45GB range (~2x RAM).
-Writes were tested on a disabled swap parition (~1GB) in a memcg of size
-244MB to force reclaim pressure.
-
-Results: 
-
-===== READS (/dev/nvme0n1p2) =====
- sec   normal MB/s  dontcache MB/s
-----  ------------  --------------
-   1         993.9          1799.6
-   2         992.8          1693.8
-   3         923.4          2565.9
-   4        1013.5          3917.3
-   5        1557.9          2438.2
-   6        2363.4          1844.3
-   7        1447.9          2048.6
-   8         899.4          1951.7
-   9        1246.8          1756.1
-  10        1139.0          1665.6
-  11        1089.7          1707.7
-  12        1270.4          1736.5
-  13        1244.0          1756.3
-  14        1389.7          1566.2
-----  ------------  --------------
- avg        1258.0          2005.4  (+59%)
-
-==== WRITES (/dev/nvme0n1p3) =====
- sec   normal MB/s  dontcache MB/s
-----  ------------  --------------
-   1        2396.1          9670.6
-   2        8444.8          9391.5
-   3         770.8          9400.8
-   4          61.5          9565.9
-   5        7701.0          8832.6
-   6        8634.3          9912.9
-   7         469.2          9835.4
-   8        8588.5          9587.2
-   9        8602.2          9334.8
-  10         591.1          8678.8
-  11        8528.7          3847.0
-----  ------------  --------------
- avg        4981.7          8914.3  (+79%)
-
+Signed-off-by: Tal Zussman <tz2294@columbia.edu>
 ---
-Changes in v2:
-- Add R-b from Jan Kara for 2/2.
-- Add patch to defer dropbehind completion from IRQ context via a work
-  item (1/2).
-- Add initial performance numbers to cover letter.
-- Link to v1: https://lore.kernel.org/r/20260218-blk-dontcache-v1-1-fad6675ef71f@columbia.edu
+ mm/filemap.c | 84 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 79 insertions(+), 5 deletions(-)
 
----
-Tal Zussman (2):
-      filemap: defer dropbehind invalidation from IRQ context
-      block: enable RWF_DONTCACHE for block devices
+diff --git a/mm/filemap.c b/mm/filemap.c
+index ebd75684cb0a..6263f35c5d13 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1085,6 +1085,8 @@ static const struct ctl_table filemap_sysctl_table[] = {
+ 	}
+ };
+ 
++static void __init dropbehind_init(void);
++
+ void __init pagecache_init(void)
+ {
+ 	int i;
+@@ -1092,6 +1094,7 @@ void __init pagecache_init(void)
+ 	for (i = 0; i < PAGE_WAIT_TABLE_SIZE; i++)
+ 		init_waitqueue_head(&folio_wait_table[i]);
+ 
++	dropbehind_init();
+ 	page_writeback_init();
+ 	register_sysctl_init("vm", filemap_sysctl_table);
+ }
+@@ -1613,23 +1616,94 @@ static void filemap_end_dropbehind(struct folio *folio)
+  * If folio was marked as dropbehind, then pages should be dropped when writeback
+  * completes. Do that now. If we fail, it's likely because of a big folio -
+  * just reset dropbehind for that case and latter completions should invalidate.
++ *
++ * When called from IRQ context (e.g. buffer_head completion), we cannot lock
++ * the folio and invalidate. Defer to a workqueue so that callers like
++ * end_buffer_async_write() that complete in IRQ context still get their folios
++ * pruned.
+  */
++static DEFINE_SPINLOCK(dropbehind_lock);
++static struct folio_batch dropbehind_fbatch;
++static struct work_struct dropbehind_work;
++
++static void dropbehind_work_fn(struct work_struct *w)
++{
++	struct folio_batch fbatch;
++
++again:
++	spin_lock_irq(&dropbehind_lock);
++	fbatch = dropbehind_fbatch;
++	folio_batch_reinit(&dropbehind_fbatch);
++	spin_unlock_irq(&dropbehind_lock);
++
++	for (int i = 0; i < folio_batch_count(&fbatch); i++) {
++		struct folio *folio = fbatch.folios[i];
++
++		if (folio_trylock(folio)) {
++			filemap_end_dropbehind(folio);
++			folio_unlock(folio);
++		}
++		folio_put(folio);
++	}
++
++	/* Drain folios that were added while we were processing. */
++	spin_lock_irq(&dropbehind_lock);
++	if (folio_batch_count(&dropbehind_fbatch)) {
++		spin_unlock_irq(&dropbehind_lock);
++		goto again;
++	}
++	spin_unlock_irq(&dropbehind_lock);
++}
++
++static void __init dropbehind_init(void)
++{
++	folio_batch_init(&dropbehind_fbatch);
++	INIT_WORK(&dropbehind_work, dropbehind_work_fn);
++}
++
++static void folio_end_dropbehind_irq(struct folio *folio)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&dropbehind_lock, flags);
++
++	/* If there is no space in the folio_batch, skip the invalidation. */
++	if (!folio_batch_space(&dropbehind_fbatch)) {
++		spin_unlock_irqrestore(&dropbehind_lock, flags);
++		return;
++	}
++
++	folio_get(folio);
++	folio_batch_add(&dropbehind_fbatch, folio);
++	spin_unlock_irqrestore(&dropbehind_lock, flags);
++
++	schedule_work(&dropbehind_work);
++}
++
+ void folio_end_dropbehind(struct folio *folio)
+ {
+ 	if (!folio_test_dropbehind(folio))
+ 		return;
+ 
+ 	/*
+-	 * Hitting !in_task() should not happen off RWF_DONTCACHE writeback,
+-	 * but can happen if normal writeback just happens to find dirty folios
+-	 * that were created as part of uncached writeback, and that writeback
+-	 * would otherwise not need non-IRQ handling. Just skip the
+-	 * invalidation in that case.
++	 * Hitting !in_task() can happen for IO completed from IRQ contexts or
++	 * if normal writeback just happens to find dirty folios that were
++	 * created as part of uncached writeback, and that writeback would
++	 * otherwise not need non-IRQ handling.
+ 	 */
+ 	if (in_task() && folio_trylock(folio)) {
+ 		filemap_end_dropbehind(folio);
+ 		folio_unlock(folio);
++		return;
+ 	}
++
++	/*
++	 * In IRQ context we cannot lock the folio or call into the
++	 * invalidation path. Defer to a workqueue. This happens for
++	 * buffer_head-based writeback which runs from bio IRQ context.
++	 */
++	if (!in_task())
++		folio_end_dropbehind_irq(folio);
+ }
+ EXPORT_SYMBOL_GPL(folio_end_dropbehind);
+ 
 
- block/fops.c                |  4 +--
- fs/bfs/file.c               |  2 +-
- fs/buffer.c                 | 12 ++++---
- fs/exfat/inode.c            |  2 +-
- fs/ext2/inode.c             |  2 +-
- fs/jfs/inode.c              |  2 +-
- fs/minix/inode.c            |  2 +-
- fs/nilfs2/inode.c           |  2 +-
- fs/nilfs2/recovery.c        |  2 +-
- fs/ntfs3/inode.c            |  2 +-
- fs/omfs/file.c              |  2 +-
- fs/udf/inode.c              |  2 +-
- fs/ufs/inode.c              |  2 +-
- include/linux/buffer_head.h |  5 +--
- mm/filemap.c                | 84 ++++++++++++++++++++++++++++++++++++++++++---
- 15 files changed, 103 insertions(+), 24 deletions(-)
----
-base-commit: 05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
-change-id: 20260218-blk-dontcache-338133dd045e
-
-Best regards,
 -- 
-Tal Zussman <tz2294@columbia.edu>
+2.39.5
 
 
