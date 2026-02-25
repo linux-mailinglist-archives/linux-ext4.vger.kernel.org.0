@@ -1,206 +1,167 @@
-Return-Path: <linux-ext4+bounces-14000-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14001-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SHBDIl08nmkrUQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14000-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 01:03:41 +0100
+	id SMUmIUI9nmkrUQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14001-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 01:07:30 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E257F18E3F1
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 01:03:40 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B55C618E4B5
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 01:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D99A3072A3F
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 00:01:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DBEF43043520
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 00:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BDFC1F09B3;
-	Wed, 25 Feb 2026 00:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F3113E02A;
+	Wed, 25 Feb 2026 00:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="aGrr+Dda"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jM+ywaAh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-dy1-f202.google.com (mail-dy1-f202.google.com [74.125.82.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6061BD9C9
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 00:01:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F82C126BF7
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 00:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771977672; cv=none; b=peNlH17bF16et1LMOUL3HKctG7YY5pfIN+K4OnxlncONltXCZjLoO7Bdy6H2VedI1DgsQGlBDkWn1SNjGnwicrhwPs9xjzkR6hMsQ0FdCNzMP7Qj0hgVDfME91iWcGZfjaPgDhVQw23E4WV2cYWXVcLdKE1CuyJ9J92x5Jqm2tM=
+	t=1771978036; cv=none; b=U9w+9IUpbOeMou6VhbN6G+nOxU02BlzvJSgZMEXEc+Jalyxli6X4ieF9pi6967VVQ+eNKX77bEMVWsGuHXEjagVConVStouvWjBIMK/7RPxWuCTv3Av8C0VvUcl9Ji6Dx7/Qzvf1p+joS+RUA2WZONGUvwid8ftIOR2t6t47eI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771977672; c=relaxed/simple;
-	bh=R1Kzs3+QTLFJeOfnd1Mb+Cjo4gUl0iOMe1LG46BmkwA=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=KrP+IkcsHvLcrkV7ejCiAlb57VReXsnRQ2yDrw+Jsso88ezFWbN5eIBTQ8JQCIJRpLSrZiso/smSa4DVWBhpmmZtO2kgDDIbgVunAFuaCLZrNVRjeloA+OkPxFTFXaWT5VcV5I9gfFku1feKaMTqzXw6l5t3wEDV5AAvc/k60zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=aGrr+Dda; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-c6e2355739dso2122307a12.2
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Feb 2026 16:01:09 -0800 (PST)
+	s=arc-20240116; t=1771978036; c=relaxed/simple;
+	bh=TmVck+FldsP6JAM+f7tHdpVNV1AQOfdjvZD6NWwaNTM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=p/ZPsWFwDvg2/m3lTZLpGeyDonU2XEp6EtNxBXnsWBe4/ALj9aubiFSUAs0FNHvcOyXdewNGA54Xi1w6hTfEiznj8rBC1UAEzOA2hDPEhAr6SRwZhQeuKuuvKNRj51K+hKLohEy5Vu8DW4vouyqsoDmHYiSrNawYKKQ7W5DFHo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--robertpang.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jM+ywaAh; arc=none smtp.client-ip=74.125.82.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--robertpang.bounces.google.com
+Received: by mail-dy1-f202.google.com with SMTP id 5a478bee46e88-2ba7e98178fso5641586eec.0
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Feb 2026 16:07:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1771977669; x=1772582469; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OuMdVIWKWOipJqhwb12lnYw6kOR9sgyk4LpFdlxB2K0=;
-        b=aGrr+DdalX04GaGIYLXjTvK5Ca4gpV+LmgU/fTS3VHn4vch/GBPkfUbNXAcOFqgMIl
-         cQIE2Xbi76YYb6FUDLpVLcv8+g2rlO4V1eXLeELuG6x45bXvRONtOuugxs2G4JuAQifR
-         oRBrnLAhk9zPyS0hDGwZceUUW9DXVnYVgXoVW4uRZYY2ebnWVrDGE3E1wlgYPXFC2Sll
-         JLXLzFmgryAKSsmlGKVvAECeCnY/or8yNUxi/hH/V65JSkQgbl/5JP692YdygL/AnCsI
-         Cv1yqP/7PZKABxcKT/JmhAtRRubl4X3+MhMFCnfcBZaNgWmA9g64bQSOHzZx2kFZjFqb
-         ssjQ==
+        d=google.com; s=20230601; t=1771978034; x=1772582834; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tYhhsa7kCZNvYr93t3sYKWAVnQ12TUikgigc7L/AwWs=;
+        b=jM+ywaAhjWmDDU0Up0OPTru1cqJzUC/6zLzJvfNLmHaw4RokDSwGp4Q4tKdFaPj0bt
+         VESKOiiXZZd7OD0c+ZkcjKobk5KbIBGV8E8YBj3iZ1WoWxLqotr48rd6W1snKvANlLN7
+         iruCd3LnCwpQ0d35856mS1x4jzNI15pAkjC6R632OIZRrxAtj/1ekc9tTKhgfBrWuNzX
+         s6hQPgfIJgkqAZxCTB25nQ+0H9qVwHhj5O5l9orI3Fd7DKTKdgXTPU93ibrWTzXjHYbC
+         3c8tvvvpOMKB9sFnCTO8ni+ZKn/Z606NbiQkm1kDPrTyucweiC7pHZRen6E3zJz8O7OT
+         7UWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771977669; x=1772582469;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OuMdVIWKWOipJqhwb12lnYw6kOR9sgyk4LpFdlxB2K0=;
-        b=R9OGtxuOrQcMAF5hJ415wtcdxYlUwEJsDUcqZLqSVLQLTSaIYIUildfUl/UxGnSQZl
-         ZIc2BfCmzaFnzOYgQMBVxHw87KPdtHNg6yNSDzexaCPePdiklZHLVmJJUDPI8xEKG0Gh
-         M3vnaQi952y7QWh2m+g3RJxVnOsKENbrxutyU/sL55Ie91FmRhpqXox9p0NXFr3c7mLs
-         Vhmo5499PtCQVm75GuPUtGAIr5pVg9UuaW/pIwzNuy+tQgfhzH///3CblcPYKsMxYFlE
-         YqgqJHsC0ofAWMmIA8+Xq2m4ZJllAz5aSXWLQ9C+Aa8h8ji8J+u+ThY6kyEfec3NLIiG
-         0oOg==
-X-Gm-Message-State: AOJu0YySTqPM7hcq24Q4xg0kLSsTAKx/qANx3Sa53MIxealJUrm1R88e
-	TcUeZpVQx1Tvz23+sy6fm49BTarTJI1/fSlKrS36BDUDak+IIbNcxpBQ8Dd0zJ4wwZY=
-X-Gm-Gg: ATEYQzw8v+9AQW1tw34wojXLJu+MatyTracoBI4zPHd/DlPThztwaA5N1XOOWKHA1l4
-	kRQNEoWnIqdwZ45QX61HCtAIz9gbxQTJ1vpKzVBG2jUOiO7SsPod9KOAdW2hrLC8EhZx8KMOdi/
-	QPs1HjrpqZPxSDoycCTaib4Z1LnKsaD4ryRq4W7Ckimfxqkdn/bMkm/wEpS+tQseK3dJjQz4FOE
-	B2I25Gh3jfPkMFWheJFCOnRFcOIJXxp1o+wwQPiGosRGN4xKVMhaZR94p7OePheSPsGoI2K3Jxa
-	WPI55yMdVy+KWQm+nSwRNX1g13qaeYOT3jZsrauA4YosjrgqwBg1uT5brCyAzzx6EK5xOT4019a
-	VMpGe/GZnnQzaC31HWamhjqsSMijo87bpbgRfBmCBj+1tVSpZBXQySs4q3lzO3Rt3H8lxiVsu1Y
-	qdqxcQg4xw4AUoVcaa7qF6dRW0lN2EEbJMMqdC+ejx46yQYh10tF/TqmM2U8J6e7OiVkMN5Z9Sm
-	av4dA==
-X-Received: by 2002:a05:6a20:54a1:b0:366:14b2:30f with SMTP id adf61e73a8af0-39545fb0ea4mr10971474637.66.1771977668849;
-        Tue, 24 Feb 2026 16:01:08 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-826dd68998bsm13382380b3a.16.2026.02.24.16.01.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Feb 2026 16:01:08 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1771978034; x=1772582834;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tYhhsa7kCZNvYr93t3sYKWAVnQ12TUikgigc7L/AwWs=;
+        b=ktW7zIjzcQyct5YLZ13bKLLvaqIHsjYeqdDxqAhubU/yJqErb+NTfjbRMIb/ieq3XE
+         FNXqDx3vDE1UVoyYy1ahxOdNTXztyx7W9KQoKfD/5sGxBXv1cldSBrrsRgQSLOiXbpmm
+         c9tLAljGUjltszoP3W8eSZinSWDDdkXhW5OmlD4BT4Fgc0/SzP4nlb/RjV1ntw7n2QdN
+         cxI8HaVypx1b+g/qJEqTScUjcrMA6GZ0g9r+1Mmu7pYZSw9ZDy4wdzcf1gemTHyrYMXz
+         s4mojt4wPN8+TPnYDBP7Xv2Sgr9CqpM5InQ99ADE0E8unRH0L4e8+wEvVsLyR4LwDDt+
+         9QtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDdPZ5xr7tPrTZH+yIm8ZjF2Y54HwbKPxs+eBF1wQju9sTq16SX9kma1l/KdGQ6B6D6rXrW+z2JdCl@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+dd8XyDa1tteab1dYXv+lV4XLjlFF4iMsnKnCcFRhEftcayXC
+	HeISSvamowlyLBxx1r/bWsYIWuRY2/6an5S7ocKGbiyDR2bOij5y6duTJF+bqDXtGguhSjC1IE6
+	30IF9HNXDtJY1ka/E06ENqw==
+X-Received: from dycqa7.prod.google.com ([2002:a05:7300:fe47:b0:2bd:b038:ae2f])
+ (user=robertpang job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:7300:dc0d:b0:2b8:209d:5983 with SMTP id 5a478bee46e88-2bdc33aeb7dmr127538eec.29.1771978033558;
+ Tue, 24 Feb 2026 16:07:13 -0800 (PST)
+Date: Tue, 24 Feb 2026 16:05:31 -0800
+In-Reply-To: <20250619111806.3546162-3-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH v3] ext4: simplify mballoc preallocation size rounding for
- small files
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260224125136.62551-1-cuiweixie@gmail.com>
-Date: Tue, 24 Feb 2026 17:00:56 -0700
-Cc: linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8B328ADF-EB80-4D69-8B2C-BA1DE290445B@dilger.ca>
-References: <20260224125136.62551-1-cuiweixie@gmail.com>
-To: cuiweixie@gmail.com
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
+Mime-Version: 1.0
+References: <20250619111806.3546162-3-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.53.0.414.gf7e9f6c205-goog
+Message-ID: <20260225000531.3658802-1-robertpang@google.com>
+Subject: Re: [PATCH v2 2/9] nvme: set max_hw_wzeroes_unmap_sectors if device
+ supports DEAC bit
+From: Robert Pang <robertpang@google.com>
+To: yi.zhang@huaweicloud.com, Zhang Yi <yi.zhang@huawei.com>
+Cc: bmarzins@redhat.com, brauner@kernel.org, chaitanyak@nvidia.com, 
+	chengzhihao1@huawei.com, djwong@kernel.org, dm-devel@lists.linux.dev, 
+	hch@lst.de, john.g.garry@oracle.com, linux-block@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, 
+	linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	martin.petersen@oracle.com, shinichiro.kawasaki@wdc.com, tytso@mit.edu, 
+	yangerkun@huawei.com, yukuai3@huawei.com, robertpang@google.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	TAGGED_FROM(0.00)[bounces-14000-lists,linux-ext4=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
+	TAGGED_FROM(0.00)[bounces-14001-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[robertpang@google.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger-ca.20230601.gappssmtp.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dilger.ca:mid,dilger.ca:email]
-X-Rspamd-Queue-Id: E257F18E3F1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B55C618E4B5
 X-Rspamd-Action: no action
 
-On Feb 24, 2026, at 05:51, cuiweixie@gmail.com wrote:
->=20
-> From: Weixie Cui <cuiweixie@gmail.com>
->=20
-> The if-else ladder in ext4_mb_normalize_request() manually rounds up
-> the preallocation size to the next power of two for files up to 1MB,
-> enumerating each step from 16KB to 1MB individually. Replace this with
-> a single roundup_pow_of_two() call clamped to a 16KB minimum, which
-> is functionally equivalent but much more concise.
->=20
-> Also replace raw byte constants with SZ_1M and SZ_16K from
-> <linux/sizes.h> for clarity, and remove the stale "XXX: should this
-> table be tunable?" comment that has been there since the original
-> mballoc code.
->=20
-> No functional change.
->=20
-> Signed-off-by: Weixie Cui <cuiweixie@gmail.com>
+Dear Zhang Yi,
 
-One minor code style nit below, but otherwise,
+In reviewing your patch series implementing support for the
+FALLOC_FL_WRITE_ZEROES flag, I noted the logic propagating
+max_write_zeroes_sectors to max_hw_wzeroes_unmap_sectors in commit 545fb46e5bc6
+"nvme: set max_hw_wzeroes_unmap_sectors if device supports DEAC bit" [1]. This
+appears to be intended for devices that support the Write Zeroes command
+alongside the DEAC bit to indicate unmap capability.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca =
-<mailto:adilger@dilger.ca>>
+Furthermore, within core.c, the NVME_QUIRK_DEALLOCATE_ZEROES quirk already
+identifies devices that deterministically return zeroes after a deallocate
+command [2]. This quirk currently enables Write Zeroes support via discard in
+existing implementations [3, 4].
 
-> ---
-> fs/ext4/mballoc.c | 25 ++++++++++---------------
-> 1 file changed, 10 insertions(+), 15 deletions(-)
->=20
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 20e9fdaf4301..a5c51daaba78 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4561,22 +4561,17 @@ ext4_mb_normalize_request(struct =
-ext4_allocation_context *ac,
->  		(req <=3D (size) || max <=3D (chunk_size))
->=20
->  	/* first, try to predict filesize */
-> -	/* XXX: should this table be tunable? */
->  	start_off =3D 0;
-> -	if (size <=3D 16 * 1024) {
-> -		size =3D 16 * 1024;
-> -	} else if (size <=3D 32 * 1024) {
-> -		size =3D 32 * 1024;
-> -	} else if (size <=3D 64 * 1024) {
-> -		size =3D 64 * 1024;
-> -	} else if (size <=3D 128 * 1024) {
-> -		size =3D 128 * 1024;
-> -	} else if (size <=3D 256 * 1024) {
-> -		size =3D 256 * 1024;
-> -	} else if (size <=3D 512 * 1024) {
-> -		size =3D 512 * 1024;
-> -	} else if (size <=3D 1024 * 1024) {
-> -		size =3D 1024 * 1024;
-> +	if (size <=3D SZ_1M) {
-> +		/*
-> +		 * For files up to 1MB, round up the preallocation size =
-to
-> +		 * the next power of two, with a minimum of 16KB.
-> +		 */
-> +		if (size <=3D (unsigned long)SZ_16K) {
-> +			size =3D SZ_16K;
-> +		} else {
-> +			size =3D roundup_pow_of_two(size);
-> +		}
+Given this, would it be appropriate to respect NVME_QUIRK_DEALLOCATE_ZEROES also
+to enable unmap Write Zeroes for these devices, following the prior commit
+6e02318eaea5 "nvme: add support for the Write Zeroes command" [5]? I have
+included a proposed change to nvme_update_ns_info_block() below for your
+consideration.
 
-No need for {} around single-line if-else blocks.
+Best regards
+Robert Pang
 
->  	} else if (NRL_CHECK_SIZE(size, 4 * 1024 * 1024, max, 2 * 1024)) =
-{
->  		start_off =3D ((loff_t)ac->ac_o_ex.fe_logical >>
->  						(21 - bsbits)) << 21;
-> --=20
-> 2.39.5 (Apple Git-154)
->=20
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index f5ebcaa2f859..9c7e2cabfab3 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2422,7 +2422,9 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
+         * require that, it must be a no-op if reads from deallocated data
+         * do not return zeroes.
+         */
+-       if ((id->dlfeat & 0x7) == 0x1 && (id->dlfeat & (1 << 3))) {
++       if ((id->dlfeat & 0x7) == 0x1 && (id->dlfeat & (1 << 3)) ||
++           (ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
++           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
+                ns->head->features |= NVME_NS_DEAC;
+                lim.max_hw_wzeroes_unmap_sectors = lim.max_write_zeroes_sectors;
+        }
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=545fb46e5bc6
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/nvme.h#n72
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/core.c#n938
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/core.c#n2122
+[5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e02318eaea5
 
