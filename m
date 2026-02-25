@@ -1,466 +1,285 @@
-Return-Path: <linux-ext4+bounces-14011-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14012-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yFWKKo9Yn2ksagQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14011-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 21:16:15 +0100
+	id MNLCJiNun2m/bwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14012-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:48:19 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A55719D1AE
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 21:16:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFE119E01D
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5612E301C12E
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 20:16:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 564B430790A8
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 21:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832172DCF55;
-	Wed, 25 Feb 2026 20:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A7A318EDE;
+	Wed, 25 Feb 2026 21:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b="OBuIfmdV"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DcXnIIPe"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sonic316-21.consmr.mail.ne1.yahoo.com (sonic316-21.consmr.mail.ne1.yahoo.com [66.163.187.147])
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8745A29B76F
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 20:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.147
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772050572; cv=none; b=ZQKGy9xdbVNM9y59Do8CzMV8gxWxbqrLH1ePS0OZUmv+rEJy/f06XRvfIgqiUHh/ERPfezDQu+DFMVaGuteO3eAyIJQwu0KsIYbLM7JribdRFsFOSnc6+wna/76Z8YZ4qeVTsiPgd3aZ5dphw17B3KWebh5iy9QWBVODUXG/SAA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772050572; c=relaxed/simple;
-	bh=7lUoqlmatmpHJsQYT982ei12hR4Jad60ABVD4eFaPts=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:References; b=gUrKlpLkvWKt1jTCCgIfWoh9BJcSBLn3OSN2KwXcBmc5jBQnFT87rjG/gidWH0EbyXF36DSlHH0Ypvxcb0zNaN1wdQMzvmXeGw+pMZjHGf+2PBtwL8f3Ca0ZqATPgcdmYw0+hUqlZMaN9/91jmnf4XQhG0gv3tHhUXfFr5eBiP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com; spf=pass smtp.mailfrom=rocketmail.com; dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b=OBuIfmdV; arc=none smtp.client-ip=66.163.187.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rocketmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1772050563; bh=GC8mJR0ld2caY23eVx9YMPVfIbfvZCJPT21QTj3a/Fk=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=OBuIfmdVY39xhenpR4uL9zDGZMexPl3SdJic+9hw7UA+yJoQB1yZ+ac8UH8TFpcLNe+dmExvgLNBDDBv9YwZL0cNB8C7EhgVhcqRiPq9LTcShsu/gaqMrSNjBwBHIPbL2FAW+OztM2mZk3YwX/dz2xHCtpshoA6+ANwB5eHnVo0M/YvaIAfDMzYweM474FIMBch/I1xId/DHcB3YG8jgNFlJco8S9wftTPdE844WidfN0QHzDMHGDxDMboTTIUxs5yxaMWwUZoPjrfeiXNdaqwrH0rHDDabJxEAd4VGMSy/VoTP3Qk7S5rR+dNhCU14jvwJMw9hnVd74YOyHSSTNsw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1772050563; bh=lLUJYgpg6xn2dAzMKCppLAFCTm6391X1X87dVspDLSz=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=fPYmoJFTAlcfngDeGtOhCouTwNrealFPzTCNmzqU53WMSrmdxZ1N9p5WUHs3d1tapwvKE9yozxF9AZWtMzR/x8NVSWUBPs/fRVjojH1sl7WikcCB8Y/MHTlKeqYLK6+3GCvyILgmC2Iyen2MEU7d0x1RkdPyrr5IzK4sxd4hjq7gdEjVkDDaMhU+QWSYaIJ/OMS45uX9EG9qQpDLG2Bf8alG9dzRAgrJAlHg1uh+qfN0frBXgF2w/SepyX5fGSf98wVFVnR45ySSsDDRQ3R1jBaQkvb1jYNjOq+lMeFfzuJJ7djcSTMY01l/GXH9BHbpYi3CJDfGTTywtKtqmXPfyA==
-X-YMail-OSG: qbuiaRUVM1nPgD7f72hX0CeDcVtD5aRjdqdJ15jNoe0cDSW9hatS08UlKRB.IjU
- U7kBlhPqtRh5k3KbaRNV5GeV.AyXoXuvdf9OwPhPLaDNy.gvjIr3_ene2qMSfWyR8afiPE0XJiTO
- WEzaCtPcCDdUQlHB4I4ICRQuewKZp9YFYWp91LFx5Vxjr0PNZr6plHyMPo0L9t5V0WoPdpr4ZCa7
- WuufJDmqh.vUmaSgq3xWXBbifMlaE7XWaISjUMI6Zw_03Gn1IUAHczmWAKCP.bRI3l48ZGKcG941
- jH23yEhoYVSVjPAriG_k_aEyZUgyH4_Kgc02JNLPp8Hp7lK94qPYmfvMKHqctm.pyg0sjI.6xJ7G
- 1eMrsGuVKogLOJzBV0CHCeQN03WlvUsgojY3oBCmPYwHgKCZgDk7LuKzKSoUv0Oea6UF1pEpj9wk
- YnTkzURrpo3F1IGnJvA9J_S9kZ2E_6a4onrexaxW7iZgHbXxlkwFkO5iNfbO0NKT6UrZVOLruRMn
- wmrVvyT1vSe4AVHMS8Zzm5QJPEJi0UAII8YwM_e4gBzVEhxP33Cs1uxGX99m_2e2ZvSoBLPRlb_N
- brHn6liGUNPaW74lSlY3vk2GMlFj6CqYt1DK9U4piHEYGRlEEFQrQsptx9MdAHOZp.iAVz1kIxK4
- 8qQMqryGJAbktAEkK8zSjEptSrrHByb3KvpKZKg4w6gZNVXAY9.uHqgMyu.9f7MBdGouAxFbbJ0m
- HT6kO0GhIp4rXhU4enDb7uUyWv3Ak_gSDWA_YnUyVHcCTmevMnCMx1KVw3atB.K95U4CahSp.u6q
- Jln.1YtvEO0FjKamkvQyzWwTN25Fn0KGZugVSD8dAFEYs7glxCuePFe9KCLNLj5rgw1chpGXM3ga
- 37_A3EbYGI2xuA8Ml5VtozW7epPWbDMAjQ2p2wSuq5R7hLodTIbGb5v_qSA2qxcysJCRsotOvtKC
- rX1_7YxIcMuOaVDtb8otM067q.8imAFmokdAKzdM3bYydptH1HeOl4r9B7opIlXh2QxraPYJDPVU
- oJ9g64P0Tb2lwf1jKS7m_Zl.9v_qRhR_8NkBYuemG6luiHMZTiIGPJ4U6HAjAFLOP8MgTG8GIe4F
- O38P17oh_9mej0Fs0rCRk5fj4Sl5S89xcigVe_hwFdq09m2qSdigLoupdBemspQkE8RB86xQ9keE
- Ej7Ka5uHq7tJPJ02LFzPV.h6ox7zFR0S.DPODIVND8D.rg0Rns7BksgM47JrAYclqIeFbXURspPY
- oTNqZaeNyaPn.hhPDmbfmIwXCSHEQUZzZLqZYDpmHGZkbDPeJ9SgZjt5birfbVhLpzHIqZy_fUNR
- bG_2Neq1TutC_DOku0wyL.V5U8qUK8SYudDDSHSCSU4jA7UF8Yn66QBuH0zQ2ipFTbkMi8Xnyoq9
- u.4PMDFFk48iYi6wrERshj1N8lrytWHg3omjmHTgTh3o8sOg_G_wLytQ8Z0bVYreoazSpWnaiqyd
- wup45iOAAZ44dd_O_PcQxhEDBTti.0iYzOChaxGAkTqZc.wtkkgqNRph_GdtEeQVSn8ZVSviOqnW
- Gmqhc6GhiaLXj04ND10aMo7BBP2te0OhGBJXjZxlMcdh_hwo23jPyBIJKp9qpOqpNEpqznLqjICv
- 3hO8UYg08R72UVhzA8rSb6eFPJnAAb8dtqKWPUmKrR_cgZdDJGBCC5a7ITUj2_6J5pYKjRmhzKdg
- uGZ9s5Zg2XiSIt6nKjXJn5gzG.ceZH4sB9WEoisowsChjrrGEZsLGFU4KK6BPCmKs0s97GufHWBb
- 6UqoyxqLNFqGrkSgO4SQdR287i00Ep5PqqcYjBGee.L9g4UlqL5kyTT3ZPmzOZisBJwR5uBz05TO
- wTBeIbciDFHjDIdxRlGDMX3_I8oW9BQ5DR_hOV63DvMvebQ2sD2FWSxtl93pH53OidEdQ.93OG50
- euvnIvIQcmpUaje9P7QllpwsCdCMKB3Oq8SqOOUc_SCpTKcGhhs3aK83qeCPtOqTxoZ4mXq79k9w
- E9K9JhOsChbHvxqjjpu_tCBwBsC1DwcSt9XvpHgJWtkDDkag2NttB_Vj_UCEocSNu0M9NdhsAIZC
- 5FK3tKnBN2pT_cKRKHAggIU2Pg3kzkU_TwLiwcCeElSXcNul4uqARPYr8xwHanyhR_pmCGrvcBC2
- Kdg8s6D7r7Q9ygesRmQBzpcUZPevopVY.QPnkZwKTucNnQLgV.MLcfhTxXi2YiOQg0LQOhV22Rgi
- xeq050ca7A8ar
-X-Sonic-MF: <mario_lohajner@rocketmail.com>
-X-Sonic-ID: 34fad04e-f40e-4bf7-b329-d25a2225e193
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 25 Feb 2026 20:16:03 +0000
-Received: by hermes--production-ir2-bbcfb4457-f49j6 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID fa0c1fcc802b66ba0a1ca6c6e8ff9cb1;
-          Wed, 25 Feb 2026 20:15:59 +0000 (UTC)
-From: Mario Lohajner <mario_lohajner@rocketmail.com>
-To: tytso@mit.edu
-Cc: libaokun1@huawei.com,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yangerkun@huawei.com,
-	libaokun9@gmail.com,
-	Mario Lohajner <mario_lohajner@rocketmail.com>
-Subject: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin allocation policy
-Date: Wed, 25 Feb 2026 21:15:20 +0100
-Message-ID: <20260225201520.220071-1-mario_lohajner@rocketmail.com>
-X-Mailer: git-send-email 2.53.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF301316918
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 21:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772055827; cv=pass; b=Cyv39NhRfmkO8lwiCy0G2+a97oHz+40gCRexttYbV+6vD6SHHgNAyoE5khbzOesHqFJKOWaqt8Zv+lP0pBoR9TuvduUvqiHugbLs+d2Mjwc6dRDOw8IBTSfxyQvV0KCGrfQRir2yjwFUD44LBysr/ioyIcFL2TrA2L+2yXbAd+Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772055827; c=relaxed/simple;
+	bh=hoZBQczrzcuyVPOXD+tTAmFlTYabJ94zI9Irylb/EVw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RzYEoO44ES5QHptp3n1+RiPkPS7wibScBeo6QHC6iZkKMDbiW9+UADHQFCq7wuuBjtWMMMmaxuY9Aqi6H0y0aHN3HsbXVi3owCA2ulZSPncdyR5xA4Jia/PdMA7TK9pErWNwJ6anCUG/Tri49n12ehW6ZNeQRDEw0ApTlUDJWCY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DcXnIIPe; arc=pass smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-65f3a35ff13so3608a12.0
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 13:43:45 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772055824; cv=none;
+        d=google.com; s=arc-20240605;
+        b=VHC+IcdZ2eg0AvPilKSHYy3BczyNlpFCmMFtYeelzZf4I6ZcEMfci03PqRvg8fwgXB
+         rKMMPGaikNE2A/pe4ZiN57dd19zIajtbbGoFt7i8H//C0ry3ylYeTko4U4dlGMVR2GXk
+         9rRWovQ45l08ysDcPZN3bNx5xev/tAZ9AMjPrsq71kuYKINuFjf8VXVQs81H5x2eu5Oh
+         dXh8p+2a3NY5LhvbggAdQeN4h3e/4PHQ7Wnnlkwn8ochyqevWMvbzoHX6f6YaODfqrsY
+         S8tWQOa8hYNqfQA0TNSr86ZdVzdAbOiDccGH9qLa+n78vuieLVcyfLaMy/Lc4OgfjhYI
+         rxvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
+        fh=54y2aoEqJvnzETXkgZwaln0xxGFVT8hK666Ewx9Ymmo=;
+        b=Xz+C5t1yz/G6/V/6+zLsKj7sHzHVRubGaCbmBxnB0G5MHmv++h05upiWA4ngf5srDG
+         o6/DPS8IdSsJDrJem9Ye4Xs61GOeqb9Ac40MwMsg9kDch+8BVif5RkdXVhKmia6I0lGB
+         wH0WBLhU7t1qrW3gk9L/MU6S/izm7Mu19MY1p0ETKHp1eDU7AXX1uRDOA8QSwuCnlYdu
+         zZthwVSb6EMgWxj3imW9eU31WUOWbR0ZJyedjXUCQWmh53T6WbzE49Y5UAuKFsi80lNA
+         nF4fTP2r4bY9EAqyJKS8PxVI010ZbssHrdlXpm0okpD6tLf/J4Ei4gTZ++eHsp/EjmvU
+         FUZg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1772055824; x=1772660624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
+        b=DcXnIIPehOR7Zcc84tU5ax/4/X+fJQQXdh6G/qeIGgAwD6QNLuPBvyozFNu04p1olg
+         g2ioHyEBoajIsPgNamu8pOCASAUioThGOznYmtfFxA2PNCUI/goNDca2bs4YaC57UiMX
+         hrNrJLYnxtIrwCeUCMpB65/mfvXVpuwHhNmB8r2rpeEZVUk9JmP1VTBaWsG8jXrjKXwl
+         UiqonoSGe9mduDMaJoz8Kgszdb+iCjKBceJQZRl2elaXYdryJsUcOdQPBv+X7m1a9tcz
+         uA3wykguwgIff37UR05C2cadCAQdbVnrzA/akWYG16NJ0Q72rMQDl7LjJp/0lKeJMubA
+         Zb8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772055824; x=1772660624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
+        b=nDQdYODdWJtPZi8Y53gZGuWPdj0xKkJHk4EBIdduoMCV8MlrvC2tIjOF6VWIVlKOcA
+         9uQZFYYcO2njGflG0b2eNKrJDw5qM2V+oP0BDVIAgGeaETysaeKfHY0dzUgQnXv+/fdD
+         LXwLIAcJ46I0U/KxHBOAOHAqGy9VAaXSkS/NvR5igW2D48fkM6kb21EOblTDYGmX26qd
+         H4BAbv4uVJynrRQLaM27RJE4ZBULrevC5QtdRw1WLcEUAQ9VYpSplCHW4y5ouA0d/3z2
+         UvS/um0qSftYsWSG21SFRKw5+ORwnzXrqbe/ppZfJst/hY0X3EEa5pREKfl4P2B4ALlD
+         vm3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWAd6eb5urHeTZwMWWeOm37sEQa+lQDH6WHyYIA+WK7LGy5lwkTYmC8vmKhJpmCuQi+WHhpujcpdGCx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHCsnBUe6uinxSKg0pLEXnTRpT/heLiYiq67nXXqqzqanjsBZO
+	Bk1GIzsLNH1zXbkz9DQ4zOboVVXpeEYM5MigMWWtcQeHX8up64ZVyjUHx4YIAMKQEP/gABZUcrm
+	yu7K3+q5qkwhYJeuchSi+ZbYgphanDFAvw4ttm1wW
+X-Gm-Gg: ATEYQzzmqr9mOSWSPeIcepFNPjFR3u49iOhdoBUKr8PcVwUIEKrCe+F7Mg9cC8AZfOl
+	jxObjwZ6GD8KuF2BjvbcnRlukX30FIRQI2sByyLVcfGUqNmV962rxoGu4MsjwdsymGJieZPv1b6
+	7TH1WgdbjsgZLgGcLxGM4sb65DZlaDMQlIft/RV59/5tf+Czg5Qqe/pi8UtOupdw7QXx1Gtohmv
+	QlMWyZQ/IPzksNBdVv30Ua7LZ/3wF76fPAa1do8kkooqpgAo3AoyGCennwGZtQsfsZNZjCG4oRf
+	PU7vdSCcK+AAJ9PwGb5rIL0Y9M+2FTzFbt9Sbg==
+X-Received: by 2002:aa7:c7cf:0:b0:658:e7a:6fa7 with SMTP id
+ 4fb4d7f45d1cf-65fab61a7b0mr11377a12.4.1772055823405; Wed, 25 Feb 2026
+ 13:43:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+References: <20250619111806.3546162-3-yi.zhang@huaweicloud.com>
+ <20260225000531.3658802-1-robertpang@google.com> <7d2a3f65-4272-46c1-991a-356f0d2323cb@huaweicloud.com>
+In-Reply-To: <7d2a3f65-4272-46c1-991a-356f0d2323cb@huaweicloud.com>
+From: Robert Pang <robertpang@google.com>
+Date: Wed, 25 Feb 2026 13:43:31 -0800
+X-Gm-Features: AaiRm53fO14_kYBnlB-QimzynwfGzteAR7wRZiT1Sf0awQgFveGcUyR_Z7IWsCY
+Message-ID: <CAJhEC05L7QEc9iY7gFZVK3SPYvFhtFyURss6xQgZ-qWwZZkFjA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/9] nvme: set max_hw_wzeroes_unmap_sectors if device
+ supports DEAC bit
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Zhang Yi <yi.zhang@huawei.com>, bmarzins@redhat.com, brauner@kernel.org, 
+	chaitanyak@nvidia.com, chengzhihao1@huawei.com, djwong@kernel.org, 
+	dm-devel@lists.linux.dev, hch@lst.de, john.g.garry@oracle.com, 
+	linux-block@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, martin.petersen@oracle.com, 
+	shinichiro.kawasaki@wdc.com, tytso@mit.edu, yangerkun@huawei.com, 
+	yukuai3@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[rocketmail.com,reject];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[rocketmail.com:s=s2048];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[huawei.com,dilger.ca,vger.kernel.org,gmail.com,rocketmail.com];
-	TAGGED_FROM(0.00)[bounces-14011-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14012-lists,linux-ext4=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mario_lohajner@rocketmail.com,linux-ext4@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[robertpang@google.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[rocketmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	FREEMAIL_FROM(0.00)[rocketmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,rocketmail.com:mid,rocketmail.com:dkim,rocketmail.com:email]
-X-Rspamd-Queue-Id: 9A55719D1AE
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3CFE119E01D
 X-Rspamd-Action: no action
 
-V2 patch incorporating feedback from previous discussion:
+Dear Zhang Yi
 
-- per-inode atomic cursors to enforce stream sequentiality
-- per-CPU starting points to reduce contention
-- allocator isolation maintained; regular allocator untouched
-- name changed to rralloc to avoid confusion with "rotational"
-- preliminary tests confirm expected performance
+Thank you for your quick response. Please see my comments below:
 
-Files modified:
-- fs/ext4/ext4.h
-	rralloc policy declared, per-CPU cursors & allocator vector
+On Tue, Feb 24, 2026 at 6:32=E2=80=AFPM Zhang Yi <yi.zhang@huaweicloud.com>=
+ wrote:
+>
+> Hi Robert!
+>
+> On 2/25/2026 8:05 AM, Robert Pang wrote:
+> > Dear Zhang Yi,
+> >
+> > In reviewing your patch series implementing support for the
+> > FALLOC_FL_WRITE_ZEROES flag, I noted the logic propagating
+> > max_write_zeroes_sectors to max_hw_wzeroes_unmap_sectors in commit 545f=
+b46e5bc6
+> > "nvme: set max_hw_wzeroes_unmap_sectors if device supports DEAC bit" [1=
+]. This
+> > appears to be intended for devices that support the Write Zeroes comman=
+d
+> > alongside the DEAC bit to indicate unmap capability.
+> >
+> > Furthermore, within core.c, the NVME_QUIRK_DEALLOCATE_ZEROES quirk alre=
+ady
+> > identifies devices that deterministically return zeroes after a dealloc=
+ate
+> > command [2]. This quirk currently enables Write Zeroes support via disc=
+ard in
+> > existing implementations [3, 4].
+> >
+> > Given this, would it be appropriate to respect NVME_QUIRK_DEALLOCATE_ZE=
+ROES also
+> > to enable unmap Write Zeroes for these devices, following the prior com=
+mit
+> > 6e02318eaea5 "nvme: add support for the Write Zeroes command" [5]? I ha=
+ve
+> > included a proposed change to nvme_update_ns_info_block() below for you=
+r
+> > consideration.
+> >
+>
+> Thank you for your point. Overall, this makes sense to me, but I have one
+> question below.
+>
+> > Best regards
+> > Robert Pang
+> >
+> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> > index f5ebcaa2f859..9c7e2cabfab3 100644
+> > --- a/drivers/nvme/host/core.c
+> > +++ b/drivers/nvme/host/core.c
+> > @@ -2422,7 +2422,9 @@ static int nvme_update_ns_info_block(struct nvme_=
+ns *ns,
+> >          * require that, it must be a no-op if reads from deallocated d=
+ata
+> >          * do not return zeroes.
+> >          */
+> > -       if ((id->dlfeat & 0x7) =3D=3D 0x1 && (id->dlfeat & (1 << 3))) {
+> > +       if ((id->dlfeat & 0x7) =3D=3D 0x1 && (id->dlfeat & (1 << 3)) ||
+> > +           (ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
+> > +           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
+>                                 ^^^^^^^^^^^^^^^^^^
+> Why do you want to add a check for NVME_CTRL_ONCS_DSM? In nvme_config_dis=
+card(),
+> it appears that we prioritize ctrl->dmrsl, allowing discard to still be
+> supported even on some non-standard devices where NVME_CTRL_ONCS_DSM is n=
+ot set.
+> In nvme_update_disk_info(), if the device only has NVME_QUIRK_DEALLOCATE_=
+ZEROES,
+> we still populate lim->max_write_zeroes_sectors (which might be non-zero =
+on
+> devices that support NVME_CTRL_ONCS_WRITE_ZEROES). Right? So I'm not sure=
+ if we
+> only need to check for NVME_QUIRK_DEALLOCATE_ZEROES here.
+>
+The check for NVME_CTRL_ONCS_DSM is to follow the same check in [3]. There,=
+ the
+check was added by 58a0c875ce02 "nvme: don't apply NVME_QUIRK_DEALLOCATE_ZE=
+ROES
+when DSM is not supported" [6]. The idea is to limit
+NVME_QUIRK_DEALLOCATE_ZEROES
+to those devices that support DSM.
 
-- fs/ext4/ialloc.c
-	initialize (zero) per-inode cursor
+> >                 ns->head->features |=3D NVME_NS_DEAC;
+>
+> I think we should not set NVME_NS_DEAC for the quirks case.
+>
+Make sense. In that case, will it be more appropriate to set
+max_hw_wzeroes_unmap_sectors in nvme_update_disk_info() where
+NVME_QUIRK_DEALLOCATE_ZEROES is checked? I.e.
 
-- fs/ext4/mballoc.h
-	expose allocator functions for vectoring in super.c
-
-- fs/ext4/super.c
-	parse rralloc option, init per-CPU cursors and allocator vector
-
-- fs/ext4/mballoc.c
-	add rotating allocator, vectored allocator
-
-Signed-off-by: Mario Lohajner <mario_lohajner@rocketmail.com>
----
- fs/ext4/ext4.h    |  10 +++-
- fs/ext4/ialloc.c  |   3 +-
- fs/ext4/mballoc.c | 115 ++++++++++++++++++++++++++++++++++++++++++++--
- fs/ext4/mballoc.h |   3 ++
- fs/ext4/super.c   |  33 ++++++++++++-
- 5 files changed, 157 insertions(+), 7 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 293f698b7042..210332affd47 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -229,6 +229,9 @@ struct ext4_allocation_request {
- 	unsigned int flags;
- };
- 
-+/* rralloc show pointer type to compiler */
-+struct ext4_allocation_context;
-+
- /*
-  * Logical to physical block mapping, used by ext4_map_blocks()
-  *
-@@ -1032,7 +1035,8 @@ struct ext4_inode_info {
- 	__le32	i_data[15];	/* unconverted */
- 	__u32	i_dtime;
- 	ext4_fsblk_t	i_file_acl;
--
-+	/* rralloc per inode cursor */
-+	atomic_t	cursor;
- 	/*
- 	 * i_block_group is the number of the block group which contains
- 	 * this file's inode.  Constant across the lifetime of the inode,
-@@ -1217,6 +1221,7 @@ struct ext4_inode_info {
-  * Mount flags set via mount options or defaults
-  */
- #define EXT4_MOUNT_NO_MBCACHE		0x00001 /* Do not use mbcache */
-+#define EXT4_MOUNT_RRALLOC			0x00002 /* Use round-robin policy/allocator */
- #define EXT4_MOUNT_GRPID		0x00004	/* Create files with directory's group */
- #define EXT4_MOUNT_DEBUG		0x00008	/* Some debugging messages */
- #define EXT4_MOUNT_ERRORS_CONT		0x00010	/* Continue on errors */
-@@ -1546,6 +1551,9 @@ struct ext4_sb_info {
- 	unsigned long s_mount_flags;
- 	unsigned int s_def_mount_opt;
- 	unsigned int s_def_mount_opt2;
-+	/* rralloc per-cpu cursors and allocator vector */
-+	ext4_group_t __percpu *s_rralloc_cursor;
-+	int (*s_vectored_allocator)(struct ext4_allocation_context *ac);
- 	ext4_fsblk_t s_sb_block;
- 	atomic64_t s_resv_clusters;
- 	kuid_t s_resuid;
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index b20a1bf866ab..c72cee642eca 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -962,7 +962,8 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 	if (!inode)
- 		return ERR_PTR(-ENOMEM);
- 	ei = EXT4_I(inode);
--
-+	/* Zero the rralloc per-inode cursor */
-+	atomic_set(&ei->cursor, 0);
- 	/*
- 	 * Initialize owners and quota early so that we don't have to account
- 	 * for quota initialization worst case in standard inode creating
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 20e9fdaf4301..df3805bb4a2f 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2266,9 +2266,19 @@ static void ext4_mb_use_best_found(struct ext4_allocation_context *ac,
- 	folio_get(ac->ac_buddy_folio);
- 	/* store last allocated for subsequent stream allocation */
- 	if (ac->ac_flags & EXT4_MB_STREAM_ALLOC) {
--		int hash = ac->ac_inode->i_ino % sbi->s_mb_nr_global_goals;
-+		/* update global goals */
-+		if (!test_opt(ac->ac_sb, RRALLOC)) {
-+			int hash = ac->ac_inode->i_ino % sbi->s_mb_nr_global_goals;
-+
-+			WRITE_ONCE(sbi->s_mb_last_groups[hash], ac->ac_f_ex.fe_group);
-+		} else {
-+			/* update inode cursor and current per-cpu cursor */
-+			ext4_group_t cursor = ac->ac_f_ex.fe_group;
-+			struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
- 
--		WRITE_ONCE(sbi->s_mb_last_groups[hash], ac->ac_f_ex.fe_group);
-+			atomic_set(&ei->cursor, cursor);
-+			*this_cpu_ptr(sbi->s_rralloc_cursor) = cursor;
-+		}
- 	}
- 
- 	/*
-@@ -2991,7 +3001,7 @@ static int ext4_mb_scan_group(struct ext4_allocation_context *ac,
- 	return ret;
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index f5ebcaa2f859..3f5dd3f867e9 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -2120,9 +2120,10 @@ static bool nvme_update_disk_info(struct
+nvme_ns *ns, struct nvme_id_ns *id,
+        lim->io_min =3D phys_bs;
+        lim->io_opt =3D io_opt;
+        if ((ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
+-           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM))
++           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
+                lim->max_write_zeroes_sectors =3D UINT_MAX;
+-       else
++               lim->max_hw_wzeroes_unmap_sectors =3D UINT_MAX;
++       } else
+                lim->max_write_zeroes_sectors =3D ns->ctrl->max_zeroes_sect=
+ors;
+        return valid;
  }
- 
--static noinline_for_stack int
-+noinline_for_stack int
- ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- {
- 	ext4_group_t i;
-@@ -3111,6 +3121,102 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 	return err;
- }
- 
-+/* Rotating allocator (round-robin) */
-+noinline_for_stack int
-+ext4_mb_rotating_allocator(struct ext4_allocation_context *ac)
-+{
-+	ext4_group_t goal;
-+	int err = 0;
-+	struct super_block *sb = ac->ac_sb;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_buddy e4b;
-+	struct ext4_inode_info *ei = EXT4_I(ac->ac_inode);
-+	ext4_group_t start = *this_cpu_ptr(sbi->s_rralloc_cursor);
-+
-+	/* if inode cursor=0, use per-cpu cursor */
-+	goal = atomic_cmpxchg(&ei->cursor, 0, start);
-+	if (!goal)
-+		goal = start;
-+
-+	ac->ac_g_ex.fe_group = goal;
-+
-+	/* first, try the goal */
-+	err = ext4_mb_find_by_goal(ac, &e4b);
-+	if (err || ac->ac_status == AC_STATUS_FOUND)
-+		goto out;
-+
-+	/* RRallocation promotes stream behavior */
-+	ac->ac_flags |= EXT4_MB_STREAM_ALLOC;
-+	ac->ac_flags |= EXT4_MB_HINT_FIRST;
-+	ac->ac_flags &= ~EXT4_MB_HINT_GOAL_ONLY;
-+	ac->ac_g_ex.fe_group = goal;
-+	ac->ac_g_ex.fe_start = -1;
-+	ac->ac_2order = 0;
-+	ac->ac_criteria = CR_ANY_FREE;
-+	ac->ac_e4b = &e4b;
-+	ac->ac_prefetch_ios = 0;
-+	ac->ac_first_err = 0;
-+repeat:
-+	while (ac->ac_criteria < EXT4_MB_NUM_CRS) {
-+		err = ext4_mb_scan_groups(ac);
-+		if (err)
-+			goto out;
-+
-+		if (ac->ac_status != AC_STATUS_CONTINUE)
-+			break;
-+	}
-+
-+	if (ac->ac_b_ex.fe_len > 0 && ac->ac_status != AC_STATUS_FOUND &&
-+	    !(ac->ac_flags & EXT4_MB_HINT_FIRST)) {
-+		/*
-+		 * We've been searching too long. Let's try to allocate
-+		 * the best chunk we've found so far
-+		 */
-+		ext4_mb_try_best_found(ac, &e4b);
-+		if (ac->ac_status != AC_STATUS_FOUND) {
-+			int lost;
-+
-+			/*
-+			 * Someone more lucky has already allocated it.
-+			 * The only thing we can do is just take first
-+			 * found block(s)
-+			 */
-+			lost = atomic_inc_return(&sbi->s_mb_lost_chunks);
-+			mb_debug(sb, "lost chunk, group: %u, start: %d, len: %d, lost: %d\n",
-+				 ac->ac_b_ex.fe_group, ac->ac_b_ex.fe_start,
-+				 ac->ac_b_ex.fe_len, lost);
-+
-+			ac->ac_b_ex.fe_group = 0;
-+			ac->ac_b_ex.fe_start = 0;
-+			ac->ac_b_ex.fe_len = 0;
-+			ac->ac_status = AC_STATUS_CONTINUE;
-+			ac->ac_flags |= EXT4_MB_HINT_FIRST;
-+			ac->ac_criteria = CR_ANY_FREE;
-+			goto repeat;
-+		}
-+	}
-+
-+	if (sbi->s_mb_stats && ac->ac_status == AC_STATUS_FOUND) {
-+		atomic64_inc(&sbi->s_bal_cX_hits[ac->ac_criteria]);
-+		if (ac->ac_flags & EXT4_MB_STREAM_ALLOC &&
-+		    ac->ac_b_ex.fe_group == ac->ac_g_ex.fe_group)
-+			atomic_inc(&sbi->s_bal_stream_goals);
-+	}
-+
-+out:
-+	if (!err && ac->ac_status != AC_STATUS_FOUND && ac->ac_first_err)
-+		err = ac->ac_first_err;
-+
-+	mb_debug(sb, "Best len %d, origin len %d, ac_status %u, ac_flags 0x%x, cr %d ret %d\n",
-+		 ac->ac_b_ex.fe_len, ac->ac_o_ex.fe_len, ac->ac_status,
-+		 ac->ac_flags, ac->ac_criteria, err);
-+
-+	if (ac->ac_prefetch_nr)
-+		ext4_mb_prefetch_fini(sb, ac->ac_prefetch_grp, ac->ac_prefetch_nr);
-+
-+	return err;
-+}
-+
- static void *ext4_mb_seq_groups_start(struct seq_file *seq, loff_t *pos)
- {
- 	struct super_block *sb = pde_data(file_inode(seq->file));
-@@ -6313,7 +6419,8 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
- 			goto errout;
- repeat:
- 		/* allocate space in core */
--		*errp = ext4_mb_regular_allocator(ac);
-+		/* use vector separation for rralloc allocator */
-+		*errp = sbi->s_vectored_allocator(ac);
- 		/*
- 		 * pa allocated above is added to grp->bb_prealloc_list only
- 		 * when we were able to allocate some block i.e. when
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index 15a049f05d04..27d7a7dd7044 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -270,4 +270,7 @@ ext4_mballoc_query_range(
- 	ext4_mballoc_query_range_fn	formatter,
- 	void				*priv);
- 
-+/* Expose rotating & regular allocator for vectoring */
-+int ext4_mb_rotating_allocator(struct ext4_allocation_context *ac);
-+int ext4_mb_regular_allocator(struct ext4_allocation_context *ac);
- #endif
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 43f680c750ae..1e4cf6a40c88 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1284,6 +1284,10 @@ static void ext4_put_super(struct super_block *sb)
- 	int aborted = 0;
- 	int err;
- 
-+	/* free per cpu cursors */
-+	if (sbi->s_rralloc_cursor)
-+		free_percpu(sbi->s_rralloc_cursor);
-+
- 	/*
- 	 * Unregister sysfs before destroying jbd2 journal.
- 	 * Since we could still access attr_journal_task attribute via sysfs
-@@ -1683,7 +1687,7 @@ enum {
- 	Opt_dioread_nolock, Opt_dioread_lock,
- 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
--	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-+	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan, Opt_rralloc,
- 	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
- #ifdef CONFIG_EXT4_DEBUG
- 	Opt_fc_debug_max_replay, Opt_fc_debug_force
-@@ -1805,6 +1809,7 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 	fsparam_u32	("init_itable",		Opt_init_itable),
- 	fsparam_flag	("init_itable",		Opt_init_itable),
- 	fsparam_flag	("noinit_itable",	Opt_noinit_itable),
-+	fsparam_flag	("rralloc",	Opt_rralloc),
- #ifdef CONFIG_EXT4_DEBUG
- 	fsparam_flag	("fc_debug_force",	Opt_fc_debug_force),
- 	fsparam_u32	("fc_debug_max_replay",	Opt_fc_debug_max_replay),
-@@ -1886,6 +1891,7 @@ static const struct mount_opts {
- 	{Opt_noauto_da_alloc, EXT4_MOUNT_NO_AUTO_DA_ALLOC, MOPT_SET},
- 	{Opt_auto_da_alloc, EXT4_MOUNT_NO_AUTO_DA_ALLOC, MOPT_CLEAR},
- 	{Opt_noinit_itable, EXT4_MOUNT_INIT_INODE_TABLE, MOPT_CLEAR},
-+	{Opt_rralloc, EXT4_MOUNT_RRALLOC, MOPT_SET},
- 	{Opt_dax_type, 0, MOPT_EXT4_ONLY},
- 	{Opt_journal_dev, 0, MOPT_NO_EXT2},
- 	{Opt_journal_path, 0, MOPT_NO_EXT2},
-@@ -2272,6 +2278,9 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 			ctx->s_li_wait_mult = result.uint_32;
- 		ctx->spec |= EXT4_SPEC_s_li_wait_mult;
- 		return 0;
-+	case Opt_rralloc:
-+		ctx_set_mount_opt(ctx, EXT4_MOUNT_RRALLOC);
-+		return 0;
- 	case Opt_max_dir_size_kb:
- 		ctx->s_max_dir_size_kb = result.uint_32;
- 		ctx->spec |= EXT4_SPEC_s_max_dir_size_kb;
-@@ -5311,6 +5320,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	struct ext4_fs_context *ctx = fc->fs_private;
- 	int silent = fc->sb_flags & SB_SILENT;
- 
-+	/* Unconditional default regular allocator (rralloc separation) */
-+	sbi->s_vectored_allocator = ext4_mb_regular_allocator;
-+
- 	/* Set defaults for the variables that will be set during parsing */
- 	if (!(ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO))
- 		ctx->journal_ioprio = EXT4_DEF_JOURNAL_IOPRIO;
-@@ -5522,6 +5534,25 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		}
- 	}
- 
-+	/* rralloc: initialize per-cpu cursors and rotational allocator */
-+	if (test_opt(sb, RRALLOC)) {
-+		sbi->s_rralloc_cursor = alloc_percpu(ext4_group_t);
-+		if (!sbi->s_rralloc_cursor)
-+			return -ENOMEM;
-+
-+		int ncpus = num_possible_cpus();
-+		ext4_group_t total_groups = ext4_get_groups_count(sb);
-+		ext4_group_t groups_per_cpu = total_groups / ncpus;
-+		int cpu;
-+
-+		for_each_possible_cpu(cpu) {
-+			*per_cpu_ptr(sbi->s_rralloc_cursor, cpu) = cpu * groups_per_cpu;
-+		}
-+
-+		/* Vectored allocator to round-robin allocator */
-+		sbi->s_vectored_allocator = ext4_mb_rotating_allocator;
-+	}
-+
- 	/*
- 	 * Get the # of file system overhead blocks from the
- 	 * superblock if present.
--- 
-2.53.0
 
+Best regards
+Robert
+
+> Cheers,
+> Yi.
+>
+> >                 lim.max_hw_wzeroes_unmap_sectors =3D lim.max_write_zero=
+es_sectors;
+> >         }
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+commit/?id=3D545fb46e5bc6
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+tree/drivers/nvme/host/nvme.h#n72
+> > [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+tree/drivers/nvme/host/core.c#n938
+> > [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+tree/drivers/nvme/host/core.c#n2122
+> > [5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
+commit/?id=3D6e02318eaea5
+[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D58a0c875ce02
 
