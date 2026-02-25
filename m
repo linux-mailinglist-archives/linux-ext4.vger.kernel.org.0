@@ -1,405 +1,175 @@
-Return-Path: <linux-ext4+bounces-14022-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14023-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QC57NJGKn2nYcgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14022-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:37 +0100
+	id gIIuLp6Kn2nYcgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14023-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:50 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D98E19F187
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:37 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 184F019F1A3
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 59948310FA8A
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:45:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11B49303A24F
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1DF3859CE;
-	Wed, 25 Feb 2026 23:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBB13859C9;
+	Wed, 25 Feb 2026 23:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="b/yB3FO8"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="ioG3R2Pi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00364e01.pphosted.com (mx0a-00364e01.pphosted.com [148.163.135.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006723876A7
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 23:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B581A3859C2
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 23:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772063095; cv=none; b=OuSUk2kBRxGaOZNcUS5Smr8HuNdqdnjPEqx+9o2NB+62USCvYlgdHd+lzciH1sqass59cd0b1cYiUK3rb4w6XJJzA3oM12sW7iyPqjPQwHtc4qtBtgs67K1DXCgHC0Z9HxM6iz00vIOWfaomxXfKIhrHkBMLWqefzK7Nie37AK0=
+	t=1772063384; cv=none; b=lfBnxpvUJNYQbQFwTsasc6nzEuJivqqOwuu9GpqP/L3dw4qtYWH3WQGTL3nMacJ+1qCacVt+S/JWCyzKrjFAJL+vDchMe2f0VtxDrK2X/E9AaCMmYyTwwfKa0BSzXsVELObtGbaxEfKfYsCrUllPB6PEu4WAFUxZ23GLJGXprFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772063095; c=relaxed/simple;
-	bh=zO7GBjiuOn5Q+h+zA8UgP1+Klsw8MQQTt1O0svxg4WA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pGGlSwZcaGMULI91d6VKi5Hq7lubx6lHGsl7gcRahan2p8aUfryoyMJ3jcRISh0OVdzMaNf14qrRHe/xm85H0AliGN+8acmP++fPlfAjAUG57J1FPJAcFa9OMpWIwO/I/AVK8DDZfO+tQ3dhVpaf7dsTK7EFM2iY02hmxxF5G2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=b/yB3FO8; arc=none smtp.client-ip=148.163.135.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
-Received: from pps.filterd (m0167068.ppops.net [127.0.0.1])
-	by mx0a-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PNN9Z53928415
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 18:44:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pps01; bh=TE8Z
-	hYBQf9fiNswnOLiD0snqyySTRxN7Ufk+GD8fw6E=; b=b/yB3FO8kwgXmET281Jv
-	XP+tAXlRZIOQ6OAFR2YSS+792EIr83nP+nakYz8tKWh86IL9kbOyLkg2yn8b3g/q
-	S5VPNh8sAcmAlprkg2Cw/wyQbawj3NLSALIkGLq2K8V4kIRt4aYXHS/DHlGsM8fs
-	H8cCC3+JhbwQsrjnzdcgeRxONcJg4TG6TN/qWF72MSX7O8ZGhKSU3I2BfZEDoisK
-	t1LvqQr0puhEkmBwjqopiEjNDjB9vH7tXsjnfmo+oQfclWfz01qggxeWH6r8fgsq
-	rZ0/3X3DzNuyvGFcD+vq2Q7XNExoHO+FQm1lfYBwrgA16DwNSuwMZae97gH/dVl+
-	jg==
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-	by mx0a-00364e01.pphosted.com (PPS) with ESMTPS id 4chn9y0f14-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 18:44:51 -0500 (EST)
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-50336ebabe0so119036091cf.1
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 15:44:51 -0800 (PST)
+	s=arc-20240116; t=1772063384; c=relaxed/simple;
+	bh=oKDTdopXW/G8JMAvwyzy5khwffd/XKWnaux8IiRlSsQ=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=fA5EYGQbNn9I+/w0XR9eY4PqLHne41Z/70+5nnBBTmNlO//L8My2L6C0m//V8rM56tH4xBFMb3oBJ5GdSqerVirVjFti6CkVG1B0qYSebqPxJHXR+eg068kNJs5rlfgARfjiWaaOcLx2IzCVhFUiCXrFOe0DSx5Ty4OW/v278ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=ioG3R2Pi; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a871daa98fso1658775ad.1
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 15:49:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772063382; x=1772668182; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6TbEZcfygynnHMxOGcY4eUkxqu9lSXE/MwGuWXjsPM8=;
+        b=ioG3R2Pi2U9IpasyKkAKt1vF4iI9QIKhWIlqaC/llSWgUtw/hcWdcQQK1bE+fRor7D
+         qLqR9+VtLUV5Tcdr91zU30OlEWQqoW+lr96ifXIAGPIL9hLxjcM1pNGh4uHA/bJvoQtO
+         JVzV+4gJRqiQiz6GhPEMt89ISNYApc7iLEOxf5v0gIswaN5EWPhTsM2a9ifSy69Xt2fp
+         uR8PooHxwi3BMcoxw4WmM7kP4CpfAvZA4dXUf0Yph6Jca8MdONVseKkXGDbVcAdZ4Aqy
+         +wyL2zsk1Nr9EBtQZf6fMTCfSJsZKuwNdc4NnO5q05Kwvmi3IGuCmN0CDDp0sDD8LICq
+         rLpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772063090; x=1772667890;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TE8ZhYBQf9fiNswnOLiD0snqyySTRxN7Ufk+GD8fw6E=;
-        b=m4TzaKcUFaW1vy3kE0IRGjrSnNC/S4UBf3oZRmC314V5a2/CtoK17961J3kVWapGQW
-         cDbqsZKfOuijfzt8jyWiSGxfGHzqlrFKOHkf0Hxqe2KmDudinlqbeV7Uzy7F2duJU4zi
-         2jb3nCn84TacfGySNgeK0MMEgULAn2PqTxO+WTYMXKzZTVq5220OuMA2xh33A3RBin2N
-         MNU91vbttjTlIvgvfkCoUTHDPaKWAV2MawfMXviFtYKH468/U9//4N6ib13deY/yH3lH
-         XQrXSuDG5MGGaKLjEMVb6PCG8TPfAvIySCTye2GsGNSS1iQQulhnU6MASuzKNX626CBq
-         WC5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVo1jXnRtMfzQy6+RXFysqmt+iM8/AY1rOCFWtEqgHiqY/PIL7wzySdQBnsHckJS18aEDUuOSgfoDRO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzpcvux9DMz3zJfAAZ891Yh8M9Rm5kWYLaOPPepzqQ8QXjjE5zv
-	FqIIRO+vvcqoVOSSkSAtWbOZHG05NxN8zPs2qpobWtpsMuDgFFxgz5hv5XP6uH7cj4cEzp9Vo0u
-	9L7pF3xri/SM6PrZUSDCSOutrenJfZ4qySDCgp7mksiWo5QSLreIMKxN/X9A=
-X-Gm-Gg: ATEYQzxsdjqtAJWCjUm260ZyYXkoa5dx2IlqLxxU9ZSsAPN0jv6zNVGuSIetI2f+oFQ
-	BpQwjS3kYW+BQZKa/3brW0cu/9LhdVwZ7UOjwwaKLDHhfX+0hbMm5QiEqBEK2WqFpalqM7SJFBB
-	zQP0oiyOXuVgVE+jfEGOgYknqwkq60IhADl7W65y5prEpAfj1Sc8dBj8QMdaIKqkIbI2390WDz1
-	2g4yMHNJFYzhJQNJ70FWCzX2zj/vTiwrx4YmXGCFOD7cbGzYpGQVZxhaSEQAVBvsO32hNPiBEOC
-	Jn2s910Q/Z0TqtAXfNUT8vB6lXq8KxDQnDGQnlpPc3/N+jUGV5ECjx/EOji4zE/zAqBIk0pXtr6
-	29CXkly5DLuAE6M5um/LeDLcTkWRIJl5/
-X-Received: by 2002:ac8:5ac5:0:b0:503:2fe5:f380 with SMTP id d75a77b69052e-507441df64fmr13262911cf.0.1772063089993;
-        Wed, 25 Feb 2026 15:44:49 -0800 (PST)
-X-Received: by 2002:ac8:5ac5:0:b0:503:2fe5:f380 with SMTP id d75a77b69052e-507441df64fmr13262341cf.0.1772063089401;
-        Wed, 25 Feb 2026 15:44:49 -0800 (PST)
-Received: from [127.0.1.1] ([216.158.158.246])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c738d80bsm3357606d6.41.2026.02.25.15.44.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 15:44:49 -0800 (PST)
-From: Tal Zussman <tz2294@columbia.edu>
-Date: Wed, 25 Feb 2026 18:44:28 -0500
-Subject: [PATCH v2 4/4] folio_batch: Rename PAGEVEC_SIZE to
- FOLIO_BATCH_SIZE
+        d=1e100.net; s=20230601; t=1772063382; x=1772668182;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6TbEZcfygynnHMxOGcY4eUkxqu9lSXE/MwGuWXjsPM8=;
+        b=NwuWpaXRyF/jhAGVotpC7UBX421Juu4pfwbeFEn25osrvYpZh3GfJgGtx9+gYT9Ia0
+         C2THxu5qvBJZfXtjCzl84ntN0bVuAqnKTCdSoYUMElL7ZkU9Z9N5SoMCuZZJIx+sVgMT
+         BUuyUY4mGKomu1xmC0rmCxUkRxRtzWXvydR2dro3mP4kOjHz/ryhgGOCIGI82OXzc610
+         z+/zRhl5NMsKtMC6a0kHYjezJYkWiB5XCU4BH6kHPhL4ETTYYZNvrWh9HowZdmMnyP11
+         zhQ4J2DF7/bzDPO+stVNNPRRpHKDny4ToM7vdt+ryhG25AqZyf+/ia7GsyO+73jtCSh5
+         YMjw==
+X-Forwarded-Encrypted: i=1; AJvYcCWdci0ESghczkiTdD3H/U0nY/aPnAqgOkkppaUdgwNFafVLVcsZMuwx305fZsyJJIbU4lKqr3EDzwtj@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw3/97z6PsNYNN+cUwbRGKJh7EPSFUsAbjom3eHq0k/H2/DsUv
+	12K0Ci32Jps4WiMuSBCsjezRdbtDS1E3OCyxEtkE3mLQlZBVs1BD/UGfwp8zQDdcEvA=
+X-Gm-Gg: ATEYQzwxXfAdtUTL1TXUX347yFoYr/3EtL4C0xojq+O1MKCeZUwMNx+MmEY0D61eRjt
+	04i2GGTZ7/3/+FMmZ4Nsd/BRbCsch6lccCaeBi6kZBzpF3xqlKe/tzJXEWaHz7zpVTzubC5SS0w
+	OWZnx0zmKsL7+fl6pPG2z07cVnM+jQbc0NEIv7gcZ33QFMJLjGWZ6uVsdcCu7JUVR6DS9YVMdkF
+	LCWUZHaGVy7sdQUtsJhN7UxyQqTShH3cObPM4CAlGrlfWprGgKMtY+yEyY4EhGMsVXHVUXvQ+WC
+	F3jofAzrEOCLFqL/ZzidCjVJS+2q15pjMNuSUety1JWSNg7snCjUAGHOUHLEy8w4/1qlYYIQAid
+	+oa23yAvUv+Fop4Eg7w/aUwH3XiTgEXk6+xCL8X1FUSq46NMqwox1PTnhUfkzc39sFdX0b8169c
+	K//R7WoMTHhTAeyA0Po/2EbB0GyEbRxOAnwHIrxyJuP96uVpcvj1aCe/hCUWsE8cgyUN6RqU8b2
+	xoEjA==
+X-Received: by 2002:a17:903:3d0d:b0:2a0:e5cd:80a1 with SMTP id d9443c01a7336-2ade9a51dd5mr19510415ad.41.1772063382050;
+        Wed, 25 Feb 2026 15:49:42 -0800 (PST)
+Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb5c1af1sm4980345ad.27.2026.02.25.15.49.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Feb 2026 15:49:41 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260225-pagevec_cleanup-v2-4-716868cc2d11@columbia.edu>
-References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
-In-Reply-To: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
-To: David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@kernel.org>,
-        Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
-        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
-        Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>,
-        Paulo Alcantara <pc@manguebit.org>,
-        Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-        Bharath SM <bharathsm@microsoft.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Alex Markuze <amarkuze@redhat.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Oscar Salvador <osalvador@suse.de>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
-        NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>,
-        Pedro Falcato <pfalcato@suse.de>,
-        Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
-        Hugh Dickins <hughd@google.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-ext4@vger.kernel.org,
-        netfs@lists.linux.dev, linux-nfs@vger.kernel.org,
-        ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        cgroups@vger.kernel.org, Tal Zussman <tz2294@columbia.edu>
-X-Mailer: b4 0.14.3-dev-d7477
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1772063077; l=5814;
- i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
- bh=zO7GBjiuOn5Q+h+zA8UgP1+Klsw8MQQTt1O0svxg4WA=;
- b=KCL19WgRUDAqH63IGvAc3KncLR0mQnluCE5DMTx+wx8s1EMvm5gWiID7it4982lNgTaHXaECH
- ClIpdW+IjPxAETpUADJ+80YGkvu3AQ4uNneZg/M0Lj8/3I89nOh73yK
-X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
- pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIyNyBTYWx0ZWRfX6rJYKBo98QMZ
- CvnvlCazSull7RfObv+oVIKXnUKZyXv04Sb2ZR0WTt8llYa//sdWipYBYzkl8eeQPHW8toJoOKM
- kHNS4bXSMoSHtlMsqhj3ElggffjQuloQAX8fxh06yihWt5Z9otLTRLotQKw+0SXRz9MX07KY4s1
- uWaIVxVYq0LbLiR7QWyR05tpQ9YEy+xGYO2+o3x9RNYH8OnQc2Mpy144YaumtMAk6ramh5BK3/T
- wc/2GP6OFqw3Qx654bLa4wLz9r5hwEbGx0P/oEONxf0wVK3TzArhRFq4ETEKg+njKLVYpTGZFyg
- ceXj2uZEUgwxAdjnIaUtoB8bXyh+aJmTuRLWcKsQlTVBLeYXxLbmh/J6HWsxjl7pKH+y1BVaekN
- mBFOngViH+IPdqIw6n7iqJv7CElkLA9nhag7+ZXDa+bdxex4Szd9sHlhxpdWbvyF8MYIJfSmgkf
- MzHTkPRATTqHFfkE7Qg==
-X-Proofpoint-GUID: 5HwtQk02l7EmLuw_GEspzHYElPY_BfSR
-X-Authority-Analysis: v=2.4 cv=DvVbOW/+ c=1 sm=1 tr=0 ts=699f8973 cx=c_pps
- a=JbAStetqSzwMeJznSMzCyw==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=usPcmh10W0ubT8QP8_c3:22
- a=960X5KZuJcz03JLduyoA:9 a=QEXdDO2ut3YA:10 a=uxP6HrT_eTzRwkO_Te1X:22
-X-Proofpoint-ORIG-GUID: 5HwtQk02l7EmLuw_GEspzHYElPY_BfSR
-X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11712
- signatures=596818
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 bulkscore=10 impostorscore=10
- malwarescore=0 adultscore=0 lowpriorityscore=10 phishscore=0 clxscore=1015
- spamscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
- adjust=0 reason=mlx scancount=1 engine=8.22.0-2602130000
- definitions=main-2602250227
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
+Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
+ allocation policy
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+Date: Wed, 25 Feb 2026 16:49:30 -0700
+Cc: tytso@mit.edu,
+ libaokun1@huawei.com,
+ adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ yangerkun@huawei.com,
+ libaokun9@gmail.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
+References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+ <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+To: Mario Lohajner <mario_lohajner@rocketmail.com>
+X-Mailer: Apple Mail (2.3864.100.1.1.5)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[columbia.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[columbia.edu:s=pps01];
+	MV_CASE(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14023-lists,linux-ext4=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[dilger.ca,manguebit.org,kernel.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,gmail.com,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,intel.com,ursulin.net,fb.com,suse.com,redhat.com,dubeyko.com,linux.dev,oracle.com,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,google.com,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org,columbia.edu];
-	FREEMAIL_TO(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu];
+	FREEMAIL_CC(0.00)[mit.edu,huawei.com,dilger.ca,vger.kernel.org,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14022-lists,linux-ext4=lfdr.de];
-	DKIM_TRACE(0.00)[columbia.edu:+];
+	DMARC_NA(0.00)[dilger.ca];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[rocketmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[columbia.edu:mid,columbia.edu:dkim,columbia.edu:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tz2294@columbia.edu,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_GT_50(0.00)[97];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-0.999];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 4D98E19F187
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dilger.ca:mid,dilger-ca.20230601.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 184F019F1A3
 X-Rspamd-Action: no action
 
-struct pagevec no longer exists. Rename the macro appropriately.
+On Feb 25, 2026, at 13:15, Mario Lohajner =
+<mario_lohajner@rocketmail.com> wrote:
+>=20
+> V2 patch incorporating feedback from previous discussion:
+>=20
+> - per-inode atomic cursors to enforce stream sequentiality
+> - per-CPU starting points to reduce contention
+> - allocator isolation maintained; regular allocator untouched
+> - name changed to rralloc to avoid confusion with "rotational"
+> - preliminary tests confirm expected performance
 
-Signed-off-by: Tal Zussman <tz2294@columbia.edu>
----
- fs/btrfs/extent_io.c        | 4 ++--
- include/linux/folio_batch.h | 6 +++---
- include/linux/folio_queue.h | 6 +++---
- mm/shmem.c                  | 4 ++--
- mm/swap.c                   | 2 +-
- mm/swap_state.c             | 2 +-
- mm/truncate.c               | 6 +++---
- 7 files changed, 15 insertions(+), 15 deletions(-)
+Mario, can you please include a summary of the performance test
+results into the commit message so that the effectiveness of the
+patch can be evaluated.  This should include test(s) run and
+their arguments, along with table of before/after numbers.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c373d113f1e7..d82ca509503f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2095,13 +2095,13 @@ static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
- struct eb_batch {
- 	unsigned int nr;
- 	unsigned int cur;
--	struct extent_buffer *ebs[PAGEVEC_SIZE];
-+	struct extent_buffer *ebs[FOLIO_BATCH_SIZE];
- };
- 
- static inline bool eb_batch_add(struct eb_batch *batch, struct extent_buffer *eb)
- {
- 	batch->ebs[batch->nr++] = eb;
--	return (batch->nr < PAGEVEC_SIZE);
-+	return (batch->nr < FOLIO_BATCH_SIZE);
- }
- 
- static inline void eb_batch_init(struct eb_batch *batch)
-diff --git a/include/linux/folio_batch.h b/include/linux/folio_batch.h
-index a2f3d3043f7e..b45946adc50b 100644
---- a/include/linux/folio_batch.h
-+++ b/include/linux/folio_batch.h
-@@ -12,7 +12,7 @@
- #include <linux/types.h>
- 
- /* 31 pointers + header align the folio_batch structure to a power of two */
--#define PAGEVEC_SIZE	31
-+#define FOLIO_BATCH_SIZE	31
- 
- struct folio;
- 
-@@ -29,7 +29,7 @@ struct folio_batch {
- 	unsigned char nr;
- 	unsigned char i;
- 	bool percpu_pvec_drained;
--	struct folio *folios[PAGEVEC_SIZE];
-+	struct folio *folios[FOLIO_BATCH_SIZE];
- };
- 
- /**
-@@ -58,7 +58,7 @@ static inline unsigned int folio_batch_count(const struct folio_batch *fbatch)
- 
- static inline unsigned int folio_batch_space(const struct folio_batch *fbatch)
- {
--	return PAGEVEC_SIZE - fbatch->nr;
-+	return FOLIO_BATCH_SIZE - fbatch->nr;
- }
- 
- /**
-diff --git a/include/linux/folio_queue.h b/include/linux/folio_queue.h
-index 0d3765fa9d1d..f6d5f1f127c9 100644
---- a/include/linux/folio_queue.h
-+++ b/include/linux/folio_queue.h
-@@ -29,12 +29,12 @@
-  */
- struct folio_queue {
- 	struct folio_batch	vec;		/* Folios in the queue segment */
--	u8			orders[PAGEVEC_SIZE]; /* Order of each folio */
-+	u8			orders[FOLIO_BATCH_SIZE]; /* Order of each folio */
- 	struct folio_queue	*next;		/* Next queue segment or NULL */
- 	struct folio_queue	*prev;		/* Previous queue segment of NULL */
- 	unsigned long		marks;		/* 1-bit mark per folio */
- 	unsigned long		marks2;		/* Second 1-bit mark per folio */
--#if PAGEVEC_SIZE > BITS_PER_LONG
-+#if FOLIO_BATCH_SIZE > BITS_PER_LONG
- #error marks is not big enough
- #endif
- 	unsigned int		rreq_id;
-@@ -70,7 +70,7 @@ static inline void folioq_init(struct folio_queue *folioq, unsigned int rreq_id)
-  */
- static inline unsigned int folioq_nr_slots(const struct folio_queue *folioq)
- {
--	return PAGEVEC_SIZE;
-+	return FOLIO_BATCH_SIZE;
- }
- 
- /**
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 149fdb051170..5e7dcf5bc5d3 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1113,7 +1113,7 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, uoff_t lend,
- 	pgoff_t start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	pgoff_t end = (lend + 1) >> PAGE_SHIFT;
- 	struct folio_batch fbatch;
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio *folio;
- 	bool same_folio;
- 	long nr_swaps_freed = 0;
-@@ -1510,7 +1510,7 @@ static int shmem_unuse_inode(struct inode *inode, unsigned int type)
- 	struct address_space *mapping = inode->i_mapping;
- 	pgoff_t start = 0;
- 	struct folio_batch fbatch;
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	int ret = 0;
- 
- 	do {
-diff --git a/mm/swap.c b/mm/swap.c
-index 2e517ede6561..78b4aa811fc6 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1018,7 +1018,7 @@ EXPORT_SYMBOL(folios_put_refs);
- void release_pages(release_pages_arg arg, int nr)
- {
- 	struct folio_batch fbatch;
--	int refs[PAGEVEC_SIZE];
-+	int refs[FOLIO_BATCH_SIZE];
- 	struct encoded_page **encoded = arg.encoded_pages;
- 	int i;
- 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index a0c64db2b275..6313b59d7eab 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -385,7 +385,7 @@ void free_folio_and_swap_cache(struct folio *folio)
- void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
- {
- 	struct folio_batch folios;
--	unsigned int refs[PAGEVEC_SIZE];
-+	unsigned int refs[FOLIO_BATCH_SIZE];
- 
- 	folio_batch_init(&folios);
- 	for (int i = 0; i < nr; i++) {
-diff --git a/mm/truncate.c b/mm/truncate.c
-index df0b7a7e6aff..2931d66c16d0 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -369,7 +369,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
- 	pgoff_t		start;		/* inclusive */
- 	pgoff_t		end;		/* exclusive */
- 	struct folio_batch fbatch;
--	pgoff_t		indices[PAGEVEC_SIZE];
-+	pgoff_t		indices[FOLIO_BATCH_SIZE];
- 	pgoff_t		index;
- 	int		i;
- 	struct folio	*folio;
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL(truncate_inode_pages_final);
- unsigned long mapping_try_invalidate(struct address_space *mapping,
- 		pgoff_t start, pgoff_t end, unsigned long *nr_failed)
- {
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio_batch fbatch;
- 	pgoff_t index = start;
- 	unsigned long ret;
-@@ -672,7 +672,7 @@ int folio_unmap_invalidate(struct address_space *mapping, struct folio *folio,
- int invalidate_inode_pages2_range(struct address_space *mapping,
- 				  pgoff_t start, pgoff_t end)
- {
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio_batch fbatch;
- 	pgoff_t index;
- 	int i;
+Cheers, Andreas
 
--- 
-2.39.5
+> Files modified:
+> - fs/ext4/ext4.h
+> rralloc policy declared, per-CPU cursors & allocator vector
+>=20
+> - fs/ext4/ialloc.c
+> initialize (zero) per-inode cursor
+>=20
+> - fs/ext4/mballoc.h
+> expose allocator functions for vectoring in super.c
+>=20
+> - fs/ext4/super.c
+> parse rralloc option, init per-CPU cursors and allocator vector
+>=20
+> - fs/ext4/mballoc.c
+> add rotating allocator, vectored allocator
+>=20
+> Signed-off-by: Mario Lohajner <mario_lohajner@rocketmail.com>
 
 
