@@ -1,285 +1,279 @@
-Return-Path: <linux-ext4+bounces-14012-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14015-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MNLCJiNun2m/bwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14012-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:48:19 +0100
+	id ILmEKQN7n2lmcQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14015-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:15 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CFE119E01D
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C7C19E67D
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 564B430790A8
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 21:43:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 52F8B30D027D
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 22:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A7A318EDE;
-	Wed, 25 Feb 2026 21:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9083624A4;
+	Wed, 25 Feb 2026 22:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DcXnIIPe"
+	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="RImKPNCZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00364e01.pphosted.com (mx0b-00364e01.pphosted.com [148.163.139.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF301316918
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 21:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772055827; cv=pass; b=Cyv39NhRfmkO8lwiCy0G2+a97oHz+40gCRexttYbV+6vD6SHHgNAyoE5khbzOesHqFJKOWaqt8Zv+lP0pBoR9TuvduUvqiHugbLs+d2Mjwc6dRDOw8IBTSfxyQvV0KCGrfQRir2yjwFUD44LBysr/ioyIcFL2TrA2L+2yXbAd+Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772055827; c=relaxed/simple;
-	bh=hoZBQczrzcuyVPOXD+tTAmFlTYabJ94zI9Irylb/EVw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RzYEoO44ES5QHptp3n1+RiPkPS7wibScBeo6QHC6iZkKMDbiW9+UADHQFCq7wuuBjtWMMMmaxuY9Aqi6H0y0aHN3HsbXVi3owCA2ulZSPncdyR5xA4Jia/PdMA7TK9pErWNwJ6anCUG/Tri49n12ehW6ZNeQRDEw0ApTlUDJWCY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DcXnIIPe; arc=pass smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-65f3a35ff13so3608a12.0
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 13:43:45 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772055824; cv=none;
-        d=google.com; s=arc-20240605;
-        b=VHC+IcdZ2eg0AvPilKSHYy3BczyNlpFCmMFtYeelzZf4I6ZcEMfci03PqRvg8fwgXB
-         rKMMPGaikNE2A/pe4ZiN57dd19zIajtbbGoFt7i8H//C0ry3ylYeTko4U4dlGMVR2GXk
-         9rRWovQ45l08ysDcPZN3bNx5xev/tAZ9AMjPrsq71kuYKINuFjf8VXVQs81H5x2eu5Oh
-         dXh8p+2a3NY5LhvbggAdQeN4h3e/4PHQ7Wnnlkwn8ochyqevWMvbzoHX6f6YaODfqrsY
-         S8tWQOa8hYNqfQA0TNSr86ZdVzdAbOiDccGH9qLa+n78vuieLVcyfLaMy/Lc4OgfjhYI
-         rxvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
-        fh=54y2aoEqJvnzETXkgZwaln0xxGFVT8hK666Ewx9Ymmo=;
-        b=Xz+C5t1yz/G6/V/6+zLsKj7sHzHVRubGaCbmBxnB0G5MHmv++h05upiWA4ngf5srDG
-         o6/DPS8IdSsJDrJem9Ye4Xs61GOeqb9Ac40MwMsg9kDch+8BVif5RkdXVhKmia6I0lGB
-         wH0WBLhU7t1qrW3gk9L/MU6S/izm7Mu19MY1p0ETKHp1eDU7AXX1uRDOA8QSwuCnlYdu
-         zZthwVSb6EMgWxj3imW9eU31WUOWbR0ZJyedjXUCQWmh53T6WbzE49Y5UAuKFsi80lNA
-         nF4fTP2r4bY9EAqyJKS8PxVI010ZbssHrdlXpm0okpD6tLf/J4Ei4gTZ++eHsp/EjmvU
-         FUZg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772055824; x=1772660624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
-        b=DcXnIIPehOR7Zcc84tU5ax/4/X+fJQQXdh6G/qeIGgAwD6QNLuPBvyozFNu04p1olg
-         g2ioHyEBoajIsPgNamu8pOCASAUioThGOznYmtfFxA2PNCUI/goNDca2bs4YaC57UiMX
-         hrNrJLYnxtIrwCeUCMpB65/mfvXVpuwHhNmB8r2rpeEZVUk9JmP1VTBaWsG8jXrjKXwl
-         UiqonoSGe9mduDMaJoz8Kgszdb+iCjKBceJQZRl2elaXYdryJsUcOdQPBv+X7m1a9tcz
-         uA3wykguwgIff37UR05C2cadCAQdbVnrzA/akWYG16NJ0Q72rMQDl7LjJp/0lKeJMubA
-         Zb8Q==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFBDE34EEEE
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 22:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.139.74
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772059307; cv=none; b=LbvOgl1Y8C9h6Wc3QUqCEqRErubP5tjoM/+0eNpyaWe89wU/Tc4uGzTBIx1/Bro4uqmArhGLstEeOX5oKNJriTAIZp9eHib/AI3d5CkHbafYezyzn+o9y5536dgKy9KM8426ddS/LgsOTcxg72CSZ3WsplOPyExNLAXBPF8QZ0w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772059307; c=relaxed/simple;
+	bh=ekfAVbLYcjxp51ZCBzMQhFzplblwqexTK85RlJKVH8w=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=PStY6C1oV7yuc1SRo6acoDKV4DrES98N966eOD44FByWD//dkCin5r4QQiU6Csbh6ulLxtm4+7NSJeTFcJGtMIw0fBp2Ce0BL8R6/g6GUTIuNyHka5RqkbsualMSL6mAcTfH6qW+6b6qWQ9FkW/obl4ZGXW2/4eSB4Li6Fj8J5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=RImKPNCZ; arc=none smtp.client-ip=148.163.139.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
+Received: from pps.filterd (m0167076.ppops.net [127.0.0.1])
+	by mx0b-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PMC09t3911830
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pps01; bh=NwfwFIozanEmKQ2WboEF2eLSp6
+	u+ajjzqhBznl9Xp5k=; b=RImKPNCZ8KR3nDEvDi4Gz9JoREnYDKQllwTLwprPHg
+	EZofUkqZpuHKMfVkzs+LY3j8dY74beRPFZZqhviKCUh1A2aNAYdfXqAiPMNKe6ks
+	loSk5i2FGL9XrTFvsXn+Fj4ikmc+y8v6qRN0pGcWLyoBDKExdlR/F0ck5JmojNjI
+	6CWLc67/eX71ODfjr0b3f1m/+oygS+gHi2JrNGQpDfZmE2mf1hqoIkjHVplkAx94
+	MuZA83rNfSsk951VH5T/nWxyNcGJ7PcZNqaziom5z3Kb+zCPooeJAAz6nS1ZIV6n
+	eVf8ho1hT2KaT6aXMhD0vvQDM44N5ONvCiXmsLg8j3UA==
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+	by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 4chsqwxkk7-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 17:41:38 -0500 (EST)
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-506b4bdde91so19227661cf.2
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 14:41:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772055824; x=1772660624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=vB9FeLIHdzkOeJQl8sZ1jnIIU5NTPuPRUQDCv7qOk1c=;
-        b=nDQdYODdWJtPZi8Y53gZGuWPdj0xKkJHk4EBIdduoMCV8MlrvC2tIjOF6VWIVlKOcA
-         9uQZFYYcO2njGflG0b2eNKrJDw5qM2V+oP0BDVIAgGeaETysaeKfHY0dzUgQnXv+/fdD
-         LXwLIAcJ46I0U/KxHBOAOHAqGy9VAaXSkS/NvR5igW2D48fkM6kb21EOblTDYGmX26qd
-         H4BAbv4uVJynrRQLaM27RJE4ZBULrevC5QtdRw1WLcEUAQ9VYpSplCHW4y5ouA0d/3z2
-         UvS/um0qSftYsWSG21SFRKw5+ORwnzXrqbe/ppZfJst/hY0X3EEa5pREKfl4P2B4ALlD
-         vm3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWAd6eb5urHeTZwMWWeOm37sEQa+lQDH6WHyYIA+WK7LGy5lwkTYmC8vmKhJpmCuQi+WHhpujcpdGCx@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHCsnBUe6uinxSKg0pLEXnTRpT/heLiYiq67nXXqqzqanjsBZO
-	Bk1GIzsLNH1zXbkz9DQ4zOboVVXpeEYM5MigMWWtcQeHX8up64ZVyjUHx4YIAMKQEP/gABZUcrm
-	yu7K3+q5qkwhYJeuchSi+ZbYgphanDFAvw4ttm1wW
-X-Gm-Gg: ATEYQzzmqr9mOSWSPeIcepFNPjFR3u49iOhdoBUKr8PcVwUIEKrCe+F7Mg9cC8AZfOl
-	jxObjwZ6GD8KuF2BjvbcnRlukX30FIRQI2sByyLVcfGUqNmV962rxoGu4MsjwdsymGJieZPv1b6
-	7TH1WgdbjsgZLgGcLxGM4sb65DZlaDMQlIft/RV59/5tf+Czg5Qqe/pi8UtOupdw7QXx1Gtohmv
-	QlMWyZQ/IPzksNBdVv30Ua7LZ/3wF76fPAa1do8kkooqpgAo3AoyGCennwGZtQsfsZNZjCG4oRf
-	PU7vdSCcK+AAJ9PwGb5rIL0Y9M+2FTzFbt9Sbg==
-X-Received: by 2002:aa7:c7cf:0:b0:658:e7a:6fa7 with SMTP id
- 4fb4d7f45d1cf-65fab61a7b0mr11377a12.4.1772055823405; Wed, 25 Feb 2026
- 13:43:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1772059298; x=1772664098;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NwfwFIozanEmKQ2WboEF2eLSp6u+ajjzqhBznl9Xp5k=;
+        b=RlUBAS5wZNlI3zsj3BPsR8zLqDqIYE/y8Ibu/+Ggs5xnKqIOOuRsTJaP9331TjhCKE
+         uzrZEIVascPof2asUpNSjLRdt4Kyoi1Kb8NvCPqnTbllbMyEfRn/AvCHMbSJ6bmLNohV
+         ffbOkNHMaAIrp+lzMku8YAlAik0r+T/gIhWCNRzwAztbCpf5NO/JXx2cnBpQWr/GZXsF
+         1+WJ1baCcatsUVQZuHPuUy8JUS4nW3vDDlUKvO5I683anrqjtNne1hCebQJcbOmDL9h2
+         FaqV5H3LeWl/7IdvDdJDmeAfFL3Pqr+yK8ttGOWXKyLm7lpA3R8SrU7x3/a+MJBesLH2
+         46LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXRmnQiedSza4qZVJWFhJaGG8Ld/UHLqAo3cE3yGbpeaSY9DiAYh0XindWK3ishfgb9wREkGGSKQl8U@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFMM5ojwOw/FW58Mx8rzCRHTpf0XGejO9XItdPytMfSHb/LtAp
+	La9y2Uk1OdH5LlObFGkDF0acHHVnFIDrsTp0wi10+RlaGutddNRx4E71ZB0vwSw46ao6DSYTuhd
+	p7HZw/+S2N2o3Co4Nr0tKsGCmzC/eRVU5AtgQdLBZKoWDquQ9VN/hA2jv/2FmmFT6mQI=
+X-Gm-Gg: ATEYQzwcpPrFkTGXbMxuKFVcniUiM2TpWAhFsUZdLVcXiH/aDa/NckcmPL0V3Y9XQcH
+	5NAhLYDEvUxFrnmmZV8T77t/fAQ7TDba1g9U2GN8pcPGDrcnCWcTdzFr5Syzlq1HzGc30x9wQTJ
+	Dq+0alQkZoe7v71a7nIe69x/rA6Huh/N7qiyLQIvggjkvxQNEQEuYkq/1jsHyMmXvx4ObHADrhB
+	qDIV3oysSxVNvQeDYX3T1MiEzEQ4r/SxEHuRT3w3h/p/wsbDzw461DTOYv+45tSpejW+/CZaILu
+	8NG+/+arxwmUBrFwvwd9VQQ0ioecR3uKjCZ7DeyWzDZDGlECJQ/OrQQtx6a5Im4btvFBOKT+2TC
+	onr+IUZ/HFdSSqDR0Jc2mjoez9lQfVXN7
+X-Received: by 2002:ac8:5a10:0:b0:507:3d1:1dd7 with SMTP id d75a77b69052e-5070bba1d4bmr250747221cf.6.1772059297770;
+        Wed, 25 Feb 2026 14:41:37 -0800 (PST)
+X-Received: by 2002:ac8:5a10:0:b0:507:3d1:1dd7 with SMTP id d75a77b69052e-5070bba1d4bmr250746791cf.6.1772059297257;
+        Wed, 25 Feb 2026 14:41:37 -0800 (PST)
+Received: from [127.0.1.1] ([216.158.158.246])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-507449be47dsm4196231cf.15.2026.02.25.14.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Feb 2026 14:41:36 -0800 (PST)
+From: Tal Zussman <tz2294@columbia.edu>
+Subject: [PATCH RFC v2 0/2] block: enable RWF_DONTCACHE for block devices
+Date: Wed, 25 Feb 2026 17:40:55 -0500
+Message-Id: <20260225-blk-dontcache-v2-0-70e7ac4f7108@columbia.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250619111806.3546162-3-yi.zhang@huaweicloud.com>
- <20260225000531.3658802-1-robertpang@google.com> <7d2a3f65-4272-46c1-991a-356f0d2323cb@huaweicloud.com>
-In-Reply-To: <7d2a3f65-4272-46c1-991a-356f0d2323cb@huaweicloud.com>
-From: Robert Pang <robertpang@google.com>
-Date: Wed, 25 Feb 2026 13:43:31 -0800
-X-Gm-Features: AaiRm53fO14_kYBnlB-QimzynwfGzteAR7wRZiT1Sf0awQgFveGcUyR_Z7IWsCY
-Message-ID: <CAJhEC05L7QEc9iY7gFZVK3SPYvFhtFyURss6xQgZ-qWwZZkFjA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/9] nvme: set max_hw_wzeroes_unmap_sectors if device
- supports DEAC bit
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Zhang Yi <yi.zhang@huawei.com>, bmarzins@redhat.com, brauner@kernel.org, 
-	chaitanyak@nvidia.com, chengzhihao1@huawei.com, djwong@kernel.org, 
-	dm-devel@lists.linux.dev, hch@lst.de, john.g.garry@oracle.com, 
-	linux-block@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, martin.petersen@oracle.com, 
-	shinichiro.kawasaki@wdc.com, tytso@mit.edu, yangerkun@huawei.com, 
-	yukuai3@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHd6n2kC/3WNywrCMBREf6XctZEmsQ9cCYIf4Fa6SJMbe7FNJ
+ GmLUvLvhu5dnhnmzAYRA2GEc7FBwJUieZdBHArQg3JPZGQygyhFXQresn58MePdrJUekEnZcim
+ NKU8VQt68A1r67L4H3G9X6HI4UJx9+O4fK9+rP7qVM86sMnXdVGgbbi/aj8vUkzqiWaBLKf0A3
+ ZPdNLIAAAA=
+X-Change-ID: 20260218-blk-dontcache-338133dd045e
+To: Jens Axboe <axboe@kernel.dk>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Yuezhang Mo <yuezhang.mo@sony.com>, Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, linux-karma-devel@lists.sourceforge.net,
+        linux-mm@kvack.org, Tal Zussman <tz2294@columbia.edu>
+X-Mailer: b4 0.14.3-dev-d7477
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772059296; l=3435;
+ i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
+ bh=ekfAVbLYcjxp51ZCBzMQhFzplblwqexTK85RlJKVH8w=;
+ b=2wmi7DKqWa1grTlTD1dZPRjRg04r6SzcKRju6wHkROUyXexSvTsDYhaJkZR7D1wKnD2GYouNO
+ 3Rj5CWfTkXjD0Y32lUMXPSG0+DtraUDXS1xjTx+UYD/cLuEYlAV1ClC
+X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
+ pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
+X-Proofpoint-GUID: Gaes6nvnI1x-PO8XNNe4SsSQnIv6jtOG
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIxNyBTYWx0ZWRfX4dWuJJCmsnfS
+ WaFFS+t6EzAHJVTyU9t7dKHP56RyVMplYosUQFHmxU8ZOIH7Lh8PHJjIMv58mwvabL8938CUo8a
+ 3e5KaXZQEL3dFbksA8QkMB6jli3qEyOCa5nkCCSOvnRM8izfgwI92Rfa8j8+ALwhV9wF4nJ7mLL
+ 0yl41WY0xQOU5QrIcbuFSPVNtI9gjrQ6fgyNKRfcsdTg+xnnVB+CUausGLYxFxf3WTwpwtkHUPE
+ yPuy+YLZxSFQ/rvYccnfLFln2piUyqPJZxzCR41QeydFFIYaVH49bRK9+dnTHkv/X+AiJoG0Ght
+ lEN5CAn6q9YW9ihPsPGCXf2JHODd2Ak3R33cLjSCsKbC9BaHW1ANblj3mLJVaUVs1bXCRY/qAtD
+ uf8AcBCRzoINZPLiCvcVsRpIJAyRWxXkKDmz5NCxUXGF4+150r3gEKJspIWmyYIKWQx6UslZPi1
+ pKQ2QWhZVRBF0Vf9q+A==
+X-Authority-Analysis: v=2.4 cv=Y8b1cxeN c=1 sm=1 tr=0 ts=699f7aa2 cx=c_pps
+ a=EVbN6Ke/fEF3bsl7X48z0g==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
+ a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=Qm0qsxP7aFY2tkT6R2MF:22
+ a=VwQbUJbxAAAA:8 a=sdoS8YJ70VgF2Jk85QkA:9 a=QEXdDO2ut3YA:10
+ a=a_PwQJl-kcHnX1M80qC6:22
+X-Proofpoint-ORIG-GUID: Gaes6nvnI1x-PO8XNNe4SsSQnIv6jtOG
+X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11712
+ signatures=596818
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=10 clxscore=1015 priorityscore=1501 bulkscore=10 adultscore=0
+ lowpriorityscore=10 suspectscore=0 phishscore=0 spamscore=0 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602250217
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[columbia.edu,none];
+	R_DKIM_ALLOW(-0.20)[columbia.edu:s=pps01];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14015-lists,linux-ext4=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[columbia.edu:mid,columbia.edu:dkim,columbia.edu:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	FREEMAIL_TO(0.00)[kernel.dk,gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,samsung.com,sony.com,dubeyko.com,paragon-software.com,bobcopeland.com,infradead.org,linux-foundation.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14012-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[22];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[robertpang@google.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[columbia.edu:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3CFE119E01D
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tz2294@columbia.edu,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 39C7C19E67D
 X-Rspamd-Action: no action
 
-Dear Zhang Yi
+Add support for using RWF_DONTCACHE with block devices and other
+buffer_head-based I/O.
 
-Thank you for your quick response. Please see my comments below:
+Dropbehind pruning needs to be done in non-IRQ context, but block
+devices complete writeback in IRQ context. To fix this, we first defer
+dropbehind completion initiated from IRQ context by scheduling a work
+item on the system workqueue to process a batch of folios.
 
-On Tue, Feb 24, 2026 at 6:32=E2=80=AFPM Zhang Yi <yi.zhang@huaweicloud.com>=
- wrote:
->
-> Hi Robert!
->
-> On 2/25/2026 8:05 AM, Robert Pang wrote:
-> > Dear Zhang Yi,
-> >
-> > In reviewing your patch series implementing support for the
-> > FALLOC_FL_WRITE_ZEROES flag, I noted the logic propagating
-> > max_write_zeroes_sectors to max_hw_wzeroes_unmap_sectors in commit 545f=
-b46e5bc6
-> > "nvme: set max_hw_wzeroes_unmap_sectors if device supports DEAC bit" [1=
-]. This
-> > appears to be intended for devices that support the Write Zeroes comman=
-d
-> > alongside the DEAC bit to indicate unmap capability.
-> >
-> > Furthermore, within core.c, the NVME_QUIRK_DEALLOCATE_ZEROES quirk alre=
-ady
-> > identifies devices that deterministically return zeroes after a dealloc=
-ate
-> > command [2]. This quirk currently enables Write Zeroes support via disc=
-ard in
-> > existing implementations [3, 4].
-> >
-> > Given this, would it be appropriate to respect NVME_QUIRK_DEALLOCATE_ZE=
-ROES also
-> > to enable unmap Write Zeroes for these devices, following the prior com=
-mit
-> > 6e02318eaea5 "nvme: add support for the Write Zeroes command" [5]? I ha=
-ve
-> > included a proposed change to nvme_update_ns_info_block() below for you=
-r
-> > consideration.
-> >
->
-> Thank you for your point. Overall, this makes sense to me, but I have one
-> question below.
->
-> > Best regards
-> > Robert Pang
-> >
-> > diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> > index f5ebcaa2f859..9c7e2cabfab3 100644
-> > --- a/drivers/nvme/host/core.c
-> > +++ b/drivers/nvme/host/core.c
-> > @@ -2422,7 +2422,9 @@ static int nvme_update_ns_info_block(struct nvme_=
-ns *ns,
-> >          * require that, it must be a no-op if reads from deallocated d=
-ata
-> >          * do not return zeroes.
-> >          */
-> > -       if ((id->dlfeat & 0x7) =3D=3D 0x1 && (id->dlfeat & (1 << 3))) {
-> > +       if ((id->dlfeat & 0x7) =3D=3D 0x1 && (id->dlfeat & (1 << 3)) ||
-> > +           (ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
-> > +           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
->                                 ^^^^^^^^^^^^^^^^^^
-> Why do you want to add a check for NVME_CTRL_ONCS_DSM? In nvme_config_dis=
-card(),
-> it appears that we prioritize ctrl->dmrsl, allowing discard to still be
-> supported even on some non-standard devices where NVME_CTRL_ONCS_DSM is n=
-ot set.
-> In nvme_update_disk_info(), if the device only has NVME_QUIRK_DEALLOCATE_=
-ZEROES,
-> we still populate lim->max_write_zeroes_sectors (which might be non-zero =
-on
-> devices that support NVME_CTRL_ONCS_WRITE_ZEROES). Right? So I'm not sure=
- if we
-> only need to check for NVME_QUIRK_DEALLOCATE_ZEROES here.
->
-The check for NVME_CTRL_ONCS_DSM is to follow the same check in [3]. There,=
- the
-check was added by 58a0c875ce02 "nvme: don't apply NVME_QUIRK_DEALLOCATE_ZE=
-ROES
-when DSM is not supported" [6]. The idea is to limit
-NVME_QUIRK_DEALLOCATE_ZEROES
-to those devices that support DSM.
+Then, fix up the block_write_begin() interface to allow issuing
+RWF_DONTCACHE I/Os.
 
-> >                 ns->head->features |=3D NVME_NS_DEAC;
->
-> I think we should not set NVME_NS_DEAC for the quirks case.
->
-Make sense. In that case, will it be more appropriate to set
-max_hw_wzeroes_unmap_sectors in nvme_update_disk_info() where
-NVME_QUIRK_DEALLOCATE_ZEROES is checked? I.e.
+This support is useful for databases that operate on raw block devices,
+among other userspace applications.
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index f5ebcaa2f859..3f5dd3f867e9 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2120,9 +2120,10 @@ static bool nvme_update_disk_info(struct
-nvme_ns *ns, struct nvme_id_ns *id,
-        lim->io_min =3D phys_bs;
-        lim->io_opt =3D io_opt;
-        if ((ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
--           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM))
-+           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
-                lim->max_write_zeroes_sectors =3D UINT_MAX;
--       else
-+               lim->max_hw_wzeroes_unmap_sectors =3D UINT_MAX;
-+       } else
-                lim->max_write_zeroes_sectors =3D ns->ctrl->max_zeroes_sect=
-ors;
-        return valid;
- }
+I tested this (with CONFIG_BUFFER_HEAD=y) for reads and writes on a
+single block device on a VM, so results may be noisy.
 
-Best regards
-Robert
+Reads were tested on the root partition with a 45GB range (~2x RAM).
+Writes were tested on a disabled swap parition (~1GB) in a memcg of size
+244MB to force reclaim pressure.
 
-> Cheers,
-> Yi.
->
-> >                 lim.max_hw_wzeroes_unmap_sectors =3D lim.max_write_zero=
-es_sectors;
-> >         }
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-commit/?id=3D545fb46e5bc6
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/drivers/nvme/host/nvme.h#n72
-> > [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/drivers/nvme/host/core.c#n938
-> > [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/drivers/nvme/host/core.c#n2122
-> > [5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-commit/?id=3D6e02318eaea5
-[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D58a0c875ce02
+Results: 
+
+===== READS (/dev/nvme0n1p2) =====
+ sec   normal MB/s  dontcache MB/s
+----  ------------  --------------
+   1         993.9          1799.6
+   2         992.8          1693.8
+   3         923.4          2565.9
+   4        1013.5          3917.3
+   5        1557.9          2438.2
+   6        2363.4          1844.3
+   7        1447.9          2048.6
+   8         899.4          1951.7
+   9        1246.8          1756.1
+  10        1139.0          1665.6
+  11        1089.7          1707.7
+  12        1270.4          1736.5
+  13        1244.0          1756.3
+  14        1389.7          1566.2
+----  ------------  --------------
+ avg        1258.0          2005.4  (+59%)
+
+==== WRITES (/dev/nvme0n1p3) =====
+ sec   normal MB/s  dontcache MB/s
+----  ------------  --------------
+   1        2396.1          9670.6
+   2        8444.8          9391.5
+   3         770.8          9400.8
+   4          61.5          9565.9
+   5        7701.0          8832.6
+   6        8634.3          9912.9
+   7         469.2          9835.4
+   8        8588.5          9587.2
+   9        8602.2          9334.8
+  10         591.1          8678.8
+  11        8528.7          3847.0
+----  ------------  --------------
+ avg        4981.7          8914.3  (+79%)
+
+---
+Changes in v2:
+- Add R-b from Jan Kara for 2/2.
+- Add patch to defer dropbehind completion from IRQ context via a work
+  item (1/2).
+- Add initial performance numbers to cover letter.
+- Link to v1: https://lore.kernel.org/r/20260218-blk-dontcache-v1-1-fad6675ef71f@columbia.edu
+
+---
+Tal Zussman (2):
+      filemap: defer dropbehind invalidation from IRQ context
+      block: enable RWF_DONTCACHE for block devices
+
+ block/fops.c                |  4 +--
+ fs/bfs/file.c               |  2 +-
+ fs/buffer.c                 | 12 ++++---
+ fs/exfat/inode.c            |  2 +-
+ fs/ext2/inode.c             |  2 +-
+ fs/jfs/inode.c              |  2 +-
+ fs/minix/inode.c            |  2 +-
+ fs/nilfs2/inode.c           |  2 +-
+ fs/nilfs2/recovery.c        |  2 +-
+ fs/ntfs3/inode.c            |  2 +-
+ fs/omfs/file.c              |  2 +-
+ fs/udf/inode.c              |  2 +-
+ fs/ufs/inode.c              |  2 +-
+ include/linux/buffer_head.h |  5 +--
+ mm/filemap.c                | 84 ++++++++++++++++++++++++++++++++++++++++++---
+ 15 files changed, 103 insertions(+), 24 deletions(-)
+---
+base-commit: 05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
+change-id: 20260218-blk-dontcache-338133dd045e
+
+Best regards,
+-- 
+Tal Zussman <tz2294@columbia.edu>
+
 
