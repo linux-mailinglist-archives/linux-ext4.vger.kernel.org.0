@@ -1,183 +1,181 @@
-Return-Path: <linux-ext4+bounces-14002-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14003-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qKvgJVNfnmmaUwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14002-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 03:32:51 +0100
+	id cPyfL8OEnmmGVwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14003-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 06:12:35 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9AB5190EBB
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 03:32:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28F8C191D4F
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 06:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 40822305EB56
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 02:32:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7EA313098022
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 05:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59BAF28B4FD;
-	Wed, 25 Feb 2026 02:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE252D94B5;
+	Wed, 25 Feb 2026 05:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="dYyfyJyX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F28126F46F;
-	Wed, 25 Feb 2026 02:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B84B2D8771;
+	Wed, 25 Feb 2026 05:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771986766; cv=none; b=l+E45UVhBKtn7DAnmXakzmH5IfW2jfW/Tn9woMeqiMC4Uzvjcx84ZMLZCskH/5ky7YaQR0HEd32a7qHyMoPjU3jKuDma5Cy4dyZHBv+t367R/H67SlZ0ugeY0rCvP5PFgVN/FQSxEyuc/dy/gRI9XgWcESfDN7pCsG1fG+k763c=
+	t=1771995788; cv=none; b=jtATwGLAkTwYRoMIxLL6t/JkXKgm9rYUAKwFzSuMhkUsbCAuEI/45PAqEYqd+igQ24aOq3ZbnpAtpZu6oLwDk9PSvefIYi4ESF9cZe1AeVRph7qpBaq9Zh3u3v//2leoHnlksi2HtzotmopyhUeRZ7J+PjYA3toGjE4Nr50cwEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771986766; c=relaxed/simple;
-	bh=aG/j1CTumnrhavQPqTjfysHv89qbQiOwddXSaUmOgMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B/HVsQTtAARInCqwNAm1tUKkeL8ZP47vm+oa+Gtd9aUxxYFbxe65+rMu4gta2T5GMeLZ7HmYbx6XxszqrMh+wuW29hno0dpLkfiZwuZvlgSqvL+UO/Mj2YciB0DEMuy5GX8h71oKzshk+tJqVSVP0S+4N93uRAQa4PYVf7SeO6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fLJX14fZ2zYQtwf;
-	Wed, 25 Feb 2026 10:32:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9C73E4056E;
-	Wed, 25 Feb 2026 10:32:40 +0800 (CST)
-Received: from [10.174.178.253] (unknown [10.174.178.253])
-	by APP4 (Coremail) with SMTP id gCh0CgBnE_REX55p6vqmIg--.46236S3;
-	Wed, 25 Feb 2026 10:32:38 +0800 (CST)
-Message-ID: <7d2a3f65-4272-46c1-991a-356f0d2323cb@huaweicloud.com>
-Date: Wed, 25 Feb 2026 10:32:36 +0800
+	s=arc-20240116; t=1771995788; c=relaxed/simple;
+	bh=dxCLuCLwcDdwFfvJW2XWs1uMaCiNHrx78KB2cLLydxQ=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=G0T3Yp+cNmtk6may9bTOIeu1zxW/pC1lTqNIAZYKTtecqBwgt3WQkP+WgJFDJzOQt9y+9kJeYA2KrJnKAYHAz4T8X8NtLg6DaNboL2kJCr6l2dPpiqMXCPNLtEwu0D+9vgV/XESWsCadPMRm2lMv3RWn7W6e37wdw9w2U6i1yjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=dYyfyJyX; arc=none smtp.client-ip=203.205.221.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1771995782; bh=HNapvol4PBxEv8pgie2lFi2oqbcT5slKezR/+r0zO0s=;
+	h=From:To:Cc:Subject:Date;
+	b=dYyfyJyXlvUjGlaATKwNcvRJ0Ju/Nlfp+u9/fU3cSbuZ1eSG/U7rOayLa6AZSBYf2
+	 K+XyyC6O0SXRmavQYpKuEGdLqrv0KEN+vcHPh1yPLsUE4EeTeeZrMuMG4ZXWFR4Yq9
+	 nCk1VDWyXeo+BVzmWEbTBX9BJDy853Oi7tY4vPcw=
+Received: from 192.168.2.102 ([120.235.196.245])
+	by newxmesmtplogicsvrszc43-0.qq.com (NewEsmtp) with SMTP
+	id A233236; Wed, 25 Feb 2026 13:02:34 +0800
+X-QQ-mid: xmsmtpt1771995754tdonvcxbk
+Message-ID: <tencent_E9C5F1B2E9939B3037501FD04A7E9CF0C407@qq.com>
+X-QQ-XMAILINFO: MKUhwZFKNyqx3LgaDvCnFs+e+rUs1hfmG+XQ/t3uBBnDyJWBaFUadYYRraRjSj
+	 aGWw/z8V0zQpIvh0gz9dxvvDw4e2ENJsHwsgvL/W3AfI6mhDx3EDTQY1axTG8MnwKVabJWz1kg0n
+	 7mF8Sgmxi8rCwIrTGW/GH8OX0C/2IUt//TXZPFy6hcZjBNZCU69uyXkxygDCqBGGk+9OB/+cgJPU
+	 pLmgGIHWkb035+2DIVTzVNkbmjVLBaQrDa0HP9IV7ViPV/GSOTxcmceGP2hqzqeSgAQjo8k7wBWG
+	 S6RMufgDf53vp1ziutNsXy4E258rInYsfNvsQ4mDt1R+2JAs6QYkkQKSHfq/qH4icv4FUc/IFiNK
+	 zMWiyHH4tAuK3pP8xMF+XiUd0OMdpvXKO8qJ54V0MCox32X8r147fiPc0DujBf78XS8b80ffsnGe
+	 4bSqcPinLMIP51UPuWnKtEfVTZBoWqEqIDOg/8a7qyCiqc5EV5RLxlu7lnkr/G9lcZ5t54XQAB8b
+	 E8TPL0tkktzmxyWAfQ2RUSvdiX4YnI4MjJK4UDKKLyTvO5qsydREAZ686a2+ERxeXzgYFL6Q+UKI
+	 PkODxcu5s3JEpFTVtqv74qs5//gYzw3KcaAXPYiw2JYmfoTHDczG+hcI4d8Saqp/hYbUXbHX0rW6
+	 +EsITwJYYKw7LVsodYqxNhekjozLWX71x4j2lxf24G/VEUYm7d7jzziIgAF3JFGT38whtW7klqCp
+	 SrDDPqjeMaUVdXQcx3efHglshxjZB0mDppvVFJS10AwndLgpkocnN/t/BpuRYQgUqaUGHKXl45Oq
+	 PFC0Bh6MJtFTSguvNfG7Mu6Tz8qLKaecVParAkd6OKSywbGLYe1lpP1+HA2+YMfSyqZj8CMxepRy
+	 NCxydsSDbwtEF96M8Y5T2GjfJBhZwiylzlT2LmkYWRV24FJsuFbQxSOPUqFezJy5scCYzp/evxe8
+	 JjZozEObCflz6qwQNqrwMzP9KMmVYRIobm36ofV7H5RVKsVnG1/gWQ07QiaUAzMTESWLrF4dpOCP
+	 +Kn3b/xOYrGanUbhlSJn6ivcxhMdhZjvK8W7zQdGx4wNpYqDvadiL533U1jp9NSr2TNus6/w==
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+From: Weixie Cui <523516579@qq.com>
+To: dilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Weixie Cui <cuiweixie@gmail.com>,
+	Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH v4] ext4: simplify mballoc preallocation size rounding for small files
+Date: Wed, 25 Feb 2026 13:02:31 +0800
+X-OQ-MSGID: <20260225050231.35674-1-523516579@qq.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/9] nvme: set max_hw_wzeroes_unmap_sectors if device
- supports DEAC bit
-To: Robert Pang <robertpang@google.com>, Zhang Yi <yi.zhang@huawei.com>
-Cc: bmarzins@redhat.com, brauner@kernel.org, chaitanyak@nvidia.com,
- chengzhihao1@huawei.com, djwong@kernel.org, dm-devel@lists.linux.dev,
- hch@lst.de, john.g.garry@oracle.com, linux-block@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-scsi@vger.kernel.org, linux-xfs@vger.kernel.org,
- martin.petersen@oracle.com, shinichiro.kawasaki@wdc.com, tytso@mit.edu,
- yangerkun@huawei.com, yukuai3@huawei.com
-References: <20250619111806.3546162-3-yi.zhang@huaweicloud.com>
- <20260225000531.3658802-1-robertpang@google.com>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20260225000531.3658802-1-robertpang@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBnE_REX55p6vqmIg--.46236S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4rJFyDCw15JF4UuF4fGrg_yoW5ZFyrpF
-	4DWry0vrn8WF1UA3yDZw1I9FyUXws5Zry3Wa4kG3W5ZrZ0qryfZr1kuFZ0qa1DGrnrWw4F
-	ya1xZryqvasrXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	R_DKIM_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FREEMAIL_FROM(0.00)[qq.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14002-lists,linux-ext4=lfdr.de];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: B9AB5190EBB
+	TAGGED_FROM(0.00)[bounces-14003-lists,linux-ext4=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,dilger.ca];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[523516579@qq.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[qq.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dilger.ca:email,qq.com:mid,qq.com:dkim]
+X-Rspamd-Queue-Id: 28F8C191D4F
 X-Rspamd-Action: no action
 
-Hi Robert!
+From: Weixie Cui <cuiweixie@gmail.com>
 
-On 2/25/2026 8:05 AM, Robert Pang wrote:
-> Dear Zhang Yi,
-> 
-> In reviewing your patch series implementing support for the
-> FALLOC_FL_WRITE_ZEROES flag, I noted the logic propagating
-> max_write_zeroes_sectors to max_hw_wzeroes_unmap_sectors in commit 545fb46e5bc6
-> "nvme: set max_hw_wzeroes_unmap_sectors if device supports DEAC bit" [1]. This
-> appears to be intended for devices that support the Write Zeroes command
-> alongside the DEAC bit to indicate unmap capability.
-> 
-> Furthermore, within core.c, the NVME_QUIRK_DEALLOCATE_ZEROES quirk already
-> identifies devices that deterministically return zeroes after a deallocate
-> command [2]. This quirk currently enables Write Zeroes support via discard in
-> existing implementations [3, 4].
-> 
-> Given this, would it be appropriate to respect NVME_QUIRK_DEALLOCATE_ZEROES also
-> to enable unmap Write Zeroes for these devices, following the prior commit
-> 6e02318eaea5 "nvme: add support for the Write Zeroes command" [5]? I have
-> included a proposed change to nvme_update_ns_info_block() below for your
-> consideration.
-> 
+The if-else ladder in ext4_mb_normalize_request() manually rounds up
+the preallocation size to the next power of two for files up to 1MB,
+enumerating each step from 16KB to 1MB individually. Replace this with
+a single roundup_pow_of_two() call clamped to a 16KB minimum, which
+is functionally equivalent but much more concise.
 
-Thank you for your point. Overall, this makes sense to me, but I have one
-question below.
+Also replace raw byte constants with SZ_1M and SZ_16K from
+<linux/sizes.h> for clarity, and remove the stale "XXX: should this
+table be tunable?" comment that has been there since the original
+mballoc code.
 
-> Best regards
-> Robert Pang
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index f5ebcaa2f859..9c7e2cabfab3 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -2422,7 +2422,9 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
->          * require that, it must be a no-op if reads from deallocated data
->          * do not return zeroes.
->          */
-> -       if ((id->dlfeat & 0x7) == 0x1 && (id->dlfeat & (1 << 3))) {
-> +       if ((id->dlfeat & 0x7) == 0x1 && (id->dlfeat & (1 << 3)) ||
-> +           (ns->ctrl->quirks & NVME_QUIRK_DEALLOCATE_ZEROES) &&
-> +           (ns->ctrl->oncs & NVME_CTRL_ONCS_DSM)) {
-                                ^^^^^^^^^^^^^^^^^^
-Why do you want to add a check for NVME_CTRL_ONCS_DSM? In nvme_config_discard(),
-it appears that we prioritize ctrl->dmrsl, allowing discard to still be
-supported even on some non-standard devices where NVME_CTRL_ONCS_DSM is not set.
-In nvme_update_disk_info(), if the device only has NVME_QUIRK_DEALLOCATE_ZEROES,
-we still populate lim->max_write_zeroes_sectors (which might be non-zero on
-devices that support NVME_CTRL_ONCS_WRITE_ZEROES). Right? So I'm not sure if we
-only need to check for NVME_QUIRK_DEALLOCATE_ZEROES here.
+No functional change.
 
->                 ns->head->features |= NVME_NS_DEAC;
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Weixie Cui <cuiweixie@gmail.com>
 
-I think we should not set NVME_NS_DEAC for the quirks case.
+---
+v4:
+ - Drop unnecessary braces around single-line if/else as suggested
+   by Andreas Dilger
 
-Cheers,
-Yi.
+v3:
+ - Replace raw constants with SZ_1M/SZ_16K
+ - Remove stale XXX comment
+---
+ fs/ext4/mballoc.c | 24 +++++++++---------------
+ 1 file changed, 9 insertions(+), 15 deletions(-)
 
->                 lim.max_hw_wzeroes_unmap_sectors = lim.max_write_zeroes_sectors;
->         }
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=545fb46e5bc6
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/nvme.h#n72
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/core.c#n938
-> [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/nvme/host/core.c#n2122
-> [5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e02318eaea5
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 20e9fdaf4301..1d6efba97835 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4561,22 +4561,16 @@ ext4_mb_normalize_request(struct ext4_allocation_context *ac,
+ 		(req <= (size) || max <= (chunk_size))
+ 
+ 	/* first, try to predict filesize */
+-	/* XXX: should this table be tunable? */
+ 	start_off = 0;
+-	if (size <= 16 * 1024) {
+-		size = 16 * 1024;
+-	} else if (size <= 32 * 1024) {
+-		size = 32 * 1024;
+-	} else if (size <= 64 * 1024) {
+-		size = 64 * 1024;
+-	} else if (size <= 128 * 1024) {
+-		size = 128 * 1024;
+-	} else if (size <= 256 * 1024) {
+-		size = 256 * 1024;
+-	} else if (size <= 512 * 1024) {
+-		size = 512 * 1024;
+-	} else if (size <= 1024 * 1024) {
+-		size = 1024 * 1024;
++	if (size <= SZ_1M) {
++		/*
++		 * For files up to 1MB, round up the preallocation size to
++		 * the next power of two, with a minimum of 16KB.
++		 */
++		if (size <= (unsigned long)SZ_16K)
++			size = SZ_16K;
++		else
++			size = roundup_pow_of_two(size);
+ 	} else if (NRL_CHECK_SIZE(size, 4 * 1024 * 1024, max, 2 * 1024)) {
+ 		start_off = ((loff_t)ac->ac_o_ex.fe_logical >>
+ 						(21 - bsbits)) << 21;
+-- 
+2.39.5 (Apple Git-154)
 
 
