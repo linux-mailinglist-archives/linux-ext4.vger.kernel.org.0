@@ -1,48 +1,51 @@
-Return-Path: <linux-ext4+bounces-14044-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14045-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 7IYXFN43oGmOgwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14044-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:09:02 +0100
+	id CEBWB2E8oGmagwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14045-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:28:17 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB8B1A5936
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5BA41A5AF1
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A8C9A30804DB
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 12:08:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0AAFA3041A4C
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 12:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE193803EC;
-	Thu, 26 Feb 2026 12:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1CC366829;
+	Thu, 26 Feb 2026 12:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NvFgvUl/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC485378D80;
-	Thu, 26 Feb 2026 12:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA804221FDE;
+	Thu, 26 Feb 2026 12:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772107729; cv=none; b=VtqTWptqr9aEUszZLCd/qoxpRGqAJbDQYnN6O2PaPLGuKY1o8BVxcefN347SqgqQf6lxicLbKHBqFdiFR7H9m6+1UcUilpUelWShpaRJPwOZgd1HoKxeiKF8466r3sFRJAoazHIrjvnCN5p90PtaONiDjhSpwR809RHaccHEhM0=
+	t=1772108844; cv=none; b=Hk1IJ9amIrEasbZSWA87KteJyHkbm4fVvh/k0F8ivn3e8L6yi/AsNthVZio5Rohrapp2hRuvzK2oil56RPxQ7L2ZyY5fwlW0rP7affkhw9UaxnUs7+DH+udRbO7Ux5kh4VN61Z7tSuSYvp/BzXAPQmLfbe/6D7HdkjPdYgyRxT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772107729; c=relaxed/simple;
-	bh=wJH07GsSrk5aNgD5JNBTQ8pTvLhFhbcFCDwX7t8RET8=;
+	s=arc-20240116; t=1772108844; c=relaxed/simple;
+	bh=5T+IKcLz2704l+thlo/byfxXLDEQDyBPlzAy3ljbSP0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eDiXYjA+4TKoqHvxn+dxfLwRnhgXI3sXCwo7D82hwjRhu2fosoJmqdT0E7pZAUNn7SJtc0xcEYEEM6TtPsPT+w4jf4KM05qK3QY5c3XM6XlWsCLfr7cZqZFdnBKnu1goULMaKGFpypwgOqE1ITNcWhKMv5+usO8hQbhz5BKeb0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fM9GB140HzYQv8C;
-	Thu, 26 Feb 2026 20:08:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7C16840574;
-	Thu, 26 Feb 2026 20:08:43 +0800 (CST)
-Received: from [10.174.178.253] (unknown [10.174.178.253])
-	by APP4 (Coremail) with SMTP id gCh0CgBnFvfJN6Bp6r9RIw--.15725S3;
-	Thu, 26 Feb 2026 20:08:43 +0800 (CST)
-Message-ID: <248b3b7d-3f69-44db-8914-f2e187cc010c@huaweicloud.com>
-Date: Thu, 26 Feb 2026 20:08:41 +0800
+	 In-Reply-To:Content-Type; b=lHvIU1MlLSyJFqmWSCiz+qwWT1xHrLGzYIdgfbbF0rbZaJWGZMWMfJ0/Y3FVXldJxY6fWiLQyT6K7ZUnOzXzcsNXlSonGkrEtN8VNsBmTOd+DNuXJ2BPpEfBs59wAOrH9JXZJxAVRjzpmDB8dfZ/PwuzUGYQnekRsyBCqMGGD14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NvFgvUl/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89BDC116C6;
+	Thu, 26 Feb 2026 12:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772108844;
+	bh=5T+IKcLz2704l+thlo/byfxXLDEQDyBPlzAy3ljbSP0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NvFgvUl/Gmd7Ib+ARBt25ipXp5pIiv2hgkau3BRoYATgfHu/UsUKS6MS5ICemS0Fw
+	 0i70eii95alNsBRUcoszLwc3XgYjoSBa4b9jP6/SxoVW6mrd5dcaOV681+kQPNLzU1
+	 EJLsEcBkHdzm96LYd47JRFokryUyWobwS2gVUQJp0KnwA5YvauJkBodP4SzNgmLfi5
+	 qc8NwR+j5ZC9gRVs55dP1j63u+avEVnVtr9dIoxY5bqRShhLjXsFRs+Vl6JYffGJEl
+	 JE3KKSFAN8Y59fVnENBj3W5QuzYOwUoUScORc8lYCXKZnLLVuqXsMyDRPSJ80uWlpZ
+	 WS29jVsLBp/Dg==
+Message-ID: <a2993605-2cdb-42b2-85fc-b071f07af4c3@kernel.org>
+Date: Thu, 26 Feb 2026 21:27:19 +0900
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -50,108 +53,90 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4/move_extent: use folio_next_pos()
-To: Julia Lawall <Julia.Lawall@inria.fr>, Theodore Ts'o <tytso@mit.edu>,
- Matthew Wilcox <willy@infradead.org>
-Cc: kernel-janitors@vger.kernel.org, Andreas Dilger
- <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260222125049.1309075-1-Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] block: remove bdev_nonrot()
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+ linux-raid@vger.kernel.org, "Martin K . Petersen"
+ <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
+ Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+References: <20260226075448.2229655-1-dlemoal@kernel.org>
+ <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
 Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20260222125049.1309075-1-Julia.Lawall@inria.fr>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBnFvfJN6Bp6r9RIw--.15725S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw13uF43ZF13WF4rXF47Arb_yoW8Gw1fpr
-	W0kFn09rWkAwnrCa17X3W2qr1UK390qr4DJa1a9a13AF98JF9Y9rZ8Ka1j9a4FkryDGryf
-	Jana9a48X3ZxCaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14045-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FROM_NEQ_ENVFROM(0.00)[yi.zhang@huaweicloud.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14044-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 7BB8B1A5936
+	FROM_NEQ_ENVFROM(0.00)[dlemoal@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A5BA41A5AF1
 X-Rspamd-Action: no action
 
-On 2/22/2026 8:50 PM, Julia Lawall wrote:
-> A series of patches such as commit 60a70e61430b ("mm: Use
-> folio_next_pos()") replace folio_pos() + folio_size() by
-> folio_next_pos().  The former performs x << z + y << z while
-> the latter performs (x + y) << z, which is slightly more
-> efficient. This case was not taken into account, perhaps
-> because the argument is not named folio.
+On 2/26/26 19:04, Paul Menzel wrote:
+> Dear Damien,
 > 
-> The change was performed using the following Coccinelle
-> semantic patch:
 > 
-> @@
-> expression folio;
-> @@
+> Thank you for your patch.
 > 
-> - folio_pos(folio) + folio_size(folio)
-> + folio_next_pos(folio)
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> Am 26.02.26 um 08:54 schrieb Damien Le Moal:
+>> bdev_nonrot() is simply the negative return value of bdev_rot().
+>> So replace all call sites of bdev_nonrot() with calls to bdev_rot()
+>> and remove bdev_nonrot().
+> 
+> Is the generated code different now?
 
-Thank you for the patch. Looks good to me.
+I did not check but I doubt there is any difference at all.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+This is more about having a single helper function for bdevs that is consistent
+with the helper for request queues (blk_queue_rot()) which directly reflects the
+setting of a block device BLK_FEAT_ROTATIONAL queue feature. This way is also in
+my opinion simpler as you do not get your brain overheating when seeing things
+like "!bdev_nonrot()" :)
+  > Is it worth the change, as it looks quite subjective if you prefer the
+> one or the other way?
 
-> 
-> ---
->  fs/ext4/move_extent.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff -u -p a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-> --- a/fs/ext4/move_extent.c
-> +++ b/fs/ext4/move_extent.c
-> @@ -224,8 +224,8 @@ static int mext_move_begin(struct mext_d
->  	}
->  
->  	/* Adjust the moving length according to the length of shorter folio. */
-> -	move_len = umin(folio_pos(folio[0]) + folio_size(folio[0]) - orig_pos,
-> -			folio_pos(folio[1]) + folio_size(folio[1]) - donor_pos);
-> +	move_len = umin(folio_next_pos(folio[0]) - orig_pos,
-> +			folio_next_pos(folio[1]) - donor_pos);
->  	move_len >>= blkbits;
->  	if (move_len < mext->orig_map.m_len)
->  		mext->orig_map.m_len = move_len;
-> 
-> 
-> 
+I think it is a nice cleanup, but I will let Jens and other maintainers decide
+on the worth of this patch.
 
+> My point above aside, the diff looks good.
+> 
+> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+Thanks.
+
+-- 
+Damien Le Moal
+Western Digital Research
 
