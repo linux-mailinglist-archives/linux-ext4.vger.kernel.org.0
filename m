@@ -1,306 +1,204 @@
-Return-Path: <linux-ext4+bounces-14052-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14053-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CPzdDrNKoGnJhwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14052-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:29:23 +0100
+	id ONEIL5lNoGnvhwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14053-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:41:45 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B69051A6954
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:29:22 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1A0F1A6CF2
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8ED7F30B68CE
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:22:43 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7A1BB307D67F
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541FF33EAE7;
-	Thu, 26 Feb 2026 13:22:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0341936D4EF;
+	Thu, 26 Feb 2026 13:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PBiBvZ97";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yKJKpq1w";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PBiBvZ97";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yKJKpq1w"
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="eYza4UBR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5795C32F74F
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 13:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D12A3859F7;
+	Thu, 26 Feb 2026 13:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772112122; cv=none; b=jf+/5cFYYCNSoG3Bme9JSno8Lz/vuEiy+ywsAtl99ruHmd0ke8dJHn7VL4XiD6CdbQ1qFNGum3v6J/PRZ4YtmkX6VPzciQ1Ym+AmgKQ+MtgEnKV3BeSQNQnUYIkvtZWDqoFmezZYgfsQPEV7fdYCzxpF92f3/npf5+OYOV/3OaY=
+	t=1772112891; cv=none; b=skVDrXx6Y0iMZBVBv6ejH1A9yzPihAtYmYlRHaaax0KH4PmrBnMoyJLtUmql5nwpI8N76l1waFTPnVqdm6WBV1+ze/IiAPENgfemm6gMbmPOapBoMR71zbRirmSeH/awrwO3+SWs4BdKoPRnqVDf4CG/aUM8acqRcMH4YKE93hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772112122; c=relaxed/simple;
-	bh=5yGsS82X0SeiBMdHwqt+M5j0u+wrH/Ac6+KtEN7Bj3A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XT12I7gneHo7RFKoZQmppDmgmPebkc4aCuf+LFJ5x+XtdYL+OXmKXUSowZT3hOGN1VouC+qvCql7TWJGKmVkt6ZAl6mlP52IvQsK6x4ejYQi1XfpafZRX9wtUKY8VAEyuDb1jeDO1xo1GnxJsffw0+l03X8/PF8QYtr2k4Ae66k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PBiBvZ97; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yKJKpq1w; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PBiBvZ97; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yKJKpq1w; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 903213FD91;
-	Thu, 26 Feb 2026 13:21:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772112117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fDaSkVhy0E33BiFULWhZdEJNcGyrApfeqESCYAmwD8=;
-	b=PBiBvZ97kx3nE8Sx3Iqr2jG5qsX80nZ2QZEXA7XtGku+vlcy2CmVQufsvmFLIxPxb6R1o+
-	VNcFM/i1N7uvIMZ63qlWZj58vjqkIC6cLtuo7yRQmA94JTf46RvXW3UqZaRhz2rU5qYpm5
-	5uC0hdfRgvc4icWc/ipstowyGMbsuZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772112117;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fDaSkVhy0E33BiFULWhZdEJNcGyrApfeqESCYAmwD8=;
-	b=yKJKpq1wn5G35h25U8MPNWJFk0Rth71l9BQh2uX7wTyWNc7We7QYgoCHRktLaHztRqM8kO
-	HbJyGRl/FuICxXDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772112117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fDaSkVhy0E33BiFULWhZdEJNcGyrApfeqESCYAmwD8=;
-	b=PBiBvZ97kx3nE8Sx3Iqr2jG5qsX80nZ2QZEXA7XtGku+vlcy2CmVQufsvmFLIxPxb6R1o+
-	VNcFM/i1N7uvIMZ63qlWZj58vjqkIC6cLtuo7yRQmA94JTf46RvXW3UqZaRhz2rU5qYpm5
-	5uC0hdfRgvc4icWc/ipstowyGMbsuZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772112117;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6fDaSkVhy0E33BiFULWhZdEJNcGyrApfeqESCYAmwD8=;
-	b=yKJKpq1wn5G35h25U8MPNWJFk0Rth71l9BQh2uX7wTyWNc7We7QYgoCHRktLaHztRqM8kO
-	HbJyGRl/FuICxXDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F8F23EA62;
-	Thu, 26 Feb 2026 13:21:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yNo1G/VIoGn1UQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 26 Feb 2026 13:21:57 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 234ABA0A27; Thu, 26 Feb 2026 14:21:57 +0100 (CET)
-Date: Thu, 26 Feb 2026 14:21:57 +0100
-From: Jan Kara <jack@suse.cz>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: linux-mm@kvack.org, Jiayuan Chen <jiayuan.chen@shopee.com>, 
-	syzbot+6880f676b265dbd42d63@syzkaller.appspotmail.com, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, linux-trace-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v1] mm: annotate data race of f_ra.prev_pos
-Message-ID: <2xzc3lp6ehtjwbzip4i5muh4g6oep4l72zh3j6sablfghbvbau@kh7famgorzrh>
-References: <20260226084020.163720-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1772112891; c=relaxed/simple;
+	bh=TlUQXYrnjSoaCbkHb1MVILPUcB5rWl72ygSzJU59jJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jm6vlegyvBYhlU01H1YDjy++5HxtR97sVPWW42V7OFNmyvxb4wR9KgVSn927D9LRTSLuT9jO6z//3Sqp8GDvNhR5DWs3y2J7/KnMkq76IGrKDcdNf01cQXZ0PLTWIBqH7JcE4J4xlEfzVsXqN0EHKkXNFHIVxNP6F9MEsPUWCVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=eYza4UBR; arc=none smtp.client-ip=18.169.211.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1772112730;
+	bh=wIAqc9ZjSWfa/F2Z89KnaSRh5o6S817igYSMsy6Yias=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=eYza4UBRaVzP6QafQtmzd4Ou8+Lvsp3TceeLtja//jGOmPtr2TbDk12RlNj6uYKXK
+	 acYeGLzYP0/9JVI4+NKtjYCGDnJ1Dg2ae6EFP84Zb53++PBIJDHYna7fZ5tr0UIdEa
+	 PHDowcjlvycd1G4QE2Zb/ekQTJusC40IRXaWjiN4=
+X-QQ-mid: zesmtpip4t1772112714t22e84ed1
+X-QQ-Originating-IP: y4BUbQojiwAYU3AEeB9zl5yJkZDVNE3EZ4cRoAVfcKs=
+Received: from uos-PC ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 26 Feb 2026 21:31:52 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 1048834162358125244
+EX-QQ-RecipientCnt: 6
+From: Morduan Zang <zhangdandan@uniontech.com>
+To: bfoster@redhat.com
+Cc: linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	willy@infradead.org,
+	Morduan Zang <zhangdandan@uniontech.com>
+Subject: [PATCH] mm: fix pagecache_isize_extended() early-return bypass for large folio mappings
+Date: Thu, 26 Feb 2026 21:31:49 +0800
+Message-ID: <3F3A46783F8E9D52+20260226133149.79586-1-zhangdandan@uniontech.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20240919160741.208162-3-bfoster@redhat.com>
+References: <20240919160741.208162-3-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260226084020.163720-1-jiayuan.chen@linux.dev>
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6b-0
+X-QQ-XMAILINFO: ODcDgdcDagQKK73kbnoKVnPAelgFd7Q6Mg6OyC7hgcKFpHFWBkzjjlmp
+	g5Rq9T2TLhJC0skg/q0ul79P4ZzcquUzKn/uvFOZY11/U23Buz22qL+kBfJbNX/ll4YLmj0
+	2zB4sAyugLaRRWWp4axXbr3I8NiqTWgTLX0nlkO7mZ4yivC45MMnCC+fFt9PaV0pW9gMlnz
+	9uUS4prTcLH/EsvYUYJQ3uFTRJ3iSsHlY93b9mUXLgytGgbQMVksS7uuzYvwT7kn0XcRrpU
+	yy/CWG609P3JZgd4z0cFs0e4jTTKePY9/Da0zpxUTOwOsYFSBodddq0D6JB1svxvcB2Rpm3
+	uQdC2+RMqJKRY82HkXvPkaKPma8s5EqANcIUDMTBc0pT6Mtmu5YthikZOEQie0u0x49mWrW
+	Tr+iv44nsnV2DqbEn9HCFvK4TrGH+VJb+rndyDgn/vZwJRxGuRsyEiN4FVgjOVX63GYLQ2p
+	klBBDahAm0C00dBanm5HLp/DGP+XodoBy5PzQgLE4gAaZRMFaLwu0evWbND/gsQRbz4LzAw
+	cWAmKcum8VbFW/mLo+XTAA4KE4GD02ufecukPzyzDdbwjP1WznIkOniXHsKrCFwa/AHxL4j
+	CcCIxZ1bldViPLk223Zcpc/RxUR5GQOCgxWQ2xFw8lpKfnE1YfCHgXmWvsnyGSG1wHmPrWU
+	l0iO83vJskwMJr5yD92dIu2TlEHl5/iVlyGyRGTRvX7AK5vrxY8NOYCDX0r9dcYQo14DC2Z
+	gsoLWMslbMvwGFs3+KHAuQrsqq+kNAJ+3cXtvHS+vQdQOS4MJRC9htVepg/v1pkJjqiGJtT
+	LXVhdLOsaAACn44UZHu7/fQNhS0EOYoX7PCI4dYFOoj4hu5MdkFo4YKxCyk13EnU5fvG4vK
+	eGwMoq8p6DdOVH4pqdp0fx8LdfvuWMbSsUrgghp8WjmQ3sr9kPnPhdaIT4IgDqZP445jrGS
+	C7oxVE8g3bNNaZTRyD34GCCgxfl0C2+bJeSaHJ8K67KdT/VmE2LbANPh7WOgnq3mEiWLIQ8
+	rCIzBYnQ==
+X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
+X-QQ-RECHKSPAM: 0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[uniontech.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[uniontech.com:s=onoh2408];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14052-lists,linux-ext4=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,appspotmail.com:email,syzkaller.appspot.com:url,suse.com:email,suse.cz:dkim,shopee.com:email];
-	DMARC_NA(0.00)[suse.cz];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14053-lists,linux-ext4=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4,6880f676b265dbd42d63];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: B69051A6954
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[zhangdandan@uniontech.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[uniontech.com:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,uniontech.com:mid,uniontech.com:dkim,uniontech.com:email]
+X-Rspamd-Queue-Id: D1A0F1A6CF2
 X-Rspamd-Action: no action
 
-On Thu 26-02-26 16:40:07, Jiayuan Chen wrote:
-> From: Jiayuan Chen <jiayuan.chen@shopee.com>
-> 
-> KCSAN reports a data race when concurrent readers access the same
-> struct file:
-> 
->   BUG: KCSAN: data-race in filemap_read / filemap_splice_read
-> 
->   write to 0xffff88811a6f8228 of 8 bytes by task 10061 on cpu 0:
->    filemap_splice_read+0x523/0x780 mm/filemap.c:3125
->    ...
-> 
->   write to 0xffff88811a6f8228 of 8 bytes by task 10066 on cpu 1:
->    filemap_read+0x98d/0xa10 mm/filemap.c:2873
->    ...
-> 
-> Both filemap_read() and filemap_splice_read() update f_ra.prev_pos
-> without synchronization. This is a benign race since prev_pos is only
-> used as a hint for readahead heuristics in page_cache_sync_ra(), and a
-> stale or torn value merely results in a suboptimal readahead decision,
-> not a correctness issue.
-> 
-> Use WRITE_ONCE/READ_ONCE to annotate all accesses to prev_pos across
-> the tree for consistency and silence KCSAN.
-> 
-> Reported-by: syzbot+6880f676b265dbd42d63@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?extid=6880f676b265dbd42d63
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+pagecache_isize_extended() has two early-return guards that were designed
+for the traditional sub-page block-size case:
 
-Given this, I think it would be much less intrusive and also more
-explanatory to just mark prev_pos with __data_racy with appropriate reason
-you're mentioning in the changelog.
+  Guard 1:  if (from >= to || bsize >= PAGE_SIZE)
+                return;
 
-								Honza
+  Guard 2:  rounded_from = round_up(from, bsize);
+            if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
+                return;
 
-> ---
->  fs/ext4/dir.c                    | 2 +-
->  fs/ntfs3/fsntfs.c                | 2 +-
->  include/trace/events/readahead.h | 2 +-
->  mm/filemap.c                     | 6 +++---
->  mm/readahead.c                   | 4 ++--
->  mm/shmem.c                       | 2 +-
->  6 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index 28b2a3deb954..1ddf7acce5ca 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -200,7 +200,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
->  					sb->s_bdev->bd_mapping,
->  					&file->f_ra, file, index,
->  					1 << EXT4_SB(sb)->s_min_folio_order);
-> -			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
-> +			WRITE_ONCE(file->f_ra.prev_pos, (loff_t)index << PAGE_SHIFT);
->  			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
->  			if (IS_ERR(bh)) {
->  				err = PTR_ERR(bh);
-> diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-> index 0df2aa81d884..d1232fc03c08 100644
-> --- a/fs/ntfs3/fsntfs.c
-> +++ b/fs/ntfs3/fsntfs.c
-> @@ -1239,7 +1239,7 @@ int ntfs_read_run_nb_ra(struct ntfs_sb_info *sbi, const struct runs_tree *run,
->  			if (!ra_has_index(ra, index)) {
->  				page_cache_sync_readahead(mapping, ra, NULL,
->  							  index, 1);
-> -				ra->prev_pos = (loff_t)index << PAGE_SHIFT;
-> +				WRITE_ONCE(ra->prev_pos, (loff_t)index << PAGE_SHIFT);
->  			}
->  		}
->  
-> diff --git a/include/trace/events/readahead.h b/include/trace/events/readahead.h
-> index 0997ac5eceab..63d8df6c2983 100644
-> --- a/include/trace/events/readahead.h
-> +++ b/include/trace/events/readahead.h
-> @@ -101,7 +101,7 @@ DECLARE_EVENT_CLASS(page_cache_ra_op,
->  		__entry->async_size = ra->async_size;
->  		__entry->ra_pages = ra->ra_pages;
->  		__entry->mmap_miss = ra->mmap_miss;
-> -		__entry->prev_pos = ra->prev_pos;
-> +		__entry->prev_pos = READ_ONCE(ra->prev_pos);
->  		__entry->req_count = req_count;
->  	),
->  
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 63f256307fdd..d3e2d4b826b9 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2771,7 +2771,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  	int i, error = 0;
->  	bool writably_mapped;
->  	loff_t isize, end_offset;
-> -	loff_t last_pos = ra->prev_pos;
-> +	loff_t last_pos = READ_ONCE(ra->prev_pos);
->  
->  	if (unlikely(iocb->ki_pos < 0))
->  		return -EINVAL;
-> @@ -2870,7 +2870,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
->  
->  	file_accessed(filp);
-> -	ra->prev_pos = last_pos;
-> +	WRITE_ONCE(ra->prev_pos, last_pos);
->  	return already_read ? already_read : error;
->  }
->  EXPORT_SYMBOL_GPL(filemap_read);
-> @@ -3122,7 +3122,7 @@ ssize_t filemap_splice_read(struct file *in, loff_t *ppos,
->  			len -= n;
->  			total_spliced += n;
->  			*ppos += n;
-> -			in->f_ra.prev_pos = *ppos;
-> +			WRITE_ONCE(in->f_ra.prev_pos, *ppos);
->  			if (pipe_is_full(pipe))
->  				goto out;
->  		}
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 7b05082c89ea..de49b35b0329 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -142,7 +142,7 @@ void
->  file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
->  {
->  	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
-> -	ra->prev_pos = -1;
-> +	WRITE_ONCE(ra->prev_pos, -1);
->  }
->  EXPORT_SYMBOL_GPL(file_ra_state_init);
->  
-> @@ -584,7 +584,7 @@ void page_cache_sync_ra(struct readahead_control *ractl,
->  	}
->  
->  	max_pages = ractl_max_pages(ractl, req_count);
-> -	prev_index = (unsigned long long)ra->prev_pos >> PAGE_SHIFT;
-> +	prev_index = (unsigned long long)READ_ONCE(ra->prev_pos) >> PAGE_SHIFT;
->  	/*
->  	 * A start of file, oversized read, or sequential cache miss:
->  	 * trivial case: (index - prev_index) == 1
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 5e7dcf5bc5d3..03569199baf4 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -3642,7 +3642,7 @@ static ssize_t shmem_file_splice_read(struct file *in, loff_t *ppos,
->  		len -= n;
->  		total_spliced += n;
->  		*ppos += n;
-> -		in->f_ra.prev_pos = *ppos;
-> +		WRITE_ONCE(in->f_ra.prev_pos, *ppos);
->  		if (pipe_is_full(pipe))
->  			break;
->  
-> -- 
-> 2.43.0
-> 
+Guard 1 was originally "bsize == PAGE_SIZE" and was widened to
+"bsize >= PAGE_SIZE" by commit 2ebe90dab980 ("mm: convert
+pagecache_isize_extended to use a folio").  The rationale is correct
+for the traditional buffer_head path: when the block size equals the page
+size, every folio covers exactly one block, so writeback's EOF handling
+(e.g. iomap_writepage_handle_eof()) zeros the post-EOF tail of the folio
+before writing it out, and no action is needed here.
+
+Guard 2 covers the case where @from rounded up to the next block boundary
+is already PAGE_SIZE-aligned, meaning no hole block straddles a page
+boundary.
+
+Both guards are correct for the traditional case.  However, commit
+52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
+added post-EOF zeroing inside pagecache_isize_extended() to
+handle dirty folios that will not go through writeback before the new
+i_size becomes visible.  That zeroing code is placed after both guards,
+so it is unreachable whenever either guard fires.
+
+The same stale-data window is also covered by xfstests generic/363
+which uses fsx with "-e 1" (EOF pollution mode) and exercises a broad
+range of size-changing operations.
+
+Fixes: 52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
+Fixes: 2ebe90dab980 ("mm: convert pagecache_isize_extended to use a folio")
+Signed-off-by: Morduan Zang <zhangdandan@uniontech.com>
+---
+ mm/truncate.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/mm/truncate.c b/mm/truncate.c
+index 12467c1bd711..d3e473a206b3 100644
+--- a/mm/truncate.c
++++ b/mm/truncate.c
+@@ -847,13 +847,32 @@ void pagecache_isize_extended(struct inode *inode, loff_t from, loff_t to)
+ 
+ 	WARN_ON(to > inode->i_size);
+ 
+-	if (from >= to || bsize >= PAGE_SIZE)
++	if (from >= to)
+ 		return;
++
++	/*
++	 * For filesystems with bsize >= PAGE_SIZE, the traditional buffer_head
++	 * path handles post-EOF zeroing correctly at writeback time. However,
++	 * with large folios enabled, a single folio can span multiple PAGE_SIZE
++	 * blocks, so mmap writes beyond EOF within the same folio are not zeroed
++	 * at writeback time before i_size is extended. We must handle this here.
++	 */
++	if (bsize >= PAGE_SIZE) {
++		/*
++		 * Only needed if the mapping supports large folios, since otherwise
++		 * each folio is exactly one page and writeback handles EOF zeroing.
++		 */
++		if (!mapping_large_folio_support(inode->i_mapping))
++			return;
++		goto find_folio;
++	}
++
+ 	/* Page straddling @from will not have any hole block created? */
+ 	rounded_from = round_up(from, bsize);
+ 	if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
+ 		return;
+ 
++find_folio:
+ 	folio = filemap_lock_folio(inode->i_mapping, from / PAGE_SIZE);
+ 	/* Folio not cached? Nothing to do */
+ 	if (IS_ERR(folio))
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.50.1
+
 
