@@ -1,278 +1,265 @@
-Return-Path: <linux-ext4+bounces-14033-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14034-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHXbLAgboGmzfgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14033-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 11:06:00 +0100
+	id ID9wDQ0eoGmzfgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14034-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 11:18:53 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09DA91A3F2E
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 11:06:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A379C1A425D
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 11:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C62343012207
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 10:05:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9948A3003514
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 10:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846BB3A1D11;
-	Thu, 26 Feb 2026 10:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8283A4F3D;
+	Thu, 26 Feb 2026 10:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="jHdmqDft"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE213A4F3A;
-	Thu, 26 Feb 2026 10:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772100328; cv=none; b=TC4HV17Pn63cCtsRKBsZ1xMPaGALHdxODfu6HwgbKzCmHYxcPdrToYsPObHmKsZ9PyZrSO3oOE6cOM4VDEG+7vVWU1o2J0TFF7L68wr2obIVcbJDy7+Rlx6ewD944jOiPNLX5x4CHEAG7fs1qBGxMtIFdl4QnbziwzmEyWfiRLU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772100328; c=relaxed/simple;
-	bh=Jr71TEpuefliB8XSf5nWXwoG0tj6pv/9i9Mu40e8vMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=Eq0DOPAB10eaRXThNxhi9TWp082YYnEJGPGSMy9t8g572UXTwV0xVt1U5j7vn/KnIJKD0craxlkq0CUqS8VRno5YtXrYefFGy2hYtW5+Eb0ZtzwZQA446XVWim7Jppq07y+/LeG75ZA1Y7VGWeRsKIzGYnk73V2B70PuRY+BU/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [10.108.10.175] (unknown [194.94.98.184])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 95D5A4C4430406;
-	Thu, 26 Feb 2026 11:04:24 +0100 (CET)
-Message-ID: <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
-Date: Thu, 26 Feb 2026 11:04:23 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047762F7478;
+	Thu, 26 Feb 2026 10:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772101080; cv=pass; b=fktZaU7/gMe9O5T5Sl1R2DerpOzUcCaNfLL4r3LDQJr/wCc5VMCFP7oBA2u8yAx4Mrd+FqDMyjTMmFJjGIdNeKIa1znh2731jYuTM9Ic0faXfewqWt3nUAYGYvQr2jl/ETmd1XtuIRIKQ7bmUEfUdqpcnr9LmkK2SBjEHXPVr3A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772101080; c=relaxed/simple;
+	bh=qCpUflaM0C1W0Sc5liaMXRlWL8Yf+74i32PiZ8gJCc4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XaAsEkv8tIS1wkNvniv47nnSxr0CIyCt71zjUjwSJwE6hYm4GT7QS3ZdtZ+/7HlMdEsJkK9/9VL7HncYyBPmaQ33rbGMmsao3AWCHeeZo9FhoiXbcI808Vg80rPb5P4+vFXnk5cNwHwEDdHDAKw56KZ5cgJScXfMZ6A/od9IMZI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=jHdmqDft; arc=pass smtp.client-ip=136.143.188.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1772101072; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=FT73aCCUWuhFbikLcOen+rxgJdE1JCi39lJsKKfYxdcbUG94wDHB5w7Zt/p/iXCtUsOePZVcXXNycqC6jRfUgZDTI58bVB41dOZzc4SWiducIRMgpjl99WA1gFnOWs6CEGZJTWgK87CuFtarzGDe0dIZ+z4xh1CjxyytgYc++3k=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1772101072; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=3Vn/ZnAj/GgwLSLz1HBI91JKlz+6aEL8u4OwMFLu7Xo=; 
+	b=N4jDttqL7D+Icdh1mva8F/l03abh7UbNuwIHpmlhy/yhU373ttjpRLdHXSDZaRRiD+Xe8BYL06vKmvuTBZfeSaiaiY2gEleZZeL393F1MLBbwSUa8QyuOAIDaXZyu6Y+FGOQXh70RDtu1JUrpMU1Ux7RgpSvGUoONuab3of1lVk=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1772101072;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=3Vn/ZnAj/GgwLSLz1HBI91JKlz+6aEL8u4OwMFLu7Xo=;
+	b=jHdmqDftvbKeSaja07gZbRe9EakZm734XvOD62kVJ2fMXFXaOx0hxYnb3ro1RlCM
+	t6bVbOfQ43P5aGD6oiNv2UqLTq9Eb9ypIxoYhgZ6lUyNURInuSe5ffppQE+kEG+KTNY
+	hWMAsYmL5fxJSDmqUpLVz8g2306Dp1jGdvBTb80g=
+Received: by mx.zohomail.com with SMTPS id 1772101071104990.6088497131792;
+	Thu, 26 Feb 2026 02:17:51 -0800 (PST)
+From: Li Chen <me@linux.beauty>
+To: linux-ext4@vger.kernel.org
+Cc: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/4] ext4: Byte-granular ByteLog optimizes DAX fast commits
+Date: Thu, 26 Feb 2026 18:17:28 +0800
+Message-ID: <20260226101736.2271952-1-me@linux.beauty>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: remove bdev_nonrot()
-To: Damien Le Moal <dlemoal@kernel.org>
-References: <20260226075448.2229655-1-dlemoal@kernel.org>
-Content-Language: en-US
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
- Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
- linux-raid@vger.kernel.org, "Martin K . Petersen"
- <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org,
- target-devel@vger.kernel.org, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- linux-ext4@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
- Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
- Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20260226075448.2229655-1-dlemoal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[linux.beauty,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.beauty:s=zmail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14033-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[mpg.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,gmail.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14034-lists,linux-ext4=lfdr.de];
 	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[me@linux.beauty,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.beauty:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pmenzel@molgen.mpg.de,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mpg.de:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 09DA91A3F2E
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.beauty:mid,linux.beauty:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lwn.net:url]
+X-Rspamd-Queue-Id: A379C1A425D
 X-Rspamd-Action: no action
 
-Dear Damien,
+This RFC introduces a DAX fast commit ByteLog backend for ext4.
 
+When enabled, ext4 writes fast commit TLVs directly into a DAX-mapped
+ByteLog ring, avoiding bufferhead based writes. Replay verifies CRC32C and
+replays the ByteLog records before falling back to the traditional FC
+block.
 
-Thank you for your patch.
+Motivation:
 
+The current ext4 fast-commit write path emits TLVs into the fast-commit
+area via bufferheads and block I/O. This is inherently block-granular:
+small metadata updates still end up writing full blocks, which is a form
+of write amplification. On pmem-backed or other DAX-capable setups, this
+also keeps bufferhead / block layer overhead on the hot path even though
+the medium supports direct access and cacheline writeback.
 
-Am 26.02.26 um 08:54 schrieb Damien Le Moal:
-> bdev_nonrot() is simply the negative return value of bdev_rot().
-> So replace all call sites of bdev_nonrot() with calls to bdev_rot()
-> and remove bdev_nonrot().
+ByteLog is an attempt to reduce this overhead by writing the common
+metadata TLVs directly into a DAX mapping, batching multiple TLVs into a
+single record when possible, and persisting data with cacheline/byte-
+granular flush (arch_wb_cache_pmem()) rather than block-granular I/O,
+while keeping the existing fast-commit on-media format and replay logic
+in place.
 
-Is the generated code different now?
+This idea has been mentioned before. LWN mentioned that Shirwadkar
+considered implementing a similar optimization back in 2021:
+https://lwn.net/Articles/842385/
+It seems there has been no further progress since then. This RFC is an
+independent from-scratch attempt to prototype the idea and gather
+performance/correctness feedback.
 
-Is it worth the change, as it looks quite subjective if you prefer the 
-one or the other way?
+Design:
 
-> Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
-> ---
->   drivers/md/raid1.c                  | 2 +-
->   drivers/md/raid10.c                 | 2 +-
->   drivers/md/raid5.c                  | 2 +-
->   drivers/target/target_core_file.c   | 2 +-
->   drivers/target/target_core_iblock.c | 2 +-
->   fs/btrfs/volumes.c                  | 4 ++--
->   fs/ext4/mballoc-test.c              | 2 +-
->   fs/ext4/mballoc.c                   | 2 +-
->   include/linux/blkdev.h              | 5 -----
->   mm/swapfile.c                       | 2 +-
->   10 files changed, 10 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index 181400e147c0..cda6af0712b9 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -1878,7 +1878,7 @@ static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
->   	if (info->rdev)
->   		return false;
->   
-> -	if (bdev_nonrot(rdev->bdev)) {
-> +	if (!bdev_rot(rdev->bdev)) {
->   		set_bit(Nonrot, &rdev->flags);
->   		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
->   	}
-> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-> index 0653b5d8545a..cfbd345805ca 100644
-> --- a/drivers/md/raid10.c
-> +++ b/drivers/md/raid10.c
-> @@ -806,7 +806,7 @@ static struct md_rdev *read_balance(struct r10conf *conf,
->   		if (!do_balance)
->   			break;
->   
-> -		nonrot = bdev_nonrot(rdev->bdev);
-> +		nonrot = !bdev_rot(rdev->bdev);
->   		has_nonrot_disk |= nonrot;
->   		pending = atomic_read(&rdev->nr_pending);
->   		if (min_pending > pending && nonrot) {
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index a8e8d431071b..ba9d6d05b089 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -7541,7 +7541,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
->   	rdev_for_each(rdev, mddev) {
->   		if (test_bit(Journal, &rdev->flags))
->   			continue;
-> -		if (bdev_nonrot(rdev->bdev)) {
-> +		if (!bdev_rot(rdev->bdev)) {
->   			conf->batch_bio_dispatch = false;
->   			break;
->   		}
-> diff --git a/drivers/target/target_core_file.c b/drivers/target/target_core_file.c
-> index 3ae1f7137d9d..d6e3e5214652 100644
-> --- a/drivers/target/target_core_file.c
-> +++ b/drivers/target/target_core_file.c
-> @@ -173,7 +173,7 @@ static int fd_configure_device(struct se_device *dev)
->   		 */
->   		dev->dev_attrib.max_write_same_len = 0xFFFF;
->   
-> -		if (bdev_nonrot(bdev))
-> +		if (!bdev_rot(bdev))
->   			dev->dev_attrib.is_nonrot = 1;
->   	} else {
->   		if (!(fd_dev->fbd_flags & FBDF_HAS_SIZE)) {
-> diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-> index 3c92f94497b4..1087d1d17c36 100644
-> --- a/drivers/target/target_core_iblock.c
-> +++ b/drivers/target/target_core_iblock.c
-> @@ -148,7 +148,7 @@ static int iblock_configure_device(struct se_device *dev)
->   	else
->   		dev->dev_attrib.max_write_same_len = 0xFFFF;
->   
-> -	if (bdev_nonrot(bd))
-> +	if (!bdev_rot(bd))
->   		dev->dev_attrib.is_nonrot = 1;
->   
->   	target_configure_write_atomic_from_bdev(&dev->dev_attrib, bd);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 6fb0c4cd50ff..c6e49eb74f3a 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -694,7 +694,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->   			set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
->   	}
->   
-> -	if (!bdev_nonrot(file_bdev(bdev_file)))
-> +	if (bdev_rot(file_bdev(bdev_file)))
->   		fs_devices->rotating = true;
->   
->   	if (bdev_max_discard_sectors(file_bdev(bdev_file)))
-> @@ -2919,7 +2919,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->   
->   	atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
->   
-> -	if (!bdev_nonrot(device->bdev))
-> +	if (bdev_rot(device->bdev))
->   		fs_devices->rotating = true;
->   
->   	orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
-> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-> index 9fbdf6a09489..b9f22e3a8d5c 100644
-> --- a/fs/ext4/mballoc-test.c
-> +++ b/fs/ext4/mballoc-test.c
-> @@ -72,7 +72,7 @@ static int mbt_mb_init(struct super_block *sb)
->   	ext4_fsblk_t block;
->   	int ret;
->   
-> -	/* needed by ext4_mb_init->bdev_nonrot(sb->s_bdev) */
-> +	/* needed by ext4_mb_init->bdev_rot(sb->s_bdev) */
->   	sb->s_bdev = kzalloc_obj(*sb->s_bdev);
->   	if (sb->s_bdev == NULL)
->   		return -ENOMEM;
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 20e9fdaf4301..8a4dfe19878c 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3836,7 +3836,7 @@ int ext4_mb_init(struct super_block *sb)
->   		spin_lock_init(&lg->lg_prealloc_lock);
->   	}
->   
-> -	if (bdev_nonrot(sb->s_bdev))
-> +	if (!bdev_rot(sb->s_bdev))
->   		sbi->s_mb_max_linear_groups = 0;
->   	else
->   		sbi->s_mb_max_linear_groups = MB_DEFAULT_LINEAR_LIMIT;
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index d463b9b5a0a5..e439d6fa8484 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -1467,11 +1467,6 @@ static inline bool bdev_rot(struct block_device *bdev)
->   	return blk_queue_rot(bdev_get_queue(bdev));
->   }
->   
-> -static inline bool bdev_nonrot(struct block_device *bdev)
-> -{
-> -	return !bdev_rot(bdev);
-> -}
-> -
->   static inline bool bdev_synchronous(struct block_device *bdev)
->   {
->   	return bdev->bd_disk->queue->limits.features & BLK_FEAT_SYNCHRONOUS;
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 94af29d1de88..60e21414624b 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3460,7 +3460,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->   	if (si->bdev && bdev_synchronous(si->bdev))
->   		si->flags |= SWP_SYNCHRONOUS_IO;
->   
-> -	if (si->bdev && bdev_nonrot(si->bdev)) {
-> +	if (si->bdev && !bdev_rot(si->bdev)) {
->   		si->flags |= SWP_SOLIDSTATE;
->   	} else {
->   		atomic_inc(&nr_rotate_swap);
+The ByteLog backend reuses the JBD2 fast-commit area for storage, but
+writes the bulk of fast-commit metadata by directly memcpy'ing TLVs into
+a DAX mapping, avoiding bufferhead based writes. The conventional
+bufferhead based fast-commit stream remains in use for HEAD/TAIL plus a
+small anchor TLV that points to the ByteLog window.
 
-My point above aside, the diff looks good.
+ByteLog itself is an append-only stream of records aligned to 64
+bytes. Each record starts with a fixed on-media header
+(magic/version/tid/tag/seq/lengths) that carries its own CRC; the payload
+is protected by CRC32C as well. The payload content is either a single
+standard ext4 fast-commit TLV (tl+value) or a batched record containing a
+stream of TLVs, allowing multiple TLVs to share one record header and
+persist flush.
 
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+On the write path, when dax_fc_bytelog is enabled, ext4 routes the
+frequently emitted metadata TLVs (range, dentry, inode) into the DAX
+mapping. At the end of the fast commit, it flushes the touched range
+with arch_wb_cache_pmem() and orders it with pmem_wmb(), then writes an
+EXT4_FC_TAG_DAX_BYTELOG_ANCHOR TLV into the conventional fast-commit
+stream. The anchor encodes the ByteLog head/tail/seq and a CRC of the
+concatenated payload stream so replay can validate what was persisted,
+after which the normal TAIL TLV is written.
 
+On replay, the anchor TLV triggers validation of the ByteLog window
+(record CRCs, seq continuity and payload-stream CRC) and then replays the
+contained TLVs using the existing ext4 fast-commit replay handlers.
 
-Kind regards,
+Dependencies:
+- virtio-pmem request lifetime and broken queue fixes:
+  https://lore.kernel.org/all/20260226025712.2236279-1-me@linux.beauty/
+- ext4 jinode publish/init fix (prevents crashes in jbd2_wait_inode_data()):
+  https://lore.kernel.org/all/20260225082617.147957-1-me@linux.beauty/
+- next-20260220
 
-Paul
+The benchmark results below were collected with the dependency patchset
+above applied(otherwise it will trigger issues described in these two patchsets)
+
+Note: This RFC does not yet include e2fsprogs/mke2fs changes to set
+INCOMPAT_DAX_FC_BYTELOG at mkfs time, so the benchmarks below were run
+with dax_fc_bytelog=force. If there is interest, I will follow up with
+an e2fsprogs patchset and switch the recommended usage to
+dax_fc_bytelog=on.
+
+Benchmark (virtio-pmem, ext4 DAX + fast_commit):
+- fio: runtime=30s, ramp=3s (10s for iouring_randwrite_{fsync,fdatasync}16),
+  workers=15, direct=1;
+  meta_create_unlink* uses psync (iodepth=1), iouring_* uses io_uring
+  (iodepth=64).
+- mariadb_txnproc/sysbench_db: time=120s, innodb_buffer_pool_size=8G.
+- sqlite: 3 iterations, interleave order, median reported.
+
+Results (baseline vs bytelog; gain%: positive is better):
+
+fio (iops higher better, p99 lower better; p99 in ms)
+case                               iopsB iopsBL   iops%  p99Bms p99BLms    p99%
+===============================================================================
+meta_create_unlink_fsync0         614.8k 618.8k  +0.64%   0.036   0.036  +0.00%
+meta_create_unlink_fsync2          11.0k  10.9k  -1.27%   1.876   0.963 +48.69%
+meta_create_unlink_fsync4          14.6k  14.6k  -0.20%   2.933   1.548 +47.21%
+meta_create_unlink_fsync8          21.4k  21.6k  +1.30%   3.654   1.679 +54.04%
+meta_create_unlink_fsync16         34.1k  35.5k  +4.19%   4.178   1.516 +63.73%
+meta_create_unlink_fsync32         52.8k  56.3k  +6.71%  12.648   1.860 +85.30%
+iouring_create_unlink_fsync16      37.6k  39.1k  +3.97%   3.457   1.434 +58.53%
+iouring_create_unlink_fdatasync16  37.4k  39.2k  +4.86%   3.457   1.253 +63.74%
+iouring_randwrite_fsync16         2.441M 2.460M  +0.75%   9.110   7.963 +12.59%
+iouring_randwrite_fdatasync16     201.6k 264.5k +31.23% 137.363 137.363  +0.00%
+iouring_randwrite                 4.572M 4.568M  -0.08%   0.272   0.276  -1.51%
+fio_randwrite                     4.591M 4.577M  -0.31%   0.259   0.272  -5.14%
+fio_seqwrite                      4.577M 4.574M  -0.07%   0.264   0.272  -3.10%
+fio_randread                      5.529M 5.549M  +0.36%   0.210   0.218  -3.90%
+fio_seqread                       6.069M 6.073M  +0.06%   0.191   0.196  -2.14%
+
+mariadb_txnproc (+% better; *_us lower better)
+metric        baseline     bytelog    gain%
+tps          6694.492   6858.725  +2.45%
+avg_txn_us   2223.803   2170.499  +2.40%
+max_txn_us     269278     189148 +29.76%
+
+sysbench_db (+% better; *_ms lower better; percentile=99)
+metric        baseline     bytelog    gain%
+tps          3048.920   3075.900  +0.88%
+p99_ms         47.470     48.340  -1.83%
+avg_ms          4.920      4.880  +0.81%
+
+sqlite (+% better; elapsed_s lower better; n=3 median)
+metric          baseline     bytelog    gain%
+tps_med       7517.850   7453.100  -0.86%
+elapsed_s_med   39.905     40.252  -0.87%
+
+Notes:
+- Small regressions were observed in a few read-heavy workloads:
+  - sqlite tps_med: -0.86%
+  - sysbench_db p99_ms: -1.83%
+  - fio_randread p99: -3.90%
+
+They are small and may be affected by limited iterations and run-to-run
+variance. ByteLog is opt-in; follow-up series will focus on reducing
+ByteLog overhead (CRC32C, cache footprint) and improving the regressing
+cases.
+
+This is still an RFC and the current focus is on functionality and
+performance. Correctness and crash-consistency coverage is not complete
+yet. I would appreciate any guidance on good crash-recovery test setups
+(or recommended xfstests cases) for ext4 fast commits (and for DAX-backed
+fast-commit storage in particular), so I can strengthen the correctness
+and crash-consistency argument in follow-up revisions.
+
+Comments are welcome!
+
+Li Chen (4):
+  ext4: introduce DAX fast commit ByteLog backend
+  ext4: add dax_fc_bytelog mount option
+  ext4: fast_commit: write TLVs into DAX ByteLog
+  ext4: fast_commit: replay DAX ByteLog records
+
+ fs/ext4/Makefile              |   2 +-
+ fs/ext4/ext4.h                |   9 +-
+ fs/ext4/fast_commit.c         | 370 +++++++++++++++-
+ fs/ext4/fast_commit.h         |  22 +
+ fs/ext4/fast_commit_bytelog.c | 800 ++++++++++++++++++++++++++++++++++
+ fs/ext4/fast_commit_bytelog.h | 152 +++++++
+ fs/ext4/super.c               |  77 +++-
+ 7 files changed, 1426 insertions(+), 6 deletions(-)
+ create mode 100644 fs/ext4/fast_commit_bytelog.c
+ create mode 100644 fs/ext4/fast_commit_bytelog.h
+
+-- 
+2.52.0
 
