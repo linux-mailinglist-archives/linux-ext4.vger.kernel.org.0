@@ -1,175 +1,156 @@
-Return-Path: <linux-ext4+bounces-14023-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14024-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gIIuLp6Kn2nYcgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14023-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:50 +0100
+	id gOlPN/eWn2k9cwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14024-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 01:42:31 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 184F019F1A3
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:49:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D2719F85E
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 01:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 11B49303A24F
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Feb 2026 23:49:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 63D7830427C9
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 00:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBB13859C9;
-	Wed, 25 Feb 2026 23:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40FD34321F;
+	Thu, 26 Feb 2026 00:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="ioG3R2Pi"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CcOiuO7N"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B581A3859C2
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 23:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379AF46BF;
+	Thu, 26 Feb 2026 00:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772063384; cv=none; b=lfBnxpvUJNYQbQFwTsasc6nzEuJivqqOwuu9GpqP/L3dw4qtYWH3WQGTL3nMacJ+1qCacVt+S/JWCyzKrjFAJL+vDchMe2f0VtxDrK2X/E9AaCMmYyTwwfKa0BSzXsVELObtGbaxEfKfYsCrUllPB6PEu4WAFUxZ23GLJGXprFs=
+	t=1772066508; cv=none; b=c63QZD2x/u/9VTtnub/rDlbogmHNBcsUIR4KxSw2h7YnheFiwxznTjr/6Hub61y6BigpDorK+PG6TLGLCGnPfZJuIHdTUvZTDerh9jvXT3g5ZO17MFUUNNeL3KkebT49S/TcYbRI+gzKxjSHkks7AmoscaUh6FucL2WQuw9VlmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772063384; c=relaxed/simple;
-	bh=oKDTdopXW/G8JMAvwyzy5khwffd/XKWnaux8IiRlSsQ=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=fA5EYGQbNn9I+/w0XR9eY4PqLHne41Z/70+5nnBBTmNlO//L8My2L6C0m//V8rM56tH4xBFMb3oBJ5GdSqerVirVjFti6CkVG1B0qYSebqPxJHXR+eg068kNJs5rlfgARfjiWaaOcLx2IzCVhFUiCXrFOe0DSx5Ty4OW/v278ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=ioG3R2Pi; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a871daa98fso1658775ad.1
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 15:49:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772063382; x=1772668182; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6TbEZcfygynnHMxOGcY4eUkxqu9lSXE/MwGuWXjsPM8=;
-        b=ioG3R2Pi2U9IpasyKkAKt1vF4iI9QIKhWIlqaC/llSWgUtw/hcWdcQQK1bE+fRor7D
-         qLqR9+VtLUV5Tcdr91zU30OlEWQqoW+lr96ifXIAGPIL9hLxjcM1pNGh4uHA/bJvoQtO
-         JVzV+4gJRqiQiz6GhPEMt89ISNYApc7iLEOxf5v0gIswaN5EWPhTsM2a9ifSy69Xt2fp
-         uR8PooHxwi3BMcoxw4WmM7kP4CpfAvZA4dXUf0Yph6Jca8MdONVseKkXGDbVcAdZ4Aqy
-         +wyL2zsk1Nr9EBtQZf6fMTCfSJsZKuwNdc4NnO5q05Kwvmi3IGuCmN0CDDp0sDD8LICq
-         rLpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772063382; x=1772668182;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6TbEZcfygynnHMxOGcY4eUkxqu9lSXE/MwGuWXjsPM8=;
-        b=NwuWpaXRyF/jhAGVotpC7UBX421Juu4pfwbeFEn25osrvYpZh3GfJgGtx9+gYT9Ia0
-         C2THxu5qvBJZfXtjCzl84ntN0bVuAqnKTCdSoYUMElL7ZkU9Z9N5SoMCuZZJIx+sVgMT
-         BUuyUY4mGKomu1xmC0rmCxUkRxRtzWXvydR2dro3mP4kOjHz/ryhgGOCIGI82OXzc610
-         z+/zRhl5NMsKtMC6a0kHYjezJYkWiB5XCU4BH6kHPhL4ETTYYZNvrWh9HowZdmMnyP11
-         zhQ4J2DF7/bzDPO+stVNNPRRpHKDny4ToM7vdt+ryhG25AqZyf+/ia7GsyO+73jtCSh5
-         YMjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdci0ESghczkiTdD3H/U0nY/aPnAqgOkkppaUdgwNFafVLVcsZMuwx305fZsyJJIbU4lKqr3EDzwtj@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxw3/97z6PsNYNN+cUwbRGKJh7EPSFUsAbjom3eHq0k/H2/DsUv
-	12K0Ci32Jps4WiMuSBCsjezRdbtDS1E3OCyxEtkE3mLQlZBVs1BD/UGfwp8zQDdcEvA=
-X-Gm-Gg: ATEYQzwxXfAdtUTL1TXUX347yFoYr/3EtL4C0xojq+O1MKCeZUwMNx+MmEY0D61eRjt
-	04i2GGTZ7/3/+FMmZ4Nsd/BRbCsch6lccCaeBi6kZBzpF3xqlKe/tzJXEWaHz7zpVTzubC5SS0w
-	OWZnx0zmKsL7+fl6pPG2z07cVnM+jQbc0NEIv7gcZ33QFMJLjGWZ6uVsdcCu7JUVR6DS9YVMdkF
-	LCWUZHaGVy7sdQUtsJhN7UxyQqTShH3cObPM4CAlGrlfWprGgKMtY+yEyY4EhGMsVXHVUXvQ+WC
-	F3jofAzrEOCLFqL/ZzidCjVJS+2q15pjMNuSUety1JWSNg7snCjUAGHOUHLEy8w4/1qlYYIQAid
-	+oa23yAvUv+Fop4Eg7w/aUwH3XiTgEXk6+xCL8X1FUSq46NMqwox1PTnhUfkzc39sFdX0b8169c
-	K//R7WoMTHhTAeyA0Po/2EbB0GyEbRxOAnwHIrxyJuP96uVpcvj1aCe/hCUWsE8cgyUN6RqU8b2
-	xoEjA==
-X-Received: by 2002:a17:903:3d0d:b0:2a0:e5cd:80a1 with SMTP id d9443c01a7336-2ade9a51dd5mr19510415ad.41.1772063382050;
-        Wed, 25 Feb 2026 15:49:42 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb5c1af1sm4980345ad.27.2026.02.25.15.49.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Feb 2026 15:49:41 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1772066508; c=relaxed/simple;
+	bh=a5b15Ngqo2bOOdUHSjsT/sSuPPfkZQCQF/naFXI2QkI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=OXBmFIzsN41mr6vQGiaLP6x/VV9NxPs4jK2A3YZw/QNs2EEJbkrD3YwMF/QuuCJoB5vmV9UnGSWg5sfGwe6+imN8gfJCabZx4KZ7VOtNTHBECSZbybe329HhRTuYd96YVGKg9qEdChrGgPmSbE8KMcRerWepMs/Z1Alu7Tqe9YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=CcOiuO7N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03CC4C116D0;
+	Thu, 26 Feb 2026 00:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1772066507;
+	bh=a5b15Ngqo2bOOdUHSjsT/sSuPPfkZQCQF/naFXI2QkI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CcOiuO7NEI5etysy42JpjnremhTiWgG4lUGW8vs+Kti8TdTA3xkAw8m9bRPHQw/jW
+	 UtviHmXGTs0EojsHSlFb7e+3Lc6f61/dMS61S/znrah0BD8VlKfWckTXVq5rOTTIiN
+	 OwOPmCyouWxjyK/Ldx7pApiM6o9/4J5sMHRRG9vY=
+Date: Wed, 25 Feb 2026 16:41:44 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Tal Zussman <tz2294@columbia.edu>
+Cc: David Howells <dhowells@redhat.com>, Marc Dionne
+ <marc.dionne@auristor.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu
+ <chao@kernel.org>, David Hildenbrand <david@kernel.org>, Lorenzo Stoakes
+ <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren
+ Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Chris Li
+ <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>, Kemeng Shi
+ <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, Baoquan He
+ <bhe@redhat.com>, Barry Song <baohua@kernel.org>, Matthew Wilcox
+ <willy@infradead.org>, Dan Williams <dan.j.williams@intel.com>, Jan Kara
+ <jack@suse.cz>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Paulo Alcantara <pc@manguebit.org>, Trond
+ Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Mark
+ Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, Joseph Qi
+ <joseph.qi@linux.alibaba.com>, Steve French <sfrench@samba.org>, Ronnie
+ Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N
+ <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, Bharath SM
+ <bharathsm@microsoft.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi
+ <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tursulin@ursulin.net>, Chris
+ Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, Ilya Dryomov
+ <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, Viacheslav
+ Dubeyko <slava@dubeyko.com>, Andreas Gruenbacher <agruenba@redhat.com>,
+ Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+ Ryusuke Konishi <konishi.ryusuke@gmail.com>, "Darrick J. Wong"
+ <djwong@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
+ <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Olga Kornievskaia
+ <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu
+ <peterx@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin
+ <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Jann
+ Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, Brendan Jackman
+ <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, Hugh Dickins
+ <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, Axel
+ Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, Wei
+ Xu <weixugc@google.com>, Qi Zheng <zhengqi.arch@bytedance.com>,
+ linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-ext4@vger.kernel.org, netfs@lists.linux.dev,
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+ linux-xfs@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] mm: Remove stray references to pagevec
+Message-Id: <20260225164144.76e14a362e0d7cae49f20787@linux-foundation.org>
+In-Reply-To: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
+References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
- allocation policy
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260225201520.220071-1-mario_lohajner@rocketmail.com>
-Date: Wed, 25 Feb 2026 16:49:30 -0700
-Cc: tytso@mit.edu,
- libaokun1@huawei.com,
- adilger.kernel@dilger.ca,
- linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- yangerkun@huawei.com,
- libaokun9@gmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
-References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
- <20260225201520.220071-1-mario_lohajner@rocketmail.com>
-To: Mario Lohajner <mario_lohajner@rocketmail.com>
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14023-lists,linux-ext4=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,huawei.com,dilger.ca,vger.kernel.org,gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-14024-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[rocketmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[redhat.com,auristor.com,kernel.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu,dilger.ca,manguebit.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,ursulin.net,fb.com,dubeyko.com,linux.dev,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org];
+	DMARC_NA(0.00)[linux-foundation.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_GT_50(0.00)[96];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-0.965];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dilger.ca:mid,dilger-ca.20230601.gappssmtp.com:dkim]
-X-Rspamd-Queue-Id: 184F019F1A3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-foundation.org:mid,linux-foundation.org:dkim,columbia.edu:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 27D2719F85E
 X-Rspamd-Action: no action
 
-On Feb 25, 2026, at 13:15, Mario Lohajner =
-<mario_lohajner@rocketmail.com> wrote:
->=20
-> V2 patch incorporating feedback from previous discussion:
->=20
-> - per-inode atomic cursors to enforce stream sequentiality
-> - per-CPU starting points to reduce contention
-> - allocator isolation maintained; regular allocator untouched
-> - name changed to rralloc to avoid confusion with "rotational"
-> - preliminary tests confirm expected performance
+On Wed, 25 Feb 2026 18:44:24 -0500 Tal Zussman <tz2294@columbia.edu> wrote:
 
-Mario, can you please include a summary of the performance test
-results into the commit message so that the effectiveness of the
-patch can be evaluated.  This should include test(s) run and
-their arguments, along with table of before/after numbers.
+> struct pagevec was removed in commit 1e0877d58b1e ("mm: remove struct
+> pagevec"). Remove any stray references to it and rename relevant files
+> and macros accordingly.
+> 
+> While at it, remove unnecessary #includes of pagevec.h (now
+> folio_batch.h) in .c files. There are probably more of these that could
+> be removed in .h files, but those are more complex to verify.
 
-Cheers, Andreas
+Dang that's a lot of cc's ;)
 
-> Files modified:
-> - fs/ext4/ext4.h
-> rralloc policy declared, per-CPU cursors & allocator vector
->=20
-> - fs/ext4/ialloc.c
-> initialize (zero) per-inode cursor
->=20
-> - fs/ext4/mballoc.h
-> expose allocator functions for vectoring in super.c
->=20
-> - fs/ext4/super.c
-> parse rralloc option, init per-CPU cursors and allocator vector
->=20
-> - fs/ext4/mballoc.c
-> add rotating allocator, vectored allocator
->=20
-> Signed-off-by: Mario Lohajner <mario_lohajner@rocketmail.com>
-
+Thanks, I'll add this series to mm.git's mm-new branch.
 
