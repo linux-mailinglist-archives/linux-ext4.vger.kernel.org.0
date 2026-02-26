@@ -1,166 +1,225 @@
-Return-Path: <linux-ext4+bounces-14181-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14182-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MEFgKea/oGk1mQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14181-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 22:49:26 +0100
+	id B1CYOpfCoGmEmQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14182-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 23:00:55 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB29B1B0101
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 22:49:25 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2704C1B01E5
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 23:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C337B303E795
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 21:49:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 08FE5303C81F
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 22:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA572478E23;
-	Thu, 26 Feb 2026 21:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B61230F93C;
+	Thu, 26 Feb 2026 22:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iiEJyiJ+"
+	dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b="QqmoZWRE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sonic304-22.consmr.mail.ne1.yahoo.com (sonic304-22.consmr.mail.ne1.yahoo.com [66.163.191.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8B247A0AF
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 21:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E93287506
+	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 22:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772142541; cv=none; b=ASY5TrSDZ+ATt2tArHexVtY0kut/FcKG7GufiUGno/bwtoLBpgHXIzDqApqPvOGMgwTABFDitb8rURzJuJmtHb+sPOy6WHSOSf8N8+f0sdH/+oGK2Z2khBGAQJkm+Z5LkPqtYkyssEMKQ/OW1Fbe/sZHZqvH+9h5MtS1Nr3zMTY=
+	t=1772143250; cv=none; b=NGhFHDdUN96q8Hp+V7ArBLgEBIuzZrcy80KKYUgKtHqANrRZ3KIWOHPeoRIyYGodYz5xCZAjP39DLdRmQi5+1L1ExnOuVK9zLxPY7zcw1w3Kb9tYOl03wWnHswtpI6TaTqPDuPx5ah4bCtjcRf8pbjfL5rolIHXXLWHR2ufBLsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772142541; c=relaxed/simple;
-	bh=LF4bwcYv1+PfMspbbpqO2VzfLK8CTRaCpOj6mQJxZGw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=atLVP4ANF5ST/J8hjtsU0QYvPJsXgEXb/XKfwV0hYZKKM9PNckMiU4vAeuntD/Zg6Omp63oQLJZiOXJmjBLjfS/ICGbIg0wMJV5Au4oDOHAl0gPQVY6SBlDlqi1HOlMm6cufYJnB0Q+2n/Qnn9H8TRDr1jt9vV0ifq4Wss6RMSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iiEJyiJ+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14915C4AF0D
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 21:49:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772142541;
-	bh=LF4bwcYv1+PfMspbbpqO2VzfLK8CTRaCpOj6mQJxZGw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iiEJyiJ+CgfdWeItdZb1oJLSF9sVPehH2sqDEcDyrNOqj3sC55e8jG/f4FWnNFOES
-	 EwMvZ3MuRwKuak8bJZ+0llUO4uMDdsNgtVRhysJ/fAz7AeQJLf8YHZzRMqokKjLl74
-	 Ci01pzKsjxydx3NFqnKHuEilRoo9edSczEyeXhTru1Knx1ysxCENchJ13n/8vI51Wo
-	 XEPUx6QjKHwKH+QXRdR4mXl3fkdZ6nRFfup55qvSe9duP6hn2ucRT3Xjkjx/SNPpZz
-	 BdXKYNJ4lYoly3jhT4D2aaho7qb8udpfW1XB4F6Srr0HcD3wEvvsWBRIRa5zZzjZO4
-	 fmMZsW+Nmphaw==
-Received: by mail-yx1-f43.google.com with SMTP id 956f58d0204a3-64ca423ad53so1185930d50.0
-        for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 13:49:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVDgmIKZKcux49A0rqSibhDyb1SmXF0ud8/RsKjKM5dBVr+PKWuCeQ3cDwodjkdaPet+AYlqs6zhAtv@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywb7mqVRaqT46xzdPzdLHOcLOQ2wDSj3NHvSJOFm4AiT1nwHdEE
-	3z8ps0q+qBfnbM0XZnuxhSfShpdxI77KE+smuLSCIc53/QfbRyCh8NOCl/f2NjhGmbhGsWGeyfi
-	iMcFTKtM1bP0p+ZhodCtbr5OW5hVjjDanhh5KcjSmkA==
-X-Received: by 2002:a53:e8c9:0:b0:64c:a81e:f2b2 with SMTP id
- 956f58d0204a3-64cc211f150mr699646d50.27.1772142538704; Thu, 26 Feb 2026
- 13:48:58 -0800 (PST)
+	s=arc-20240116; t=1772143250; c=relaxed/simple;
+	bh=8HVppTtdy70/XG01zBimtbOnKO8UG3STeNq8+gyewC0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RHS4ip54LEQozFfV4d6uREz+ltZaPzlICA7UQWeeAGd7XdwzwPEzQC0ti+eJfCKIbQlR1g80zBxTgIHb2IGOKhdTKxhpMcpw01T6POEayYS/R4gvcBgoRRsTREZXuxnFs3X93TB/8fakCahqTQ2ZbQ+T2bD0v0dax7lGUIaqDQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com; spf=pass smtp.mailfrom=rocketmail.com; dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b=QqmoZWRE; arc=none smtp.client-ip=66.163.191.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rocketmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1772143241; bh=3bT4tXWGBl6Ab/P4fz37vFKVCOVsCIlNUpLySbrqcMo=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=QqmoZWREp71M7/BBfmOTZv5TGUtrGqbwLCf6FYhYi6nZDACrXuj3PUffGvAeu2vjxjckfK0Jk1QgZJ6k0lYyK5gCbsyOBTf4GeoTdQQUe3LhLyWNG4YpMhVZN76NalCcuE+zeA2oh8a+IyR7N1J03/4JO1AdbH1lUqqK0PVpFh3LySmczOiakxtx5rJP1vaRrOXUay9TrbCMSzlp7uhXNHZHUcCCTQ5DIO333cVSBQTatKE/oVU288f2vhohsXd1I2xcqQoVYcu0+Mtcv7oiMTxWZ/ooxOnxxiF+ICmid0EOdtGe752CiWTiw2Bhzmmzn+3plf7R4R7wbkoS2kyCxQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1772143241; bh=C55ndGwmJ1nmMG/BQ70Z+u4I6OWgubI0SDqqC5eTk1A=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Pczug8HBdTmzHeDVJXkiuIt+2W1lKmp9tJh9DhD0Cemiv19yMZeCQhOHTfeD12Bucl2ifO+Q0PdgJNLhLYtp3T3gtCtXs6ikfFVS5/bisq+rJVCHgg1ggOlqqZZzutuVlvOGCY16VlwVKjdZjd16a+7/7CUqCpwoK8lt8ifiUTrvcgseEL7ZAILSY3G5bjtcI46v0QSuBCwSAbMDgaX7H+eQ+ojFC2P3MzK78BHdWEWSvqXrSxAaPgWurrsLeGsiCOKLJbt9X1y/sQHtXnrH6Zm9OrZQkPALQ35FB1pKaGg72onyKhgJ7L24mwxZTiHkVJORRSGeZpg87DD5vlPaQg==
+X-YMail-OSG: HjG0DToVM1l4f3WOrJRL7aJHA9x8Rx8ANGI3Bs1td2YVVUOmAqdKaF8QwgDiCeI
+ bebSsyne0ETV4vHX0VbRnERuuzi0Ryaq6AzEm7zvgSi0PMNHB8v7CVCt_VuOZcVeJ.CuumkanOQ2
+ Hyht1pRX3vi3vMdUue8XKxr79_GEMmHdeTiUvP4HsSs_thRmtwpZCmFkYLGRW6hEeWSUd.cawsGJ
+ KJmLdZJ5Y3_.6eUs9PgjCpIJvLyDTrH1THtayRIuUcogCrHIyyAQBRkOH8WkjeGcEcKArIl6KETI
+ ehHBKDGDGKrMYwGDPYt23Wu34jIoXGETRUN_r0y2G2IOgXUPo0vbZGbSuf7H8Vg_n03.BkNXUmbn
+ twKgcGZ0ROnm7_zY7pNLrYsNM_1Lqorf319KeRo.nfY.2oFKg6juO1Zxm1nTTf6_1N4JnudrN7md
+ lTBEVlACJVomMDAFUrNk48QfFGl14S_JO6ZvKCZDK4ck8LDHNXkbbjIWgajQ9xX5Uo1zHg13RqCD
+ lreTV.NBNOr6KUxnP9AwO0LqIGylePaKr.QTadC2Y2oNLyvsF3I6c6SC5hKuypu_ZU8IdoNbKFQp
+ wYqOZFxHGH1e9E.Ke1oHzVnQtderWqie9Jf_CIGcQwsvRMF.afsx87Dcps4rHYI9NEqyoKcgs8dE
+ sQ37KgwWOtsTJ4XWgATP0j_1f0gxdOAhNbzP2F2xt7OYHrlGXwji7forWIfGhw_t43tx9dGVVaE9
+ sdocO0zU.VHq6p8TaD1o9cnB4Wxy51BdaZ0GVv1nCNgmC3AExU9Gq2PeVrKUjvNOYmuAG48wf_P0
+ YHCWOMPkIU_fUNFYPsieYA_rMwlW.9kzo.IGJPQ0TTZMLZd50jaKIXtqzL9US3JrbEUosbe4Anak
+ hoDeURUIvS4P47fJow56sq0MBYdW90b.NQdhzO_N3RXB45CT2pR8f26iJbqaQO07NLs.Mu6L1BE4
+ sdyplZmfUeFzTvUWrSy0a6lX6NCUr7RY7DBImAER7edgWJDNLUMfGtiRr3TlLJ.uFRQ.AIcZhHIt
+ mr8XyzmWPoS8MJ17VvKqeqXTNilR3.lXxgphMx4rUY9BQK7RFPd3XoLoH3wfIHERk5ihoEJj08Ot
+ nZTw7YysSiz_9pwoxGd6SUsoFMM2kashGKE4yXBiIt6iNTGLUY80RK9IILIJzvIp5E.pcuodnS1F
+ B74MrxbxKP2yMoDvgr2qrW6XjZ7FgHoAWKR31FsibUc3NDtjvkvRZP9efZ9c.uVOxD5GzCQYoKt_
+ wAqWTuzRML9by.dtJROB19xfeRnpdJbcJWuijNUJBAYquV_aBcxi7CGNJoMD9FPQpxBteGeutO3k
+ Zed9aGl8mtYGzWDqf6oY4KQVrGDnCp2pGtY5UMR8FUk3mLeanihr1NbUIdZihPBg67YrBBvUwKjc
+ CYiLxyTDE7ol1EIavcjJZ1M6V0wj3ilMKHR.9n0zzf.a7TFrzrV4f8eBsuiChjbLSky873C9w_eV
+ 9.NvxgKu6HEzUMQoI8Lb4cAHn8NrbCMz2I0YahV8_SrlbKRo5kSWUpYQwpvr9gx1NiNfaddtUqUC
+ RrQlWkr6iDiwML3sp29LU9lEi00xmAPnxq0BuWlJ8otmD8.FHhRRcbZ7S0j2oUqKVVnpPsHAIyA9
+ lRCsM4FpASsLe.5gSsb8rtVBd1CrOM1yC7fhhiearElKAoAWzsAV_8VIZlx_khNvV8H020Lnlq2i
+ Dp.bZGt6CSxI7EoXQ5CEL6eXHODA0UNVisKxe2fdQOByVY8ykzb1Ifx9kK_EC6GF1f5MeOq0iw1i
+ 4jbV1R17p4TYRo6T3V_xiuUqmqBBIsirP4mrXJKekKX6huhzRJfBwfcfipqAFg_7Y5bUIKpqtbBh
+ e92Uyk_eQ6BvhtpCctzimB5zMXKUTsTmsIFGg2nhM8ps8mZs2eBEYUB39JjYrqWwOGWJzUtysGXI
+ KNZwKs3fAL54_nNm9FbXoyDh87gnmZWZg3jofTRMJzvuiISCbMo7_2HDek5FIlAQpH87mCDfWYPZ
+ mySm2gQiT7BWuh9nPFiUNUAlSEbyHeBTtBP__JqLNWSCzwIa0XHkxn21zZjjqQfmx0vIF4w1i4KC
+ IYBKZpFj004928ukbQ2gOSzu67ZTjS8NRn95eMCrQ.KuoDLDciFzA94pz3u1z7VILs.rDqJ0hifK
+ 0OtaGUO4kRTZkmT5C77DztJsZCEeKscjo9tvaepjGvgTa2n6QIpxYKYP0BvOV20lKZPrXI_4sN9A
+ GaPJSmv.5tlHb4DKcrbWUDCuzwPwloVt8GWqDSQ6zqscmZw--
+X-Sonic-MF: <mario_lohajner@rocketmail.com>
+X-Sonic-ID: 300e24ab-c496-44a2-a62f-fdcd1153a590
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Thu, 26 Feb 2026 22:00:41 +0000
+Received: by hermes--production-ir2-bbcfb4457-g4h2c (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 3954f7cc5410653f04ea4ac9771638f2;
+          Thu, 26 Feb 2026 21:50:31 +0000 (UTC)
+Message-ID: <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
+Date: Thu, 26 Feb 2026 22:50:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu> <20260225-pagevec_cleanup-v2-2-716868cc2d11@columbia.edu>
-In-Reply-To: <20260225-pagevec_cleanup-v2-2-716868cc2d11@columbia.edu>
-From: Chris Li <chrisl@kernel.org>
-Date: Thu, 26 Feb 2026 13:48:47 -0800
-X-Gmail-Original-Message-ID: <CACePvbX5Qm+kQLtCWynvO-2YtoW0mdR+V6rfq=buR6tfR1A9FQ@mail.gmail.com>
-X-Gm-Features: AaiRm50fP40RQkljlPLX-PI1NSM3iQnOuQQEi7r5tKbV7kaWVe_vUmPk2uGLYLk
-Message-ID: <CACePvbX5Qm+kQLtCWynvO-2YtoW0mdR+V6rfq=buR6tfR1A9FQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] fs: Remove unncessary pagevec.h includes
-To: Tal Zussman <tz2294@columbia.edu>
-Cc: David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Kairui Song <kasong@tencent.com>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Paulo Alcantara <pc@manguebit.org>, Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, Steve French <sfrench@samba.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>, 
-	Pedro Falcato <pfalcato@suse.de>, Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, 
-	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, 
-	Wei Xu <weixugc@google.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev, 
-	linux-ext4@vger.kernel.org, netfs@lists.linux.dev, linux-nfs@vger.kernel.org, 
-	ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org, 
-	intel-gfx@lists.freedesktop.org, linux-btrfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
+ allocation policy
+Content-Language: hr
+To: Theodore Tso <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>
+Cc: libaokun1@huawei.com, adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yangerkun@huawei.com, libaokun9@gmail.com
+References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+ <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+ <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
+ <20260226024819.GA39209@macsyma-wired.lan>
+From: Mario Lohajner <mario_lohajner@rocketmail.com>
+In-Reply-To: <20260226024819.GA39209@macsyma-wired.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.25278 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[rocketmail.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[rocketmail.com:s=s2048];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu,dilger.ca,manguebit.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,ursulin.net,fb.com,dubeyko.com,linux.dev,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14181-lists,linux-ext4=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[huawei.com,dilger.ca,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-14182-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[rocketmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[rocketmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chrisl@kernel.org,linux-ext4@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[96];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.997];
+	FROM_NEQ_ENVFROM(0.00)[mario_lohajner@rocketmail.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,columbia.edu:email]
-X-Rspamd-Queue-Id: CB29B1B0101
+	TAGGED_RCPT(0.00)[linux-ext4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 2704C1B01E5
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 3:44=E2=80=AFPM Tal Zussman <tz2294@columbia.edu> w=
-rote:
->
-> Remove unused pagevec.h includes from .c files. These were found with
-> the following command:
->
->   grep -rl '#include.*pagevec\.h' --include=3D'*.c' | while read f; do
->         grep -qE 'PAGEVEC_SIZE|folio_batch' "$f" || echo "$f"
->   done
->
-> There are probably more removal candidates in .h files, but those are
-> more complex to analyze.
->
-> Signed-off-by: Tal Zussman <tz2294@columbia.edu>
 
-Acked-by: Chris Li <chrisl@kernel.org>
 
-Chris
+On 26. 02. 2026. 03:48, Theodore Tso wrote:
+> On Wed, Feb 25, 2026 at 04:49:30PM -0700, Andreas Dilger wrote:
+>>
+>> Mario, can you please include a summary of the performance test
+>> results into the commit message so that the effectiveness of the
+>> patch can be evaluated.  This should include test(s) run and
+>> their arguments, along with table of before/after numbers.
+> 
+> The tests should also include an explanation of the hardware that you
+> ran the test on.  Some example of cover letters that include
+> perforance improvement results:
+> 
+> https://lore.kernel.org/all/20251025032221.2905818-1-libaokun@huaweicloud.com/
+> https://lore.kernel.org/all/20260105014522.1937690-1-yi.zhang@huaweicloud.com/
+> 
+> Cheers,
+> 
+> 					- Ted
+
+Hello Andreas, hello Theodore!
+
+These are the results of synthetic tests designed to evaluate whether
+the round-robin allocator (rralloc) maintains its allocation behavior
+without degrading performance, and to examine its behavior under high
+concurrency and stress conditions.
+
+The primary purpose of rralloc is to improve allocation distribution
+and avoid hotspotting. Performance improvements are not the goal here,
+throughput similar to regular allocator is considered favorable.
+
+# Workloads
+*** Large Sequential Files
+(Evaluates sequential write throughput with multi-job concurrency)
+
+fio --name=seqwrite --directory=. --rw=write --bs=1M --numjobs=6 \
+--size=4G --runtime=300 --time_based --group_reporting
+
+*** Small Files
+(Validates allocator behavior and latency under small, random writes)
+
+fio --name=smallfiles --directory=. --rw=write --bs=4k --numjobs=6 \
+--size=1G --ioengine=psync --time_based --runtime=180 --group_reporting
+
+*** Multi-core / Multi-task Stress
+(Tests high concurrency and stress conditions)
+
+fio --name=allocstress --directory=. --rw=write --bs=4k --numjobs=48 \
+--size=2G --ioengine=psync --time_based --runtime=180 --group_reporting
+
+# Results summary:
+
+| Test        | Allocator | BW (MiB/s) | IOPS  | Avg lat |
+| ----------- | --------- | ---------- | ----- | ------- |
+| seqwrite    | Regular   | 497        | 496   | 9.19 ms |
+|             | rralloc   | 538        | 537   | 9.37 ms |
+| smallfiles  | Regular   | 707        | 181k  | 2.03 µs |
+|             | rralloc   | 586        | 150k  | 2.18 µs |
+| allocstress | Regular   | 166        | 42.4k | 1.13 ms |
+|             | rralloc   | 283        | 72.5k | 0.66 ms |
+
+
+The results indicate that a round-robin allocation strategy can be
+introduced without compromising baseline I/O characteristics.
+
+Across tested workloads, rralloc preserves expected I/O behavior and
+does not introduce performance regressions of practical significance.
+
+| Test     | Hardware                                   |
+| -------- | ------------------------------------------ |
+| OS       | Fedora Linux 42 Workstation x86_64         |
+| Host     | 90HU007QGE ideacentre 510-15ICB            |
+| Kernel   | 6.18.9-dirty                               |
+| CPU      | Intel i5-8400 (6 cores) @ 2.801GHz         |
+| GPU1     | AMD Radeon RX 560                          |
+| GPU2     | Intel CoffeeLake-S GT2 / UHD Graphics 630  |
+| Memory   | 1379 MiB / 31,958 MiB                      |
+| NVMe     | INTEL SSDPEKNW512G8H (HPS1)                |
+| SATA SSD | Samsung SSD 860 PRO 256GB (RVM02B6Q)       |
+
+Note:
+These results reflect synthetic tests on the described hardware.
+Independent reproduction and verification of these findings are welcome.
+Variations in hardware, kernel version, or workload configuration may
+affect absolute numbers, but the qualitative observation—that rralloc
+preserves baseline I/O behavior—remains valid.
+
+For more details (raw outputs) please refer to:
+https://github.com/mlohajner/RRALLOC
+
+Regards,
+Mario Lohajner (manjo)
 
