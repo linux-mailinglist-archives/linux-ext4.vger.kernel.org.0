@@ -1,204 +1,220 @@
-Return-Path: <linux-ext4+bounces-14053-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14054-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ONEIL5lNoGnvhwQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14053-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:41:45 +0100
+	id ANUrJ0pOoGnvhwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14054-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:44:42 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A0F1A6CF2
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:41:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B71A1A6DBE
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7A1BB307D67F
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:36:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D714B314C136
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 13:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0341936D4EF;
-	Thu, 26 Feb 2026 13:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3167222173D;
+	Thu, 26 Feb 2026 13:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="eYza4UBR"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e3IjUPcs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gaGc91Zy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O5E7h2c1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SvAWqU4F"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D12A3859F7;
-	Thu, 26 Feb 2026 13:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724DB24E4C3
+	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 13:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772112891; cv=none; b=skVDrXx6Y0iMZBVBv6ejH1A9yzPihAtYmYlRHaaax0KH4PmrBnMoyJLtUmql5nwpI8N76l1waFTPnVqdm6WBV1+ze/IiAPENgfemm6gMbmPOapBoMR71zbRirmSeH/awrwO3+SWs4BdKoPRnqVDf4CG/aUM8acqRcMH4YKE93hc=
+	t=1772113168; cv=none; b=fzSBLjunSQMecM9+3AInq33L5mepohBbVWPe6Zk50kkv7cKu6y08LuZbc2kEBn5GIisKcuZyArljl32krRH5x+4bt26MIAaExrXB25b0OevQbO2hL25hP0Lmndx4Uwqlno7x4+2w/IiWhiqLH1yap+MIYE2rzKobm3hVn5JlCAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772112891; c=relaxed/simple;
-	bh=TlUQXYrnjSoaCbkHb1MVILPUcB5rWl72ygSzJU59jJo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jm6vlegyvBYhlU01H1YDjy++5HxtR97sVPWW42V7OFNmyvxb4wR9KgVSn927D9LRTSLuT9jO6z//3Sqp8GDvNhR5DWs3y2J7/KnMkq76IGrKDcdNf01cQXZ0PLTWIBqH7JcE4J4xlEfzVsXqN0EHKkXNFHIVxNP6F9MEsPUWCVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=eYza4UBR; arc=none smtp.client-ip=18.169.211.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1772112730;
-	bh=wIAqc9ZjSWfa/F2Z89KnaSRh5o6S817igYSMsy6Yias=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=eYza4UBRaVzP6QafQtmzd4Ou8+Lvsp3TceeLtja//jGOmPtr2TbDk12RlNj6uYKXK
-	 acYeGLzYP0/9JVI4+NKtjYCGDnJ1Dg2ae6EFP84Zb53++PBIJDHYna7fZ5tr0UIdEa
-	 PHDowcjlvycd1G4QE2Zb/ekQTJusC40IRXaWjiN4=
-X-QQ-mid: zesmtpip4t1772112714t22e84ed1
-X-QQ-Originating-IP: y4BUbQojiwAYU3AEeB9zl5yJkZDVNE3EZ4cRoAVfcKs=
-Received: from uos-PC ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 26 Feb 2026 21:31:52 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 1048834162358125244
-EX-QQ-RecipientCnt: 6
-From: Morduan Zang <zhangdandan@uniontech.com>
-To: bfoster@redhat.com
-Cc: linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	willy@infradead.org,
-	Morduan Zang <zhangdandan@uniontech.com>
-Subject: [PATCH] mm: fix pagecache_isize_extended() early-return bypass for large folio mappings
-Date: Thu, 26 Feb 2026 21:31:49 +0800
-Message-ID: <3F3A46783F8E9D52+20260226133149.79586-1-zhangdandan@uniontech.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20240919160741.208162-3-bfoster@redhat.com>
-References: <20240919160741.208162-3-bfoster@redhat.com>
+	s=arc-20240116; t=1772113168; c=relaxed/simple;
+	bh=IIIAzBYvY1zIrRjAJ2Bq0qo6uLAb4Rc16WoUXokZA20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IH+G1yjGjCcTY7ui0ML1dV8YjL3ItYfT4lgpBonPkvkJTouTdZteYfWUHBtHSFJFSh1UzkWY5dJfDiGnj33Q93LPwB0PBkBECqfxDHQtDhZHLCFFBcFLyUpfJrCyOCPNJDUeuCDNjchVmwHhXeuZy0g4P5tTA7HQiaLDXQVMapg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e3IjUPcs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gaGc91Zy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O5E7h2c1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SvAWqU4F; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B2E351FAA3;
+	Thu, 26 Feb 2026 13:39:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1772113165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c/rXhoBzkdB7BsxszB1c7jbt2UMbPw0IOuoVqNzSFxk=;
+	b=e3IjUPcscDOBmJvuRJfEFWt3rqtqjD+N7WtCHvANjk7quI9EoLNeQfqsPtsLL8bXLq/Qku
+	aj7Jt/boK7ZgX4Ta8uOEbktgniXN4/8eZVwIe7rRpFDcNeUMhc43vDFFBeYxl8CBTqBhpW
+	w28sM/U6wM7GzeE9q0gXtiFJzRCZRJw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1772113165;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c/rXhoBzkdB7BsxszB1c7jbt2UMbPw0IOuoVqNzSFxk=;
+	b=gaGc91ZyXfsgQ5CFlRMgHRtZPHJogyDR+q/yHh7jnRGtRMHmN2UXyEXnwnP17rK0OVz5XS
+	BY8dK+Ar1cbEAYAA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=O5E7h2c1;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SvAWqU4F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1772113164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c/rXhoBzkdB7BsxszB1c7jbt2UMbPw0IOuoVqNzSFxk=;
+	b=O5E7h2c1/MXNc0M4eaCFjg1NVCAsGhVCaWHrmc8Dyv6p58HNQ5/IycbNTSd7gfuNpqYNGk
+	m/3DuNlexMbBFa4tUQ9wU05PcaMbfukWxy2pZ0yzwdLSVCoVlC3AkHqE97eAwlXtsKq78i
+	pGdaVOa2AA59SZX27bj0r2fPFRb9SIA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1772113164;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=c/rXhoBzkdB7BsxszB1c7jbt2UMbPw0IOuoVqNzSFxk=;
+	b=SvAWqU4FdeoB8l0FDhxnW6hcYWeW+iPIZzTf4/SjdkFjLW1SFF3Ipb+S9jQvDNW/nHzfEW
+	fW3UHIOUSjEbVYCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A89E63EA62;
+	Thu, 26 Feb 2026 13:39:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FlYnKQxNoGk6ZAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 26 Feb 2026 13:39:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6DA5CA0A27; Thu, 26 Feb 2026 14:39:24 +0100 (CET)
+Date: Thu, 26 Feb 2026 14:39:24 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>, 
+	linux-ext4@vger.kernel.org, Free Ekanayaka <free.ekanayaka@gmail.com>, 
+	stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] ext4: Fix fsync(2) for nojournal mode
+Message-ID: <gzffe2p4gbxrkwolwk2lxpd72gzkbnvfgopz2z5g5z3ses5rdy@fyraeynvocf7>
+References: <20260211140209.30337-1-jack@suse.cz>
+ <20260216164848.3074-4-jack@suse.cz>
+ <85f5a062-2cdb-48ef-8250-cdc022209634@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6b-0
-X-QQ-XMAILINFO: ODcDgdcDagQKK73kbnoKVnPAelgFd7Q6Mg6OyC7hgcKFpHFWBkzjjlmp
-	g5Rq9T2TLhJC0skg/q0ul79P4ZzcquUzKn/uvFOZY11/U23Buz22qL+kBfJbNX/ll4YLmj0
-	2zB4sAyugLaRRWWp4axXbr3I8NiqTWgTLX0nlkO7mZ4yivC45MMnCC+fFt9PaV0pW9gMlnz
-	9uUS4prTcLH/EsvYUYJQ3uFTRJ3iSsHlY93b9mUXLgytGgbQMVksS7uuzYvwT7kn0XcRrpU
-	yy/CWG609P3JZgd4z0cFs0e4jTTKePY9/Da0zpxUTOwOsYFSBodddq0D6JB1svxvcB2Rpm3
-	uQdC2+RMqJKRY82HkXvPkaKPma8s5EqANcIUDMTBc0pT6Mtmu5YthikZOEQie0u0x49mWrW
-	Tr+iv44nsnV2DqbEn9HCFvK4TrGH+VJb+rndyDgn/vZwJRxGuRsyEiN4FVgjOVX63GYLQ2p
-	klBBDahAm0C00dBanm5HLp/DGP+XodoBy5PzQgLE4gAaZRMFaLwu0evWbND/gsQRbz4LzAw
-	cWAmKcum8VbFW/mLo+XTAA4KE4GD02ufecukPzyzDdbwjP1WznIkOniXHsKrCFwa/AHxL4j
-	CcCIxZ1bldViPLk223Zcpc/RxUR5GQOCgxWQ2xFw8lpKfnE1YfCHgXmWvsnyGSG1wHmPrWU
-	l0iO83vJskwMJr5yD92dIu2TlEHl5/iVlyGyRGTRvX7AK5vrxY8NOYCDX0r9dcYQo14DC2Z
-	gsoLWMslbMvwGFs3+KHAuQrsqq+kNAJ+3cXtvHS+vQdQOS4MJRC9htVepg/v1pkJjqiGJtT
-	LXVhdLOsaAACn44UZHu7/fQNhS0EOYoX7PCI4dYFOoj4hu5MdkFo4YKxCyk13EnU5fvG4vK
-	eGwMoq8p6DdOVH4pqdp0fx8LdfvuWMbSsUrgghp8WjmQ3sr9kPnPhdaIT4IgDqZP445jrGS
-	C7oxVE8g3bNNaZTRyD34GCCgxfl0C2+bJeSaHJ8K67KdT/VmE2LbANPh7WOgnq3mEiWLIQ8
-	rCIzBYnQ==
-X-QQ-XMRINFO: OD9hHCdaPRBwH5bRRRw8tsiH4UAatJqXfg==
-X-QQ-RECHKSPAM: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85f5a062-2cdb-48ef-8250-cdc022209634@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[uniontech.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[uniontech.com:s=onoh2408];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14053-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14054-lists,linux-ext4=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,suse.com:email,suse.cz:email,suse.cz:dkim];
+	DMARC_NA(0.00)[suse.cz];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,vger.kernel.org,gmail.com];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	FROM_NEQ_ENVFROM(0.00)[zhangdandan@uniontech.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[uniontech.com:+];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	NEURAL_HAM(-0.00)[-0.993];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,uniontech.com:mid,uniontech.com:dkim,uniontech.com:email]
-X-Rspamd-Queue-Id: D1A0F1A6CF2
+	RCPT_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 1B71A1A6DBE
 X-Rspamd-Action: no action
 
-pagecache_isize_extended() has two early-return guards that were designed
-for the traditional sub-page block-size case:
+On Thu 26-02-26 19:56:34, Zhang Yi wrote:
+> On 2/17/2026 12:48 AM, Jan Kara wrote:
+> > When inode metadata is changed, we sometimes just call
+> > ext4_mark_inode_dirty() to track modified metadata. This copies inode
+> > metadata into block buffer which is enough when we are journalling
+> > metadata. However when we are running in nojournal mode we currently
+> > fail to write the dirtied inode buffer during fsync(2) because the inode
+> > is not marked as dirty.
+> 
+> Please let me understand this. You mean that because some places we
+> directly call ext4_mark_inode_dirty() to mark the inode as dirty, instead
+> of using the generic mark_inode_dirty(), this results in the inode missing
+> the I_DIRTY_INODE flag. Consequently, generic_buffers_fsync_noflush()->
+> sync_inode_metadata() does not write the inode, leading to the metadata
+> not being updated on disk after fsync(2), right?
 
-  Guard 1:  if (from >= to || bsize >= PAGE_SIZE)
-                return;
+Correct.
 
-  Guard 2:  rounded_from = round_up(from, bsize);
-            if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
-                return;
+> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-Guard 1 was originally "bsize == PAGE_SIZE" and was widened to
-"bsize >= PAGE_SIZE" by commit 2ebe90dab980 ("mm: convert
-pagecache_isize_extended to use a folio").  The rationale is correct
-for the traditional buffer_head path: when the block size equals the page
-size, every folio covers exactly one block, so writeback's EOF handling
-(e.g. iomap_writepage_handle_eof()) zeros the post-EOF tail of the folio
-before writing it out, and no action is needed here.
+Thanks for review!
 
-Guard 2 covers the case where @from rounded up to the next block boundary
-is already PAGE_SIZE-aligned, meaning no hole block straddles a page
-boundary.
+								Honza
 
-Both guards are correct for the traditional case.  However, commit
-52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
-added post-EOF zeroing inside pagecache_isize_extended() to
-handle dirty folios that will not go through writeback before the new
-i_size becomes visible.  That zeroing code is placed after both guards,
-so it is unreachable whenever either guard fires.
-
-The same stale-data window is also covered by xfstests generic/363
-which uses fsx with "-e 1" (EOF pollution mode) and exercises a broad
-range of size-changing operations.
-
-Fixes: 52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
-Fixes: 2ebe90dab980 ("mm: convert pagecache_isize_extended to use a folio")
-Signed-off-by: Morduan Zang <zhangdandan@uniontech.com>
----
- mm/truncate.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 12467c1bd711..d3e473a206b3 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -847,13 +847,32 @@ void pagecache_isize_extended(struct inode *inode, loff_t from, loff_t to)
- 
- 	WARN_ON(to > inode->i_size);
- 
--	if (from >= to || bsize >= PAGE_SIZE)
-+	if (from >= to)
- 		return;
-+
-+	/*
-+	 * For filesystems with bsize >= PAGE_SIZE, the traditional buffer_head
-+	 * path handles post-EOF zeroing correctly at writeback time. However,
-+	 * with large folios enabled, a single folio can span multiple PAGE_SIZE
-+	 * blocks, so mmap writes beyond EOF within the same folio are not zeroed
-+	 * at writeback time before i_size is extended. We must handle this here.
-+	 */
-+	if (bsize >= PAGE_SIZE) {
-+		/*
-+		 * Only needed if the mapping supports large folios, since otherwise
-+		 * each folio is exactly one page and writeback handles EOF zeroing.
-+		 */
-+		if (!mapping_large_folio_support(inode->i_mapping))
-+			return;
-+		goto find_folio;
-+	}
-+
- 	/* Page straddling @from will not have any hole block created? */
- 	rounded_from = round_up(from, bsize);
- 	if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
- 		return;
- 
-+find_folio:
- 	folio = filemap_lock_folio(inode->i_mapping, from / PAGE_SIZE);
- 	/* Folio not cached? Nothing to do */
- 	if (IS_ERR(folio))
+> > Use explicit ext4_write_inode() call to make
+> > sure the inode table buffer is written to the disk. This is a band aid
+> > solution but proper solution requires a much larger rewrite including
+> > changes in metadata bh tracking infrastructure.
+> > 
+> > Reported-by: Free Ekanayaka <free.ekanayaka@gmail.com>
+> > Link: https://lore.kernel.org/all/87il8nhxdm.fsf@x1.mail-host-address-is-not-set/
+> > CC: stable@vger.kernel.org
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/fsync.c | 16 ++++++++++++++--
+> >  1 file changed, 14 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+> > index e476c6de3074..bd8f230fa507 100644
+> > --- a/fs/ext4/fsync.c
+> > +++ b/fs/ext4/fsync.c
+> > @@ -83,11 +83,23 @@ static int ext4_fsync_nojournal(struct file *file, loff_t start, loff_t end,
+> >  				int datasync, bool *needs_barrier)
+> >  {
+> >  	struct inode *inode = file->f_inode;
+> > +	struct writeback_control wbc = {
+> > +		.sync_mode = WB_SYNC_ALL,
+> > +		.nr_to_write = 0,
+> > +	};
+> >  	int ret;
+> >  
+> >  	ret = generic_buffers_fsync_noflush(file, start, end, datasync);
+> > -	if (!ret)
+> > -		ret = ext4_sync_parent(inode);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Force writeout of inode table buffer to disk */
+> > +	ret = ext4_write_inode(inode, &wbc);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = ext4_sync_parent(inode);
+> > +
+> >  	if (test_opt(inode->i_sb, BARRIER))
+> >  		*needs_barrier = true;
+> >  
+> 
 -- 
-2.50.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
