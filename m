@@ -1,126 +1,296 @@
-Return-Path: <linux-ext4+bounces-14060-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14059-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qKq1Bl5doGm3igQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14060-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:02 +0100
+	id GIqCF6ReoGlViwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14059-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:54:28 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244F51A7E07
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C51C41A8072
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 45E85312E031
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:34:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2E0273046F44
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E52B3D667B;
-	Thu, 26 Feb 2026 14:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909053D3D04;
+	Thu, 26 Feb 2026 14:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jiHScR/u"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xptgD2FT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F262C3D649B
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 14:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617573E9F8B;
+	Thu, 26 Feb 2026 14:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772116392; cv=none; b=iDrsysQF8st6FiKgMwvGr+AQ4QlPBzNUuDD/Wvis3wCCiE3IJpEdP9f5PGvPog/f6oNVHOdHhXhxtjd/jPd1Vng47lvAdmwApJddnfnDTny9U9vFjfV96OGEGbojU3l54WUM96CCh+d2eNlG4ZdVBAELcHSxxNxlGzojLIWEHpE=
+	t=1772116195; cv=none; b=YIuP4KxM/N2uLj0Hm5X6MJz0bGWxPk/vIXV6rLgNYaFNo0Di3PGZ8LvFWxXl3i2NPM4SW7c5GWIV7kgHWc8ekYwUr1ZvZYztuPHvk8kkMJhKljVhMohvl8v9ygm1CJAHze7ZAI4LAvdd2BrZhUOFOjyfDAf30T0r2CUsTEf7/pM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772116392; c=relaxed/simple;
-	bh=AFa4gQHlzMo9gb/8lkyfEZ2nW6wsvEKiuglk6riJ6WA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e7iTvkY3wuSbgyKQ3yGgXoRrFoUskJi5ZFUMF48jsBfh/tvB2RuTNXN44nuINibXo1IqzR1Ax0FvBggIuiVbqanm6Dmzys13DsSDw4gutuBjAlSqzYQnbj9kI8ggBC5V5KqNVtb2sNjBjvRwm4g4VolRi6h2SW42TdEcFtz0I0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jiHScR/u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE3D5C116C6
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 14:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772116391;
-	bh=AFa4gQHlzMo9gb/8lkyfEZ2nW6wsvEKiuglk6riJ6WA=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=jiHScR/ubcBUQzfrwN4wDQJ7ORGEp+qhpeR9fFPAC7KSgYEX9cDeg1CHNkiAzENRH
-	 jcd7cdt25SEpKLBh/pslGC+St7dIG/oxbRbVDH97GieOnntelW1EePllH6ChpFg+Ed
-	 1ogOW+s/dNDS/wd5r3L6k5Q38iFX/wDsyxdwMuhEO6Tp37AFeHiODgrICWTvjz5qxi
-	 WlVRULE2zd2vyN11coUjr8mJO9ijEeEpoqRpBBe+bcGS74NdvsP81PyBU9wtRGggTX
-	 BiG0sjYNxwnEiiu+l/cLgI6lc1l1MRtaSBOuq2jpx4e1qZS2An3q6dcNNk6u8+7trl
-	 2zc2LEsiTqpCw==
-From: Anand Jain <asj@kernel.org>
-To: linux-ext4@vger.kernel.org
-Subject: [RFC PATCH 3/3] ext4: derive f_fsid from block device to avoid collisions
-Date: Thu, 26 Feb 2026 22:28:07 +0800
-Message-ID: <e269a49eed2de23eb9f9bd7f506f0fe47696a023.1772095546.git.asj@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1772095546.git.asj@kernel.org>
-References: <cover.1772095546.git.asj@kernel.org>
+	s=arc-20240116; t=1772116195; c=relaxed/simple;
+	bh=09Rjq9YUiTCfdOZtaVDiYYUcU1HlVXywZdVoE4L+UrI=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=nLBVe4sXk1nKoE6yv8SAX6MRtKAg8Bm/EcGs9hVStnhxGopguuQ6h5UQZuCRF8f/YIhXZFI7O1YHn++7bkWe+6M5tzD8ocSHJkCGVf01M1nsfT3xmZA1ob7CWgv9VI4CYq699O17SUVE3EkMBF4X4ylGNGMgiZZLSEnrfkK1FhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xptgD2FT; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772116185;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AAX4WJ2Ss7mjZl94h6x1hLn056hNxjHN1j/COBhWBBI=;
+	b=xptgD2FTlKgBhNODGcIrRBp5blA/GA2rw0WiznS6TETnPB6o8qUhsVJg7xmMni+6JRIITy
+	GfcBPBhdnXx+9cHUaLcfBCHSLjGA/YNS/kr/PSdgC4DD2iinr47MB0lewbNYLKnnWWgaIm
+	ttz9L60EnqKSXm99wwPsa0f42GEZLTw=
+Date: Thu, 26 Feb 2026 14:29:36 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
+Message-ID: <655d0b2af1814312929e9e094854dd3ab029d094@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v1] mm: annotate data race of f_ra.prev_pos
+To: "Jan Kara" <jack@suse.cz>
+Cc: linux-mm@kvack.org, "Jiayuan Chen" <jiayuan.chen@shopee.com>,
+ syzbot+6880f676b265dbd42d63@syzkaller.appspotmail.com, "Theodore Ts'o"
+ <tytso@mit.edu>, "Andreas Dilger" <adilger.kernel@dilger.ca>, "Konstantin
+ Komarov" <almaz.alexandrovich@paragon-software.com>, "Steven Rostedt"
+ <rostedt@goodmis.org>, "Masami Hiramatsu" <mhiramat@kernel.org>, "Mathieu
+ Desnoyers" <mathieu.desnoyers@efficios.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, "Andrew Morton" <akpm@linux-foundation.org>, "Hugh
+ Dickins" <hughd@google.com>, "Baolin Wang"
+ <baolin.wang@linux.alibaba.com>, "Jan Kara" <jack@suse.cz>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ntfs3@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org
+In-Reply-To: <2xzc3lp6ehtjwbzip4i5muh4g6oep4l72zh3j6sablfghbvbau@kh7famgorzrh>
+References: <20260226084020.163720-1-jiayuan.chen@linux.dev>
+ <2xzc3lp6ehtjwbzip4i5muh4g6oep4l72zh3j6sablfghbvbau@kh7famgorzrh>
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14060-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14059-lists,linux-ext4=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[asj@kernel.org,linux-ext4@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 244F51A7E07
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-ext4,6880f676b265dbd42d63];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,linux.dev:mid,linux.dev:dkim,suse.cz:email,shopee.com:email,syzkaller.appspot.com:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,appspotmail.com:email]
+X-Rspamd-Queue-Id: C51C41A8072
 X-Rspamd-Action: no action
 
-statfs() currently reports f_fsid derived from the on-disk UUID.
-Cloned block devices share the same UUID, so distinct ext4 instances
-can return identical f_fsid values. This leads to collisions in
-fanotify.
+February 26, 2026 at 21:21, "Jan Kara" <jack@suse.cz mailto:jack@suse.cz?=
+to=3D%22Jan%20Kara%22%20%3Cjack%40suse.cz%3E > wrote:
 
-Encode sb->s_dev into f_fsid instead of using the superblock UUID.
-This provides a per-device identifier and avoids conflicts when
-filesystem is cloned, matching the behavior with xfs.
 
-Marking as RFC: it is unclear whether any usecase requires the f_fsid of
-a cloned filesystem to be consistent with that of the source filesystem.
+>=20
+>=20On Thu 26-02-26 16:40:07, Jiayuan Chen wrote:
+>=20
+>=20>=20
+>=20> From: Jiayuan Chen <jiayuan.chen@shopee.com>
+> >=20=20
+>=20>  KCSAN reports a data race when concurrent readers access the same
+> >  struct file:
+> >=20=20
+>=20>  BUG: KCSAN: data-race in filemap_read / filemap_splice_read
+> >=20=20
+>=20>  write to 0xffff88811a6f8228 of 8 bytes by task 10061 on cpu 0:
+> >  filemap_splice_read+0x523/0x780 mm/filemap.c:3125
+> >  ...
+> >=20=20
+>=20>  write to 0xffff88811a6f8228 of 8 bytes by task 10066 on cpu 1:
+> >  filemap_read+0x98d/0xa10 mm/filemap.c:2873
+> >  ...
+> >=20=20
+>=20>  Both filemap_read() and filemap_splice_read() update f_ra.prev_pos
+> >  without synchronization. This is a benign race since prev_pos is onl=
+y
+> >  used as a hint for readahead heuristics in page_cache_sync_ra(), and=
+ a
+> >  stale or torn value merely results in a suboptimal readahead decisio=
+n,
+> >  not a correctness issue.
+> >=20=20
+>=20>  Use WRITE_ONCE/READ_ONCE to annotate all accesses to prev_pos acro=
+ss
+> >  the tree for consistency and silence KCSAN.
+> >=20=20
+>=20>  Reported-by: syzbot+6880f676b265dbd42d63@syzkaller.appspotmail.com
+> >  Link: https://syzkaller.appspot.com/bug?extid=3D6880f676b265dbd42d63
+> >  Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+> >=20
+>=20Given this, I think it would be much less intrusive and also more
+> explanatory to just mark prev_pos with __data_racy with appropriate rea=
+son
+> you're mentioning in the changelog.
 
-Signed-off-by: Anand Jain <asj@kernel.org>
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 43f680c750ae..ec3c5882dff3 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6941,7 +6941,7 @@ static int ext4_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	buf->f_files = le32_to_cpu(es->s_inodes_count);
- 	buf->f_ffree = percpu_counter_sum_positive(&sbi->s_freeinodes_counter);
- 	buf->f_namelen = EXT4_NAME_LEN;
--	buf->f_fsid = uuid_to_fsid(es->s_uuid);
-+	buf->f_fsid = u64_to_fsid(huge_encode_dev(sb->s_dev));
- 
- #ifdef CONFIG_QUOTA
- 	if (ext4_test_inode_flag(dentry->d_inode, EXT4_INODE_PROJINHERIT) &&
--- 
-2.43.0
+Thanks for the suggestion. I'm fine either way =E2=80=94 __data_racy is i=
+ndeed
+cleaner and less intrusive for a purely heuristic field like this.
 
+I'll wait a bit to see if Andrew or other mm folks have a preference
+before resending. Happy to go with whichever approach they prefer.
+
+>  Honza
+>=20
+>=20>=20
+>=20> ---
+> >  fs/ext4/dir.c | 2 +-
+> >  fs/ntfs3/fsntfs.c | 2 +-
+> >  include/trace/events/readahead.h | 2 +-
+> >  mm/filemap.c | 6 +++---
+> >  mm/readahead.c | 4 ++--
+> >  mm/shmem.c | 2 +-
+> >  6 files changed, 9 insertions(+), 9 deletions(-)
+> >=20=20
+>=20>  diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> >  index 28b2a3deb954..1ddf7acce5ca 100644
+> >  --- a/fs/ext4/dir.c
+> >  +++ b/fs/ext4/dir.c
+> >  @@ -200,7 +200,7 @@ static int ext4_readdir(struct file *file, struc=
+t dir_context *ctx)
+> >  sb->s_bdev->bd_mapping,
+> >  &file->f_ra, file, index,
+> >  1 << EXT4_SB(sb)->s_min_folio_order);
+> >  - file->f_ra.prev_pos =3D (loff_t)index << PAGE_SHIFT;
+> >  + WRITE_ONCE(file->f_ra.prev_pos, (loff_t)index << PAGE_SHIFT);
+> >  bh =3D ext4_bread(NULL, inode, map.m_lblk, 0);
+> >  if (IS_ERR(bh)) {
+> >  err =3D PTR_ERR(bh);
+> >  diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+> >  index 0df2aa81d884..d1232fc03c08 100644
+> >  --- a/fs/ntfs3/fsntfs.c
+> >  +++ b/fs/ntfs3/fsntfs.c
+> >  @@ -1239,7 +1239,7 @@ int ntfs_read_run_nb_ra(struct ntfs_sb_info *s=
+bi, const struct runs_tree *run,
+> >  if (!ra_has_index(ra, index)) {
+> >  page_cache_sync_readahead(mapping, ra, NULL,
+> >  index, 1);
+> >  - ra->prev_pos =3D (loff_t)index << PAGE_SHIFT;
+> >  + WRITE_ONCE(ra->prev_pos, (loff_t)index << PAGE_SHIFT);
+> >  }
+> >  }
+> >=20=20
+>=20>  diff --git a/include/trace/events/readahead.h b/include/trace/even=
+ts/readahead.h
+> >  index 0997ac5eceab..63d8df6c2983 100644
+> >  --- a/include/trace/events/readahead.h
+> >  +++ b/include/trace/events/readahead.h
+> >  @@ -101,7 +101,7 @@ DECLARE_EVENT_CLASS(page_cache_ra_op,
+> >  __entry->async_size =3D ra->async_size;
+> >  __entry->ra_pages =3D ra->ra_pages;
+> >  __entry->mmap_miss =3D ra->mmap_miss;
+> >  - __entry->prev_pos =3D ra->prev_pos;
+> >  + __entry->prev_pos =3D READ_ONCE(ra->prev_pos);
+> >  __entry->req_count =3D req_count;
+> >  ),
+> >=20=20
+>=20>  diff --git a/mm/filemap.c b/mm/filemap.c
+> >  index 63f256307fdd..d3e2d4b826b9 100644
+> >  --- a/mm/filemap.c
+> >  +++ b/mm/filemap.c
+> >  @@ -2771,7 +2771,7 @@ ssize_t filemap_read(struct kiocb *iocb, struc=
+t iov_iter *iter,
+> >  int i, error =3D 0;
+> >  bool writably_mapped;
+> >  loff_t isize, end_offset;
+> >  - loff_t last_pos =3D ra->prev_pos;
+> >  + loff_t last_pos =3D READ_ONCE(ra->prev_pos);
+> >=20=20
+>=20>  if (unlikely(iocb->ki_pos < 0))
+> >  return -EINVAL;
+> >  @@ -2870,7 +2870,7 @@ ssize_t filemap_read(struct kiocb *iocb, struc=
+t iov_iter *iter,
+> >  } while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
+> >=20=20
+>=20>  file_accessed(filp);
+> >  - ra->prev_pos =3D last_pos;
+> >  + WRITE_ONCE(ra->prev_pos, last_pos);
+> >  return already_read ? already_read : error;
+> >  }
+> >  EXPORT_SYMBOL_GPL(filemap_read);
+> >  @@ -3122,7 +3122,7 @@ ssize_t filemap_splice_read(struct file *in, l=
+off_t *ppos,
+> >  len -=3D n;
+> >  total_spliced +=3D n;
+> >  *ppos +=3D n;
+> >  - in->f_ra.prev_pos =3D *ppos;
+> >  + WRITE_ONCE(in->f_ra.prev_pos, *ppos);
+> >  if (pipe_is_full(pipe))
+> >  goto out;
+> >  }
+> >  diff --git a/mm/readahead.c b/mm/readahead.c
+> >  index 7b05082c89ea..de49b35b0329 100644
+> >  --- a/mm/readahead.c
+> >  +++ b/mm/readahead.c
+> >  @@ -142,7 +142,7 @@ void
+> >  file_ra_state_init(struct file_ra_state *ra, struct address_space *m=
+apping)
+> >  {
+> >  ra->ra_pages =3D inode_to_bdi(mapping->host)->ra_pages;
+> >  - ra->prev_pos =3D -1;
+> >  + WRITE_ONCE(ra->prev_pos, -1);
+> >  }
+> >  EXPORT_SYMBOL_GPL(file_ra_state_init);
+> >=20=20
+>=20>  @@ -584,7 +584,7 @@ void page_cache_sync_ra(struct readahead_contr=
+ol *ractl,
+> >  }
+> >=20=20
+>=20>  max_pages =3D ractl_max_pages(ractl, req_count);
+> >  - prev_index =3D (unsigned long long)ra->prev_pos >> PAGE_SHIFT;
+> >  + prev_index =3D (unsigned long long)READ_ONCE(ra->prev_pos) >> PAGE=
+_SHIFT;
+> >  /*
+> >  * A start of file, oversized read, or sequential cache miss:
+> >  * trivial case: (index - prev_index) =3D=3D 1
+> >  diff --git a/mm/shmem.c b/mm/shmem.c
+> >  index 5e7dcf5bc5d3..03569199baf4 100644
+> >  --- a/mm/shmem.c
+> >  +++ b/mm/shmem.c
+> >  @@ -3642,7 +3642,7 @@ static ssize_t shmem_file_splice_read(struct f=
+ile *in, loff_t *ppos,
+> >  len -=3D n;
+> >  total_spliced +=3D n;
+> >  *ppos +=3D n;
+> >  - in->f_ra.prev_pos =3D *ppos;
+> >  + WRITE_ONCE(in->f_ra.prev_pos, *ppos);
+> >  if (pipe_is_full(pipe))
+> >  break;
+> >=20=20
+>=20>  --=20
+>=20>  2.43.0
+> >=20
+>=20--=20
+>=20Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+>
 
