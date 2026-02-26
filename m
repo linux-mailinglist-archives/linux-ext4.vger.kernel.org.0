@@ -1,195 +1,269 @@
-Return-Path: <linux-ext4+bounces-14029-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14030-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IKq7Adm6n2n5dQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14029-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 04:15:37 +0100
+	id CGgNGf39n2n3fAQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14030-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 09:02:05 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF891A066A
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 04:15:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FF261A2362
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 09:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 098253046120
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 03:15:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5329C30B8255
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 08:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537D238552F;
-	Thu, 26 Feb 2026 03:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FF9392C3C;
+	Thu, 26 Feb 2026 08:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Pt3QESqe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f/VjVtCh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAB5311C38
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 03:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3BB39280D;
+	Thu, 26 Feb 2026 08:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772075734; cv=none; b=m50Lv6dFnLc1pN0hTvEtpZYWFaAaivzANliE/2bBgQAgS/C6Agj2Az04RLpYd1FWHmduLFJeQ/pYk5uVRsZzlD79jTvjlTNrTYiO0B+ckmCqydWTTEdtnHSpRCM3S4ReGqJEz+ZHDolOApMjIPaRG4s4cI5TqfmtN5T9Sue7HcM=
+	t=1772092807; cv=none; b=MOXgjUnYUYG7lyHTbID2x2yIvq3kHAnVoovRLZPIBys3pQ+d+W6ABbHC+La8tOU2KHR2BddcoXnQZ1C5In3C/z5u724regTRQykq36sx88tAGUSnfAjQ1Efk+dRmLhWPEEGTVjvYoJ2Hrfa4btSRQyYHf/KCWvj+hJHEKokEeZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772075734; c=relaxed/simple;
-	bh=3Uj98JRcjkXg45L932sgBQ4jyAOkKnrA4eVXq0Mc2RQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tMPCGXbl2jhPEvUmcC5OcnOTP9TvLzHwXlht4Vs8ua4YT5ysFygBgxJok+19NfNFNJS3GfXQcS0tf41Zi++dVYCBBcbLmZfDfLCkfZUTqB0SznA0gT5MBhCYO4K2yNQoyUMVJccs7KdaBXOI/kMk+Q+i1AoseJlUMjpP0nqJdCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Pt3QESqe; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-45f194e9a98so155587b6e.3
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Feb 2026 19:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1772075731; x=1772680531; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=myOpzKKufRrzTXzkKkTioHHnRh1Fxba9oHbsZ8bSehI=;
-        b=Pt3QESqeGYGEyfcbtu599/TaELTldNHt9ng7MdkbQscEZnkRuSh25I41b9c9dvwbs0
-         pbRiegVYVhXxN6kv/Eg0EFcqolSkF8sW2dHcoxou+89/W6wTpoKs3MeS5dRmlnq0QHLz
-         beD0NKXnUFkxdzpurznywZsv0jcAXSFUEZlDVEaGEZX/fH8nT2ZLRuRzU4wRZYWgAJYK
-         HjXy/ScGA0aB6TeNRft1Dvn6Qb35HEKMPwb1Y7g7J2FWEhFtSj7eArl0e01dC8zPx26E
-         xYJnhHsEiybj+rxDtRCtjALwF7rqZEnbad8aUzCkCd2gR90/cfeFhG91HuY5K4g9N7cT
-         grQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772075731; x=1772680531;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=myOpzKKufRrzTXzkKkTioHHnRh1Fxba9oHbsZ8bSehI=;
-        b=eLZkakgBZb+itfBJmUG37x9t5KiCUHIEbh/bkLXqxoHHb6ChBVk6Z0ECyRUZTgvjAt
-         8Y7ywmMmfKTBBIsGtl3Jr8/uNlXyR2zMMAKoe1OaRHlN/oOjZ2Jra4+W8rBnILPupbgQ
-         HwSw5/5d0Mwd6GhrQvSwq72ex7I4EoYf+qpqfgoK51Ks6CEL/W+qBM/M+nu0cE8oYnWx
-         2bn8Nm6WUMrkW+GvWmi/LZ95IcKTifwr73AMmi/82QyX6OU01MsNC/8W+NYo/4TRkqbH
-         Efj7ZpCxwPDaJSvILfNsl3l3fbbgUIoREQREeBbDHMpZyWsaA/Y4zLjOIBzyu5A96Ulr
-         JG6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVH7cRVasP0d43qpWzbQbrSFUjvU/kaq3RDd3ThlzOSAY8zX05TSH4a8BkKmISW9fmQwar/tcuSLIPR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7ie6cGXe+qsgW1JcEurn7UAsWfUG7lS90sqT73XjPfo8IUM12
-	P+e1cYoI19cSvtgR2vEL5FY0+JD04gNT8QHluKVNTR9fMYs5JDmDEcT6NTHAlFRRE/o=
-X-Gm-Gg: ATEYQzzp0XjeavKrdp3K265IVi+pbdLNSWOU+sJJEo/lQfHZ35B92ZJ2p3/VEHMMhfa
-	gN4mdykJLB3mf/A53cid0zlqpXpDPkyYAh7ZAd9e0KRWpZR7FBpM0IC0k3SBIfUYAjuQiPNzTO/
-	4c8g45veBZi78x+rllPzt0WSJSaMcH4ch3IZGOGxIO89NqiDC1lu6yQPIKt7xvWaV8otye/kz6/
-	m1NfNDJ3WPrzHuGO/DgDCl/0+H6doL0dyJSqldMNUUkCG4cHFW3s+KNNKi8onU+LmqwRXC539HV
-	gN3guT3JFCwGGZssnu3Gt21x7iJ0z3zuFxLxH2PR7otN7I+3tUFP2EA9/N/nuFp/m4B3j7RMDcG
-	T0KgVf1mw8qAne6/I9egq9XlrcPcKx2jMANpSNPulxjfGhkO3aXwuH89GHZOYV0Sx5qX8gqaUTA
-	haU6MpmvVoDxK9SrB9+nKwv7ndjFP0p9Uj/s/Pr1gCBWDqRmIv6lFZenf2opyJO0BQ0mpWJXvcC
-	W+htQPDyQ==
-X-Received: by 2002:a05:6808:320b:b0:462:d9a2:84e1 with SMTP id 5614622812f47-464463ef61fmr8794809b6e.60.1772075731397;
-        Wed, 25 Feb 2026 19:15:31 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4160cf9b240sm786090fac.8.2026.02.25.19.15.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Feb 2026 19:15:30 -0800 (PST)
-Message-ID: <44e3e9ea-350b-4357-ba50-726e506feab5@kernel.dk>
-Date: Wed, 25 Feb 2026 20:15:28 -0700
+	s=arc-20240116; t=1772092807; c=relaxed/simple;
+	bh=q51EvZLYVH3v7aiWXdLBUUBLmMdEbsHbEaog+fCHYQ0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gO3THGIbwvetFP0SG8fsNxsKBvr4cMoRgZAoxr5OoW02MbQSCnpREsfLO5kzNxbhK5jIqCh+BLZQJVfYeYEbeQZoYc2mb1DoBnKt9bWOxHPxDgkS1fDW8He1CjQLV07ryIj5+Rvr5U17Vi7J4zVkWPOboUQTC06AKsls+wA6Jqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f/VjVtCh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE9CC19422;
+	Thu, 26 Feb 2026 08:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772092806;
+	bh=q51EvZLYVH3v7aiWXdLBUUBLmMdEbsHbEaog+fCHYQ0=;
+	h=From:To:Subject:Date:From;
+	b=f/VjVtChblPTNjIWGwsM6HMZ6YqSWQPgoPYA71Xex7NTgobNhhDr7fCkERNrfCSNh
+	 N7wnA0WYrcP6dB8z8iSOO+aaBqp57/8F791OshwMk2W0BuhmRi7vDNNF4rztMcNK+v
+	 32imInv5Oxf5zyjxMuzDeJhnks7M0kWdgaJ9uhDE3VegZNF2Csps6rg0TSp5Mag3t3
+	 irPLIWXzBNpq14fZXqgBPqu8121Uj/5fC+9A80zemp8A0dOYdytGBNJXjc8Bgzmp5Z
+	 7vjGAe44dE0B2EtjnKRo71Tykfpp+dcW2ylCoQjn0dB4ce09WEFDENLIrHhajXWYFo
+	 tEsLwMxg2t78g==
+From: Damien Le Moal <dlemoal@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org,
+	Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai@fnnas.com>,
+	linux-raid@vger.kernel.org,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	linux-ext4@vger.kernel.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chris Li <chrisl@kernel.org>,
+	Kairui Song <kasong@tencent.com>,
+	linux-mm@kvack.org
+Subject: [PATCH] block: remove bdev_nonrot()
+Date: Thu, 26 Feb 2026 16:54:48 +0900
+Message-ID: <20260226075448.2229655-1-dlemoal@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 1/2] filemap: defer dropbehind invalidation from
- IRQ context
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Tal Zussman <tz2294@columbia.edu>,
- "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>,
- Yuezhang Mo <yuezhang.mo@sony.com>, Dave Kleikamp <shaggy@kernel.org>,
- Ryusuke Konishi <konishi.ryusuke@gmail.com>,
- Viacheslav Dubeyko <slava@dubeyko.com>,
- Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
- Bob Copeland <me@bobcopeland.com>, Andrew Morton
- <akpm@linux-foundation.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
- linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
- linux-karma-devel@lists.sourceforge.net, linux-mm@kvack.org,
- "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-References: <20260225-blk-dontcache-v2-0-70e7ac4f7108@columbia.edu>
- <20260225-blk-dontcache-v2-1-70e7ac4f7108@columbia.edu>
- <c8078a80-f801-4f8a-b3cd-e2ccbfca1def@kernel.dk>
- <aZ-2G_6lDZePLSyx@casper.infradead.org>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <aZ-2G_6lDZePLSyx@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel-dk.20230601.gappssmtp.com:s=20230601];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14029-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kernel.dk];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[columbia.edu,gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,samsung.com,sony.com,dubeyko.com,paragon-software.com,bobcopeland.com,linux-foundation.org,vger.kernel.org,lists.sourceforge.net,lists.linux.dev,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[25];
+	TAGGED_FROM(0.00)[bounces-14030-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel-dk.20230601.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,linux-ext4@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.992];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dlemoal@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kernel-dk.20230601.gappssmtp.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kernel.dk:mid]
-X-Rspamd-Queue-Id: 9FF891A066A
+	TAGGED_RCPT(0.00)[linux-ext4];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0FF261A2362
 X-Rspamd-Action: no action
 
-On 2/25/26 7:55 PM, Matthew Wilcox wrote:
-> On Wed, Feb 25, 2026 at 03:52:41PM -0700, Jens Axboe wrote:
->> How well does this scale? I did a patch basically the same as this, but
->> not using a folio batch though. But the main sticking point was
->> dropbehind_lock contention, to the point where I left it alone and
->> thought "ok maybe we just do this when we're done with the awful
->> buffer_head stuff". What happens if you have N threads doing IO at the
->> same time to N block devices? I suspect it'll look absolutely terrible,
->> as each thread will be banging on that dropbehind_lock.
->>
->> One solution could potentially be to use per-cpu lists for this. If you
->> have N threads working on separate block devices, they will tend to be
->> sticky to their CPU anyway.
-> 
-> Back in 2021, I had Vishal look at switching the page cache from using
-> hardirq-disabling locks to softirq-disabling locks [1].  Some of the
-> feedback (which doesn't seem to be entirely findable on the lists ...)
-> was that we'd be better off punting writeback completion from interrupt
-> context to task context and going from spin_lock_irq() to spin_lock()
-> rather than going to spin_lock_bh().
-> 
-> I recently saw something (possibly XFS?) promoting this idea again.
-> And now there's this.  Perhaps the time has come to process all
-> write-completions in task context, rather than everyone coming up with
-> their own workqueues to solve their little piece of the problem?
+bdev_nonrot() is simply the negative return value of bdev_rot().
+So replace all call sites of bdev_nonrot() with calls to bdev_rot()
+and remove bdev_nonrot().
 
-Perhaps, even though the punting tends to suck... One idea I toyed with
-but had to abandon due to fs freezeing was letting callers that process
-completions in task context anyway just do the necessary work at that
-time. There's literally nothing worse than having part of a completion
-happen in IRQ, then punt parts of that to a worker, and need to wait for
-the worker to finish whatever it needs to do - only to then wake the
-target task. We can trivially do this in io_uring, as the actual
-completion is posted from the task itself anyway. We just need to have
-the task do the bottom half of the completion as well, rather than some
-unrelated kthread worker.
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+---
+ drivers/md/raid1.c                  | 2 +-
+ drivers/md/raid10.c                 | 2 +-
+ drivers/md/raid5.c                  | 2 +-
+ drivers/target/target_core_file.c   | 2 +-
+ drivers/target/target_core_iblock.c | 2 +-
+ fs/btrfs/volumes.c                  | 4 ++--
+ fs/ext4/mballoc-test.c              | 2 +-
+ fs/ext4/mballoc.c                   | 2 +-
+ include/linux/blkdev.h              | 5 -----
+ mm/swapfile.c                       | 2 +-
+ 10 files changed, 10 insertions(+), 15 deletions(-)
 
-I'd be worried a generic solution would be the worst of all worlds, as
-it prevents optimizations that happen in eg iomap and other spots, where
-only completions that absolutely need to happen in task context get
-punted. There's a big difference between handling a completion inline vs
-needing a round-trip to some worker to do it.
-
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index 181400e147c0..cda6af0712b9 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -1878,7 +1878,7 @@ static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
+ 	if (info->rdev)
+ 		return false;
+ 
+-	if (bdev_nonrot(rdev->bdev)) {
++	if (!bdev_rot(rdev->bdev)) {
+ 		set_bit(Nonrot, &rdev->flags);
+ 		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
+ 	}
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index 0653b5d8545a..cfbd345805ca 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -806,7 +806,7 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+ 		if (!do_balance)
+ 			break;
+ 
+-		nonrot = bdev_nonrot(rdev->bdev);
++		nonrot = !bdev_rot(rdev->bdev);
+ 		has_nonrot_disk |= nonrot;
+ 		pending = atomic_read(&rdev->nr_pending);
+ 		if (min_pending > pending && nonrot) {
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index a8e8d431071b..ba9d6d05b089 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -7541,7 +7541,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
+ 	rdev_for_each(rdev, mddev) {
+ 		if (test_bit(Journal, &rdev->flags))
+ 			continue;
+-		if (bdev_nonrot(rdev->bdev)) {
++		if (!bdev_rot(rdev->bdev)) {
+ 			conf->batch_bio_dispatch = false;
+ 			break;
+ 		}
+diff --git a/drivers/target/target_core_file.c b/drivers/target/target_core_file.c
+index 3ae1f7137d9d..d6e3e5214652 100644
+--- a/drivers/target/target_core_file.c
++++ b/drivers/target/target_core_file.c
+@@ -173,7 +173,7 @@ static int fd_configure_device(struct se_device *dev)
+ 		 */
+ 		dev->dev_attrib.max_write_same_len = 0xFFFF;
+ 
+-		if (bdev_nonrot(bdev))
++		if (!bdev_rot(bdev))
+ 			dev->dev_attrib.is_nonrot = 1;
+ 	} else {
+ 		if (!(fd_dev->fbd_flags & FBDF_HAS_SIZE)) {
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index 3c92f94497b4..1087d1d17c36 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -148,7 +148,7 @@ static int iblock_configure_device(struct se_device *dev)
+ 	else
+ 		dev->dev_attrib.max_write_same_len = 0xFFFF;
+ 
+-	if (bdev_nonrot(bd))
++	if (!bdev_rot(bd))
+ 		dev->dev_attrib.is_nonrot = 1;
+ 
+ 	target_configure_write_atomic_from_bdev(&dev->dev_attrib, bd);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 6fb0c4cd50ff..c6e49eb74f3a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -694,7 +694,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 			set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+ 	}
+ 
+-	if (!bdev_nonrot(file_bdev(bdev_file)))
++	if (bdev_rot(file_bdev(bdev_file)))
+ 		fs_devices->rotating = true;
+ 
+ 	if (bdev_max_discard_sectors(file_bdev(bdev_file)))
+@@ -2919,7 +2919,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 
+ 	atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
+ 
+-	if (!bdev_nonrot(device->bdev))
++	if (bdev_rot(device->bdev))
+ 		fs_devices->rotating = true;
+ 
+ 	orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
+diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+index 9fbdf6a09489..b9f22e3a8d5c 100644
+--- a/fs/ext4/mballoc-test.c
++++ b/fs/ext4/mballoc-test.c
+@@ -72,7 +72,7 @@ static int mbt_mb_init(struct super_block *sb)
+ 	ext4_fsblk_t block;
+ 	int ret;
+ 
+-	/* needed by ext4_mb_init->bdev_nonrot(sb->s_bdev) */
++	/* needed by ext4_mb_init->bdev_rot(sb->s_bdev) */
+ 	sb->s_bdev = kzalloc_obj(*sb->s_bdev);
+ 	if (sb->s_bdev == NULL)
+ 		return -ENOMEM;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 20e9fdaf4301..8a4dfe19878c 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3836,7 +3836,7 @@ int ext4_mb_init(struct super_block *sb)
+ 		spin_lock_init(&lg->lg_prealloc_lock);
+ 	}
+ 
+-	if (bdev_nonrot(sb->s_bdev))
++	if (!bdev_rot(sb->s_bdev))
+ 		sbi->s_mb_max_linear_groups = 0;
+ 	else
+ 		sbi->s_mb_max_linear_groups = MB_DEFAULT_LINEAR_LIMIT;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index d463b9b5a0a5..e439d6fa8484 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -1467,11 +1467,6 @@ static inline bool bdev_rot(struct block_device *bdev)
+ 	return blk_queue_rot(bdev_get_queue(bdev));
+ }
+ 
+-static inline bool bdev_nonrot(struct block_device *bdev)
+-{
+-	return !bdev_rot(bdev);
+-}
+-
+ static inline bool bdev_synchronous(struct block_device *bdev)
+ {
+ 	return bdev->bd_disk->queue->limits.features & BLK_FEAT_SYNCHRONOUS;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 94af29d1de88..60e21414624b 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3460,7 +3460,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	if (si->bdev && bdev_synchronous(si->bdev))
+ 		si->flags |= SWP_SYNCHRONOUS_IO;
+ 
+-	if (si->bdev && bdev_nonrot(si->bdev)) {
++	if (si->bdev && !bdev_rot(si->bdev)) {
+ 		si->flags |= SWP_SOLIDSTATE;
+ 	} else {
+ 		atomic_inc(&nr_rotate_swap);
 -- 
-Jens Axboe
+2.53.0
+
 
