@@ -1,57 +1,57 @@
-Return-Path: <linux-ext4+bounces-14062-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14063-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YIK3FWddoGm3igQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14062-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:11 +0100
+	id UK05BYJdoGm3igQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14063-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:38 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70891A7E16
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE8841A7E53
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 15:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7207030C9884
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:42:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 154F330F3B4A
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 14:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C993D7D64;
-	Thu, 26 Feb 2026 14:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02ACC3D9033;
+	Thu, 26 Feb 2026 14:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SGl5jDk4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSldUeAx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682F73D3CE5;
-	Thu, 26 Feb 2026 14:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CF83279DC3;
+	Thu, 26 Feb 2026 14:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772116923; cv=none; b=YLhfSfjFNWAdvatZMWfh6K4Uuxuk8eL7B7xNvdYJ83IixLM3wAGYCopVWak3eKFxAsLN2Dqqf5j+e/T0ZD3YoBAkd0pN83+8UuQq986yr/CrThMqXgubh4VKrKhF65qs7N+TU68phlPesK90xTl7o2kU2C/a1/u76n+Qp1cy+MM=
+	t=1772116924; cv=none; b=Qurr/sLGqS4tF2ZrKGX3JmhS7B/28AvyZfnBhG5E/dEVuACrHMa1MIpXp4bmjYamM0Nhgrs0D6QeQCdK6j/412isWpDoaTUD1rSBgBpXsjCtGbjkxzt2PKMyTNi+9efwrAZtaIwv7HemZzbQ98iVutkiBiZAqU7YLMytVRhHlvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772116923; c=relaxed/simple;
-	bh=baTYamRuAKpIdQOrHW78YSXw8bc/YChuG27OL7s8lFY=;
+	s=arc-20240116; t=1772116924; c=relaxed/simple;
+	bh=H/nqtmCCJ+Q0fwzcG5GEomLy14KL0XNtpnUB0zMIE3M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=euO8OydXX1K8OybQ2MLnYj4dons+jhPW5m4Il1dHDLhROCNnfMYCxmzm/W7Q/I/pZIyAjSPHXZm6rucYw0qXHuxSdCjrIK2mRa3t+6iiP60lUcyrqTsk8lKHwv/OoZ1hYYZI8ZON8OoXUqqxH8y2EYNjV160WKbOnOpvOmgWhBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SGl5jDk4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25960C19422;
-	Thu, 26 Feb 2026 14:42:01 +0000 (UTC)
+	 MIME-Version; b=o8vHXdIAxm/8DPqJKw4BgU9t+LlFg5/cc6VwKzDiyimL9DwNctKlz1vl+e+aplbyGUMlxgN8LtXVaTBL1pV4hL9FSEQ751RcqqEOrz5arrXJF/D1ve0+NlP5X+6r/FOQaXxSRYUZLvE7UqGmKA4BFBLG0zsGlAa//q24YiizCOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSldUeAx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B15C116C6;
+	Thu, 26 Feb 2026 14:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772116923;
-	bh=baTYamRuAKpIdQOrHW78YSXw8bc/YChuG27OL7s8lFY=;
+	s=k20201202; t=1772116924;
+	bh=H/nqtmCCJ+Q0fwzcG5GEomLy14KL0XNtpnUB0zMIE3M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SGl5jDk4YOcQX0h+xL8oP1MOKUSbLcrCTKNPRHWeqAdR9DmhDvmiJ4PL4tVT86IOI
-	 RUqBmQ/5RK/aTz9XUoLDXz3ils5ndtIFMter/RWQ81RVeeGW8b2vrf1LW09gcAqH+3
-	 //U3128Z5cAVJmbTfnF4OJMgbte9WDnU/00Xtcu1xSYovdnznQGAYwU4DoOwSDbJYI
-	 o5iLBHXX2g+c2oVvhw8piMG+RuDTHYrfvdVihsmEg0XebHazKaXkQjCH6XjkDX72BB
-	 wRVpnfCPOuc69154UcRmhWqdV87/YeRz8HK0wkJeHGzeNUm+621nVQRS31+lSDXanp
-	 oga3h90C/+QKQ==
+	b=WSldUeAxqqxJxNo9Zz9nWNl38O1OaROEZ3/66HxvusaOZIGsTNPfWLPPAPStJYXu+
+	 KxZgXK7ti+BuKqNwosDhsYHI7glE24Z+1MT8U/dJ4O2dU++FaoOwcc9KIPmapTlxtu
+	 nzZcFmOs/BMqhUUXg6ROdwbgZvZFJKnWMWq78tiGiNoHSnIw+Ha8n5AZoaWkVDeWtw
+	 2Ocpz9/bv/kalC98zNpLi2UFAIVRp8TT1koq+22gUWC6+gErtc9md3TH8phaKT8cQg
+	 I51P5/1mH+tEVM6uk0nKfn4W85Vtk0kDMFpPyadO+mg5Hv7Isujs5yB58hOby2WQos
+	 coEm1puPBBqhw==
 From: Anand Jain <asj@kernel.org>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org
-Subject: [PATCH 1/9] fstests: allow SCRATCH_DEV_POOL for non-Btrfs filesystems
-Date: Thu, 26 Feb 2026 22:41:42 +0800
-Message-ID: <9dd001e84a8f78be3be7c8b539f3d17e5eb8c981.1772095513.git.asj@kernel.org>
+Subject: [PATCH 2/9] fstests: add _mkfs_scratch_clone() helper
+Date: Thu, 26 Feb 2026 22:41:43 +0800
+Message-ID: <254fdd3e212f6618ea33207ef24db2b316d2d8fc.1772095513.git.asj@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1772095513.git.asj@kernel.org>
 References: <cover.1772095513.git.asj@kernel.org>
@@ -68,13 +68,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14062-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14063-lists,linux-ext4=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -87,46 +87,63 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E70891A7E16
+X-Rspamd-Queue-Id: BE8841A7E53
 X-Rspamd-Action: no action
 
-Tests for cloned device verification should pass on Btrfs, XFS, and ext4.
-We need 2 scratch devices, allow SCRATCH_DEV_POOL for other FSs.
+Introduce _mkfs_scratch_clone() to mkfs the scratch device and clone it to
+the next device in SCRATCH_DEV_POOL.
 
 Signed-off-by: Anand Jain <asj@kernel.org>
 ---
- common/rc | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ common/rc | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/common/rc b/common/rc
-index 92cb69820311..9db8b3e88996 100644
+index 9db8b3e88996..2253438ef0f6 100644
 --- a/common/rc
 +++ b/common/rc
-@@ -3990,18 +3990,9 @@ _require_scratch_dev_pool()
- 		ndevs=$1
- 	fi
+@@ -1503,6 +1503,38 @@ _scratch_resvblks()
+ 	esac
+ }
  
--	# btrfs test case needs ndevs or more scratch_dev_pool; other FS not sure
--	# so fail it
--	case $FSTYP in
--	btrfs)
--		if [ "`echo $SCRATCH_DEV_POOL|wc -w`" -lt $ndevs ]; then
--			_notrun "btrfs and this test needs $ndevs or more disks in SCRATCH_DEV_POOL"
--		fi
--	;;
--	*)
--		_notrun "dev_pool is not supported by fstype \"$FSTYP\""
--	;;
--	esac
-+	if [ "`echo $SCRATCH_DEV_POOL|wc -w`" -lt $ndevs ]; then
-+		_notrun "This test needs $ndevs or more disks in SCRATCH_DEV_POOL"
++_scratch_mkfs_sized_clone()
++{
++	local devs=($SCRATCH_DEV_POOL)
++	local scratch_data="$1"
++	local size=$(_small_fs_size_mb 128) # Smallest possible
++
++	size=$((size * 1024 * 1024))
++
++	# make sure there are two devices
++	if [ "${#devs[@]}" -ne 2 ]; then
++		_notrun "Test requires exactly 2 devices"
 +	fi
++
++	case "$FSTYP" in
++	"btrfs")
++		_scratch_mkfs_sized $size
++		_scratch_mount
++		$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/sv1
++		_scratch_unmount
++		;;
++	"xfs"|"ext4")
++		_scratch_mkfs_sized $size
++		;;
++	*)
++		_notrun "fstests clone op unsupported for FS $FSTYP"
++		;;
++	esac
++
++	# clone SCRATCH_DEV devs[0] to devs[1].
++	dd if=$SCRATCH_DEV of=${devs[1]} bs=$size status=none count=1 || \
++							_fail "Clone failed"
++}
  
- 	for i in $SCRATCH_DEV_POOL; do
- 		if [ "`_is_block_dev "$i"`" = "" ]; then
+ # Repair scratch filesystem.  Returns 0 if the FS is good to go (either no
+ # errors found or errors were fixed) and nonzero otherwise; also spits out
 -- 
 2.43.0
 
