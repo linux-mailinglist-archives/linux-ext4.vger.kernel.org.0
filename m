@@ -1,233 +1,231 @@
-Return-Path: <linux-ext4+bounces-14172-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14173-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ULWKGpOsoGlulgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14172-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 21:26:59 +0100
+	id eABrOty1oGnClwQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14173-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 22:06:36 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B7A1AF198
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 21:26:58 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E5FA1AF69D
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 22:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 230E63061ACB
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 20:22:49 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BA9113016ACD
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Feb 2026 21:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07ED466B51;
-	Thu, 26 Feb 2026 20:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UQrL6ITS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9A7423A8E;
+	Thu, 26 Feb 2026 21:06:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from lithops.sigma-star.at (mailout.nod.at [116.203.167.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8D044D68A
-	for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 20:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1D91DE8BE;
+	Thu, 26 Feb 2026 21:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.167.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772137367; cv=none; b=fSnUBv4lpCUQrB3P5OYNd6ZeHt+BAAegQJCeeT26t/xjHaf5cfx3cJMLK6OrEw5uENST/t3/Q5wX+1UI0qQM9nCCNa362aZK4EQ31R+R/qHVyZLwWeX1Ge0oLA38SpUyCgGM8gdd2Qw6KQ6UH+62BXogsMQvq/Sesnfl7x892TQ=
+	t=1772139978; cv=none; b=GZxO36JFXC7sEdPDrTGwLkw6SSwZT5hsTdW3a46s7P7H/mM0ZdPHW8x6vgGAYobPVPYiU5s9ftCZBA9qyvdnLOP4dWXy0OSkxde+Ljc1vybuQaXeBvhMrRiiTaPqxZrCJyu3uIZSfdZmpF4PSEU2LidooiOzQQxpsby6IBJAFp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772137367; c=relaxed/simple;
-	bh=goH8RCwy3vIyoMa9jRYpSrn5Zkp3LvqVeAVfYxxYTvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E10B0MiyDtQeF0oBnjoipsgzQxi4o6DQOrsyeryGZwybUTc3m4D1e+y3bfbUc9BncKlpoOnz+uAM7PndZqyy7CgJAGQDLTzlX6NZq6aRuP8DQllcN6OCb9trfebWeCUvPM6WVnNuM5z0GH+drZe3I145qFKSGm7EcMQ+SURPZT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UQrL6ITS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772137365;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yWZNpYzf4Dqw3i94iV7fiiH7gq94n6HGTsUtIH3AsWA=;
-	b=UQrL6ITSY0feq6fQVCgBdMT6y2tRwg88mtZCdMVQYJiu+sQreuW9bZmFgdFPyN7MQBgWYP
-	XtV1JUYsZtP+Iw4pPWJ06lSdXNhIu8k7Lp3PXYOz6QbfT59mKTWKrSKEhCdifaFweWzRdm
-	/Te0yaQF+uLEkN8reeX1ENV6qtLJqeU=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-397-XAF75V7rOmW6OA1s9pG8XQ-1; Thu,
- 26 Feb 2026 15:22:41 -0500
-X-MC-Unique: XAF75V7rOmW6OA1s9pG8XQ-1
-X-Mimecast-MFC-AGG-ID: XAF75V7rOmW6OA1s9pG8XQ_1772137360
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 339CB1956064;
-	Thu, 26 Feb 2026 20:22:39 +0000 (UTC)
-Received: from bfoster (unknown [10.22.80.229])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3E41019560B5;
-	Thu, 26 Feb 2026 20:22:36 +0000 (UTC)
-Date: Thu, 26 Feb 2026 15:22:32 -0500
-From: Brian Foster <bfoster@redhat.com>
-To: Morduan Zang <zhangdandan@uniontech.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, willy@infradead.org
-Subject: Re: [PATCH] mm: fix pagecache_isize_extended() early-return bypass
- for large folio mappings
-Message-ID: <aaCriOt-CDs4sciP@bfoster>
-References: <20240919160741.208162-3-bfoster@redhat.com>
- <3F3A46783F8E9D52+20260226133149.79586-1-zhangdandan@uniontech.com>
+	s=arc-20240116; t=1772139978; c=relaxed/simple;
+	bh=bEoBogC1VzaZVt9sFWvD/EyoNIxugjqj7GsKHA+l8e0=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=LhEwLIxr9MnpeOM/eRPF6bw/q9aQtW5lvqgYzTKStiYS9M+c/6YwY4oz55DTSJIKXXRWuMLR41WZ9vyURfow0qwZzrOdJ/hMoINPhZxyFQVEAYnuCeYCOTo/PP7J1zo0tRk6s0fY1l0JhdMQTrjgpRae1S1AftOKjY+Oj64D9/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=116.203.167.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 4443729ABCA;
+	Thu, 26 Feb 2026 22:06:13 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id q-09uAsPH7el; Thu, 26 Feb 2026 22:06:11 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B7BFC29859E;
+	Thu, 26 Feb 2026 22:06:10 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id QvCFCS-3rI0s; Thu, 26 Feb 2026 22:06:09 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1868E298580;
+	Thu, 26 Feb 2026 22:06:08 +0100 (CET)
+Date: Thu, 26 Feb 2026 22:06:07 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, 
+	mhiramat <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	dan j williams <dan.j.williams@intel.com>, 
+	Matthew Wilcox <willy@infradead.org>, 
+	Eric Biggers <ebiggers@kernel.org>, tytso <tytso@mit.edu>, 
+	Muchun Song <muchun.song@linux.dev>, 
+	Oscar Salvador <osalvador@suse.de>, 
+	David Hildenbrand <david@kernel.org>, 
+	David Howells <dhowells@redhat.com>, 
+	Paulo Alcantara <pc@manguebit.org>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Trond Myklebust <trondmy@kernel.org>, anna <anna@kernel.org>, 
+	chuck lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
+	Olga Kornievskaia <okorniev@redhat.com>, 
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
+	Steve French <sfrench@samba.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
+	Shyam <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Alexander Aring <alex.aring@gmail.com>, 
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+	Viacheslav Dubeyko <slava@dubeyko.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	David Sterba <dsterba@suse.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, raven <raven@themaw.net>, 
+	Luis de Bethencourt <luisbg@kernel.org>, 
+	Salah Triki <salah.triki@gmail.com>, 
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>, 
+	Ilya Dryomov <idryomov@gmail.com>, 
+	Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, 
+	coda@cs.cmu.edu, Nicolas Pitre <nico@fluxnic.net>, 
+	Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Yangtao Li <frank.li@vivo.com>, 
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, 
+	David Woodhouse <dwmw2@infradead.org>, 
+	Dave Kleikamp <shaggy@kernel.org>, 
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, 
+	Mike Marshall <hubcap@omnibond.com>, 
+	Martin Brandenburg <martin@omnibond.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, 
+	chengzhihao1 <chengzhihao1@huawei.com>, 
+	Damien Le Moal <dlemoal@kernel.org>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, 
+	Johannes Thumshirn <jth@kernel.org>, 
+	John Johansen <john.johansen@canonical.com>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, 
+	Mimi Zohar <zohar@linux.ibm.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, 
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, 
+	Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>, 
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
+	sumit semwal <sumit.semwal@linaro.org>, 
+	edumazet <edumazet@google.com>, 
+	Kuniyuki Iwashima <kuniyu@google.com>, pabeni <pabeni@redhat.com>, 
+	Willem de Bruijn <willemb@google.com>, davem <davem@davemloft.net>, 
+	kuba <kuba@kernel.org>, Simon Horman <horms@kernel.org>, 
+	oleg <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	mingo <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@linaro.org>, 
+	"Darrick J. Wong" <djwong@kernel.org>, 
+	Martin Schiller <ms@dev.tdt.de>, 
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, 
+	nvdimm@lists.linux.dev, fsverity@lists.linux.dev, 
+	linux-mm <linux-mm@kvack.org>, netfs@lists.linux.dev, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, 
+	linux-f2fs-devel <linux-f2fs-devel@lists.sourceforge.net>, 
+	linux-nfs <linux-nfs@vger.kernel.org>, 
+	linux-cifs <linux-cifs@vger.kernel.org>, 
+	samba-technical <samba-technical@lists.samba.org>, 
+	linux-nilfs <linux-nilfs@vger.kernel.org>, 
+	v9fs <v9fs@lists.linux.dev>, 
+	linux-afs <linux-afs@lists.infradead.org>, autofs@vger.kernel.org, 
+	ceph-devel <ceph-devel@vger.kernel.org>, codalist@coda.cs.cmu.edu, 
+	ecryptfs <ecryptfs@vger.kernel.org>, 
+	linux-mtd <linux-mtd@lists.infradead.org>, 
+	jfs-discussion <jfs-discussion@lists.sourceforge.net>, 
+	ntfs3 <ntfs3@lists.linux.dev>, 
+	ocfs2-devel <ocfs2-devel@lists.linux.dev>, 
+	devel <devel@lists.orangefs.org>, 
+	linux-unionfs <linux-unionfs@vger.kernel.org>, 
+	apparmor@lists.ubuntu.com, 
+	LSM <linux-security-module@vger.kernel.org>, 
+	linux-integrity <linux-integrity@vger.kernel.org>, 
+	selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
+	DRI mailing list <dri-devel@lists.freedesktop.org>, 
+	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org, 
+	netdev <netdev@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-fscrypt <linux-fscrypt@vger.kernel.org>, 
+	linux-xfs <linux-xfs@vger.kernel.org>, linux-hams@vger.kernel.org, 
+	linux-x25@vger.kernel.org
+Message-ID: <909001762.1963.1772139967060.JavaMail.zimbra@nod.at>
+In-Reply-To: <20260226-iino-u64-v1-47-ccceff366db9@kernel.org>
+References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org> <20260226-iino-u64-v1-47-ccceff366db9@kernel.org>
+Subject: Re: [PATCH 47/61] ubifs: update format strings for u64 i_ino
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3F3A46783F8E9D52+20260226133149.79586-1-zhangdandan@uniontech.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF147 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: update format strings for u64 i_ino
+Thread-Index: W1YwJFGUiVxHsVs+FtVDAklXBDhaRQ==
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14172-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bfoster@redhat.com,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.org];
+	DMARC_NA(0.00)[nod.at];
+	TAGGED_FROM(0.00)[bounces-14173-lists,linux-ext4=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[8];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C2B7A1AF198
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[richard@nod.at,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[145];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.913];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nod.at:mid,nod.at:email]
+X-Rspamd-Queue-Id: 8E5FA1AF69D
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 09:31:49PM +0800, Morduan Zang wrote:
-> pagecache_isize_extended() has two early-return guards that were designed
-> for the traditional sub-page block-size case:
-> 
->   Guard 1:  if (from >= to || bsize >= PAGE_SIZE)
->                 return;
-> 
->   Guard 2:  rounded_from = round_up(from, bsize);
->             if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
->                 return;
-> 
-> Guard 1 was originally "bsize == PAGE_SIZE" and was widened to
-> "bsize >= PAGE_SIZE" by commit 2ebe90dab980 ("mm: convert
-> pagecache_isize_extended to use a folio").  The rationale is correct
-> for the traditional buffer_head path: when the block size equals the page
-> size, every folio covers exactly one block, so writeback's EOF handling
-> (e.g. iomap_writepage_handle_eof()) zeros the post-EOF tail of the folio
-> before writing it out, and no action is needed here.
-> 
-> Guard 2 covers the case where @from rounded up to the next block boundary
-> is already PAGE_SIZE-aligned, meaning no hole block straddles a page
-> boundary.
-> 
-> Both guards are correct for the traditional case.  However, commit
-> 52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
-> added post-EOF zeroing inside pagecache_isize_extended() to
-> handle dirty folios that will not go through writeback before the new
-> i_size becomes visible.  That zeroing code is placed after both guards,
-> so it is unreachable whenever either guard fires.
-> 
-> The same stale-data window is also covered by xfstests generic/363
-> which uses fsx with "-e 1" (EOF pollution mode) and exercises a broad
-> range of size-changing operations.
-> 
-
-Hi Morduan,
-
-So looking back at the original cover letter for this, this bit was for
-the case where we had a dirty folio in pagecache that might be partially
-hole backed due to eof, therefore fs zeroing might not occur.  Hence we
-do the page zeroing here before exposing this range to the file (i.e.
-that writeback would have done if the folio were clean).
-
-I thought at the time this plus the ext4 patch covered the bases for
-generic/363 on ext4. You refer to this test above but don't mention if
-it fails. Do you reproduce a failure with that test, or is this
-something discovered by inspection?
-
-> Fixes: 52aecaee1c26 ("mm: zero range of eof folio exposed by inode size extension")
-> Fixes: 2ebe90dab980 ("mm: convert pagecache_isize_extended to use a folio")
-> Signed-off-by: Morduan Zang <zhangdandan@uniontech.com>
+----- Urspr=C3=BCngliche Mail -----
+> Von: "Jeff Layton" <jlayton@kernel.org>
+> Update format strings and local variable types in ubifs for the
+> i_ino type change from unsigned long to u64.
+>=20
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 > ---
->  mm/truncate.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index 12467c1bd711..d3e473a206b3 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -847,13 +847,32 @@ void pagecache_isize_extended(struct inode *inode, loff_t from, loff_t to)
->  
->  	WARN_ON(to > inode->i_size);
->  
-> -	if (from >= to || bsize >= PAGE_SIZE)
-> +	if (from >= to)
->  		return;
-> +
-> +	/*
-> +	 * For filesystems with bsize >= PAGE_SIZE, the traditional buffer_head
-> +	 * path handles post-EOF zeroing correctly at writeback time. However,
-> +	 * with large folios enabled, a single folio can span multiple PAGE_SIZE
-> +	 * blocks, so mmap writes beyond EOF within the same folio are not zeroed
-> +	 * at writeback time before i_size is extended. We must handle this here.
-> +	 */
-> +	if (bsize >= PAGE_SIZE) {
-> +		/*
-> +		 * Only needed if the mapping supports large folios, since otherwise
-> +		 * each folio is exactly one page and writeback handles EOF zeroing.
-> +		 */
-> +		if (!mapping_large_folio_support(inode->i_mapping))
-> +			return;
+> fs/ubifs/debug.c   |  8 ++++----
+> fs/ubifs/dir.c     | 28 ++++++++++++++--------------
+> fs/ubifs/file.c    | 28 ++++++++++++++--------------
+> fs/ubifs/journal.c |  6 +++---
+> fs/ubifs/super.c   | 16 ++++++++--------
+> fs/ubifs/tnc.c     |  4 ++--
+> fs/ubifs/xattr.c   | 14 +++++++-------
+> 7 files changed, 52 insertions(+), 52 deletions(-)
 
-Is there currently a case for bsize >= PAGE_SIZE &&
-!mapping_large_folio_support()? I thought there was a WIP for
-multi-block folios, but I wasn't sure if that actually worked anywhere.
+Acked-by: Richard Weinberger <richard@nod.at>
 
-> +		goto find_folio;
-> +	}
-> +
->  	/* Page straddling @from will not have any hole block created? */
->  	rounded_from = round_up(from, bsize);
->  	if (to <= rounded_from || !(rounded_from & (PAGE_SIZE - 1)))
->  		return;
->  
-
-If I understood this code correctly (and I very well may not), the
-purpose of this is to basically filter out cases where a dirty eof folio
-doesn't require a refault after the size update for the fs to fully
-populate it with blocks. If that is the case, this makes me wonder if
-perhaps this check should remain, but instead use folio_size() of the
-eof folio (if one exists)..?
-
-My understanding at one point was that we wouldn't have large eof folios
-that included a page aligned offset beyond eof, but I also feel like
-I've run into that once or twice when dealing with some other oddball fs
-related issues, so I'm not really clear on what the expected behavior is
-supposed to be there. Maybe it's a corner case (i.e. related to split
-failure or some such)..? That is probably a question for Willy..
-
-Brian
-
-> +find_folio:
->  	folio = filemap_lock_folio(inode->i_mapping, from / PAGE_SIZE);
->  	/* Folio not cached? Nothing to do */
->  	if (IS_ERR(folio))
-> -- 
-> 2.50.1
-> 
-> 
-
+Thanks,
+//richard
 
