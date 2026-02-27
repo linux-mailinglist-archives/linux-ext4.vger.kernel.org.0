@@ -1,302 +1,202 @@
-Return-Path: <linux-ext4+bounces-14209-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14210-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MMWMHvWgoWnEvAQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14209-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 14:49:41 +0100
+	id qN25OGi8oWmswAQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14210-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 16:46:48 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A6D61B7E20
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 14:49:40 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C3D1BA36C
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 16:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F1E8B303DF69
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 13:49:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1C43C30E50BA
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 15:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8AA3F0779;
-	Fri, 27 Feb 2026 13:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641F143CEFF;
+	Fri, 27 Feb 2026 15:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b="Dzq2gap1"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
+Received: from sonic304-21.consmr.mail.ne1.yahoo.com (sonic304-21.consmr.mail.ne1.yahoo.com [66.163.191.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5552D94AC
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 13:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EEF3D3006
+	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 15:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.191.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772200174; cv=none; b=KLKz56r1Cg0ao7mUmVqozdUAnFYRLKg7xvaTo92Vf4IClozVl9nw79FBuYeAasPlAWw5jX3hkw5dBqG0lFGtfa1HKfMt1hAU7STKRa0bNRNMTn6UV6j8I47oEPuvxL2GiTB65eCoatsom2oWCo6TEThmRhZujCjiLM5eqY9hbsg=
+	t=1772206662; cv=none; b=fXE9Q15A1lqyDM+UwPzyf45Is2dkBbfBUEndWvy9Z7cd/9vFzDpSK899HXNo+AOFNwX9Bipuo7jS07I1NKSu0By1nuwI5N9SZcEpFtDIZtcYvAhwr/LTxLvlzu4xw/XVzjtwZYhuqyCZnbUEpOQJIJiaz0qbC4hFO24eRFQ+jpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772200174; c=relaxed/simple;
-	bh=YMDMC8FEVtqZlH7IsvBTLPfDjmYHZyM6F6jDfk2fB5w=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=E+mfOmahGZN0VoU0bYPBRLywrLfNGCXc+j4lph9YiaRInUiMci5fEirQph70xFYyZ57dKrdY9Q5Sp37I2gQlAGe6TFSiehJBPwR1PW9byCRPbucvfI4UVbzGgCSYMfuI+WApJtPaR90/rT5laViTbzP7yiVSpiCt73JHNOTEEGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-678f3fef828so715799eaf.1
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 05:49:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772200171; x=1772804971;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t9GvV4edThET8ZS8pVmyfj1XanVmMwu7Dpx+u7H+L3Q=;
-        b=OzLL8RD0hWGtfbiyprahcXiDpObCntU7KcodXx1s0hyI0GlxTbqfT46FL9zIy6uHx3
-         QTWs05WdCTr/Ue8X8Fi9/Mmw9Shi0HtuWiGJoC3ZdEq/ldww1OLzDjxL+AHPdbCO3kDc
-         s1v9ExB1PlIdVi2YvGraIV/r1MTJ9ltQhVsluwAvx6/9i2CKGfpiNbXrJvR9WgFRmX0f
-         quYl4O5LrM1eodLWSiBT7QhsmN3g1Qt0Nxc9WfibG3+vIfu49R7cqPkeWB2jiSdtasWY
-         bSDOj0P0f0uXTGVGCNZ7S08/ldyL1ibi0X8Y0MrfXTpj68pLCU2n8PmwYmPSHD54LpbH
-         0DTw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMmUyn3KRE7h0mT9aX6FlwnbNlclZnfldIzTlIXomOTh7y3oBkcQ7tkDmkKkaF3JVePM6rSf2M4z8s@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywrvy6IHgpp4lGYG45ObgPwYb0V/gtsLQ23rWHfRIy466tBYtDY
-	N1ejCH2duh+3mw+pGo+Mc8eEn4faReBZ9o+MFNEJE8Pj2sZP1QvtU+p6EsGxRwelKLsk7WAuv5p
-	tbUDUisid0ufsKeG9XAPK2Qn1otvYJjxjCvM+beHbG2y6uT8DflwWcUishD4=
+	s=arc-20240116; t=1772206662; c=relaxed/simple;
+	bh=RapVb7BH+XK2subqtHq2u+14TIv+lNVtbIvsVoDVLEA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aV71AhNfSUNi5Kg6FMThbls1HJdkgUFglzwfCqZw7TamoA7OQGdwytRWbb3jU+BSYWhFYtFcKJ6FJB2OsGE1JsbtkNs2ZgkPzlsBVYoevl88BMpXl+Rk6OC1osu9AZ+kgUusoEIFRlffHpZV7fIeUTTmugpGHb/iUSrNc40rsjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com; spf=pass smtp.mailfrom=rocketmail.com; dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b=Dzq2gap1; arc=none smtp.client-ip=66.163.191.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rocketmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1772206660; bh=XoZFibiMoK98Hdn2fiBFquvQMiQpEw8kJwSX6qSl8sY=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Dzq2gap1bSrzjiTv1gNwciK8XIY0uqBZey0jzsCnf56NeCI0/CegOv5yBZLIdyWXucJ/IO8NPglrRS1QRLkxKomBzrvc8z6TLbMBIz1mqNw42ayYaFij0MpP1g50wgT/+gFqOq20PXC4VpCc2w2fsrdy8gUQ4ofSSVqqHSt5j5esDvt918bwXEB6kjq+xg5m5lti5sFxy3tiebZ/VG91nFTdNqZAOTfMyWyhh/fwiv2Htf2cDo2yhsSvlZ3VRws9YH2MJSQy9r736csM4rAf/2v1enpc/qOkGIKxmugusQmNNwePYJC+uBKBv3RjurAOMnaW2eSTeffzuLHm38Ao7g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1772206660; bh=ZBaS6fRQP3gsEX/yWmgWt6Sm0KJb6uv7oj/9C8KkkwQ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=UjEioDyMt6SroG/heqJC3ysjqqfSVbu0bY8Yl/YR9Q970msIIY3fhP7lZR5uGj51FdMZm0MXHOvlv9U02k3oELPcA+AwooCv6ZgG0JJ92RDEu/sykVy7htwomZ+kjUIadMbj7oat/1d4f4h5fgXz2JcrcliohEs+FOwr172Cos2lAagZGpm1ZRP7zBL1Q65r/O5v9QQLWvzQmXk0AaxbXsZFoXylYVffWW9LeboJ0TamXCGjvitXEc/tRyZgUClzKV/BM21rp0dZx0iALHdMCc+nsP6oM6bx7JUxw1m0LHaAM0ZJq8s55lJE7oX2PbN4CmYhdt8mZG+hxLPGG/r2Cg==
+X-YMail-OSG: gWEZVU8VM1leEryLpFUuj_5y23J90XoEuIIcEd3jswva5uCxblPeS3gizBaKDOD
+ 53KZgIPUCFuQLtoW48TMIIyT3_1N8nWJEI60PrUOMm.e0P3R8SbIMrUL99g9skMrrFBQhg_xgdCO
+ ggBH8T4eOjvgPvTZWLDqUxNUQvYvfWETlqmZg_8.w3dvjQqngPt.KsvUHRH_pDds8wB9qVYz4Hmz
+ CkvqDCYMTgPk6HA9EzBYhB2ueS.mJb.BrjVh1f3JG5vMAm61a3aI9kIxX43kmGxXzmOtZNT3kprw
+ sX2Qeui8IoiKaQCpxBWWmp5SoPf44FmGvzcB7iqajwOeUiMtm1j2yWeOANl9DaUZrLmgk_Fwfv_N
+ ukwobtd_R0nYF8P08H5usPhhsAiH50P.XfiDS8mwLPcT.sIMpp1OQF6b1hXAxL43EN0.6lbCDMbR
+ p8eFRfDDYZ78N8JfWALkwBjG5UKIp0GPkbSHBrGEBAlnFaJ4p0DcCoPTWW8Oc6uHe2LZ6LajdMNY
+ ndpzKwUmdfJXMf3sEiYIQWpEhOboBgVKwD._jkF2pmKzMUMoX0DnukvU0f.ZEMKUA6MjMO8szpey
+ 2HHZcfIUXhoon435j2Px2SXrWiirB6dYfluZDFP0tWpJAQCxH36b3QGIFcN8n9CtcsPGAmS_OeQ.
+ r6YxrbEkqTKr_jzSFbOH4ua_yfnE74NkuPHH6eANECoKA72d7vMoy7tm2_ep7gm0.oZTLCcwuT78
+ AN713iW56GR123qabTzNpnK5pCzDbArnKumBUu4xkJgdqkhz9QhBHWEblwuZ7Wte1MZBhWut9NkT
+ H_cckAcJmIznluDSM3Eu5CJsodDUjTWmSHLdf.Ou6JPeI9MjDO5Hc5B3cLlypeDX6d8zg8FzccxJ
+ .I7Vql7KjgJWl0gOMV351MkK.kRpxl_NDro8NmWTp_s9LmIJtekvcRgEFU7jspDntYZVvfkbTvJ_
+ mnGjzvPx0LX0oRk2qPS4KbbGCB4OGEpjj1S3tR812lA_AAAiPjjWNH8vWh1DI.z0gImmjT2jJKyc
+ Vt8wa98J7TEYodBIEOyOTegDIwpzJIsgkn8m6g4MbAAi6u4TcOtMfSlQCnNmhZCa35TbzeZHH_HP
+ .9p49FPIP2txbYme2lBAySqY6tjampx73Ml8gWW.A66p1h87C.aw86N6jsf44I7jZN7QH_EMyF3X
+ Q89we6UYN37BHm9_pzhFg_1XogIfN.csavVPObZI6TOZHbBMAfvaGiokJv5gB32xZqJxBK5KiLVB
+ M12Po8RrWV4MqGcYRQK9JXe3sZNX1R9VAH_D7gk2Pj.SS8asVA_u09Zek1LwKgnQI5QNrjPcj2JC
+ ETIUeH5nEH3xpkodeqjgHSKH_A4HIBgP4YGK6PJOsFE0cqUo8fuI7ujojC1H.7q9OS.b9._RVyEm
+ L_lG0AxCon5unhKOGAGVjnRXRA8aC20oGx.CPxxi.AEvfszNjMONZ0FSdXe915npW6.zpDgOs.x2
+ X6.7vQO3dfh2iEuCWnn4nQZngKtwUiiVjDs4DQYOywNDWOjbSjb3jNCVLBXTGjY5mQBVSw7AKhho
+ ir64fC3bbMUg1zvijrRnohPLPJw3JOMK6luMG1H7b1U4yAkq.lrlXyaL_BCGa4eODlEph3FK2bui
+ 8abEgS_mboN2RERZIp2TCPEbW3sxZo7lq2jC5Srvv2A2q0ybwiGt20grZ41Bv2e2cwlkR8T8WxlE
+ BKsV7M1Psb5ln4Hl7OwGnXQ8nyB6HD5uiUaayRxffSuKoe82xW4_Oqp9Pw2DRvTMN4LEre3Sc2y6
+ 3jYeH9zuwj_ROSv.Qyb6wd.8pc6d_klBi3AkRKsu99yAlPGYrl4znVGL02713x29z89aHMmU3BKD
+ 6WVe5FBek01WPPgJF4bQ0QEzs6Jh9R7VwvRfI62lDMKS9G7ucCJhA9LPdGDa_Vkbx6Py9eBmaiP_
+ OAyQRloyS_G9ESyeFknWenG.Qz4qKtFYFHKX_B7_z3yfEaCOwvU7dsDdrvMmbO.lAhQHE8AznC34
+ 1vpBQLlEjgKV2u0ZKtWTrD61XaivIjUrIcB0.HZ3GwhPHlNlwXZ39xN_4nR6Ipniz5plTNCxHbgG
+ zTS3ammJBS.BAeOlN8tEl5VwAX_.SW_09WBvMf2YstbXdfgN80U5XW.XqsQiZLpxFMDXZ1jouZ.x
+ 1As1mQP7hW9wDPbdPGtLl4d49LyK.XqdKgT67kPo2FMjFthHPkp_xvHZ.xgsSxrO8xhjH_p_p3DG
+ gqtintjeMWnhHdZdhqsa_OGbZ_IB5R2tAbqJaOOSoZqVq
+X-Sonic-MF: <mario_lohajner@rocketmail.com>
+X-Sonic-ID: c4899a92-95ad-4936-a571-bd6653b366a3
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Fri, 27 Feb 2026 15:37:40 +0000
+Received: by hermes--production-ir2-bbcfb4457-w955t (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f278db9c2cba741c058b044e6ad65a2d;
+          Fri, 27 Feb 2026 14:47:01 +0000 (UTC)
+Message-ID: <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
+Date: Fri, 27 Feb 2026 15:46:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:4410:b0:679:8a47:abab with SMTP id
- 006d021491bc7-679faf8a790mr1482868eaf.71.1772200171470; Fri, 27 Feb 2026
- 05:49:31 -0800 (PST)
-Date: Fri, 27 Feb 2026 05:49:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69a1a0eb.050a0220.3a55be.0021.GAE@google.com>
-Subject: [syzbot] [ext4?] INFO: task hung in filename_rmdir
-From: syzbot <syzbot+512459401510e2a9a39f@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
+ allocation policy
+To: Theodore Tso <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com, libaokun9@gmail.com
+References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+ <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+ <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
+ <20260226024819.GA39209@macsyma-wired.lan>
+ <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
+ <20260227011200.GA68551@macsyma-wired.lan>
+Content-Language: hr
+From: Mario Lohajner <mario_lohajner@rocketmail.com>
+In-Reply-To: <20260227011200.GA68551@macsyma-wired.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.25198 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d91443204e48b7a1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[rocketmail.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[rocketmail.com:s=s2048];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-14209-lists,linux-ext4=lfdr.de,512459401510e2a9a39f];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,storage.googleapis.com:url,appspotmail.com:email,goo.gl:url]
-X-Rspamd-Queue-Id: 8A6D61B7E20
+	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-14210-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[rocketmail.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[rocketmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mario_lohajner@rocketmail.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,rocketmail.com:mid,rocketmail.com:dkim]
+X-Rspamd-Queue-Id: 63C3D1BA36C
 X-Rspamd-Action: no action
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    6de23f81a5e0 Linux 7.0-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=176ad9e6580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d91443204e48b7a1
-dashboard link: https://syzkaller.appspot.com/bug?extid=512459401510e2a9a39f
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14630202580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11dd4006580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a3fcd7d8bed6/disk-6de23f81.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4956764f8450/vmlinux-6de23f81.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b9f8616ac66b/bzImage-6de23f81.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6c600d0e3ce2/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=1779655a580000)
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+512459401510e2a9a39f@syzkaller.appspotmail.com
-
-INFO: task syz.0.17:5981 blocked for more than 143 seconds.
-      Not tainted syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.0.17        state:D stack:29024 pid:5981  tgid:5976  ppid:5922   task_flags:0x400040 flags:0x00080002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5295 [inline]
- __schedule+0x14fb/0x52c0 kernel/sched/core.c:6907
- __schedule_loop kernel/sched/core.c:6989 [inline]
- rt_mutex_schedule+0x76/0xf0 kernel/sched/core.c:7285
- rt_mutex_slowlock_block kernel/locking/rtmutex.c:1647 [inline]
- __rt_mutex_slowlock kernel/locking/rtmutex.c:1721 [inline]
- __rt_mutex_slowlock_locked+0x1f8f/0x25c0 kernel/locking/rtmutex.c:1760
- rt_mutex_slowlock+0xbd/0x170 kernel/locking/rtmutex.c:1800
- __rt_mutex_lock kernel/locking/rtmutex.c:1815 [inline]
- rwbase_write_lock+0x14d/0x730 kernel/locking/rwbase_rt.c:244
- inode_lock_nested include/linux/fs.h:1073 [inline]
- __start_dirop fs/namei.c:2923 [inline]
- start_dirop fs/namei.c:2934 [inline]
- filename_rmdir+0x1cd/0x520 fs/namei.c:5386
- __do_sys_rmdir fs/namei.c:5416 [inline]
- __se_sys_rmdir+0x2e/0x140 fs/namei.c:5413
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fd6182ac629
-RSP: 002b:00007fd6178e5028 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 00007fd618526090 RCX: 00007fd6182ac629
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00002000000000c0
-RBP: 00007fd618342b39 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fd618526128 R14: 00007fd618526090 R15: 00007fff2f2a73b8
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/37:
- #0: ffffffff8ddcd780 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:312 [inline]
- #0: ffffffff8ddcd780 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:850 [inline]
- #0: ffffffff8ddcd780 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6775
-2 locks held by kworker/u8:3/58:
-3 locks held by kworker/1:2/863:
- #0: ffff888019c03d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3250 [inline]
- #0: ffff888019c03d38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x9ea/0x1830 kernel/workqueue.c:3358
- #1: ffffc90004ca7c40 ((work_completion)(&data->fib_event_work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3251 [inline]
- #1: ffffc90004ca7c40 ((work_completion)(&data->fib_event_work)){+.+.}-{0:0}, at: process_scheduled_works+0xa25/0x1830 kernel/workqueue.c:3358
- #2: ffff88805aa3e260 (&data->fib_lock){+.+.}-{4:4}, at: nsim_fib_event_work+0x222/0x3e0 drivers/net/netdevsim/fib.c:1490
-2 locks held by getty/5552:
- #0: ffff8880370f50a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc90003e8b2e0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x462/0x13c0 drivers/tty/n_tty.c:2211
-6 locks held by syz.0.17/5977:
-2 locks held by syz.0.17/5981:
- #0: ffff88803704c480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff8880445acbf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff8880445acbf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff8880445acbf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff8880445acbf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-5 locks held by syz.1.18/6004:
-2 locks held by syz.1.18/6008:
- #0: ffff888027ddc480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff88805812b430 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff88805812b430 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff88805812b430 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff88805812b430 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-7 locks held by syz.2.19/6030:
-2 locks held by syz.2.19/6034:
- #0: ffff888036f74480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff8880581c6f90 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff8880581c6f90 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff8880581c6f90 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff8880581c6f90 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-8 locks held by syz.3.20/6059:
-2 locks held by syz.3.20/6063:
- #0: ffff88803c04c480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff88804005c010 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff88804005c010 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff88804005c010 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff88804005c010 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-7 locks held by syz.4.21/6098:
-2 locks held by syz.4.21/6102:
- #0: ffff88803297c480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff88805812e3b0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff88805812e3b0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff88805812e3b0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff88805812e3b0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-7 locks held by syz.5.22/6133:
-2 locks held by syz.5.22/6137:
- #0: ffff88805b0a8480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff888058311c70 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff888058311c70 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff888058311c70 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff888058311c70 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-2 locks held by syz.6.23/6167:
- #0: ffff88805e904480 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x41/0x90 fs/namespace.c:493
- #1: ffff888044774bf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff888044774bf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2923 [inline]
- #1: ffff888044774bf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2934 [inline]
- #1: ffff888044774bf0 (&type->i_mutex_dir_key#3/1){+.+.}-{4:4}, at: filename_rmdir+0x1cd/0x520 fs/namei.c:5386
-7 locks held by syz.6.23/6172:
-2 locks held by syz-executor/6180:
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 37 Comm: khungtaskd Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x274/0x2d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x17a/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:161 [inline]
- __sys_info lib/sys_info.c:157 [inline]
- sys_info+0x135/0x170 lib/sys_info.c:165
- check_hung_uninterruptible_tasks kernel/hung_task.c:346 [inline]
- watchdog+0xfd9/0x1030 kernel/hung_task.c:515
- kthread+0x388/0x470 kernel/kthread.c:467
- ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 58 Comm: kworker/u8:3 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-Workqueue: bat_events batadv_dat_purge
-RIP: 0010:__lock_acquire+0x273/0x2cf0 kernel/locking/lockdep.c:-1
-Code: e8 f2 93 39 03 4d 89 f1 48 8b 74 24 18 44 8b 74 24 20 48 83 bc 24 20 01 00 00 00 0f 85 ce fe ff ff 44 89 74 24 20 44 89 3c 24 <8b> bc 24 38 01 00 00 4c 8b 84 24 28 01 00 00 4c 8b 74 24 08 4d 8d
-RSP: 0018:ffffc9000124f800 EFLAGS: 00000046
-RAX: 0000000000000113 RBX: 0000000000000000 RCX: ffffffff92f693f0
-RDX: 0000000000000005 RSI: 000000000000000b RDI: ffffffff8ddcd780
-RBP: 0000000000000005 R08: 0000000000000000 R09: ffffffff8ddcd780
-R10: dffffc0000000000 R11: fffffbfff1ed44b7 R12: 0000000000000000
-R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff888126443000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe67c399068 CR3: 0000000039862000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- lock_acquire+0xf0/0x2e0 kernel/locking/lockdep.c:5868
- rcu_lock_acquire include/linux/rcupdate.h:312 [inline]
- rcu_read_lock include/linux/rcupdate.h:850 [inline]
- __rt_spin_lock kernel/locking/spinlock_rt.c:50 [inline]
- rt_spin_lock+0x1fc/0x400 kernel/locking/spinlock_rt.c:57
- spin_lock_bh include/linux/spinlock_rt.h:90 [inline]
- __batadv_dat_purge+0x131/0x400 net/batman-adv/distributed-arp-table.c:173
- batadv_dat_purge+0x20/0x70 net/batman-adv/distributed-arp-table.c:204
- process_one_work kernel/workqueue.c:3275 [inline]
- process_scheduled_works+0xb02/0x1830 kernel/workqueue.c:3358
- worker_thread+0xa50/0xfc0 kernel/workqueue.c:3439
- kthread+0x388/0x470 kernel/kthread.c:467
- ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 27. 02. 2026. 02:12, Theodore Tso wrote:
+> On Thu, Feb 26, 2026 at 10:50:29PM +0100, Mario Lohajner wrote:
+>> The primary purpose of rralloc is to improve allocation distribution
+>> and avoid hotspotting.   Performance improvements are not the goal here...
+> 
+> You haven't explained *why* allocation distribution and avoiding
+> hotspotting is something we should care about.
+> 
+> If it's not performance, then why?  How does reducing hotspotting
+> improve things for the user?  Why should we care about this goal that
+> apparently is so important to you?
+> 
+> 					- Ted
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hello Ted,
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+The motivation behind rralloc is to promote even allocation across the
+available LBA under overwrite-heavy workloads.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+With the regular allocator, repeated allocations can concentrate the
+pressure in specific regions (e.g., in-place overwrites or LBA start).
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+rralloc spreads allocations across the LBA, reducing localized
+contention while:
+	* promoting existing stream allocation behavior
+	* distributing LBA space per CPU
+	* preserving intra-file locality and heuristics
+	* using the entire LBA in a round-robin manner
+	* minimizing contention and races
+	* keeping the regular allocator isolated and intact
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Block group usage analysis confirms that rralloc distributes
+allocations evenly without degrading baseline throughput:
+	* small/medium/large file fragmentation experiments
+	* synthetic tests
+	* real-world tests (kernel source tree copies)
 
-If you want to undo deduplication, reply with:
-#syz undup
+https://github.com/mlohajner/RRALLOC
+
+Why it matters:
+Concentrated allocation can create contention, write amplification, and
+uneven LBA utilization even on modern NVMe/SSD devices.
+rralloc promotes round-robin allocation across the entire LBA,
+with per-CPU zones, ensuring more even allocation distribution while
+leaving throughput and existing heuristics unchanged.
+
+Workloads include (but not limited to):
+	* media files processing and rendering
+	* builds/compilations
+	* database workloads
+
+End user impact:
+Users can enable rralloc at mount to take advantage of this alternative
+allocation policy.
+Regular allocator behavior remains unchanged for those who prefer linear
+or traditional allocation.
+
+This approach is backward-compatible, non-intrusive, and preserves
+on-disk format and existing heuristics.
+
+Preliminary observations under heavy multi-threaded workloads suggest
+reduced contention effects, but this has not yet been fully characterized.
+
+Regards,
+Mario Lohajner (manjo)
+
 
