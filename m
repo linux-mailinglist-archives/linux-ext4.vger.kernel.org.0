@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-14217-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14218-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AGqZKdHeoWlcwgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14217-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 19:13:37 +0100
+	id sPeOHpneoWlcwgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14218-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 19:12:41 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C7871BBD67
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 19:13:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21A71BBD3B
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 19:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EB40D319FD16
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 18:05:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AD0E5304FA4D
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 18:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F06636A025;
-	Fri, 27 Feb 2026 18:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8444836AB53;
+	Fri, 27 Feb 2026 18:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a6VaprKR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GlVXchib"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7970366DDE;
-	Fri, 27 Feb 2026 18:04:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1177C36A004;
+	Fri, 27 Feb 2026 18:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772215499; cv=none; b=KHJ1m1OPeVCWValuE4b9FD9KylybcK5KU+nihyLNbTpkNZwITJCpgHqIv1lNjB8hAPJarYqWk95ASvEq5XjyXnvnXTctUeVproyelaojLs8REZvH8pnBGr31ihrDm46T5K+YKgSH8IcuOANhPYHoVDfILxUQ6QuQJr5IyG8pBV0=
+	t=1772215677; cv=none; b=D+6Y1AgCz0RPTtyh9L57O1Z9iGR2laO41Qk9UvNyKIZgXNZWS/EkrFuhNimASQgzc4VydGRGhPC7SifyInmX8BzooumulJibtqfSztbocJeeb65dUKGxJQIaLgOEvWXzOFOZweP2XQ5kJY0TIrd/ISha4DsGcAkt8t1tPWtcrzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772215499; c=relaxed/simple;
-	bh=oEmnZSWKm419qtyhZL/k1xypl+xm5zpFPjBHg6XP448=;
+	s=arc-20240116; t=1772215677; c=relaxed/simple;
+	bh=TKN+5eRab7AGsCPwroZeSnBjJa27cKLEj7dJiC14dMM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=umAmdN3tq/9AICuQ5zNKYablJyMEexlrr+uVXwYhPxXvpfdu6/RhnuwA7dPBbqg9wQ7otZDXYOIxDaVcWEDvnsc+07WxJKodkrr58F0MZGnDFRuFTbcYG3cSGaJ5SH37JQHDBo9ZI85j5mE1TF3pOT8A/gF+2A4JrTe8GjlrRz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a6VaprKR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58BBCC116C6;
-	Fri, 27 Feb 2026 18:04:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=bpKZD+r74PcufHOniKp8e78KK3ynZiN1OFu/bkBYsHcGOfVR/UCtIhdYdS18VTDhMgQqSq22khj0wcXF6A8lmDhE66CTANJMC8WYNGWeOEDeWlzsKDPuP9w19K7+XF2iufxEHs+/h47tE7lI9T6Nm4mehIbA8keCRgDyTPTfTfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GlVXchib; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 926E1C19423;
+	Fri, 27 Feb 2026 18:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772215499;
-	bh=oEmnZSWKm419qtyhZL/k1xypl+xm5zpFPjBHg6XP448=;
+	s=k20201202; t=1772215676;
+	bh=TKN+5eRab7AGsCPwroZeSnBjJa27cKLEj7dJiC14dMM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a6VaprKR1GjpjgtsIdsLZPiCn02Np6FNG6c4JE4BtuWhqpOX/2LC03f+VbD9Vv0Zp
-	 WvV6kQN1yjJX97zTgSGmuu8V8cp9NOM3/ClGFSHWWc/CThppLRKA+iBzV93HgAfbuG
-	 LgkaG68+D69Nmw28JSlqELd1gn4owsNnjmwvnXd+OP0wfcssakUiHPhX/5ApGuZPli
-	 YLyOVxa+xNpc45gUQYXsCzybb4uVKNDlBAUVXNaCqc+ymzA7KPmbHlD3d4cGPNe3iR
-	 K7JnhBacMsBKInPZMNsYzMwq0giBCQQQgZk8TYpZMyjm3/+CZts5NHDgtB6P85MXZw
-	 L5db17Pg6Q6oQ==
-Date: Fri, 27 Feb 2026 10:04:58 -0800
+	b=GlVXchibSfJ3FNDGlEIrYytqsXiZYitqX+bm2TKsnSF14g9DEUssE4qSRWlsEQL09
+	 nYCqVDjDP3UBTy7Ak/Tl+JwNsvOtijJiFL0Qu6sUPvL2fh8vHzKG1qCNNiVL6Ca7QT
+	 lIYPSVk/T2KzJ8IHxf856qmfl9OIkeFeLHdNaUTLC3dlyjzBOgxLpeWcjj9oqgDVBM
+	 KND4JN3n7wvhuRkyOpKyGYb3fR4q01k3fZkDywt00l/riXy75F/lIdhUNP70U8AvRJ
+	 m9B9GIEFeTBm3vjE8IkSCDz89fwyw8eVxOLCNKuRRD/UcfkotcdO5YqVJjM/bU2Uo4
+	 ktARYwS69hAXg==
+Date: Fri, 27 Feb 2026 10:07:56 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: miklos@szeredi.hu
 Cc: joannelkoong@gmail.com, bpf@vger.kernel.org, bernd@bsbernd.com,
 	neal@gompa.dev, linux-fsdevel@vger.kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 16/33] fuse: implement buffered IO with iomap
-Message-ID: <20260227180458.GJ13829@frogsfrogsfrogs>
-References: <177188734044.3935739.1368557343243072212.stgit@frogsfrogsfrogs>
- <177188734588.3935739.3741984604821074004.stgit@frogsfrogsfrogs>
+Subject: Re: [PATCH 01/12] fuse: cache iomaps
+Message-ID: <20260227180756.GK13829@frogsfrogsfrogs>
+References: <177188735954.3937557.841478048197856035.stgit@frogsfrogsfrogs>
+ <177188736047.3937557.12141456226808645989.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,26 +62,26 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <177188734588.3935739.3741984604821074004.stgit@frogsfrogsfrogs>
+In-Reply-To: <177188736047.3937557.12141456226808645989.stgit@frogsfrogsfrogs>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,bsbernd.com,gompa.dev];
-	TAGGED_FROM(0.00)[bounces-14217-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14218-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -91,1065 +91,1942 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0C7871BBD67
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,new.dev:url]
+X-Rspamd-Queue-Id: C21A71BBD3B
 X-Rspamd-Action: no action
 
-On Mon, Feb 23, 2026 at 03:12:51PM -0800, Darrick J. Wong wrote:
+On Mon, Feb 23, 2026 at 03:20:40PM -0800, Darrick J. Wong wrote:
 > From: Darrick J. Wong <djwong@kernel.org>
 > 
-> Implement pagecache IO with iomap, complete with hooks into truncate and
-> fallocate so that the fuse server needn't implement disk block zeroing
-> of post-EOF and unaligned punch/zero regions.
+> Cache iomaps to a file so that we don't have to upcall the server.
 > 
 > Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 > ---
->  fs/fuse/fuse_i.h          |    7 
->  fs/fuse/fuse_iomap.h      |   11 +
->  include/uapi/linux/fuse.h |    5 
->  fs/fuse/dir.c             |   23 +
->  fs/fuse/file.c            |   61 +++-
->  fs/fuse/fuse_iomap.c      |  696 ++++++++++++++++++++++++++++++++++++++++++++-
->  6 files changed, 772 insertions(+), 31 deletions(-)
+>  fs/fuse/fuse_i.h           |    3 
+>  fs/fuse/fuse_iomap_cache.h |   99 +++
+>  include/uapi/linux/fuse.h  |    5 
+>  fs/fuse/Makefile           |    2 
+>  fs/fuse/fuse_iomap.c       |    5 
+>  fs/fuse/fuse_iomap_cache.c | 1701 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/fuse/trace.c            |    1 
+>  7 files changed, 1815 insertions(+), 1 deletion(-)
+>  create mode 100644 fs/fuse/fuse_iomap_cache.h
+>  create mode 100644 fs/fuse/fuse_iomap_cache.c
 > 
 > 
 > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index d1724bf8e87b93..b9f41c08cc8fb0 100644
+> index b4da866187ba2c..1ba95d1f430c3e 100644
 > --- a/fs/fuse/fuse_i.h
 > +++ b/fs/fuse/fuse_i.h
-> @@ -192,6 +192,11 @@ struct fuse_inode {
->  #ifdef CONFIG_FUSE_IOMAP
->  			/* file size as reported by fuse server */
->  			loff_t i_disk_size;
+> @@ -197,6 +197,9 @@ struct fuse_inode {
+>  			spinlock_t ioend_lock;
+>  			struct work_struct ioend_work;
+>  			struct list_head ioend_list;
 > +
-> +			/* pending io completions */
-> +			spinlock_t ioend_lock;
-> +			struct work_struct ioend_work;
-> +			struct list_head ioend_list;
+> +			/* cached iomap mappings */
+> +			struct fuse_iomap_cache *cache;
 >  #endif
 >  		};
 >  
-> @@ -1741,4 +1746,6 @@ extern void fuse_sysctl_unregister(void);
->  #define fuse_sysctl_unregister()	do { } while (0)
->  #endif /* CONFIG_SYSCTL */
->  
-> +sector_t fuse_bmap(struct address_space *mapping, sector_t block);
+> diff --git a/fs/fuse/fuse_iomap_cache.h b/fs/fuse/fuse_iomap_cache.h
+> new file mode 100644
+> index 00000000000000..922ca182357aa7
+> --- /dev/null
+> +++ b/fs/fuse/fuse_iomap_cache.h
+> @@ -0,0 +1,99 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * The fuse_iext code comes from xfs_iext_tree.[ch] and is:
+> + * Copyright (c) 2017 Christoph Hellwig.
+> + *
+> + * Everything else is:
+> + * Copyright (C) 2025-2026 Oracle.  All Rights Reserved.
+> + * Author: Darrick J. Wong <djwong@kernel.org>
+> + */
+> +#ifndef _FS_FUSE_IOMAP_CACHE_H
+> +#define _FS_FUSE_IOMAP_CACHE_H
 > +
->  #endif /* _FS_FUSE_I_H */
-> diff --git a/fs/fuse/fuse_iomap.h b/fs/fuse/fuse_iomap.h
-> index 07433c33535b2d..4b12af01ff00f5 100644
-> --- a/fs/fuse/fuse_iomap.h
-> +++ b/fs/fuse/fuse_iomap.h
-> @@ -53,6 +53,13 @@ int fuse_iomap_setsize_finish(struct inode *inode, loff_t newsize);
->  
->  ssize_t fuse_iomap_read_iter(struct kiocb *iocb, struct iov_iter *to);
->  ssize_t fuse_iomap_write_iter(struct kiocb *iocb, struct iov_iter *from);
+> +#if IS_ENABLED(CONFIG_FUSE_IOMAP)
+> +/*
+> + * File incore extent information, present for read and write mappings.
+> + */
+> +struct fuse_iext_root {
+> +	/* bytes in ir_data, or -1 if it has never been used */
+> +	int64_t			ir_bytes;
+> +	void			*ir_data;	/* extent tree root */
+> +	unsigned int		ir_height;	/* height of the extent tree */
+> +};
 > +
-> +int fuse_iomap_mmap(struct file *file, struct vm_area_struct *vma);
-> +int fuse_iomap_setsize_start(struct inode *inode, loff_t newsize);
-> +int fuse_iomap_fallocate(struct file *file, int mode, loff_t offset,
-> +			 loff_t length, loff_t new_size);
-> +int fuse_iomap_flush_unmap_range(struct inode *inode, loff_t pos,
-> +				 loff_t endpos);
->  #else
->  # define fuse_iomap_enabled(...)		(false)
->  # define fuse_has_iomap(...)			(false)
-> @@ -72,6 +79,10 @@ ssize_t fuse_iomap_write_iter(struct kiocb *iocb, struct iov_iter *from);
->  # define fuse_iomap_setsize_finish(...)		(-ENOSYS)
->  # define fuse_iomap_read_iter(...)		(-ENOSYS)
->  # define fuse_iomap_write_iter(...)		(-ENOSYS)
-> +# define fuse_iomap_mmap(...)			(-ENOSYS)
-> +# define fuse_iomap_setsize_start(...)		(-ENOSYS)
-> +# define fuse_iomap_fallocate(...)		(-ENOSYS)
-> +# define fuse_iomap_flush_unmap_range(...)	(-ENOSYS)
->  #endif /* CONFIG_FUSE_IOMAP */
->  
->  #endif /* _FS_FUSE_IOMAP_H */
+> +struct fuse_iomap_cache {
+> +	struct fuse_iext_root	ic_read;
+> +	struct fuse_iext_root	ic_write;
+> +	uint64_t		ic_seq;		/* validity counter */
+> +	struct rw_semaphore	ic_lock;	/* mapping lock */
+> +	struct inode		*ic_inode;
+> +};
+> +
+> +void fuse_iomap_cache_lock(struct inode *inode);
+> +void fuse_iomap_cache_unlock(struct inode *inode);
+> +void fuse_iomap_cache_lock_shared(struct inode *inode);
+> +void fuse_iomap_cache_unlock_shared(struct inode *inode);
+> +
+> +struct fuse_iext_leaf;
+> +
+> +struct fuse_iext_cursor {
+> +	struct fuse_iext_leaf	*leaf;
+> +	int			pos;
+> +};
+> +
+> +#define FUSE_IEXT_LEFT_CONTIG	(1u << 0)
+> +#define FUSE_IEXT_RIGHT_CONTIG	(1u << 1)
+> +#define FUSE_IEXT_LEFT_FILLING	(1u << 2)
+> +#define FUSE_IEXT_RIGHT_FILLING	(1u << 3)
+> +#define FUSE_IEXT_LEFT_VALID	(1u << 4)
+> +#define FUSE_IEXT_RIGHT_VALID	(1u << 5)
+> +#define FUSE_IEXT_WRITE_MAPPING	(1u << 6)
+> +
+> +bool fuse_iext_get_extent(const struct fuse_iext_root *ir,
+> +			  const struct fuse_iext_cursor *cur,
+> +			  struct fuse_iomap_io *gotp);
+> +
+> +static inline uint64_t fuse_iext_read_seq(struct fuse_iomap_cache *ic)
+> +{
+> +	return (uint64_t)READ_ONCE(ic->ic_seq);
+> +}
+> +
+> +static inline void fuse_iomap_cache_init(struct fuse_inode *fi)
+> +{
+> +	fi->cache = NULL;
+> +}
+> +
+> +static inline bool fuse_inode_caches_iomaps(const struct inode *inode)
+> +{
+> +	const struct fuse_inode *fi = get_fuse_inode(inode);
+> +
+> +	return fi->cache != NULL;
+> +}
+> +
+> +int fuse_iomap_cache_alloc(struct inode *inode);
+> +void fuse_iomap_cache_free(struct inode *inode);
+> +
+> +int fuse_iomap_cache_remove(struct inode *inode, enum fuse_iomap_iodir iodir,
+> +			    loff_t off, uint64_t len);
+> +
+> +int fuse_iomap_cache_upsert(struct inode *inode, enum fuse_iomap_iodir iodir,
+> +			    const struct fuse_iomap_io *map);
+> +
+> +enum fuse_iomap_lookup_result {
+> +	LOOKUP_HIT,
+> +	LOOKUP_MISS,
+> +	LOOKUP_NOFORK,
+> +};
+> +
+> +struct fuse_iomap_lookup {
+> +	struct fuse_iomap_io	map;		 /* cached mapping */
+> +	uint64_t		validity_cookie; /* used with .iomap_valid() */
+> +};
+> +
+> +enum fuse_iomap_lookup_result
+> +fuse_iomap_cache_lookup(struct inode *inode, enum fuse_iomap_iodir iodir,
+> +			loff_t off, uint64_t len,
+> +			struct fuse_iomap_lookup *mval);
+> +#endif /* CONFIG_FUSE_IOMAP */
+> +
+> +#endif /* _FS_FUSE_IOMAP_CACHE_H */
 > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> index 543965b2f8fb37..71b216262c84cb 100644
+> index bf8514a5ee27af..a273838bc20f2f 100644
 > --- a/include/uapi/linux/fuse.h
 > +++ b/include/uapi/linux/fuse.h
-> @@ -1373,6 +1373,9 @@ struct fuse_uring_cmd_req {
->  #define FUSE_IOMAP_OP_ATOMIC		(1U << 9)
->  #define FUSE_IOMAP_OP_DONTCACHE		(1U << 10)
+> @@ -1394,6 +1394,8 @@ struct fuse_uring_cmd_req {
 >  
-> +/* pagecache writeback operation */
-> +#define FUSE_IOMAP_OP_WRITEBACK		(1U << 31)
-> +
->  #define FUSE_IOMAP_NULL_ADDR		(-1ULL)	/* addr is not valid */
+>  /* fuse-specific mapping type indicating that writes use the read mapping */
+>  #define FUSE_IOMAP_TYPE_PURE_OVERWRITE	(255)
+> +/* fuse-specific mapping type saying the server has populated the cache */
+> +#define FUSE_IOMAP_TYPE_RETRY_CACHE	(254)
 >  
->  struct fuse_iomap_io {
-> @@ -1422,6 +1425,8 @@ struct fuse_iomap_end_in {
->  #define FUSE_IOMAP_IOEND_DIRECT		(1U << 3)
->  /* is append ioend */
->  #define FUSE_IOMAP_IOEND_APPEND		(1U << 4)
-> +/* is pagecache writeback */
-> +#define FUSE_IOMAP_IOEND_WRITEBACK	(1U << 5)
+>  #define FUSE_IOMAP_DEV_NULL		(0U)	/* null device cookie */
 >  
->  struct fuse_iomap_ioend_in {
->  	uint32_t flags;		/* FUSE_IOMAP_IOEND_* */
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index dcf5ccbc57c7be..fc0751deebfd20 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -2225,7 +2225,10 @@ int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  		is_truncate = true;
->  	}
->  
-> -	if (FUSE_IS_DAX(inode) && is_truncate) {
-> +	if (is_iomap && is_truncate) {
-> +		filemap_invalidate_lock(mapping);
-> +		fault_blocked = true;
-> +	} else if (FUSE_IS_DAX(inode) && is_truncate) {
->  		filemap_invalidate_lock(mapping);
->  		fault_blocked = true;
->  		err = fuse_dax_break_layouts(inode, 0, -1);
-> @@ -2240,6 +2243,18 @@ int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  		WARN_ON(!(attr->ia_valid & ATTR_SIZE));
->  		WARN_ON(attr->ia_size != 0);
->  		if (fc->atomic_o_trunc) {
-> +			if (is_iomap) {
-> +				/*
-> +				 * fuse_open already set the size to zero and
-> +				 * truncated the pagecache, and we've since
-> +				 * cycled the inode locks.  Another thread
-> +				 * could have performed an appending write, so
-> +				 * we don't want to touch the file further.
-> +				 */
-> +				filemap_invalidate_unlock(mapping);
-> +				return 0;
-> +			}
-> +
->  			/*
->  			 * No need to send request to userspace, since actual
->  			 * truncation has already been done by OPEN.  But still
-> @@ -2273,6 +2288,12 @@ int fuse_do_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  		set_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
->  		if (trust_local_cmtime && attr->ia_size != inode->i_size)
->  			attr->ia_valid |= ATTR_MTIME | ATTR_CTIME;
-> +
-> +		if (is_iomap) {
-> +			err = fuse_iomap_setsize_start(inode, attr->ia_size);
-> +			if (err)
-> +				goto error;
-> +		}
->  	}
->  
->  	memset(&inarg, 0, sizeof(inarg));
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index ae320026f0648f..0828ecb20a828c 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -402,7 +402,7 @@ static int fuse_release(struct inode *inode, struct file *file)
->  	 * Dirty pages might remain despite write_inode_now() call from
->  	 * fuse_flush() due to writes racing with the close.
->  	 */
-> -	if (fc->writeback_cache)
-> +	if (fc->writeback_cache || fuse_inode_has_iomap(inode))
->  		write_inode_now(inode, 1);
->  
->  	fuse_release_common(file, false);
-> @@ -2395,6 +2395,9 @@ static int fuse_file_mmap(struct file *file, struct vm_area_struct *vma)
->  	struct inode *inode = file_inode(file);
->  	int rc;
->  
-> +	if (fuse_inode_has_iomap(inode))
-> +		return fuse_iomap_mmap(file, vma);
-> +
->  	/* DAX mmap is superior to direct_io mmap */
->  	if (FUSE_IS_DAX(inode))
->  		return fuse_dax_mmap(file, vma);
-> @@ -2593,7 +2596,7 @@ static int fuse_file_flock(struct file *file, int cmd, struct file_lock *fl)
->  	return err;
->  }
->  
-> -static sector_t fuse_bmap(struct address_space *mapping, sector_t block)
-> +sector_t fuse_bmap(struct address_space *mapping, sector_t block)
->  {
->  	struct inode *inode = mapping->host;
->  	struct fuse_mount *fm = get_fuse_mount(inode);
-> @@ -2947,8 +2950,12 @@ fuse_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  
->  static int fuse_writeback_range(struct inode *inode, loff_t start, loff_t end)
->  {
-> -	int err = filemap_write_and_wait_range(inode->i_mapping, start, LLONG_MAX);
-> +	int err;
->  
-> +	if (fuse_inode_has_iomap(inode))
-> +		return fuse_iomap_flush_unmap_range(inode, start, end);
-> +
-> +	err = filemap_write_and_wait_range(inode->i_mapping, start, LLONG_MAX);
->  	if (!err)
->  		fuse_sync_writes(inode);
->  
-> @@ -2984,7 +2991,10 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
->  		return -EOPNOTSUPP;
->  
->  	inode_lock(inode);
-> -	if (block_faults) {
-> +	if (is_iomap) {
-> +		filemap_invalidate_lock(inode->i_mapping);
-> +		block_faults = true;
-> +	} else if (block_faults) {
->  		filemap_invalidate_lock(inode->i_mapping);
->  		err = fuse_dax_break_layouts(inode, 0, -1);
->  		if (err)
-> @@ -2999,6 +3009,17 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
->  			goto out;
->  	}
->  
-> +	/*
-> +	 * If we are using iomap for file IO, fallocate must wait for all AIO
-> +	 * to complete before we continue as AIO can change the file size on
-> +	 * completion without holding any locks we currently hold. We must do
-> +	 * this first because AIO can update the in-memory inode size, and the
-> +	 * operations that follow require the in-memory size to be fully
-> +	 * up-to-date.
-> +	 */
-> +	if (is_iomap)
-> +		inode_dio_wait(inode);
-> +
->  	if (!(mode & FALLOC_FL_KEEP_SIZE) &&
->  	    offset + length > i_size_read(inode)) {
->  		err = inode_newsize_ok(inode, offset + length);
-> @@ -3027,21 +3048,23 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
->  	if (err)
->  		goto out;
->  
-> -	/* we could have extended the file */
-> -	if (!(mode & FALLOC_FL_KEEP_SIZE)) {
-> -		if (is_iomap && newsize > 0) {
-> -			err = fuse_iomap_setsize_finish(inode, newsize);
-> -			if (err)
-> -				goto out;
-> +	if (is_iomap) {
-> +		err = fuse_iomap_fallocate(file, mode, offset, length,
-> +					   newsize);
-> +		if (err)
-> +			goto out;
-> +	} else {
-> +		/* we could have extended the file */
-> +		if (!(mode & FALLOC_FL_KEEP_SIZE)) {
-> +			if (fuse_write_update_attr(inode, newsize, length))
-> +				file_update_time(file);
->  		}
->  
-> -		if (fuse_write_update_attr(inode, offset + length, length))
-> -			file_update_time(file);
-> +		if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE))
-> +			truncate_pagecache_range(inode, offset,
-> +						 offset + length - 1);
->  	}
->  
-> -	if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE))
-> -		truncate_pagecache_range(inode, offset, offset + length - 1);
-> -
->  	fuse_invalidate_attr_mask(inode, FUSE_STATX_MODSIZE);
->  
->  out:
-> @@ -3085,6 +3108,7 @@ static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
->  	ssize_t err;
->  	/* mark unstable when write-back is not used, and file_out gets
->  	 * extended */
-> +	const bool is_iomap = fuse_inode_has_iomap(inode_out);
->  	bool is_unstable = (!fc->writeback_cache) &&
->  			   ((pos_out + len) > inode_out->i_size);
->  
-> @@ -3128,6 +3152,10 @@ static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
->  	if (err)
->  		goto out;
->  
-> +	/* See inode_dio_wait comment in fuse_file_fallocate */
-> +	if (is_iomap)
-> +		inode_dio_wait(inode_out);
-> +
->  	if (is_unstable)
->  		set_bit(FUSE_I_SIZE_UNSTABLE, &fi_out->state);
->  
-> @@ -3168,7 +3196,8 @@ static ssize_t __fuse_copy_file_range(struct file *file_in, loff_t pos_in,
->  		goto out;
->  	}
->  
-> -	truncate_inode_pages_range(inode_out->i_mapping,
-> +	if (!is_iomap)
-> +		truncate_inode_pages_range(inode_out->i_mapping,
->  				   ALIGN_DOWN(pos_out, PAGE_SIZE),
->  				   ALIGN(pos_out + bytes_copied, PAGE_SIZE) - 1);
->  
-> diff --git a/fs/fuse/fuse_iomap.c b/fs/fuse/fuse_iomap.c
-> index f0b5ea49b6e2ac..2097a83af833d5 100644
-> --- a/fs/fuse/fuse_iomap.c
-> +++ b/fs/fuse/fuse_iomap.c
-> @@ -5,6 +5,8 @@
->   */
->  #include <linux/iomap.h>
->  #include <linux/fiemap.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/falloc.h>
->  #include "fuse_i.h"
->  #include "fuse_trace.h"
->  #include "fuse_iomap.h"
-> @@ -204,7 +206,7 @@ static inline uint16_t fuse_iomap_flags_from_server(uint16_t fuse_f_flags)
->  		ret |= FUSE_IOMAP_OP_##word
->  static inline uint32_t fuse_iomap_op_to_server(unsigned iomap_op_flags)
->  {
-> -	uint32_t ret = 0;
-> +	uint32_t ret = iomap_op_flags & FUSE_IOMAP_OP_WRITEBACK;
->  
->  	XMAP(WRITE);
->  	XMAP(ZERO);
-> @@ -370,7 +372,8 @@ fuse_iomap_begin_validate(const struct inode *inode,
->  
->  static inline bool fuse_is_iomap_file_write(unsigned int opflags)
->  {
-> -	return opflags & (IOMAP_WRITE | IOMAP_ZERO | IOMAP_UNSHARE);
-> +	return opflags & (IOMAP_WRITE | IOMAP_ZERO | IOMAP_UNSHARE |
-> +			  FUSE_IOMAP_OP_WRITEBACK);
->  }
->  
->  static inline struct fuse_backing *
-> @@ -747,12 +750,7 @@ void fuse_iomap_unmount(struct fuse_mount *fm)
->  	fuse_send_destroy(fm);
->  }
->  
-> -static inline void fuse_inode_set_iomap(struct inode *inode)
-> -{
-> -	struct fuse_inode *fi = get_fuse_inode(inode);
-> -
-> -	set_bit(FUSE_I_IOMAP, &fi->state);
-> -}
-> +static inline void fuse_inode_set_iomap(struct inode *inode);
->  
->  static inline void fuse_inode_clear_iomap(struct inode *inode)
->  {
-> @@ -979,17 +977,107 @@ static const struct iomap_dio_ops fuse_iomap_dio_write_ops = {
->  	.end_io		= fuse_iomap_dio_write_end_io,
+> @@ -1551,4 +1553,7 @@ struct fuse_iomap_dev_inval_out {
+>  	struct fuse_range range;
 >  };
 >  
-> +static const struct iomap_write_ops fuse_iomap_write_ops = {
+> +/* invalidate all cached iomap mappings up to EOF */
+> +#define FUSE_IOMAP_INVAL_TO_EOF		(~0ULL)
+> +
+>  #endif /* _LINUX_FUSE_H */
+> diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
+> index 2536bc6a71b898..c672503da7bcbd 100644
+> --- a/fs/fuse/Makefile
+> +++ b/fs/fuse/Makefile
+> @@ -18,6 +18,6 @@ fuse-$(CONFIG_FUSE_PASSTHROUGH) += passthrough.o
+>  fuse-$(CONFIG_FUSE_BACKING) += backing.o
+>  fuse-$(CONFIG_SYSCTL) += sysctl.o
+>  fuse-$(CONFIG_FUSE_IO_URING) += dev_uring.o
+> -fuse-$(CONFIG_FUSE_IOMAP) += fuse_iomap.o
+> +fuse-$(CONFIG_FUSE_IOMAP) += fuse_iomap.o fuse_iomap_cache.o
+>  
+>  virtiofs-y := virtio_fs.o
+> diff --git a/fs/fuse/fuse_iomap.c b/fs/fuse/fuse_iomap.c
+> index 9599efcf1c2593..849ce1626c35fd 100644
+> --- a/fs/fuse/fuse_iomap.c
+> +++ b/fs/fuse/fuse_iomap.c
+> @@ -14,6 +14,7 @@
+>  #include "fuse_iomap.h"
+>  #include "fuse_iomap_i.h"
+>  #include "fuse_dev_i.h"
+> +#include "fuse_iomap_cache.h"
+>  
+>  static bool __read_mostly enable_iomap =
+>  #if IS_ENABLED(CONFIG_FUSE_IOMAP_BY_DEFAULT)
+> @@ -1179,6 +1180,8 @@ void fuse_iomap_evict_inode(struct inode *inode)
+>  
+>  	trace_fuse_iomap_evict_inode(inode);
+>  
+> +	if (fuse_inode_caches_iomaps(inode))
+> +		fuse_iomap_cache_free(inode);
+>  	fuse_inode_clear_atomic(inode);
+>  	fuse_inode_clear_iomap(inode);
+>  }
+> @@ -1886,6 +1889,8 @@ static inline void fuse_inode_set_iomap(struct inode *inode)
+>  		min_order = inode->i_blkbits - PAGE_SHIFT;
+>  
+>  	mapping_set_folio_min_order(inode->i_mapping, min_order);
+> +
+> +	fuse_iomap_cache_init(fi);
+>  	set_bit(FUSE_I_IOMAP, &fi->state);
+>  }
+>  
+> diff --git a/fs/fuse/fuse_iomap_cache.c b/fs/fuse/fuse_iomap_cache.c
+> new file mode 100644
+> index 00000000000000..e32de8a5e3c325
+> --- /dev/null
+> +++ b/fs/fuse/fuse_iomap_cache.c
+> @@ -0,0 +1,1701 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * fuse_iext* code adapted from xfs_iext_tree.c:
+> + * Copyright (c) 2017 Christoph Hellwig.
+> + *
+> + * fuse_iomap_cache*lock* code adapted from xfs_inode.c:
+> + * Copyright (c) 2000-2006 Silicon Graphics, Inc.
+> + * All Rights Reserved.
+> + *
+> + * Copyright (C) 2025-2026 Oracle.  All Rights Reserved.
+> + * Author: Darrick J. Wong <djwong@kernel.org>
+> + */
+> +#include "fuse_i.h"
+> +#include "fuse_trace.h"
+> +#include "fuse_iomap_i.h"
+> +#include "fuse_iomap.h"
+> +#include "fuse_iomap_cache.h"
+> +#include <linux/iomap.h>
+> +
+> +void fuse_iomap_cache_lock_shared(struct inode *inode)
+> +{
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *ic = fi->cache;
+> +
+> +	down_read(&ic->ic_lock);
+> +}
+> +
+> +void fuse_iomap_cache_unlock_shared(struct inode *inode)
+> +{
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *ic = fi->cache;
+> +
+> +	up_read(&ic->ic_lock);
+> +}
+> +
+> +void fuse_iomap_cache_lock(struct inode *inode)
+> +{
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *ic = fi->cache;
+> +
+> +	down_write(&ic->ic_lock);
+> +}
+> +
+> +void fuse_iomap_cache_unlock(struct inode *inode)
+> +{
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *ic = fi->cache;
+> +
+> +	up_write(&ic->ic_lock);
+> +}
+> +
+> +static inline void assert_cache_locked_shared(struct fuse_iomap_cache *ic)
+> +{
+> +	rwsem_assert_held(&ic->ic_lock);
+> +}
+> +
+> +static inline void assert_cache_locked(struct fuse_iomap_cache *ic)
+> +{
+> +	rwsem_assert_held_write_nolockdep(&ic->ic_lock);
+> +}
+> +
+> +/*
+> + * In-core extent btree block layout:
+> + *
+> + * There are two types of blocks in the btree: leaf and inner (non-leaf) blocks.
+> + *
+> + * The leaf blocks are made up by %KEYS_PER_NODE extent records, which each
+> + * contain the startoffset, blockcount, startblock and unwritten extent flag.
+> + * See above for the exact format, followed by pointers to the previous and next
+> + * leaf blocks (if there are any).
+> + *
+> + * The inner (non-leaf) blocks first contain KEYS_PER_NODE lookup keys, followed
+> + * by an equal number of pointers to the btree blocks at the next lower level.
+> + *
+> + *		+-------+-------+-------+-------+-------+----------+----------+
+> + * Leaf:	| rec 1 | rec 2 | rec 3 | rec 4 | rec N | prev-ptr | next-ptr |
+> + *		+-------+-------+-------+-------+-------+----------+----------+
+> + *
+> + *		+-------+-------+-------+-------+-------+-------+------+-------+
+> + * Inner:	| key 1 | key 2 | key 3 | key N | ptr 1 | ptr 2 | ptr3 | ptr N |
+> + *		+-------+-------+-------+-------+-------+-------+------+-------+
+> + */
+> +typedef uint64_t fuse_iext_key_t;
+> +#define FUSE_IEXT_KEY_INVALID	(1ULL << 63)
+> +
+> +enum {
+> +	NODE_SIZE	= 256,
+> +	KEYS_PER_NODE	= NODE_SIZE / (sizeof(fuse_iext_key_t) + sizeof(void *)),
+> +	RECS_PER_LEAF	= (NODE_SIZE - (2 * sizeof(struct fuse_iext_leaf *))) /
+> +				sizeof(struct fuse_iomap_io),
 > +};
+> +
+> +/* maximum length of a mapping that we're willing to cache */
+> +#define FUSE_IOMAP_MAX_LEN	((loff_t)(1ULL << 63))
+> +
+> +struct fuse_iext_node {
+> +	fuse_iext_key_t		keys[KEYS_PER_NODE];
+> +	void			*ptrs[KEYS_PER_NODE];
+> +};
+> +
+> +struct fuse_iext_leaf {
+> +	struct fuse_iomap_io	recs[RECS_PER_LEAF];
+> +	struct fuse_iext_leaf	*prev;
+> +	struct fuse_iext_leaf	*next;
+> +};
+> +
+> +static uint32_t
+> +fuse_iomap_fork_to_state(const struct fuse_iomap_cache *ic,
+> +			 const struct fuse_iext_root *ir)
+> +{
+> +	ASSERT(ir == &ic->ic_write || ir == &ic->ic_read);
+> +
+> +	if (ir == &ic->ic_write)
+> +		return FUSE_IEXT_WRITE_MAPPING;
+> +	return 0;
+> +}
+> +
+> +/* Convert bmap state flags to an inode fork. */
+> +static struct fuse_iext_root *
+> +fuse_iext_state_to_fork(
+> +	struct fuse_iomap_cache	*ic,
+> +	uint32_t		state)
+> +{
+> +	if (state & FUSE_IEXT_WRITE_MAPPING)
+> +		return &ic->ic_write;
+> +	return &ic->ic_read;
+> +}
+> +
+> +/* The internal iext tree record is a struct fuse_iomap_io */
+> +
+> +static inline bool fuse_iext_rec_is_empty(const struct fuse_iomap_io *rec)
+> +{
+> +	return rec->length == 0;
+> +}
+> +
+> +static inline void fuse_iext_rec_clear(struct fuse_iomap_io *rec)
+> +{
+> +	memset(rec, 0, sizeof(*rec));
+> +}
+> +
+> +static inline void
+> +fuse_iext_set(
+> +	struct fuse_iomap_io		*rec,
+> +	const struct fuse_iomap_io	*irec)
+> +{
+> +	ASSERT(irec->length > 0);
+> +
+> +	*rec = *irec;
+> +}
+> +
+> +static inline void
+> +fuse_iext_get(
+> +	struct fuse_iomap_io		*irec,
+> +	const struct fuse_iomap_io	*rec)
+> +{
+> +	*irec = *rec;
+> +}
+> +
+> +static inline uint64_t fuse_iext_count(const struct fuse_iext_root *ir)
+> +{
+> +	return ir->ir_bytes / sizeof(struct fuse_iomap_io);
+> +}
+> +
+> +static inline int fuse_iext_max_recs(const struct fuse_iext_root *ir)
+> +{
+> +	if (ir->ir_height == 1)
+> +		return fuse_iext_count(ir);
+> +	return RECS_PER_LEAF;
+> +}
+> +
+> +static inline struct fuse_iomap_io *cur_rec(const struct fuse_iext_cursor *cur)
+> +{
+> +	return &cur->leaf->recs[cur->pos];
+> +}
+> +
+> +static bool fuse_iext_valid(const struct fuse_iext_root *ir,
+> +				   const struct fuse_iext_cursor *cur)
+> +{
+> +	if (!cur->leaf)
+> +		return false;
+> +	if (cur->pos < 0 || cur->pos >= fuse_iext_max_recs(ir))
+> +		return false;
+> +	if (fuse_iext_rec_is_empty(cur_rec(cur)))
+> +		return false;
+> +	return true;
+> +}
+> +
+> +static void *
+> +fuse_iext_find_first_leaf(
+> +	struct fuse_iext_root	*ir)
+> +{
+> +	struct fuse_iext_node	*node = ir->ir_data;
+> +	int			height;
+> +
+> +	if (!ir->ir_height)
+> +		return NULL;
+> +
+> +	for (height = ir->ir_height; height > 1; height--) {
+> +		node = node->ptrs[0];
+> +		ASSERT(node);
+> +	}
+> +
+> +	return node;
+> +}
+> +
+> +static void *
+> +fuse_iext_find_last_leaf(
+> +	struct fuse_iext_root	*ir)
+> +{
+> +	struct fuse_iext_node	*node = ir->ir_data;
+> +	int			height, i;
+> +
+> +	if (!ir->ir_height)
+> +		return NULL;
+> +
+> +	for (height = ir->ir_height; height > 1; height--) {
+> +		for (i = 1; i < KEYS_PER_NODE; i++)
+> +			if (!node->ptrs[i])
+> +				break;
+> +		node = node->ptrs[i - 1];
+> +		ASSERT(node);
+> +	}
+> +
+> +	return node;
+> +}
+> +
+> +static void
+> +fuse_iext_first(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	cur->pos = 0;
+> +	cur->leaf = fuse_iext_find_first_leaf(ir);
+> +}
+> +
+> +static void
+> +fuse_iext_last(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	int			i;
+> +
+> +	cur->leaf = fuse_iext_find_last_leaf(ir);
+> +	if (!cur->leaf) {
+> +		cur->pos = 0;
+> +		return;
+> +	}
+> +
+> +	for (i = 1; i < fuse_iext_max_recs(ir); i++) {
+> +		if (fuse_iext_rec_is_empty(&cur->leaf->recs[i]))
+> +			break;
+> +	}
+> +	cur->pos = i - 1;
+> +}
+> +
+> +static void
+> +fuse_iext_next(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	if (!cur->leaf) {
+> +		ASSERT(cur->pos <= 0 || cur->pos >= RECS_PER_LEAF);
+> +		fuse_iext_first(ir, cur);
+> +		return;
+> +	}
+> +
+> +	ASSERT(cur->pos >= 0);
+> +	ASSERT(cur->pos < fuse_iext_max_recs(ir));
+> +
+> +	cur->pos++;
+> +	if (ir->ir_height > 1 && !fuse_iext_valid(ir, cur) &&
+> +	    cur->leaf->next) {
+> +		cur->leaf = cur->leaf->next;
+> +		cur->pos = 0;
+> +	}
+> +}
+> +
+> +static void
+> +fuse_iext_prev(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	if (!cur->leaf) {
+> +		ASSERT(cur->pos <= 0 || cur->pos >= RECS_PER_LEAF);
+> +		fuse_iext_last(ir, cur);
+> +		return;
+> +	}
+> +
+> +	ASSERT(cur->pos >= 0);
+> +	ASSERT(cur->pos <= RECS_PER_LEAF);
+> +
+> +recurse:
+> +	do {
+> +		cur->pos--;
+> +		if (fuse_iext_valid(ir, cur))
+> +			return;
+> +	} while (cur->pos > 0);
+> +
+> +	if (ir->ir_height > 1 && cur->leaf->prev) {
+> +		cur->leaf = cur->leaf->prev;
+> +		cur->pos = RECS_PER_LEAF;
+> +		goto recurse;
+> +	}
+> +}
+> +
+> +/*
+> + * Return true if the cursor points at an extent and return the extent structure
+> + * in gotp.  Else return false.
+> + */
+> +bool
+> +fuse_iext_get_extent(
+> +	const struct fuse_iext_root	*ir,
+> +	const struct fuse_iext_cursor	*cur,
+> +	struct fuse_iomap_io		*gotp)
+> +{
+> +	if (!fuse_iext_valid(ir, cur))
+> +		return false;
+> +	fuse_iext_get(gotp, cur_rec(cur));
+> +	return true;
+> +}
+> +
+> +static inline bool fuse_iext_next_extent(struct fuse_iext_root *ir,
+> +		struct fuse_iext_cursor *cur, struct fuse_iomap_io *gotp)
+> +{
+> +	fuse_iext_next(ir, cur);
+> +	return fuse_iext_get_extent(ir, cur, gotp);
+> +}
+> +
+> +static inline bool fuse_iext_prev_extent(struct fuse_iext_root *ir,
+> +		struct fuse_iext_cursor *cur, struct fuse_iomap_io *gotp)
+> +{
+> +	fuse_iext_prev(ir, cur);
+> +	return fuse_iext_get_extent(ir, cur, gotp);
+> +}
+> +
+> +/*
+> + * Return the extent after cur in gotp without updating the cursor.
+> + */
+> +static inline bool fuse_iext_peek_next_extent(struct fuse_iext_root *ir,
+> +		struct fuse_iext_cursor *cur, struct fuse_iomap_io *gotp)
+> +{
+> +	struct fuse_iext_cursor ncur = *cur;
+> +
+> +	fuse_iext_next(ir, &ncur);
+> +	return fuse_iext_get_extent(ir, &ncur, gotp);
+> +}
+> +
+> +/*
+> + * Return the extent before cur in gotp without updating the cursor.
+> + */
+> +static inline bool fuse_iext_peek_prev_extent(struct fuse_iext_root *ir,
+> +		struct fuse_iext_cursor *cur, struct fuse_iomap_io *gotp)
+> +{
+> +	struct fuse_iext_cursor ncur = *cur;
+> +
+> +	fuse_iext_prev(ir, &ncur);
+> +	return fuse_iext_get_extent(ir, &ncur, gotp);
+> +}
+> +
+> +static inline int
+> +fuse_iext_key_cmp(
+> +	struct fuse_iext_node	*node,
+> +	int			n,
+> +	loff_t			offset)
+> +{
+> +	if (node->keys[n] > offset)
+> +		return 1;
+> +	if (node->keys[n] < offset)
+> +		return -1;
+> +	return 0;
+> +}
+> +
+> +static inline int
+> +fuse_iext_rec_cmp(
+> +	struct fuse_iomap_io	*rec,
+> +	loff_t			offset)
+> +{
+> +	if (rec->offset > offset)
+> +		return 1;
+> +	if (rec->offset + rec->length <= offset)
+> +		return -1;
+> +	return 0;
+> +}
+> +
+> +static void *
+> +fuse_iext_find_level(
+> +	struct fuse_iext_root	*ir,
+> +	loff_t			offset,
+> +	int			level)
+> +{
+> +	struct fuse_iext_node	*node = ir->ir_data;
+> +	int			height, i;
+> +
+> +	if (!ir->ir_height)
+> +		return NULL;
+> +
+> +	for (height = ir->ir_height; height > level; height--) {
+> +		for (i = 1; i < KEYS_PER_NODE; i++)
+> +			if (fuse_iext_key_cmp(node, i, offset) > 0)
+> +				break;
+> +
+> +		node = node->ptrs[i - 1];
+> +		if (!node)
+> +			break;
+> +	}
+> +
+> +	return node;
+> +}
 > +
 > +static int
-> +fuse_iomap_zero_range(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	loff_t			len,
-> +	bool			*did_zero)
+> +fuse_iext_node_pos(
+> +	struct fuse_iext_node	*node,
+> +	loff_t			offset)
 > +{
-> +	return iomap_zero_range(inode, pos, len, did_zero, &fuse_iomap_ops,
-> +				&fuse_iomap_write_ops, NULL);
+> +	int			i;
+> +
+> +	for (i = 1; i < KEYS_PER_NODE; i++) {
+> +		if (fuse_iext_key_cmp(node, i, offset) > 0)
+> +			break;
+> +	}
+> +
+> +	return i - 1;
 > +}
 > +
-> +/* Take care of zeroing post-EOF blocks when they might exist. */
-> +static ssize_t
-> +fuse_iomap_write_zero_eof(
-> +	struct kiocb		*iocb,
-> +	struct iov_iter		*from,
-> +	bool			*drained_dio)
+> +static int
+> +fuse_iext_node_insert_pos(
+> +	struct fuse_iext_node	*node,
+> +	loff_t			offset)
 > +{
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +	struct fuse_inode *fi = get_fuse_inode(inode);
-> +	struct address_space *mapping = iocb->ki_filp->f_mapping;
-> +	loff_t			isize;
-> +	int			error;
+> +	int			i;
+> +
+> +	for (i = 0; i < KEYS_PER_NODE; i++) {
+> +		if (fuse_iext_key_cmp(node, i, offset) > 0)
+> +			return i;
+> +	}
+> +
+> +	return KEYS_PER_NODE;
+> +}
+> +
+> +static int
+> +fuse_iext_node_nr_entries(
+> +	struct fuse_iext_node	*node,
+> +	int			start)
+> +{
+> +	int			i;
+> +
+> +	for (i = start; i < KEYS_PER_NODE; i++) {
+> +		if (node->keys[i] == FUSE_IEXT_KEY_INVALID)
+> +			break;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static int
+> +fuse_iext_leaf_nr_entries(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_leaf	*leaf,
+> +	int			start)
+> +{
+> +	int			i;
+> +
+> +	for (i = start; i < fuse_iext_max_recs(ir); i++) {
+> +		if (fuse_iext_rec_is_empty(&leaf->recs[i]))
+> +			break;
+> +	}
+> +
+> +	return i;
+> +}
+> +
+> +static inline fuse_iext_key_t
+> +fuse_iext_leaf_key(
+> +	struct fuse_iext_leaf	*leaf,
+> +	int			n)
+> +{
+> +	return leaf->recs[n].offset;
+> +}
+> +
+> +static inline void *
+> +fuse_iext_alloc_node(
+> +	int	size)
+> +{
+> +	return kzalloc(size, GFP_KERNEL | __GFP_NOLOCKDEP | __GFP_NOFAIL);
+> +}
+> +
+> +static void
+> +fuse_iext_grow(
+> +	struct fuse_iext_root	*ir)
+> +{
+> +	struct fuse_iext_node	*node = fuse_iext_alloc_node(NODE_SIZE);
+> +	int			i;
+> +
+> +	if (ir->ir_height == 1) {
+> +		struct fuse_iext_leaf *prev = ir->ir_data;
+> +
+> +		node->keys[0] = fuse_iext_leaf_key(prev, 0);
+> +		node->ptrs[0] = prev;
+> +	} else  {
+> +		struct fuse_iext_node *prev = ir->ir_data;
+> +
+> +		ASSERT(ir->ir_height > 1);
+> +
+> +		node->keys[0] = prev->keys[0];
+> +		node->ptrs[0] = prev;
+> +	}
+> +
+> +	for (i = 1; i < KEYS_PER_NODE; i++)
+> +		node->keys[i] = FUSE_IEXT_KEY_INVALID;
+> +
+> +	ir->ir_data = node;
+> +	ir->ir_height++;
+> +}
+> +
+> +static void
+> +fuse_iext_update_node(
+> +	struct fuse_iext_root	*ir,
+> +	loff_t			old_offset,
+> +	loff_t			new_offset,
+> +	int			level,
+> +	void			*ptr)
+> +{
+> +	struct fuse_iext_node	*node = ir->ir_data;
+> +	int			height, i;
+> +
+> +	for (height = ir->ir_height; height > level; height--) {
+> +		for (i = 0; i < KEYS_PER_NODE; i++) {
+> +			if (i > 0 && fuse_iext_key_cmp(node, i, old_offset) > 0)
+> +				break;
+> +			if (node->keys[i] == old_offset)
+> +				node->keys[i] = new_offset;
+> +		}
+> +		node = node->ptrs[i - 1];
+> +		ASSERT(node);
+> +	}
+> +
+> +	ASSERT(node == ptr);
+> +}
+> +
+> +static struct fuse_iext_node *
+> +fuse_iext_split_node(
+> +	struct fuse_iext_node	**nodep,
+> +	int			*pos,
+> +	int			*nr_entries)
+> +{
+> +	struct fuse_iext_node	*node = *nodep;
+> +	struct fuse_iext_node	*new = fuse_iext_alloc_node(NODE_SIZE);
+> +	const int		nr_move = KEYS_PER_NODE / 2;
+> +	int			nr_keep = nr_move + (KEYS_PER_NODE & 1);
+> +	int			i = 0;
+> +
+> +	/* for sequential append operations just spill over into the new node */
+> +	if (*pos == KEYS_PER_NODE) {
+> +		*nodep = new;
+> +		*pos = 0;
+> +		*nr_entries = 0;
+> +		goto done;
+> +	}
+> +
+> +
+> +	for (i = 0; i < nr_move; i++) {
+> +		new->keys[i] = node->keys[nr_keep + i];
+> +		new->ptrs[i] = node->ptrs[nr_keep + i];
+> +
+> +		node->keys[nr_keep + i] = FUSE_IEXT_KEY_INVALID;
+> +		node->ptrs[nr_keep + i] = NULL;
+> +	}
+> +
+> +	if (*pos >= nr_keep) {
+> +		*nodep = new;
+> +		*pos -= nr_keep;
+> +		*nr_entries = nr_move;
+> +	} else {
+> +		*nr_entries = nr_keep;
+> +	}
+> +done:
+> +	for (; i < KEYS_PER_NODE; i++)
+> +		new->keys[i] = FUSE_IEXT_KEY_INVALID;
+> +	return new;
+> +}
+> +
+> +static void
+> +fuse_iext_insert_node(
+> +	struct fuse_iext_root	*ir,
+> +	fuse_iext_key_t		offset,
+> +	void			*ptr,
+> +	int			level)
+> +{
+> +	struct fuse_iext_node	*node, *new;
+> +	int			i, pos, nr_entries;
+> +
+> +again:
+> +	if (ir->ir_height < level)
+> +		fuse_iext_grow(ir);
+> +
+> +	new = NULL;
+> +	node = fuse_iext_find_level(ir, offset, level);
+> +	pos = fuse_iext_node_insert_pos(node, offset);
+> +	nr_entries = fuse_iext_node_nr_entries(node, pos);
+> +
+> +	ASSERT(pos >= nr_entries || fuse_iext_key_cmp(node, pos, offset) != 0);
+> +	ASSERT(nr_entries <= KEYS_PER_NODE);
+> +
+> +	if (nr_entries == KEYS_PER_NODE)
+> +		new = fuse_iext_split_node(&node, &pos, &nr_entries);
 > +
 > +	/*
-> +	 * We need to serialise against EOF updates that occur in IO
-> +	 * completions here. We want to make sure that nobody is changing the
-> +	 * size while we do this check until we have placed an IO barrier (i.e.
-> +	 * hold i_rwsem exclusively) that prevents new IO from being
-> +	 * dispatched.  The spinlock effectively forms a memory barrier once we
-> +	 * have i_rwsem exclusively so we are guaranteed to see the latest EOF
-> +	 * value and hence be able to correctly determine if we need to run
-> +	 * zeroing.
+> +	 * Update the pointers in higher levels if the first entry changes
+> +	 * in an existing node.
 > +	 */
-> +	spin_lock(&fi->lock);
-> +	isize = i_size_read(inode);
-> +	if (iocb->ki_pos <= isize) {
-> +		spin_unlock(&fi->lock);
-> +		return 0;
+> +	if (node != new && pos == 0 && nr_entries > 0)
+> +		fuse_iext_update_node(ir, node->keys[0], offset, level, node);
+> +
+> +	for (i = nr_entries; i > pos; i--) {
+> +		node->keys[i] = node->keys[i - 1];
+> +		node->ptrs[i] = node->ptrs[i - 1];
 > +	}
-> +	spin_unlock(&fi->lock);
+> +	node->keys[pos] = offset;
+> +	node->ptrs[pos] = ptr;
 > +
-> +	if (iocb->ki_flags & IOCB_NOWAIT)
-> +		return -EAGAIN;
+> +	if (new) {
+> +		offset = new->keys[0];
+> +		ptr = new;
+> +		level++;
+> +		goto again;
+> +	}
+> +}
 > +
-> +	if (!(*drained_dio)) {
+> +static struct fuse_iext_leaf *
+> +fuse_iext_split_leaf(
+> +	struct fuse_iext_cursor	*cur,
+> +	int			*nr_entries)
+> +{
+> +	struct fuse_iext_leaf	*leaf = cur->leaf;
+> +	struct fuse_iext_leaf	*new = fuse_iext_alloc_node(NODE_SIZE);
+> +	const int		nr_move = RECS_PER_LEAF / 2;
+> +	int			nr_keep = nr_move + (RECS_PER_LEAF & 1);
+> +	int			i;
+> +
+> +	/* for sequential append operations just spill over into the new node */
+> +	if (cur->pos == RECS_PER_LEAF) {
+> +		cur->leaf = new;
+> +		cur->pos = 0;
+> +		*nr_entries = 0;
+> +		goto done;
+> +	}
+> +
+> +	for (i = 0; i < nr_move; i++) {
+> +		new->recs[i] = leaf->recs[nr_keep + i];
+> +		fuse_iext_rec_clear(&leaf->recs[nr_keep + i]);
+> +	}
+> +
+> +	if (cur->pos >= nr_keep) {
+> +		cur->leaf = new;
+> +		cur->pos -= nr_keep;
+> +		*nr_entries = nr_move;
+> +	} else {
+> +		*nr_entries = nr_keep;
+> +	}
+> +done:
+> +	if (leaf->next)
+> +		leaf->next->prev = new;
+> +	new->next = leaf->next;
+> +	new->prev = leaf;
+> +	leaf->next = new;
+> +	return new;
+> +}
+> +
+> +static void
+> +fuse_iext_alloc_root(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	ASSERT(ir->ir_bytes == 0);
+> +
+> +	ir->ir_data = fuse_iext_alloc_node(sizeof(struct fuse_iomap_io));
+> +	ir->ir_height = 1;
+> +
+> +	/* now that we have a node step into it */
+> +	cur->leaf = ir->ir_data;
+> +	cur->pos = 0;
+> +}
+> +
+> +static void
+> +fuse_iext_realloc_root(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur)
+> +{
+> +	int64_t new_size = ir->ir_bytes + sizeof(struct fuse_iomap_io);
+> +	void *new;
+> +
+> +	/* account for the prev/next pointers */
+> +	if (new_size / sizeof(struct fuse_iomap_io) == RECS_PER_LEAF)
+> +		new_size = NODE_SIZE;
+> +
+> +	new = krealloc(ir->ir_data, new_size,
+> +			GFP_KERNEL | __GFP_NOLOCKDEP | __GFP_NOFAIL);
+> +	memset(new + ir->ir_bytes, 0, new_size - ir->ir_bytes);
+> +	ir->ir_data = new;
+> +	cur->leaf = new;
+> +}
+> +
+> +/*
+> + * Increment the sequence counter on extent tree changes. We use WRITE_ONCE
+> + * here to ensure the update to the sequence counter is seen before the
+> + * modifications to the extent tree itself take effect.
+> + */
+> +static inline void fuse_iext_inc_seq(struct fuse_iomap_cache *ic)
+> +{
+> +	WRITE_ONCE(ic->ic_seq, READ_ONCE(ic->ic_seq) + 1);
+> +}
+> +
+> +static void
+> +fuse_iext_insert_raw(
+> +	struct fuse_iomap_cache		*ic,
+> +	struct fuse_iext_root		*ir,
+> +	struct fuse_iext_cursor		*cur,
+> +	const struct fuse_iomap_io	*irec)
+> +{
+> +	loff_t				offset = irec->offset;
+> +	struct fuse_iext_leaf		*new = NULL;
+> +	int				nr_entries, i;
+> +
+> +	fuse_iext_inc_seq(ic);
+> +
+> +	if (ir->ir_height == 0)
+> +		fuse_iext_alloc_root(ir, cur);
+> +	else if (ir->ir_height == 1)
+> +		fuse_iext_realloc_root(ir, cur);
+> +
+> +	nr_entries = fuse_iext_leaf_nr_entries(ir, cur->leaf, cur->pos);
+> +	ASSERT(nr_entries <= RECS_PER_LEAF);
+> +	ASSERT(cur->pos >= nr_entries ||
+> +	       fuse_iext_rec_cmp(cur_rec(cur), irec->offset) != 0);
+> +
+> +	if (nr_entries == RECS_PER_LEAF)
+> +		new = fuse_iext_split_leaf(cur, &nr_entries);
+> +
+> +	/*
+> +	 * Update the pointers in higher levels if the first entry changes
+> +	 * in an existing node.
+> +	 */
+> +	if (cur->leaf != new && cur->pos == 0 && nr_entries > 0) {
+> +		fuse_iext_update_node(ir, fuse_iext_leaf_key(cur->leaf, 0),
+> +				offset, 1, cur->leaf);
+> +	}
+> +
+> +	for (i = nr_entries; i > cur->pos; i--)
+> +		cur->leaf->recs[i] = cur->leaf->recs[i - 1];
+> +	fuse_iext_set(cur_rec(cur), irec);
+> +	ir->ir_bytes += sizeof(struct fuse_iomap_io);
+> +
+> +	if (new)
+> +		fuse_iext_insert_node(ir, fuse_iext_leaf_key(new, 0), new, 2);
+> +}
+> +
+> +static void
+> +fuse_iext_insert(
+> +	struct fuse_iomap_cache		*ic,
+> +	struct fuse_iext_cursor		*cur,
+> +	const struct fuse_iomap_io	*irec,
+> +	uint32_t			state)
+> +{
+> +	struct fuse_iext_root		*ir = fuse_iext_state_to_fork(ic, state);
+> +
+> +	fuse_iext_insert_raw(ic, ir, cur, irec);
+> +}
+> +
+> +static struct fuse_iext_node *
+> +fuse_iext_rebalance_node(
+> +	struct fuse_iext_node	*parent,
+> +	int			*pos,
+> +	struct fuse_iext_node	*node,
+> +	int			nr_entries)
+> +{
+> +	/*
+> +	 * If the neighbouring nodes are completely full, or have different
+> +	 * parents, we might never be able to merge our node, and will only
+> +	 * delete it once the number of entries hits zero.
+> +	 */
+> +	if (nr_entries == 0)
+> +		return node;
+> +
+> +	if (*pos > 0) {
+> +		struct fuse_iext_node *prev = parent->ptrs[*pos - 1];
+> +		int nr_prev = fuse_iext_node_nr_entries(prev, 0), i;
+> +
+> +		if (nr_prev + nr_entries <= KEYS_PER_NODE) {
+> +			for (i = 0; i < nr_entries; i++) {
+> +				prev->keys[nr_prev + i] = node->keys[i];
+> +				prev->ptrs[nr_prev + i] = node->ptrs[i];
+> +			}
+> +			return node;
+> +		}
+> +	}
+> +
+> +	if (*pos + 1 < fuse_iext_node_nr_entries(parent, *pos)) {
+> +		struct fuse_iext_node *next = parent->ptrs[*pos + 1];
+> +		int nr_next = fuse_iext_node_nr_entries(next, 0), i;
+> +
+> +		if (nr_entries + nr_next <= KEYS_PER_NODE) {
+> +			/*
+> +			 * Merge the next node into this node so that we don't
+> +			 * have to do an additional update of the keys in the
+> +			 * higher levels.
+> +			 */
+> +			for (i = 0; i < nr_next; i++) {
+> +				node->keys[nr_entries + i] = next->keys[i];
+> +				node->ptrs[nr_entries + i] = next->ptrs[i];
+> +			}
+> +
+> +			++*pos;
+> +			return next;
+> +		}
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static void
+> +fuse_iext_remove_node(
+> +	struct fuse_iext_root	*ir,
+> +	loff_t			offset,
+> +	void			*victim)
+> +{
+> +	struct fuse_iext_node	*node, *parent;
+> +	int			level = 2, pos, nr_entries, i;
+> +
+> +	ASSERT(level <= ir->ir_height);
+> +	node = fuse_iext_find_level(ir, offset, level);
+> +	pos = fuse_iext_node_pos(node, offset);
+> +again:
+> +	ASSERT(node->ptrs[pos]);
+> +	ASSERT(node->ptrs[pos] == victim);
+> +	kfree(victim);
+> +
+> +	nr_entries = fuse_iext_node_nr_entries(node, pos) - 1;
+> +	offset = node->keys[0];
+> +	for (i = pos; i < nr_entries; i++) {
+> +		node->keys[i] = node->keys[i + 1];
+> +		node->ptrs[i] = node->ptrs[i + 1];
+> +	}
+> +	node->keys[nr_entries] = FUSE_IEXT_KEY_INVALID;
+> +	node->ptrs[nr_entries] = NULL;
+> +
+> +	if (pos == 0 && nr_entries > 0) {
+> +		fuse_iext_update_node(ir, offset, node->keys[0], level, node);
+> +		offset = node->keys[0];
+> +	}
+> +
+> +	if (nr_entries >= KEYS_PER_NODE / 2)
+> +		return;
+> +
+> +	if (level < ir->ir_height) {
 > +		/*
-> +		 * We now have an IO submission barrier in place, but AIO can
-> +		 * do EOF updates during IO completion and hence we now need to
-> +		 * wait for all of them to drain.  Non-AIO DIO will have
-> +		 * drained before we are given the exclusive i_rwsem, and so
-> +		 * for most cases this wait is a no-op.
+> +		 * If we aren't at the root yet try to find a neighbour node to
+> +		 * merge with (or delete the node if it is empty), and then
+> +		 * recurse up to the next level.
 > +		 */
-> +		inode_dio_wait(inode);
-> +		*drained_dio = true;
-> +		return 1;
+> +		level++;
+> +		parent = fuse_iext_find_level(ir, offset, level);
+> +		pos = fuse_iext_node_pos(parent, offset);
+> +
+> +		ASSERT(pos != KEYS_PER_NODE);
+> +		ASSERT(parent->ptrs[pos] == node);
+> +
+> +		node = fuse_iext_rebalance_node(parent, &pos, node, nr_entries);
+> +		if (node) {
+> +			victim = node;
+> +			node = parent;
+> +			goto again;
+> +		}
+> +	} else if (nr_entries == 1) {
+> +		/*
+> +		 * If we are at the root and only one entry is left we can just
+> +		 * free this node and update the root pointer.
+> +		 */
+> +		ASSERT(node == ir->ir_data);
+> +		ir->ir_data = node->ptrs[0];
+> +		ir->ir_height--;
+> +		kfree(node);
 > +	}
-> +
-> +	filemap_invalidate_lock(mapping);
-> +	error = fuse_iomap_zero_range(inode, isize, iocb->ki_pos - isize, NULL);
-> +	filemap_invalidate_unlock(mapping);
-> +
-> +	return error;
 > +}
 > +
->  static ssize_t
->  fuse_iomap_write_checks(
->  	struct kiocb		*iocb,
->  	struct iov_iter		*from)
->  {
-> +	struct inode		*inode = iocb->ki_filp->f_mapping->host;
->  	ssize_t			error;
-> +	bool			drained_dio = false;
->  
-> +restart:
->  	error = generic_write_checks(iocb, from);
->  	if (error <= 0)
->  		return error;
->  
+> +static void
+> +fuse_iext_rebalance_leaf(
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*cur,
+> +	struct fuse_iext_leaf	*leaf,
+> +	loff_t			offset,
+> +	int			nr_entries)
+> +{
 > +	/*
-> +	 * If the offset is beyond the size of the file, we need to zero all
-> +	 * blocks that fall between the existing EOF and the start of this
-> +	 * write.
-> +	 *
-> +	 * We can do an unlocked check for i_size here safely as I/O completion
-> +	 * can only extend EOF.  Truncate is locked out at this point, so the
-> +	 * EOF cannot move backwards, only forwards. Hence we only need to take
-> +	 * the slow path when we are at or beyond the current EOF.
+> +	 * If the neighbouring nodes are completely full we might never be able
+> +	 * to merge our node, and will only delete it once the number of
+> +	 * entries hits zero.
 > +	 */
-> +	if (fuse_inode_has_iomap(inode) &&
-> +	    iocb->ki_pos > i_size_read(inode)) {
-> +		error = fuse_iomap_write_zero_eof(iocb, from, &drained_dio);
-> +		if (error == 1)
-> +			goto restart;
-> +		if (error)
-> +			return error;
+> +	if (nr_entries == 0)
+> +		goto remove_node;
+> +
+> +	if (leaf->prev) {
+> +		int nr_prev = fuse_iext_leaf_nr_entries(ir, leaf->prev, 0), i;
+> +
+> +		if (nr_prev + nr_entries <= RECS_PER_LEAF) {
+> +			for (i = 0; i < nr_entries; i++)
+> +				leaf->prev->recs[nr_prev + i] = leaf->recs[i];
+> +
+> +			if (cur->leaf == leaf) {
+> +				cur->leaf = leaf->prev;
+> +				cur->pos += nr_prev;
+> +			}
+> +			goto remove_node;
+> +		}
 > +	}
 > +
->  	return kiocb_modified(iocb);
->  }
->  
-> @@ -1059,6 +1147,366 @@ void fuse_iomap_open_truncate(struct inode *inode)
->  	fi->i_disk_size = 0;
->  }
->  
-> +struct fuse_writepage_ctx {
-> +	struct iomap_writepage_ctx ctx;
-> +};
+> +	if (leaf->next) {
+> +		int nr_next = fuse_iext_leaf_nr_entries(ir, leaf->next, 0), i;
 > +
-> +static void fuse_iomap_end_ioend(struct iomap_ioend *ioend)
+> +		if (nr_entries + nr_next <= RECS_PER_LEAF) {
+> +			/*
+> +			 * Merge the next node into this node so that we don't
+> +			 * have to do an additional update of the keys in the
+> +			 * higher levels.
+> +			 */
+> +			for (i = 0; i < nr_next; i++) {
+> +				leaf->recs[nr_entries + i] =
+> +					leaf->next->recs[i];
+> +			}
+> +
+> +			if (cur->leaf == leaf->next) {
+> +				cur->leaf = leaf;
+> +				cur->pos += nr_entries;
+> +			}
+> +
+> +			offset = fuse_iext_leaf_key(leaf->next, 0);
+> +			leaf = leaf->next;
+> +			goto remove_node;
+> +		}
+> +	}
+> +
+> +	return;
+> +remove_node:
+> +	if (leaf->prev)
+> +		leaf->prev->next = leaf->next;
+> +	if (leaf->next)
+> +		leaf->next->prev = leaf->prev;
+> +	fuse_iext_remove_node(ir, offset, leaf);
+> +}
+> +
+> +static void
+> +fuse_iext_free_last_leaf(
+> +	struct fuse_iext_root	*ir)
 > +{
-> +	struct inode *inode = ioend->io_inode;
-> +	unsigned int ioendflags = FUSE_IOMAP_IOEND_WRITEBACK;
-> +	unsigned int nofs_flag;
-> +	int error = blk_status_to_errno(ioend->io_bio.bi_status);
+> +	ir->ir_height--;
+> +	kfree(ir->ir_data);
+> +	ir->ir_data = NULL;
+> +}
 > +
-> +	ASSERT(fuse_inode_has_iomap(inode));
+> +static void
+> +fuse_iext_remove(
+> +	struct fuse_iomap_cache	*ic,
+> +	struct fuse_iext_cursor	*cur,
+> +	uint32_t		state)
+> +{
+> +	struct fuse_iext_root	*ir = fuse_iext_state_to_fork(ic, state);
+> +	struct fuse_iext_leaf	*leaf = cur->leaf;
+> +	loff_t			offset = fuse_iext_leaf_key(leaf, 0);
+> +	int			i, nr_entries;
 > +
-> +	/* We still have to clean up the ioend even if the inode is dead */
-> +	if (!error && fuse_is_bad(inode))
-> +		error = -EIO;
+> +	ASSERT(ir->ir_height > 0);
+> +	ASSERT(ir->ir_data != NULL);
+> +	ASSERT(fuse_iext_valid(ir, cur));
 > +
-> +	if (ioend->io_flags & IOMAP_IOEND_SHARED)
-> +		ioendflags |= FUSE_IOMAP_IOEND_SHARED;
-> +	if (ioend->io_flags & IOMAP_IOEND_UNWRITTEN)
-> +		ioendflags |= FUSE_IOMAP_IOEND_UNWRITTEN;
+> +	fuse_iext_inc_seq(ic);
 > +
-> +	/*
-> +	 * We can allocate memory here while doing writeback on behalf of
-> +	 * memory reclaim.  To avoid memory allocation deadlocks set the
-> +	 * task-wide nofs context for the following operations.
-> +	 */
-> +	nofs_flag = memalloc_nofs_save();
-> +	fuse_iomap_ioend(inode, ioend->io_offset, ioend->io_size, error,
-> +			 ioendflags, ioend->io_bio.bi_bdev, ioend->io_sector);
-> +	iomap_finish_ioends(ioend, error);
-> +	memalloc_nofs_restore(nofs_flag);
+> +	nr_entries = fuse_iext_leaf_nr_entries(ir, leaf, cur->pos) - 1;
+> +	for (i = cur->pos; i < nr_entries; i++)
+> +		leaf->recs[i] = leaf->recs[i + 1];
+> +	fuse_iext_rec_clear(&leaf->recs[nr_entries]);
+> +	ir->ir_bytes -= sizeof(struct fuse_iomap_io);
+> +
+> +	if (cur->pos == 0 && nr_entries > 0) {
+> +		fuse_iext_update_node(ir, offset, fuse_iext_leaf_key(leaf, 0), 1,
+> +				leaf);
+> +		offset = fuse_iext_leaf_key(leaf, 0);
+> +	} else if (cur->pos == nr_entries) {
+> +		if (ir->ir_height > 1 && leaf->next)
+> +			cur->leaf = leaf->next;
+> +		else
+> +			cur->leaf = NULL;
+> +		cur->pos = 0;
+> +	}
+> +
+> +	if (nr_entries >= RECS_PER_LEAF / 2)
+> +		return;
+> +
+> +	if (ir->ir_height > 1)
+> +		fuse_iext_rebalance_leaf(ir, cur, leaf, offset, nr_entries);
+> +	else if (nr_entries == 0)
+> +		fuse_iext_free_last_leaf(ir);
 > +}
 > +
 > +/*
-> + * Finish all pending IO completions that require transactional modifications.
+> + * Lookup the extent covering offset.
 > + *
-> + * We try to merge physical and logically contiguous ioends before completion to
-> + * minimise the number of transactions we need to perform during IO completion.
-> + * Both unwritten extent conversion and COW remapping need to iterate and modify
-> + * one physical extent at a time, so we gain nothing by merging physically
-> + * discontiguous extents here.
-> + *
-> + * The ioend chain length that we can be processing here is largely unbound in
-> + * length and we may have to perform significant amounts of work on each ioend
-> + * to complete it. Hence we have to be careful about holding the CPU for too
-> + * long in this loop.
+> + * If there is an extent covering offset return the extent index, and store the
+> + * expanded extent structure in *gotp, and the extent cursor in *cur.
+> + * If there is no extent covering offset, but there is an extent after it (e.g.
+> + * it lies in a hole) return that extent in *gotp and its cursor in *cur
+> + * instead.
+> + * If offset is beyond the last extent return false, and return an invalid
+> + * cursor value.
 > + */
-> +static void fuse_iomap_end_io(struct work_struct *work)
+> +static bool
+> +fuse_iext_lookup_extent(
+> +	struct fuse_iomap_cache	*ic,
+> +	struct fuse_iext_root	*ir,
+> +	loff_t			offset,
+> +	struct fuse_iext_cursor	*cur,
+> +	struct fuse_iomap_io	*gotp)
 > +{
-> +	struct fuse_inode *fi =
-> +		container_of(work, struct fuse_inode, ioend_work);
-> +	struct iomap_ioend *ioend;
-> +	struct list_head tmp;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&fi->ioend_lock, flags);
-> +	list_replace_init(&fi->ioend_list, &tmp);
-> +	spin_unlock_irqrestore(&fi->ioend_lock, flags);
-> +
-> +	iomap_sort_ioends(&tmp);
-> +	while ((ioend = list_first_entry_or_null(&tmp, struct iomap_ioend,
-> +			io_list))) {
-> +		list_del_init(&ioend->io_list);
-> +		iomap_ioend_try_merge(ioend, &tmp);
-> +		fuse_iomap_end_ioend(ioend);
-> +		cond_resched();
-> +	}
-> +}
-> +
-> +static void fuse_iomap_end_bio(struct bio *bio)
-> +{
-> +	struct iomap_ioend *ioend = iomap_ioend_from_bio(bio);
-> +	struct inode *inode = ioend->io_inode;
-> +	struct fuse_inode *fi = get_fuse_inode(inode);
-> +	unsigned long flags;
-> +
-> +	ASSERT(fuse_inode_has_iomap(inode));
-> +
-> +	spin_lock_irqsave(&fi->ioend_lock, flags);
-> +	if (list_empty(&fi->ioend_list))
-> +		WARN_ON_ONCE(!queue_work(system_unbound_wq, &fi->ioend_work));
-> +	list_add_tail(&ioend->io_list, &fi->ioend_list);
-> +	spin_unlock_irqrestore(&fi->ioend_lock, flags);
-> +}
-> +
-> +/*
-> + * Fast revalidation of the cached writeback mapping. Return true if the current
-> + * mapping is valid, false otherwise.
-> + */
-> +static bool fuse_iomap_revalidate_writeback(struct iomap_writepage_ctx *wpc,
-> +					    loff_t offset)
-> +{
-> +	if (offset < wpc->iomap.offset ||
-> +	    offset >= wpc->iomap.offset + wpc->iomap.length)
+> +	cur->leaf = fuse_iext_find_level(ir, offset, 1);
+> +	if (!cur->leaf) {
+> +		cur->pos = 0;
 > +		return false;
+> +	}
 > +
-> +	/* XXX actually use revalidation cookie */
+> +	for (cur->pos = 0; cur->pos < fuse_iext_max_recs(ir); cur->pos++) {
+> +		struct fuse_iomap_io *rec = cur_rec(cur);
+> +
+> +		if (fuse_iext_rec_is_empty(rec))
+> +			break;
+> +		if (fuse_iext_rec_cmp(rec, offset) >= 0)
+> +			goto found;
+> +	}
+> +
+> +	/* Try looking in the next node for an entry > offset */
+> +	if (ir->ir_height == 1 || !cur->leaf->next)
+> +		return false;
+> +	cur->leaf = cur->leaf->next;
+> +	cur->pos = 0;
+> +	if (!fuse_iext_valid(ir, cur))
+> +		return false;
+> +found:
+> +	fuse_iext_get(gotp, cur_rec(cur));
 > +	return true;
 > +}
 > +
 > +/*
-> + * If the folio has delalloc blocks on it, the caller is asking us to punch them
-> + * out. If we don't, we can leave a stale delalloc mapping covered by a clean
-> + * page that needs to be dirtied again before the delalloc mapping can be
-> + * converted. This stale delalloc mapping can trip up a later direct I/O read
-> + * operation on the same region.
-> + *
-> + * We prevent this by truncating away the delalloc regions on the folio. Because
-> + * they are delalloc, we can do this without needing a transaction. Indeed - if
-> + * we get ENOSPC errors, we have to be able to do this truncation without a
-> + * transaction as there is no space left for block reservation (typically why
-> + * we see a ENOSPC in writeback).
+> + * Returns the last extent before end, and if this extent doesn't cover
+> + * end, update end to the end of the extent.
 > + */
-> +static void fuse_iomap_discard_folio(struct folio *folio, loff_t pos, int error)
+> +static bool
+> +fuse_iext_lookup_extent_before(
+> +	struct fuse_iomap_cache	*ic,
+> +	struct fuse_iext_root	*ir,
+> +	loff_t			*end,
+> +	struct fuse_iext_cursor	*cur,
+> +	struct fuse_iomap_io	*gotp)
 > +{
-> +	struct inode *inode = folio->mapping->host;
-> +	struct fuse_inode *fi = get_fuse_inode(inode);
-> +	loff_t end = folio_pos(folio) + folio_size(folio);
-> +
-> +	if (fuse_is_bad(inode))
-> +		return;
-> +
-> +	ASSERT(fuse_inode_has_iomap(inode));
-> +
-> +	printk_ratelimited(KERN_ERR
-> +		"page discard on page %px, inode 0x%llx, pos %llu.",
-> +			folio, fi->orig_ino, pos);
-> +
-> +	/* Userspace may need to remove delayed allocations */
-> +	fuse_iomap_ioend(inode, pos, end - pos, error, 0, NULL,
-> +			 FUSE_IOMAP_NULL_ADDR);
+> +	/* could be optimized to not even look up the next on a match.. */
+> +	if (fuse_iext_lookup_extent(ic, ir, *end - 1, cur, gotp) &&
+> +	    gotp->offset <= *end - 1)
+> +		return true;
+> +	if (!fuse_iext_prev_extent(ir, cur, gotp))
+> +		return false;
+> +	*end = gotp->offset + gotp->length;
+> +	return true;
 > +}
 > +
-> +static ssize_t fuse_iomap_writeback_range(struct iomap_writepage_ctx *wpc,
-> +					  struct folio *folio, u64 offset,
-> +					  unsigned int len, u64 end_pos)
+> +static void
+> +fuse_iext_update_extent(
+> +	struct fuse_iomap_cache	*ic,
+> +	uint32_t		state,
+> +	struct fuse_iext_cursor	*cur,
+> +	struct fuse_iomap_io	*new)
 > +{
-> +	struct inode *inode = wpc->inode;
-> +	struct iomap write_iomap, dontcare;
-> +	ssize_t ret;
+> +	struct fuse_iext_root	*ir = fuse_iext_state_to_fork(ic, state);
 > +
-> +	if (fuse_is_bad(inode)) {
-> +		ret = -EIO;
-> +		goto discard_folio;
-> +	}
+> +	fuse_iext_inc_seq(ic);
 > +
-> +	ASSERT(fuse_inode_has_iomap(inode));
+> +	if (cur->pos == 0) {
+> +		struct fuse_iomap_io	old;
 > +
-> +	if (!fuse_iomap_revalidate_writeback(wpc, offset)) {
-> +		ret = fuse_iomap_begin(inode, offset, len,
-> +				       FUSE_IOMAP_OP_WRITEBACK,
-> +				       &write_iomap, &dontcare);
-> +		if (ret)
-> +			goto discard_folio;
-> +
-> +		/*
-> +		 * Landed in a hole or beyond EOF?  Send that to iomap, it'll
-> +		 * skip writing back the file range.
-> +		 */
-> +		if (write_iomap.offset > offset) {
-> +			write_iomap.length = write_iomap.offset - offset;
-> +			write_iomap.offset = offset;
-> +			write_iomap.type = IOMAP_HOLE;
+> +		fuse_iext_get(&old, cur_rec(cur));
+> +		if (new->offset != old.offset) {
+> +			fuse_iext_update_node(ir, old.offset,
+> +					new->offset, 1, cur->leaf);
 > +		}
-> +
-> +		memcpy(&wpc->iomap, &write_iomap, sizeof(struct iomap));
 > +	}
 > +
-> +	ret = iomap_add_to_ioend(wpc, folio, offset, end_pos, len);
-> +	if (ret < 0)
-> +		goto discard_folio;
-> +
-> +	return ret;
-> +discard_folio:
-> +	fuse_iomap_discard_folio(folio, offset, ret);
-> +	return ret;
-> +}
-> +
-> +static int fuse_iomap_writeback_submit(struct iomap_writepage_ctx *wpc,
-> +				       int error)
-> +{
-> +	struct iomap_ioend *ioend = wpc->wb_ctx;
-> +
-> +	ASSERT(fuse_inode_has_iomap(ioend->io_inode));
-> +
-> +	/* always call our ioend function, even if we cancel the bio */
-> +	ioend->io_bio.bi_end_io = fuse_iomap_end_bio;
-> +	return iomap_ioend_writeback_submit(wpc, error);
-> +}
-> +
-> +static const struct iomap_writeback_ops fuse_iomap_writeback_ops = {
-> +	.writeback_range	= fuse_iomap_writeback_range,
-> +	.writeback_submit	= fuse_iomap_writeback_submit,
-> +};
-> +
-> +static int fuse_iomap_writepages(struct address_space *mapping,
-> +				 struct writeback_control *wbc)
-> +{
-> +	struct fuse_writepage_ctx wpc = {
-> +		.ctx = {
-> +			.inode = mapping->host,
-> +			.wbc = wbc,
-> +			.ops = &fuse_iomap_writeback_ops,
-> +		},
-> +	};
-> +
-> +	ASSERT(fuse_inode_has_iomap(mapping->host));
-> +
-> +	return iomap_writepages(&wpc.ctx);
-> +}
-> +
-> +static int fuse_iomap_read_folio(struct file *file, struct folio *folio)
-> +{
-> +	ASSERT(fuse_inode_has_iomap(file_inode(file)));
-> +
-> +	iomap_bio_read_folio(folio, &fuse_iomap_ops);
-> +	return 0;
-> +}
-> +
-> +static void fuse_iomap_readahead(struct readahead_control *rac)
-> +{
-> +	ASSERT(fuse_inode_has_iomap(file_inode(rac->file)));
-> +
-> +	iomap_bio_readahead(rac, &fuse_iomap_ops);
-> +}
-> +
-> +static const struct address_space_operations fuse_iomap_aops = {
-> +	.read_folio		= fuse_iomap_read_folio,
-> +	.readahead		= fuse_iomap_readahead,
-> +	.writepages		= fuse_iomap_writepages,
-> +	.dirty_folio		= iomap_dirty_folio,
-> +	.release_folio		= iomap_release_folio,
-> +	.invalidate_folio	= iomap_invalidate_folio,
-> +	.migrate_folio		= filemap_migrate_folio,
-> +	.is_partially_uptodate  = iomap_is_partially_uptodate,
-> +	.error_remove_folio	= generic_error_remove_folio,
-> +
-> +	/* These aren't pagecache operations per se */
-> +	.bmap			= fuse_bmap,
-> +};
-> +
-> +static inline void fuse_inode_set_iomap(struct inode *inode)
-> +{
-> +	struct fuse_inode *fi = get_fuse_inode(inode);
-> +
-> +	inode->i_data.a_ops = &fuse_iomap_aops;
-> +
-> +	INIT_WORK(&fi->ioend_work, fuse_iomap_end_io);
-> +	INIT_LIST_HEAD(&fi->ioend_list);
-> +	spin_lock_init(&fi->ioend_lock);
-> +	set_bit(FUSE_I_IOMAP, &fi->state);
+> +	fuse_iext_set(cur_rec(cur), new);
 > +}
 > +
 > +/*
-> + * Locking for serialisation of IO during page faults. This results in a lock
-> + * ordering of:
-> + *
-> + * mmap_lock (MM)
-> + *   sb_start_pagefault(vfs, freeze)
-> + *     invalidate_lock (vfs - truncate serialisation)
-> + *       page_lock (MM)
-> + *         i_lock (FUSE - extent map serialisation)
+> + * This is a recursive function, because of that we need to be extremely
+> + * careful with stack usage.
 > + */
-> +static vm_fault_t fuse_iomap_page_mkwrite(struct vm_fault *vmf)
+> +static void
+> +fuse_iext_destroy_node(
+> +	struct fuse_iext_node	*node,
+> +	int			level)
 > +{
-> +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> +	vm_fault_t ret;
+> +	int			i;
 > +
-> +	ASSERT(fuse_inode_has_iomap(inode));
+> +	if (level > 1) {
+> +		for (i = 0; i < KEYS_PER_NODE; i++) {
+> +			if (node->keys[i] == FUSE_IEXT_KEY_INVALID)
+> +				break;
+> +			fuse_iext_destroy_node(node->ptrs[i], level - 1);
+> +		}
+> +	}
 > +
-> +	sb_start_pagefault(inode->i_sb);
-> +	file_update_time(vmf->vma->vm_file);
-> +
-> +	filemap_invalidate_lock_shared(mapping);
-> +	ret = iomap_page_mkwrite(vmf, &fuse_iomap_ops, NULL);
-> +	filemap_invalidate_unlock_shared(mapping);
-> +
-> +	sb_end_pagefault(inode->i_sb);
-> +	return ret;
+> +	kfree(node);
 > +}
 > +
-> +static const struct vm_operations_struct fuse_iomap_vm_ops = {
-> +	.fault		= filemap_fault,
-> +	.map_pages	= filemap_map_pages,
-> +	.page_mkwrite	= fuse_iomap_page_mkwrite,
-> +};
-> +
-> +int fuse_iomap_mmap(struct file *file, struct vm_area_struct *vma)
+> +static void
+> +fuse_iext_destroy(
+> +	struct fuse_iext_root	*ir)
 > +{
-> +	ASSERT(fuse_inode_has_iomap(file_inode(file)));
+> +	fuse_iext_destroy_node(ir->ir_data, ir->ir_height);
 > +
-> +	file_accessed(file);
-> +	vma->vm_ops = &fuse_iomap_vm_ops;
-> +	return 0;
+> +	ir->ir_bytes = 0;
+> +	ir->ir_height = 0;
+> +	ir->ir_data = NULL;
 > +}
 > +
-> +static ssize_t fuse_iomap_buffered_read(struct kiocb *iocb, struct iov_iter *to)
+> +static inline struct fuse_iext_root *
+> +fuse_iext_root_ptr(
+> +	struct fuse_iomap_cache	*ic,
+> +	enum fuse_iomap_iodir	iodir)
 > +{
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +	ssize_t ret;
-> +
-> +	ASSERT(fuse_inode_has_iomap(inode));
-> +
-> +	if (!iov_iter_count(to))
-> +		return 0; /* skip atime */
-> +
-> +	ret = fuse_iomap_ilock_iocb(iocb, SHARED);
-> +	if (ret)
-> +		return ret;
-> +	ret = generic_file_read_iter(iocb, to);
-> +	if (ret > 0)
-> +		file_accessed(iocb->ki_filp);
-> +	inode_unlock_shared(inode);
-> +
-> +	return ret;
+> +	switch (iodir) {
+> +	case READ_MAPPING:
+> +		return &ic->ic_read;
+> +	case WRITE_MAPPING:
+> +		return &ic->ic_write;
+> +	default:
+> +		ASSERT(0);
+> +		return NULL;
+> +	}
 > +}
 > +
-> +static ssize_t fuse_iomap_buffered_write(struct kiocb *iocb,
-> +					 struct iov_iter *from)
+> +static inline bool fuse_iomap_addrs_adjacent(const struct fuse_iomap_io *left,
+> +					     const struct fuse_iomap_io *right)
 > +{
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +	struct fuse_inode *fi = get_fuse_inode(inode);
-> +	loff_t pos = iocb->ki_pos;
-> +	ssize_t ret;
+> +	switch (left->type) {
+> +	case FUSE_IOMAP_TYPE_MAPPED:
+> +	case FUSE_IOMAP_TYPE_UNWRITTEN:
+> +		return left->addr + left->length == right->addr;
+> +	default:
+> +		return left->addr  == FUSE_IOMAP_NULL_ADDR &&
+> +		       right->addr == FUSE_IOMAP_NULL_ADDR;
+> +	}
+> +}
 > +
-> +	ASSERT(fuse_inode_has_iomap(inode));
+> +static inline bool fuse_iomap_can_merge(const struct fuse_iomap_io *left,
+> +					const struct fuse_iomap_io *right)
+> +{
+> +	return (left->dev == right->dev &&
+> +		left->offset + left->length == right->offset &&
+> +		left->type  == right->type &&
+> +		fuse_iomap_addrs_adjacent(left, right) &&
+> +		left->flags == right->flags &&
+> +		left->length + right->length <= FUSE_IOMAP_MAX_LEN);
+> +}
 > +
-> +	if (!iov_iter_count(from))
+> +static inline bool fuse_iomap_can_merge3(const struct fuse_iomap_io *left,
+> +					 const struct fuse_iomap_io *new,
+> +					 const struct fuse_iomap_io *right)
+> +{
+> +	return left->length + new->length + right->length <= FUSE_IOMAP_MAX_LEN;
+> +}
+> +
+> +#if IS_ENABLED(CONFIG_FUSE_IOMAP_DEBUG)
+> +static void fuse_iext_check_mappings(struct fuse_iomap_cache *ic,
+> +				     struct fuse_iext_root *ir)
+> +{
+> +	struct fuse_iext_cursor	icur;
+> +	struct fuse_iomap_io	prev, got;
+> +	struct inode		*inode = ic->ic_inode;
+> +	struct fuse_inode	*fi = get_fuse_inode(inode);
+> +	unsigned long long	nr = 0;
+> +
+> +	if (ir->ir_bytes < 0 || !static_branch_unlikely(&fuse_iomap_debug))
+> +		return;
+> +
+> +	fuse_iext_first(ir, &icur);
+> +	if (!fuse_iext_get_extent(ir, &icur, &prev))
+> +		return;
+> +	nr++;
+> +
+> +	fuse_iext_next(ir, &icur);
+> +	while (fuse_iext_get_extent(ir, &icur, &got)) {
+> +		if (got.length == 0 ||
+> +		    got.offset < prev.offset + prev.length ||
+> +		    fuse_iomap_can_merge(&prev, &got)) {
+> +			printk(KERN_ERR "FUSE IOMAP CORRUPTION ino=%llu nr=%llu",
+> +			       fi->orig_ino, nr);
+> +			printk(KERN_ERR "prev: offset=%llu length=%llu type=%u flags=0x%x dev=%u addr=%llu\n",
+> +			       prev.offset, prev.length, prev.type, prev.flags,
+> +			       prev.dev, prev.addr);
+> +			printk(KERN_ERR "curr: offset=%llu length=%llu type=%u flags=0x%x dev=%u addr=%llu\n",
+> +			       got.offset, got.length, got.type, got.flags,
+> +			       got.dev, got.addr);
+> +		}
+> +
+> +		prev = got;
+> +		nr++;
+> +		fuse_iext_next(ir, &icur);
+> +	}
+> +}
+> +#else
+> +# define fuse_iext_check_mappings(...)	((void)0)
+> +#endif
+> +
+> +static void
+> +fuse_iext_del_mapping(
+> +	struct fuse_iomap_cache	*ic,
+> +	struct fuse_iext_root	*ir,
+> +	struct fuse_iext_cursor	*icur,
+> +	struct fuse_iomap_io	*got,	/* current extent entry */
+> +	struct fuse_iomap_io	*del)	/* data to remove from extents */
+> +{
+> +	struct fuse_iomap_io	new;	/* new record to be inserted */
+> +	/* first addr (fsblock aligned) past del */
+> +	fuse_iext_key_t		del_endaddr;
+> +	/* first offset (fsblock aligned) past del */
+> +	fuse_iext_key_t		del_endoff = del->offset + del->length;
+> +	/* first offset (fsblock aligned) past got */
+> +	fuse_iext_key_t		got_endoff = got->offset + got->length;
+> +	uint32_t		state = fuse_iomap_fork_to_state(ic, ir);
+> +
+> +	ASSERT(del->length > 0);
+> +	ASSERT(got->offset <= del->offset);
+> +	ASSERT(got_endoff >= del_endoff);
+> +
+> +	switch (del->type) {
+> +	case FUSE_IOMAP_TYPE_MAPPED:
+> +	case FUSE_IOMAP_TYPE_UNWRITTEN:
+> +		del_endaddr = del->addr + del->length;
+> +		break;
+> +	default:
+> +		del_endaddr = FUSE_IOMAP_NULL_ADDR;
+> +		break;
+> +	}
+> +
+> +	if (got->offset == del->offset)
+> +		state |= FUSE_IEXT_LEFT_FILLING;
+> +	if (got_endoff == del_endoff)
+> +		state |= FUSE_IEXT_RIGHT_FILLING;
+> +
+> +	switch (state & (FUSE_IEXT_LEFT_FILLING | FUSE_IEXT_RIGHT_FILLING)) {
+> +	case FUSE_IEXT_LEFT_FILLING | FUSE_IEXT_RIGHT_FILLING:
+> +		/*
+> +		 * Matches the whole extent.  Delete the entry.
+> +		 */
+> +		fuse_iext_remove(ic, icur, state);
+> +		fuse_iext_prev(ir, icur);
+> +		break;
+> +	case FUSE_IEXT_LEFT_FILLING:
+> +		/*
+> +		 * Deleting the first part of the extent.
+> +		 */
+> +		got->offset = del_endoff;
+> +		got->addr = del_endaddr;
+> +		got->length -= del->length;
+> +		fuse_iext_update_extent(ic, state, icur, got);
+> +		break;
+> +	case FUSE_IEXT_RIGHT_FILLING:
+> +		/*
+> +		 * Deleting the last part of the extent.
+> +		 */
+> +		got->length -= del->length;
+> +		fuse_iext_update_extent(ic, state, icur, got);
+> +		break;
+> +	case 0:
+> +		/*
+> +		 * Deleting the middle of the extent.
+> +		 */
+> +		got->length = del->offset - got->offset;
+> +		fuse_iext_update_extent(ic, state, icur, got);
+> +
+> +		new.offset = del_endoff;
+> +		new.length = got_endoff - del_endoff;
+> +		new.type = got->type;
+> +		new.flags = got->flags;
+> +		new.addr = del_endaddr;
+> +		new.dev = got->dev;
+> +
+> +		fuse_iext_next(ir, icur);
+> +		fuse_iext_insert(ic, icur, &new, state);
+> +		break;
+> +	}
+> +}
+> +
+> +int
+> +fuse_iomap_cache_remove(
+> +	struct inode		*inode,
+> +	enum fuse_iomap_iodir	iodir,
+> +	loff_t			start,		/* first file offset deleted */
+> +	uint64_t		len)		/* length to unmap */
+> +{
+> +	struct fuse_iext_cursor	icur;
+> +	struct fuse_iomap_io	got;		/* current extent record */
+> +	struct fuse_iomap_io	del;		/* extent being deleted */
+> +	loff_t			end;
+> +	struct fuse_inode	*fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache	*ic = fi->cache;
+> +	struct fuse_iext_root	*ir = fuse_iext_root_ptr(ic, iodir);
+> +	bool			wasreal;
+> +	bool			done = false;
+> +	int			ret = 0;
+> +
+> +	assert_cache_locked(ic);
+> +
+> +	/* Fork is not active or has zero mappings */
+> +	if (ir->ir_bytes < 0 || fuse_iext_count(ir) == 0)
 > +		return 0;
 > +
-> +	ret = fuse_iomap_ilock_iocb(iocb, EXCL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = fuse_iomap_write_checks(iocb, from);
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	if (inode->i_size < pos + iov_iter_count(from))
-> +		set_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
-> +
-> +	ret = iomap_file_buffered_write(iocb, from, &fuse_iomap_ops,
-> +					&fuse_iomap_write_ops, NULL);
-> +
-> +	if (ret > 0)
-> +		fuse_write_update_attr(inode, pos + ret, ret);
-> +	clear_bit(FUSE_I_SIZE_UNSTABLE, &fi->state);
-> +
-> +out_unlock:
-> +	inode_unlock(inode);
-> +
-> +	if (ret > 0) {
-> +		/* Handle various SYNC-type writes */
-> +		ret = generic_write_sync(iocb, ret);
+> +	/* Fast shortcut if the caller wants to erase everything */
+> +	if (start == 0 && len >= inode->i_sb->s_maxbytes) {
+> +		fuse_iext_destroy(ir);
+> +		return 0;
 > +	}
+> +
+> +	if (!len)
+> +		goto out;
+> +
+> +	/*
+> +	 * If the caller wants us to remove everything to EOF, we set the end
+> +	 * of the removal range to the maximum file offset.  We don't support
+> +	 * unsigned file offsets.
+> +	 */
+> +	if (len == FUSE_IOMAP_INVAL_TO_EOF) {
+> +		const unsigned int blocksize = i_blocksize(&fi->inode);
+> +
+> +		len = round_up(inode->i_sb->s_maxbytes, blocksize) - start;
+> +	}
+> +
+> +	/*
+> +	 * Now that we've settled len, look up the extent before the end of the
+> +	 * range.
+> +	 */
+> +	end = start + len;
+> +	if (!fuse_iext_lookup_extent_before(ic, ir, &end, &icur, &got))
+> +		goto out;
+> +	end--;
+> +
+> +	while (end != -1 && end >= start) {
+> +		/*
+> +		 * Is the found extent after a hole in which end lives?
+> +		 * Just back up to the previous extent, if so.
+> +		 */
+> +		if (got.offset > end &&
+> +		    !fuse_iext_prev_extent(ir, &icur, &got)) {
+> +			done = true;
+> +			break;
+> +		}
+> +		/*
+> +		 * Is the last block of this extent before the range
+> +		 * we're supposed to delete?  If so, we're done.
+> +		 */
+> +		end = min_t(loff_t, end, got.offset + got.length - 1);
+> +		if (end < start)
+> +			break;
+> +		/*
+> +		 * Then deal with the (possibly delayed) allocated space
+> +		 * we found.
+> +		 */
+> +		del = got;
+> +		switch (del.type) {
+> +		case FUSE_IOMAP_TYPE_DELALLOC:
+> +		case FUSE_IOMAP_TYPE_HOLE:
+> +		case FUSE_IOMAP_TYPE_INLINE:
+> +		case FUSE_IOMAP_TYPE_PURE_OVERWRITE:
+> +			wasreal = false;
+> +			break;
+> +		case FUSE_IOMAP_TYPE_MAPPED:
+> +		case FUSE_IOMAP_TYPE_UNWRITTEN:
+> +			wasreal = true;
+> +			break;
+> +		default:
+> +			ASSERT(0);
+> +			ret = -EFSCORRUPTED;
+> +			goto out;
+> +		}
+> +
+> +		if (got.offset < start) {
+> +			del.offset = start;
+> +			del.length -= start - got.offset;
+> +			if (wasreal)
+> +				del.addr += start - got.offset;
+> +		}
+> +		if (del.offset + del.length > end + 1)
+> +			del.length = end + 1 - del.offset;
+> +
+> +		fuse_iext_del_mapping(ic, ir, &icur, &got, &del);
+> +		end = del.offset - 1;
+> +
+> +		/*
+> +		 * If not done go on to the next (previous) record.
+> +		 */
+> +		if (end != -1 && end >= start) {
+> +			if (!fuse_iext_get_extent(ir, &icur, &got) ||
+> +			    (got.offset > end &&
+> +			     !fuse_iext_prev_extent(ir, &icur, &got))) {
+> +				done = true;
+> +				break;
+> +			}
+> +		}
+> +	}
+> +
+> +	/* Should have removed everything */
+> +	if (len == 0 || done || end == (loff_t)-1 || end < start)
+> +		ret = 0;
+> +	else
+> +		ret = -EFSCORRUPTED;
+> +
+> +out:
+> +	fuse_iext_check_mappings(ic, ir);
 > +	return ret;
 > +}
 > +
->  static inline bool fuse_iomap_force_directio(const struct kiocb *iocb)
->  {
->  	struct fuse_file *ff = iocb->ki_filp->private_data;
-> @@ -1072,9 +1520,30 @@ ssize_t fuse_iomap_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  
->  	ASSERT(fuse_inode_has_iomap(file_inode(iocb->ki_filp)));
->  
-> -	if ((iocb->ki_flags & IOCB_DIRECT) || force_directio)
-> -		return fuse_iomap_direct_read(iocb, to);
-> -	return -EIO;
-> +	if ((iocb->ki_flags & IOCB_DIRECT) || force_directio) {
-> +		ssize_t ret = fuse_iomap_direct_read(iocb, to);
+> +static void
+> +fuse_iext_add_mapping(
+> +	struct fuse_iomap_cache		*ic,
+> +	struct fuse_iext_root		*ir,
+> +	struct fuse_iext_cursor		*icur,
+> +	const struct fuse_iomap_io	*new)	/* new extent entry */
+> +{
+> +	struct fuse_iomap_io		left;	/* left neighbor extent entry */
+> +	struct fuse_iomap_io		right;	/* right neighbor extent entry */
+> +	uint32_t			state = fuse_iomap_fork_to_state(ic, ir);
 > +
-> +		switch (ret) {
-> +		case -ENOTBLK:
-> +		case -ENOSYS:
-> +			/*
-> +			 * We fall back to a buffered read if:
-> +			 *
-> +			 *  - ENOTBLK means iomap told us to do it
-> +			 *  - ENOSYS means the fuse server wants it
-> +			 *
-> +			 * Don't fall back if we were forced to do it.
-> +			 */
-> +			if (force_directio)
-> +				return -EIO;
-> +			break;
-> +		default:
-> +			/* errors, no progress, or partial progress */
-> +			return ret;
-> +		}
-
-When falling back from directio read to buffered IO, we need to clear
-IOCB_DIRECT so that generic_file_read_iter won't fall into ->direct_IO.
-
-Note that the directio write fallback doesn't need to clear this because
-it calls the iomap buffered write code directly.
-
---D
-
+> +	/*
+> +	 * Check and set flags if this segment has a left neighbor.
+> +	 */
+> +	if (fuse_iext_peek_prev_extent(ir, icur, &left))
+> +		state |= FUSE_IEXT_LEFT_VALID;
+> +
+> +	/*
+> +	 * Check and set flags if this segment has a current value.
+> +	 * Not true if we're inserting into the "hole" at eof.
+> +	 */
+> +	if (fuse_iext_get_extent(ir, icur, &right))
+> +		state |= FUSE_IEXT_RIGHT_VALID;
+> +
+> +	/*
+> +	 * We're inserting a real allocation between "left" and "right".
+> +	 * Set the contiguity flags.  Don't let extents get too large.
+> +	 */
+> +	if ((state & FUSE_IEXT_LEFT_VALID) && fuse_iomap_can_merge(&left, new))
+> +		state |= FUSE_IEXT_LEFT_CONTIG;
+> +
+> +	if ((state & FUSE_IEXT_RIGHT_VALID) &&
+> +	    fuse_iomap_can_merge(new, &right) &&
+> +	    (!(state & FUSE_IEXT_LEFT_CONTIG) ||
+> +	     fuse_iomap_can_merge3(&left, new, &right)))
+> +		state |= FUSE_IEXT_RIGHT_CONTIG;
+> +
+> +	/*
+> +	 * Select which case we're in here, and implement it.
+> +	 */
+> +	switch (state & (FUSE_IEXT_LEFT_CONTIG | FUSE_IEXT_RIGHT_CONTIG)) {
+> +	case FUSE_IEXT_LEFT_CONTIG | FUSE_IEXT_RIGHT_CONTIG:
+> +		/*
+> +		 * New allocation is contiguous with real allocations on the
+> +		 * left and on the right.
+> +		 * Merge all three into a single extent record.
+> +		 */
+> +		left.length += new->length + right.length;
+> +
+> +		fuse_iext_remove(ic, icur, state);
+> +		fuse_iext_prev(ir, icur);
+> +		fuse_iext_update_extent(ic, state, icur, &left);
+> +		break;
+> +
+> +	case FUSE_IEXT_LEFT_CONTIG:
+> +		/*
+> +		 * New allocation is contiguous with a real allocation
+> +		 * on the left.
+> +		 * Merge the new allocation with the left neighbor.
+> +		 */
+> +		left.length += new->length;
+> +
+> +		fuse_iext_prev(ir, icur);
+> +		fuse_iext_update_extent(ic, state, icur, &left);
+> +		break;
+> +
+> +	case FUSE_IEXT_RIGHT_CONTIG:
+> +		/*
+> +		 * New allocation is contiguous with a real allocation
+> +		 * on the right.
+> +		 * Merge the new allocation with the right neighbor.
+> +		 */
+> +		right.offset = new->offset;
+> +		right.addr = new->addr;
+> +		right.length += new->length;
+> +		fuse_iext_update_extent(ic, state, icur, &right);
+> +		break;
+> +
+> +	case 0:
+> +		/*
+> +		 * New allocation is not contiguous with another
+> +		 * real allocation.
+> +		 * Insert a new entry.
+> +		 */
+> +		fuse_iext_insert(ic, icur, new, state);
+> +		break;
 > +	}
-> +
-> +	return fuse_iomap_buffered_read(iocb, to);
->  }
->  
->  ssize_t fuse_iomap_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> @@ -1083,7 +1552,206 @@ ssize_t fuse_iomap_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  
->  	ASSERT(fuse_inode_has_iomap(file_inode(iocb->ki_filp)));
->  
-> -	if ((iocb->ki_flags & IOCB_DIRECT) || force_directio)
-> -		return fuse_iomap_direct_write(iocb, from);
-> -	return -EIO;
-> +	if ((iocb->ki_flags & IOCB_DIRECT) || force_directio) {
-> +		ssize_t ret = fuse_iomap_direct_write(iocb, from);
-> +
-> +		switch (ret) {
-> +		case -ENOTBLK:
-> +		case -ENOSYS:
-> +			/*
-> +			 * We fall back to a buffered write if:
-> +			 *
-> +			 *  - ENOTBLK means iomap told us to do it
-> +			 *  - ENOSYS means the fuse server wants it
-> +			 *
-> +			 * Either way, try the write again as a synchronous
-> +			 * buffered write unless we were forced to do directio.
-> +			 */
-> +			if (force_directio)
-> +				return -EIO;
-> +			iocb->ki_flags |= IOCB_SYNC;
-> +			break;
-> +		default:
-> +			/* errors, no progress, or partial progress */
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return fuse_iomap_buffered_write(iocb, from);
 > +}
 > +
 > +static int
-> +fuse_iomap_truncate_page(
-> +	struct inode *inode,
-> +	loff_t			pos,
-> +	bool			*did_zero)
+> +fuse_iomap_cache_add(
+> +	struct inode			*inode,
+> +	enum fuse_iomap_iodir		iodir,
+> +	const struct fuse_iomap_io	*new)
 > +{
-> +	return iomap_truncate_page(inode, pos, did_zero, &fuse_iomap_ops,
-> +				   &fuse_iomap_write_ops, NULL);
-> +}
-> +/*
-> + * Truncate pagecache for a file before sending the truncate request to
-> + * userspace.  Must have write permission and not be a directory.
-> + *
-> + * Caution: The caller of this function is responsible for calling
-> + * setattr_prepare() or otherwise verifying the change is fine.
-> + */
-> +int
-> +fuse_iomap_setsize_start(
-> +	struct inode		*inode,
-> +	loff_t			newsize)
-> +{
-> +	loff_t			oldsize = i_size_read(inode);
-> +	int			error;
-> +	bool			did_zeroing = false;
+> +	struct fuse_iext_cursor		icur;
+> +	struct fuse_iomap_io		got;
+> +	struct fuse_inode		*fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache		*ic = fi->cache;
+> +	struct fuse_iext_root		*ir = fuse_iext_root_ptr(ic, iodir);
 > +
-> +	rwsem_assert_held_write(&inode->i_rwsem);
-> +	rwsem_assert_held_write(&inode->i_mapping->invalidate_lock);
-> +	ASSERT(S_ISREG(inode->i_mode));
+> +	assert_cache_locked(ic);
+> +	ASSERT(new->length > 0);
+> +	ASSERT(new->offset < inode->i_sb->s_maxbytes);
 > +
-> +	/*
-> +	 * Wait for all direct I/O to complete.
-> +	 */
-> +	inode_dio_wait(inode);
+> +	/* Mark this fork as being in use */
+> +	if (ir->ir_bytes < 0)
+> +		ir->ir_bytes = 0;
 > +
-> +	/*
-> +	 * File data changes must be complete and flushed to disk before we
-> +	 * call userspace to modify the inode.
-> +	 *
-> +	 * Start with zeroing any data beyond EOF that we may expose on file
-> +	 * extension, or zeroing out the rest of the block on a downward
-> +	 * truncate.
-> +	 */
-> +	if (newsize > oldsize)
-> +		error = fuse_iomap_zero_range(inode, oldsize, newsize - oldsize,
-> +					      &did_zeroing);
-> +	else
-> +		error = fuse_iomap_truncate_page(inode, newsize, &did_zeroing);
-> +	if (error)
-> +		return error;
+> +	if (fuse_iext_lookup_extent(ic, ir, new->offset, &icur, &got)) {
+> +		/* make sure we only add into a hole. */
+> +		ASSERT(got.offset > new->offset);
+> +		ASSERT(got.offset - new->offset >= new->length);
 > +
-> +	/*
-> +	 * We've already locked out new page faults, so now we can safely
-> +	 * remove pages from the page cache knowing they won't get refaulted
-> +	 * until we drop the mapping invalidation lock after the extent
-> +	 * manipulations are complete. The truncate_setsize() call also cleans
-> +	 * folios spanning EOF on extending truncates and hence ensures
-> +	 * sub-page block size filesystems are correctly handled, too.
-> +	 *
-> +	 * And we update in-core i_size and truncate page cache beyond newsize
-> +	 * before writing back the whole file, so we're guaranteed not to write
-> +	 * stale data past the new EOF on truncate down.
-> +	 */
-> +	truncate_setsize(inode, newsize);
+> +		if (got.offset <= new->offset ||
+> +		    got.offset - new->offset < new->length)
+> +			return -EFSCORRUPTED;
+> +	}
 > +
-> +	/*
-> +	 * Flush the entire pagecache to ensure the fuse server logs the inode
-> +	 * size change and all dirty data that might be associated with it.
-> +	 * We don't know the ondisk inode size, so we only have this clumsy
-> +	 * hammer.
-> +	 */
-> +	return filemap_write_and_wait(inode->i_mapping);
-> +}
-> +
-> +/*
-> + * Prepare for a file data block remapping operation by flushing and unmapping
-> + * all pagecache for the entire range.
-> + */
-> +int fuse_iomap_flush_unmap_range(struct inode *inode, loff_t pos,
-> +				 loff_t endpos)
-> +{
-> +	loff_t			start, end;
-> +	unsigned int		rounding;
-> +	int			error;
-> +
-> +	/*
-> +	 * Make sure we extend the flush out to extent alignment boundaries so
-> +	 * any extent range overlapping the start/end of the modification we
-> +	 * are about to do is clean and idle.
-> +	 */
-> +	rounding = max_t(unsigned int, i_blocksize(inode), PAGE_SIZE);
-> +	start = round_down(pos, rounding);
-> +	end = round_up(endpos + 1, rounding) - 1;
-> +
-> +	error = filemap_write_and_wait_range(inode->i_mapping, start, end);
-> +	if (error)
-> +		return error;
-> +	truncate_pagecache_range(inode, start, end);
+> +	fuse_iext_add_mapping(ic, ir, &icur, new);
+> +	fuse_iext_check_mappings(ic, ir);
 > +	return 0;
 > +}
 > +
-> +static int fuse_iomap_punch_range(struct inode *inode, loff_t offset,
-> +				  loff_t length)
+> +int fuse_iomap_cache_alloc(struct inode *inode)
 > +{
-> +	loff_t isize = i_size_read(inode);
-> +	int error;
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *old = NULL;
+> +	struct fuse_iomap_cache *ic;
+> +
+> +	ic = kzalloc_obj(struct fuse_iomap_cache);
+> +	if (!ic)
+> +		return -ENOMEM;
+> +
+> +	/* Only the write mapping cache can return NOFORK */
+> +	ic->ic_write.ir_bytes = -1;
+> +	ic->ic_inode = inode;
+> +	init_rwsem(&ic->ic_lock);
+> +
+> +	if (!try_cmpxchg(&fi->cache, &old, ic)) {
+> +		/* Someone created mapping cache before us? Free ours... */
+> +		kfree(ic);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void fuse_iomap_cache_purge(struct fuse_iomap_cache *ic)
+> +{
+> +	fuse_iext_destroy(&ic->ic_read);
+> +	fuse_iext_destroy(&ic->ic_write);
+> +}
+> +
+> +void fuse_iomap_cache_free(struct inode *inode)
+> +{
+> +	struct fuse_inode *fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache *ic = fi->cache;
 > +
 > +	/*
-> +	 * Now that we've unmap all full blocks we'll have to zero out any
-> +	 * partial block at the beginning and/or end.  iomap_zero_range is
-> +	 * smart enough to skip holes and unwritten extents, including those we
-> +	 * just created, but we must take care not to zero beyond EOF, which
-> +	 * would enlarge i_size.
+> +	 * This is only called from eviction, so we cannot be racing to set or
+> +	 * clear the pointer.
 > +	 */
-> +	if (offset >= isize)
+> +	fi->cache = NULL;
+> +
+> +	fuse_iomap_cache_purge(ic);
+> +	kfree(ic);
+> +}
+> +
+> +int
+> +fuse_iomap_cache_upsert(
+> +	struct inode			*inode,
+> +	enum fuse_iomap_iodir		iodir,
+> +	const struct fuse_iomap_io	*map)
+> +{
+> +	struct fuse_inode		*fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache		*ic = fi->cache;
+> +	int				err;
+> +
+> +	ASSERT(fuse_inode_caches_iomaps(inode));
+> +
+> +	/*
+> +	 * We interpret no write fork to mean that all writes are pure
+> +	 * overwrites.  Avoid wasting memory if we're trying to upsert a
+> +	 * pure overwrite.
+> +	 */
+> +	if (iodir == WRITE_MAPPING &&
+> +	    map->type == FUSE_IOMAP_TYPE_PURE_OVERWRITE &&
+> +	    ic->ic_write.ir_bytes < 0)
 > +		return 0;
-> +	if (offset + length > isize)
-> +		length = isize - offset;
-> +	error = fuse_iomap_zero_range(inode, offset, length, NULL);
-> +	if (error)
-> +		return error;
 > +
-> +	/*
-> +	 * If we zeroed right up to EOF and EOF straddles a page boundary we
-> +	 * must make sure that the post-EOF area is also zeroed because the
-> +	 * page could be mmap'd and iomap_zero_range doesn't do that for us.
-> +	 * Writeback of the eof page will do this, albeit clumsily.
-> +	 */
-> +	if (offset + length >= isize && offset_in_page(offset + length) > 0) {
-> +		error = filemap_write_and_wait_range(inode->i_mapping,
-> +					round_down(offset + length, PAGE_SIZE),
-> +					LLONG_MAX);
-> +	}
+> +	err = fuse_iomap_cache_remove(inode, iodir, map->offset, map->length);
+> +	if (err)
+> +		return err;
 > +
-> +	return error;
+> +	return fuse_iomap_cache_add(inode, iodir, map);
 > +}
 > +
-> +int
-> +fuse_iomap_fallocate(
-> +	struct file		*file,
-> +	int			mode,
-> +	loff_t			offset,
-> +	loff_t			length,
-> +	loff_t			new_size)
+> +/*
+> + * Trim the returned map to the required bounds
+> + */
+> +static void
+> +fuse_iomap_trim(
+> +	struct fuse_inode		*fi,
+> +	struct fuse_iomap_lookup	*mval,
+> +	const struct fuse_iomap_io	*got,
+> +	loff_t				off,
+> +	loff_t				len)
 > +{
-> +	struct inode *inode = file_inode(file);
-> +	int error;
+> +	struct fuse_iomap_cache		*ic = fi->cache;
+> +	const unsigned int blocksize = i_blocksize(&fi->inode);
+> +	const loff_t aligned_off = round_down(off, blocksize);
+> +	const loff_t aligned_end = round_up(off + len, blocksize);
+> +	const loff_t aligned_len = aligned_end - aligned_off;
+
+This realignment logic is no longer necessary because now we require
+that all cached mappings are aligned to the blocksize...
+
 > +
-> +	ASSERT(fuse_inode_has_iomap(inode));
+> +	ASSERT(aligned_off >= got->offset);
 > +
-> +	/*
-> +	 * If we unmapped blocks from the file range, then we zero the
-> +	 * pagecache for those regions and push them to disk rather than make
-> +	 * the fuse server manually zero the disk blocks.
-> +	 */
-> +	if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE)) {
-> +		error = fuse_iomap_punch_range(inode, offset, length);
-> +		if (error)
-> +			return error;
+> +	switch (got->type) {
+> +	case FUSE_IOMAP_TYPE_MAPPED:
+> +	case FUSE_IOMAP_TYPE_UNWRITTEN:
+> +		mval->map.addr = got->addr + (aligned_off - got->offset);
+> +		break;
+> +	default:
+> +		mval->map.addr = FUSE_IOMAP_NULL_ADDR;
+> +		break;
+> +	}
+> +	mval->map.offset = aligned_off;
+> +	mval->map.length = min_t(loff_t, aligned_len,
+> +				 got->length - (aligned_off - got->offset));
+
+...and this logic here has a bug where we can accidentally extend
+mappings if off+len is far beyond the end of @got.  In the end we can
+more or less copy got to mval->map, set addr appropriately for the iomap
+type, and sample the validity cookie.
+
+--D
+
+> +	mval->map.type = got->type;
+> +	mval->map.flags = got->flags;
+> +	mval->map.dev = got->dev;
+> +	mval->validity_cookie = fuse_iext_read_seq(ic);
+> +}
+> +
+> +enum fuse_iomap_lookup_result
+> +fuse_iomap_cache_lookup(
+> +	struct inode			*inode,
+> +	enum fuse_iomap_iodir		iodir,
+> +	loff_t				off,
+> +	uint64_t			len,
+> +	struct fuse_iomap_lookup	*mval)
+> +{
+> +	struct fuse_iomap_io		got;
+> +	struct fuse_iext_cursor		icur;
+> +	struct fuse_inode		*fi = get_fuse_inode(inode);
+> +	struct fuse_iomap_cache		*ic = fi->cache;
+> +	struct fuse_iext_root		*ir = fuse_iext_root_ptr(ic, iodir);
+> +
+> +	assert_cache_locked_shared(ic);
+> +
+> +	if (ir->ir_bytes < 0) {
+> +		/*
+> +		 * No write fork at all means this filesystem doesn't do out of
+> +		 * place writes.
+> +		 */
+> +		return LOOKUP_NOFORK;
 > +	}
 > +
-> +	/*
-> +	 * If this is an extending write, we need to zero the bytes beyond the
-> +	 * new EOF and bounce the new size out to userspace.
-> +	 */
-> +	if (new_size) {
-> +		error = fuse_iomap_setsize_start(inode, new_size);
-> +		if (error)
-> +			return error;
-> +
-> +		fuse_write_update_attr(inode, new_size, length);
+> +	if (!fuse_iext_lookup_extent(ic, ir, off, &icur, &got)) {
+> +		/*
+> +		 * Does not contain a mapping at or beyond off, which is a
+> +		 * cache miss.
+> +		 */
+> +		return LOOKUP_MISS;
 > +	}
 > +
-> +	file_update_time(file);
-> +	return 0;
->  }
+> +	if (got.offset > off) {
+> +		/*
+> +		 * Found a mapping, but it doesn't cover the start of the
+> +		 * range, which is effectively a miss.
+> +		 */
+> +		return LOOKUP_MISS;
+> +	}
+> +
+> +	/* Found a mapping in the cache, return it */
+> +	fuse_iomap_trim(fi, mval, &got, off, len);
+> +	return LOOKUP_HIT;
+> +}
+> diff --git a/fs/fuse/trace.c b/fs/fuse/trace.c
+> index 71d444ac1e5021..69310d6f773ffa 100644
+> --- a/fs/fuse/trace.c
+> +++ b/fs/fuse/trace.c
+> @@ -8,6 +8,7 @@
+>  #include "fuse_dev_i.h"
+>  #include "fuse_iomap.h"
+>  #include "fuse_iomap_i.h"
+> +#include "fuse_iomap_cache.h"
+>  
+>  #include <linux/pagemap.h>
+>  #include <linux/iomap.h>
 > 
 > 
 
