@@ -1,96 +1,95 @@
-Return-Path: <linux-ext4+bounces-14205-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14206-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kDWtIzuCoWkUtgQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14205-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 12:38:35 +0100
+	id kFLDInmDoWkUtgQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14206-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 12:43:53 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C731B6AA2
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 12:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B019F1B6B7D
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 12:43:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BB032310DDA6
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 11:37:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 17724304600B
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 11:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1B13EFD2D;
-	Fri, 27 Feb 2026 11:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7643ED127;
+	Fri, 27 Feb 2026 11:41:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c2bIMXxs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+QPFFNE9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c2bIMXxs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+QPFFNE9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSjyoIKI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="elIMZTPm";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSjyoIKI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="elIMZTPm"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49593C1980
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 11:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EC43E8C47
+	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 11:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772192261; cv=none; b=JzTMpurnmJMwapZAgj1FUz0QsVXfr+oZqGtBFcLcfyoquNqctuA9wKsGCH8wym4abvF7obw0y2RyD6JPgJlgkN9iV5a8s0gaCn0IyVcMW5OCzynHHniEA2QLq7zTnCajRFCWT618KNuvHuXOvW0m10HzPqXwmQCxUIRHfBxXzKE=
+	t=1772192519; cv=none; b=u+oVao5UpngoDX3gw5uNvl3iAVZTaSxqCE9Ta02s2m67RgUUxIaPipOuQdq3PEHMeHnALAKsXcXKL2RHzJEaUQaEQp79M2ppjOqIz5Iot1iiQe4MC8tM1ADeV40H0pf0/jgohFo0UrFHC3+PldVffDqqOsUF86N3gUFLo/EBetA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772192261; c=relaxed/simple;
-	bh=OMwwyt6UugQRlIcy+UH0m2T0u/+6OjVCgzPQVsLkEHU=;
+	s=arc-20240116; t=1772192519; c=relaxed/simple;
+	bh=LbrigWaHvmkMXMNudVpLJL8UB+jaWE2b0Ata+HOOfgM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jmjBqmsAlRzwaHrwfsqz2wVP9liBjhJpchWzbBiKvF1VclO/7AJPa3HenftgRNsexR937uiIe9wMfAxjNE9AIxVjw+OSI0e0Do3tmTQEUhN8OsH1iwAcQVBeeGk8LbBvtCKMQoSYDbJy8JKAAxfO6cHghfXccEHArZ9ALf08ytA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c2bIMXxs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+QPFFNE9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c2bIMXxs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+QPFFNE9; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=BvfPqatrjCRIAHo4cy4qDpkOxOSCyuU7RC8w8P7j54wNWHn2Lme01Z+cmHNe9J1Ug2lWc7X3pKrJKYKZhKfZXIOtNLAnpC4hcR8hVuf30wN6m5A1I4pcWZrOzla0nCfaHZ4WhBvRLLNxYEveFDs5GTJek5RMcw7PZYzX98gvX3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSjyoIKI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=elIMZTPm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSjyoIKI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=elIMZTPm; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0EBD75BDF8;
-	Fri, 27 Feb 2026 11:37:38 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6206C5BDF8;
+	Fri, 27 Feb 2026 11:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772192258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772192515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+X4fgpfDrgOhU4ghCol/Vq0PcVN1+Gjhbbnr6+ASR9g=;
-	b=c2bIMXxsGVcCNyiju2yLzeIwp/V2ky8hoAZ3QEUkSujc6ayuYPPmwndfsK0pdk39aznV/Z
-	9XqZzv2uJ3OuAKWchUAdV0wQUeI+RzVvBsDFnYe/lX0oBX9zddeSkte0N83aAGs0uUbrEz
-	YMsEpAB5/DoKnKLij0sg/MB2ixSWlBM=
+	bh=qG12wiRKgOO8u6RwbR07pPBNuzGPcHJrzObmSnVBirc=;
+	b=cSjyoIKIty/awpt3O32urHzlZlUQu2NaAOCW3XksWm06aD8kLLEbgmOTr5URu6RiHklbOV
+	wz8Y6pd1irWDENggWsYsFyP2uZCrCML9OYgv5zcZFBrQC5o9kAf9ZWABGYuSN93xShGila
+	XXe3DT7f14Wjq1L9DW+TX1hcWY9QPBY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772192258;
+	s=susede2_ed25519; t=1772192515;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+X4fgpfDrgOhU4ghCol/Vq0PcVN1+Gjhbbnr6+ASR9g=;
-	b=+QPFFNE9NS7JS5ZWK2muggEZJTK7QKjDAUK1Xe2Zt2LOTXZskSGdI0aw2pNmpiA8rWDcwY
-	DhAigLoJ1WxbVqDA==
+	bh=qG12wiRKgOO8u6RwbR07pPBNuzGPcHJrzObmSnVBirc=;
+	b=elIMZTPm3jz519UETh+ceoCo6aCdtsSYUoDF6WEAj6aLwLnTy/GO7sekbaWUo80Br4+FkE
+	Fqb1EIr3jYh3qBDg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c2bIMXxs;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+QPFFNE9
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772192258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772192515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+X4fgpfDrgOhU4ghCol/Vq0PcVN1+Gjhbbnr6+ASR9g=;
-	b=c2bIMXxsGVcCNyiju2yLzeIwp/V2ky8hoAZ3QEUkSujc6ayuYPPmwndfsK0pdk39aznV/Z
-	9XqZzv2uJ3OuAKWchUAdV0wQUeI+RzVvBsDFnYe/lX0oBX9zddeSkte0N83aAGs0uUbrEz
-	YMsEpAB5/DoKnKLij0sg/MB2ixSWlBM=
+	bh=qG12wiRKgOO8u6RwbR07pPBNuzGPcHJrzObmSnVBirc=;
+	b=cSjyoIKIty/awpt3O32urHzlZlUQu2NaAOCW3XksWm06aD8kLLEbgmOTr5URu6RiHklbOV
+	wz8Y6pd1irWDENggWsYsFyP2uZCrCML9OYgv5zcZFBrQC5o9kAf9ZWABGYuSN93xShGila
+	XXe3DT7f14Wjq1L9DW+TX1hcWY9QPBY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772192258;
+	s=susede2_ed25519; t=1772192515;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+X4fgpfDrgOhU4ghCol/Vq0PcVN1+Gjhbbnr6+ASR9g=;
-	b=+QPFFNE9NS7JS5ZWK2muggEZJTK7QKjDAUK1Xe2Zt2LOTXZskSGdI0aw2pNmpiA8rWDcwY
-	DhAigLoJ1WxbVqDA==
+	bh=qG12wiRKgOO8u6RwbR07pPBNuzGPcHJrzObmSnVBirc=;
+	b=elIMZTPm3jz519UETh+ceoCo6aCdtsSYUoDF6WEAj6aLwLnTy/GO7sekbaWUo80Br4+FkE
+	Fqb1EIr3jYh3qBDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F38963EA69;
-	Fri, 27 Feb 2026 11:37:37 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 480063EA69;
+	Fri, 27 Feb 2026 11:41:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iKlgOwGCoWnaMgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 27 Feb 2026 11:37:37 +0000
+	id FE2REQODoWmSNwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 27 Feb 2026 11:41:55 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B6B21A06D4; Fri, 27 Feb 2026 12:37:33 +0100 (CET)
-Date: Fri, 27 Feb 2026 12:37:33 +0100
+	id 0D67EA06D4; Fri, 27 Feb 2026 12:41:55 +0100 (CET)
+Date: Fri, 27 Feb 2026 12:41:55 +0100
 From: Jan Kara <jack@suse.cz>
 To: Chuck Lever <cel@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>, 
@@ -103,11 +102,11 @@ Cc: Al Viro <viro@zeniv.linux.org.uk>,
 	adilger.kernel@dilger.ca, cem@kernel.org, sfrench@samba.org, pc@manguebit.org, 
 	ronniesahlberg@gmail.com, sprasad@microsoft.com, trondmy@kernel.org, anna@kernel.org, 
 	jaegeuk@kernel.org, chao@kernel.org, hansg@kernel.org, senozhatsky@chromium.org, 
-	Chuck Lever <chuck.lever@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH v8 02/17] fs: Add case sensitivity flags to file_kattr
-Message-ID: <6fw3nxspwmbkyyobefnxe6piza4nmpfqx5pg5btjh6zisuqie3@i22cjwsgobtj>
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v8 03/17] fat: Implement fileattr_get for case sensitivity
+Message-ID: <ua7rmlnvbfiadpxeynekbabwqebhcop3rhaxji7s3mgnwzhhtd@frz77j6wm2eg>
 References: <20260217214741.1928576-1-cel@kernel.org>
- <20260217214741.1928576-3-cel@kernel.org>
+ <20260217214741.1928576-4-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -116,10 +115,10 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260217214741.1928576-3-cel@kernel.org>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
+In-Reply-To: <20260217214741.1928576-4-cel@kernel.org>
+X-Spam-Score: -3.80
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -129,13 +128,13 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14205-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14206-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:email,suse.cz:dkim,oracle.com:email,suse.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email,suse.cz:email,suse.cz:dkim,suse.com:email];
 	DMARC_NA(0.00)[suse.cz];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org,lists.sourceforge.net,mail.parknet.co.jp,samsung.com,sony.com,paragon-software.com,dubeyko.com,physik.fu-berlin.de,vivo.com,mit.edu,dilger.ca,samba.org,manguebit.org,gmail.com,microsoft.com,chromium.org,oracle.com];
-	RCPT_COUNT_TWELVE(0.00)[34];
+	RCPT_COUNT_TWELVE(0.00)[33];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[suse.cz:+];
 	MISSING_XM_UA(0.00)[];
@@ -149,95 +148,132 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 24C731B6AA2
+X-Rspamd-Queue-Id: B019F1B6B7D
 X-Rspamd-Action: no action
 
-On Tue 17-02-26 16:47:26, Chuck Lever wrote:
+On Tue 17-02-26 16:47:27, Chuck Lever wrote:
 > From: Chuck Lever <chuck.lever@oracle.com>
 > 
-> Enable upper layers such as NFSD to retrieve case sensitivity
-> information from file systems by adding FS_XFLAG_CASEFOLD and
-> FS_XFLAG_CASENONPRESERVING flags.
+> Report FAT's case sensitivity behavior via the FS_XFLAG_CASEFOLD
+> and FS_XFLAG_CASENONPRESERVING flags. FAT filesystems are
+> case-insensitive by default.
 > 
-> Filesystems report case-insensitive or case-nonpreserving behavior
-> by setting these flags directly in fa->fsx_xflags. The default
-> (flags unset) indicates POSIX semantics: case-sensitive and
-> case-preserving. These flags are read-only; userspace cannot set
-> them via ioctl.
+> MSDOS supports a 'nocase' mount option that enables case-sensitive
+> behavior; check this option when reporting case sensitivity.
 > 
-> Case sensitivity information is exported to userspace via the
-> fa_xflags field in the FS_IOC_FSGETXATTR ioctl and file_getattr()
-> system call.
+> VFAT long filename entries preserve case; without VFAT, only
+> uppercased 8.3 short names are stored. MSDOS with 'nocase' also
+> preserves case since the name-formatting code skips upcasing when
+> 'nocase' is set. Check both options when reporting case preservation.
 > 
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 
-Looks good. Feel free to add:
+Looks good to me from general POV. It would be good to get confirmation
+from FAT maintainer you've got all the corner cases of FAT configuration
+right :) Anyway, feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/file_attr.c           | 4 ++++
->  include/linux/fileattr.h | 3 ++-
->  include/uapi/linux/fs.h  | 7 +++++++
->  3 files changed, 13 insertions(+), 1 deletion(-)
+>  fs/fat/fat.h         |  3 +++
+>  fs/fat/file.c        | 22 ++++++++++++++++++++++
+>  fs/fat/namei_msdos.c |  1 +
+>  fs/fat/namei_vfat.c  |  1 +
+>  4 files changed, 27 insertions(+)
 > 
-> diff --git a/fs/file_attr.c b/fs/file_attr.c
-> index 42aa511111a0..5d9a7ed159fb 100644
-> --- a/fs/file_attr.c
-> +++ b/fs/file_attr.c
-> @@ -37,6 +37,8 @@ void fileattr_fill_xflags(struct file_kattr *fa, u32 xflags)
->  		fa->flags |= FS_PROJINHERIT_FL;
->  	if (fa->fsx_xflags & FS_XFLAG_VERITY)
->  		fa->flags |= FS_VERITY_FL;
-> +	if (fa->fsx_xflags & FS_XFLAG_CASEFOLD)
-> +		fa->flags |= FS_CASEFOLD_FL;
->  }
->  EXPORT_SYMBOL(fileattr_fill_xflags);
+> diff --git a/fs/fat/fat.h b/fs/fat/fat.h
+> index 0d269dba897b..c5bcd1063f9c 100644
+> --- a/fs/fat/fat.h
+> +++ b/fs/fat/fat.h
+> @@ -10,6 +10,8 @@
+>  #include <linux/fs_context.h>
+>  #include <linux/fs_parser.h>
 >  
-> @@ -67,6 +69,8 @@ void fileattr_fill_flags(struct file_kattr *fa, u32 flags)
->  		fa->fsx_xflags |= FS_XFLAG_PROJINHERIT;
->  	if (fa->flags & FS_VERITY_FL)
->  		fa->fsx_xflags |= FS_XFLAG_VERITY;
-> +	if (fa->flags & FS_CASEFOLD_FL)
+> +struct file_kattr;
+> +
+>  /*
+>   * vfat shortname flags
+>   */
+> @@ -407,6 +409,7 @@ extern void fat_truncate_blocks(struct inode *inode, loff_t offset);
+>  extern int fat_getattr(struct mnt_idmap *idmap,
+>  		       const struct path *path, struct kstat *stat,
+>  		       u32 request_mask, unsigned int flags);
+> +int fat_fileattr_get(struct dentry *dentry, struct file_kattr *fa);
+>  extern int fat_file_fsync(struct file *file, loff_t start, loff_t end,
+>  			  int datasync);
+>  
+> diff --git a/fs/fat/file.c b/fs/fat/file.c
+> index 124d9c5431c8..6823269a8604 100644
+> --- a/fs/fat/file.c
+> +++ b/fs/fat/file.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/fsnotify.h>
+>  #include <linux/security.h>
+>  #include <linux/falloc.h>
+> +#include <linux/fileattr.h>
+>  #include "fat.h"
+>  
+>  static long fat_fallocate(struct file *file, int mode,
+> @@ -396,6 +397,26 @@ void fat_truncate_blocks(struct inode *inode, loff_t offset)
+>  	fat_flush_inodes(inode->i_sb, inode, NULL);
+>  }
+>  
+> +int fat_fileattr_get(struct dentry *dentry, struct file_kattr *fa)
+> +{
+> +	struct msdos_sb_info *sbi = MSDOS_SB(dentry->d_sb);
+> +
+> +	/*
+> +	 * FAT filesystems are case-insensitive by default. MSDOS
+> +	 * supports a 'nocase' mount option for case-sensitive behavior.
+> +	 *
+> +	 * VFAT long filename entries preserve case. Without VFAT, only
+> +	 * uppercased 8.3 short names are stored. MSDOS with 'nocase'
+> +	 * also preserves case.
+> +	 */
+> +	if (!sbi->options.nocase)
 > +		fa->fsx_xflags |= FS_XFLAG_CASEFOLD;
->  }
->  EXPORT_SYMBOL(fileattr_fill_flags);
+> +	if (!sbi->options.isvfat && !sbi->options.nocase)
+> +		fa->fsx_xflags |= FS_XFLAG_CASENONPRESERVING;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(fat_fileattr_get);
+> +
+>  int fat_getattr(struct mnt_idmap *idmap, const struct path *path,
+>  		struct kstat *stat, u32 request_mask, unsigned int flags)
+>  {
+> @@ -573,5 +594,6 @@ EXPORT_SYMBOL_GPL(fat_setattr);
+>  const struct inode_operations fat_file_inode_operations = {
+>  	.setattr	= fat_setattr,
+>  	.getattr	= fat_getattr,
+> +	.fileattr_get	= fat_fileattr_get,
+>  	.update_time	= fat_update_time,
+>  };
+> diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
+> index 048c103b506a..4a3db08e51c0 100644
+> --- a/fs/fat/namei_msdos.c
+> +++ b/fs/fat/namei_msdos.c
+> @@ -642,6 +642,7 @@ static const struct inode_operations msdos_dir_inode_operations = {
+>  	.rename		= msdos_rename,
+>  	.setattr	= fat_setattr,
+>  	.getattr	= fat_getattr,
+> +	.fileattr_get	= fat_fileattr_get,
+>  	.update_time	= fat_update_time,
+>  };
 >  
-> diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
-> index 3780904a63a6..58044b598016 100644
-> --- a/include/linux/fileattr.h
-> +++ b/include/linux/fileattr.h
-> @@ -16,7 +16,8 @@
+> diff --git a/fs/fat/namei_vfat.c b/fs/fat/namei_vfat.c
+> index 2acfe3123a72..18f4c316aa05 100644
+> --- a/fs/fat/namei_vfat.c
+> +++ b/fs/fat/namei_vfat.c
+> @@ -1185,6 +1185,7 @@ static const struct inode_operations vfat_dir_inode_operations = {
+>  	.rename		= vfat_rename2,
+>  	.setattr	= fat_setattr,
+>  	.getattr	= fat_getattr,
+> +	.fileattr_get	= fat_fileattr_get,
+>  	.update_time	= fat_update_time,
+>  };
 >  
->  /* Read-only inode flags */
->  #define FS_XFLAG_RDONLY_MASK \
-> -	(FS_XFLAG_PREALLOC | FS_XFLAG_HASATTR | FS_XFLAG_VERITY)
-> +	(FS_XFLAG_PREALLOC | FS_XFLAG_HASATTR | FS_XFLAG_VERITY | \
-> +	 FS_XFLAG_CASEFOLD | FS_XFLAG_CASENONPRESERVING)
->  
->  /* Flags to indicate valid value of fsx_ fields */
->  #define FS_XFLAG_VALUES_MASK \
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index 70b2b661f42c..2fa003575e8b 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-> @@ -254,6 +254,13 @@ struct file_attr {
->  #define FS_XFLAG_DAX		0x00008000	/* use DAX for IO */
->  #define FS_XFLAG_COWEXTSIZE	0x00010000	/* CoW extent size allocator hint */
->  #define FS_XFLAG_VERITY		0x00020000	/* fs-verity enabled */
-> +/*
-> + * Case handling flags (read-only, cannot be set via ioctl).
-> + * Default (neither set) indicates POSIX semantics: case-sensitive
-> + * lookups and case-preserving storage.
-> + */
-> +#define FS_XFLAG_CASEFOLD	0x00040000	/* case-insensitive lookups */
-> +#define FS_XFLAG_CASENONPRESERVING 0x00080000	/* case not preserved */
->  #define FS_XFLAG_HASATTR	0x80000000	/* no DIFLAG for this	*/
->  
->  /* the read-only stuff doesn't really belong here, but any other place is
 > -- 
 > 2.53.0
 > 
