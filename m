@@ -1,185 +1,125 @@
-Return-Path: <linux-ext4+bounces-14212-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14213-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yBA0G+rAoWkVwQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14212-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:06:02 +0100
+	id SGZKL3HKoWm8wQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14213-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:46:41 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CB2A1BA846
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:06:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 399391BAF6B
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AB28630117F5
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 16:06:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5DC8531203A4
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 16:43:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC3244B671;
-	Fri, 27 Feb 2026 16:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFDD349AE6;
+	Fri, 27 Feb 2026 16:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="LfmMR7yW"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="D0WHvJe6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4046F4418E4
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 16:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.182
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772208356; cv=pass; b=Ij9w33pajsWx2WjqPe9od8WEgG48nkiz9e759CbVlScOgPFIputIAUbtvzrOYMOC0LUHsyrTiXTVR0wRKbTv4/7c7xEoNYJ5fynQfwo50pPAtQUGFznq6crzBaWUme0H92Njn4MnQSjQgVb0ShTqiaso7hcV5S+5GlogGMHm/3Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772208356; c=relaxed/simple;
-	bh=XWRFmApZo3EeyDOBlJmpjRgegzMqTxAsMi4wp2Eo1BI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UvFF6/v4uNiUhGLa2CuJ9BRFaCA7qfxE9+s6c+vII+n5RsX1/8ccsWdv96bZswDC4vrWOK1rXVNDBVOFz4mZ6JsEqQ/jVIK2Vt3EVabE/YjrjsybUsSnKsX+A8BF2YR7HBO6ei9pw6L9JqKQsRP5kg3y3vpJ/AUYZoRhFARZH9Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=LfmMR7yW; arc=pass smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-5033387c80aso42306981cf.0
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 08:05:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772208354; cv=none;
-        d=google.com; s=arc-20240605;
-        b=DrFROvq9mkl47K9ds19in7OG2afO55AXZ9WJ1AN+pgKCks/fRM319m05sTLMzLEZkj
-         MNvVatAe7Ihm0QDSJFqSDn4+4uVwUjVwEYvkLzR9HIRnNhEl8CsHmwBJrt8GEd6AtyWv
-         YxY+AddqTiMoPnNU69Mj2ikBi+MAJiXc+6FjY4Hq+tKBoZft4KJ1+qhlG+EGkSoUf0Ok
-         AMjX0q04Zz4TeArOP0RoZRONYpb3ucS5MKr2REFRLxY8YFwusAVXjHr2+L4OcjTQjrhC
-         T5Kjt7kHxAMYcgmY9M6WF3zXapl/2pkecmlWVF1+lRb7LO5wG/TC4jBU6U2iidaIrUJb
-         EHVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
-        fh=IVWo42n+6dxnNhjb5u/q/KB92ie+I+/fgdAhn1VoE/M=;
-        b=U0J8AF2iqsUXq7+S6/OKCEy/eUC/cVnYI9/lu3bHzs5rejtxgeN7teKB0D2HiXOT8b
-         ZcN7o+BBduXKUfsvsXxwYE3gO3uWtPt3GndG1gmJQjwoxSVDQgtycwECixdvCF2c3trA
-         cLxL9ZawGY/O6OmW5zU6WI75tMpz5C6i3GgyoT03SSd1mX/zx/i+f6WZM8EXhIOLpN4i
-         40mW+W+NksuusKSFkuhTFMCaH3MNGGmN2Spo/TlOZSbJvaGOl/mUUvUley6yIQ5klW4e
-         2YrwQhgSOS/Q3cNxKZiiSNx3WMOEpFnwa0zZF/L5YPUewmr6hvq5FLNzAqYo2ZxUJF1Y
-         C7vQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1772208354; x=1772813154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
-        b=LfmMR7yWSQDmoRuq8VMySSMb8MeEheV9tG0G8OqPmk/6sqF0avT6fPmX07OP7d6QPp
-         R8LeZJN6zJ+aybdL6KzvIV4eRn/fXKAorfRYAC9Hg46GD7soHmbbqrWu9iCrPrF64Jjf
-         /83il98BCG8P0YvthzYNAGxMDWz2f7wI/2dgg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772208354; x=1772813154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
-        b=RsaMSCvhZk/XLzYGGid7WsaSgZbEpLRG3eX2IRN6xHBsn7aermgHPE0zCXIniWDoet
-         uO4xmOevdJEDwlGpGpyWnmZWvTffXjyHQs3Kw/BWSaIGaUTmiyfx5Nco7O2ggSPdnKry
-         xXrCphQfys9FWB6Vq02BKw1mxdZUkc+01DOQg76myoKGE1HwXL6MOJ7plEVkofyaaW5I
-         VAURyN3LNjRqdro0JCspEo/aV6LDFVPi6iSejfOU8gs9UOcgQwG+PmCmv63aoDE9JBq6
-         gtppQJxSrOZxpu1Oz92xg4o53BKDrtdUdkopBRLIzyr5kNK2rV/mgsjhK0W7pinGqsOy
-         +rIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ27qO45Q9nrX25FokeGT8OjFbn3dwK3U2MeUuocbt4msVlnA+EUt2CM8JPwJTwNFpqxTQSUhKepUC@vger.kernel.org
-X-Gm-Message-State: AOJu0YwP9Bhr41itEykZLAfSoGNNOjHKR2aaqgTEYSQI0ru6hGJnbtJg
-	19X0giW/HKNVnzUG58yWFJ2QqKrNK+9SkchbvT/PCpp65lis6MZLil2HJxFgbJCuLPUGZldTE4o
-	sih62QGTv3isRiP/YJtf2bfrgN3hCr7RgM34CGC0B+w==
-X-Gm-Gg: ATEYQzzh0vNF3FHqpKQ24SC2ML6QMOOrbTV2jmiRj0lcyK5eKNyRj5g2CyJKgE11cpK
-	gyjVULTRZeZtW6GZtIIRgxU5TdrWZrb3skjo4hTe1ZrBs8Cc/v2wy9b06vw++PqzXHbZ9fjqjkf
-	L5zMT3nwN5o0snEFTZWrX5tjt26MdN/FUx35Dm3ofgrKV0MC6ZyH76QM25H07Tan2iSn2DIwY3+
-	X9sIj64BIpTlpxpuvN0FrH/fjy5qALiUdAyLyaGIv7maBjeNWIaCPkibo4Vpmr8OzMNISiVZ4KX
-	6forfQ==
-X-Received: by 2002:a05:622a:15c6:b0:506:a574:a98 with SMTP id
- d75a77b69052e-5075240cb43mr43969551cf.25.1772208352680; Fri, 27 Feb 2026
- 08:05:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217363469F8
+	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 16:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772210630; cv=none; b=k92f0h9VXZmLfV/V52lg4WjsPs0JsBM0WyMzuKeL9XtZQ6jIxp5G/vaqcGlCpFqyQgaB3umwp1NYEbDLTcB/0TzUY/zEHX1gxZ//uSzn7J+VT8eCZ+/MNai3Vxywp5dm5KT+GKcD7hQgBlHUyNUh1HRBy74txuOlScYGeaunXEM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772210630; c=relaxed/simple;
+	bh=bgEZ6B1UEy/zhpu8n+7s+DafgFxnCJvGv7PZtPNmF9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rCOKdKA6+9fOaA2iIx2bFqWx+1/fFndbFqgz5RIj2Dd4A83GDr18Mu2mmwTkuO8YxmsM+tTcAHLWduTTDiON9uhDizOGl9c2cOxQfG9t+o3DrHaPgCYnvHBkOQ8tpWaNYNRfkK5heijtafrxAVtQKA9/9GRcZzWTk5zfqY6FcJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=D0WHvJe6; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (pool-173-48-112-142.bstnma.fios.verizon.net [173.48.112.142])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 61RGhJ2g018552
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 27 Feb 2026 11:43:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1772210602; bh=ojcxluCl677xf3TQxwcdPDiL7chtv+USYc/a0Xfg+2c=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=D0WHvJe6noO0P2vihKcQwOmvLodw5oJYzSE+QBqzreFNA0MrcoMFUmRV1v7HYQ7YQ
+	 8VRVBUexRwOsGpeoL5nl7VU0dfJCdDzhi4nPn/ToOtOHDVeWHvmMtSrW/fl17luodM
+	 BcVIAYlDVCZbrxeiP3rCuexPD27FmT+QygQUuL+3Jr0pfsRLxits9bH7UQwKaGjUWj
+	 snCXSvrABwDEs9B9pSwfveLEzb57UdJy1qulY2XtpE7MJt9f4TEiILm5YOR7gbHWpe
+	 JCP/XsTqyUONqwmRUDzv+8sLuu7GrzkKNlfQeOObmaCojX9ExrvTTgSQhp8il92mfX
+	 aX5EqNaYHsXwA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 1ACDD5A2E380; Fri, 27 Feb 2026 11:43:19 -0500 (EST)
+Date: Fri, 27 Feb 2026 11:43:19 -0500
+From: "Theodore Tso" <tytso@mit.edu>
+To: Mario Lohajner <mario_lohajner@rocketmail.com>
+Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangerkun@huawei.com,
+        libaokun9@gmail.com
+Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
+ allocation policy
+Message-ID: <20260227164319.GB93969@macsyma-wired.lan>
+References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+ <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+ <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
+ <20260226024819.GA39209@macsyma-wired.lan>
+ <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
+ <20260227011200.GA68551@macsyma-wired.lan>
+ <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <177188733084.3935219.10400570136529869673.stgit@frogsfrogsfrogs> <177188733154.3935219.17731267668265272256.stgit@frogsfrogsfrogs>
-In-Reply-To: <177188733154.3935219.17731267668265272256.stgit@frogsfrogsfrogs>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 27 Feb 2026 17:05:41 +0100
-X-Gm-Features: AaiRm522nNR8quw6-QPApM41f6VxVhfe4lhaNvG1qaOhqP6WFi_K60TlVjnXPqk
-Message-ID: <CAJfpegubENC3LxtG8MbO4OxUgD_Pd1GR9pw6Xcob_JiG+2cOFg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] fuse: quiet down complaints in fuse_conn_limit_write
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: stable@vger.kernel.org, joannelkoong@gmail.com, bpf@vger.kernel.org, 
-	bernd@bsbernd.com, neal@gompa.dev, linux-fsdevel@vger.kernel.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[szeredi.hu,quarantine];
-	R_DKIM_ALLOW(-0.20)[szeredi.hu:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,bsbernd.com,gompa.dev];
-	TAGGED_FROM(0.00)[bounces-14212-lists,linux-ext4=lfdr.de];
+	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-14213-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[rocketmail.com];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[szeredi.hu:+];
+	DKIM_TRACE(0.00)[mit.edu:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[miklos@szeredi.hu,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,szeredi.hu:dkim]
-X-Rspamd-Queue-Id: 0CB2A1BA846
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,macsyma-wired.lan:mid]
+X-Rspamd-Queue-Id: 399391BAF6B
 X-Rspamd-Action: no action
 
-On Tue, 24 Feb 2026 at 00:06, Darrick J. Wong <djwong@kernel.org> wrote:
->
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> gcc 15 complains about an uninitialized variable val that is passed by
-> reference into fuse_conn_limit_write:
->
->  control.c: In function =E2=80=98fuse_conn_congestion_threshold_write=E2=
-=80=99:
->  include/asm-generic/rwonce.h:55:37: warning: =E2=80=98val=E2=80=99 may b=
-e used uninitialized [-Wmaybe-uninitialized]
->     55 |         *(volatile typeof(x) *)&(x) =3D (val);                  =
-          \
->        |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
->  include/asm-generic/rwonce.h:61:9: note: in expansion of macro =E2=80=98=
-__WRITE_ONCE=E2=80=99
->     61 |         __WRITE_ONCE(x, val);                                   =
-        \
->        |         ^~~~~~~~~~~~
->  control.c:178:9: note: in expansion of macro =E2=80=98WRITE_ONCE=E2=80=
-=99
->    178 |         WRITE_ONCE(fc->congestion_threshold, val);
->        |         ^~~~~~~~~~
->  control.c:166:18: note: =E2=80=98val=E2=80=99 was declared here
->    166 |         unsigned val;
->        |                  ^~~
->
-> Unfortunately there's enough macro spew involved in kstrtoul_from_user
-> that I think gcc gives up on its analysis and sprays the above warning.
-> AFAICT it's not actually a bug, but we could just zero-initialize the
-> variable to enable using -Wmaybe-uninitialized to find real problems.
->
-> Previously we would use some weird uninitialized_var annotation to quiet
-> down the warnings, so clearly this code has been like this for quite
-> some time.
->
-> Cc: <stable@vger.kernel.org> # v5.9
-> Fixes: 3f649ab728cda8 ("treewide: Remove uninitialized_var() usage")
-> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
+On Fri, Feb 27, 2026 at 03:46:59PM +0100, Mario Lohajner wrote:
+> 
+> Concentrated allocation can create contention, write amplification, and
+> uneven LBA utilization even on modern NVMe/SSD devices.
 
-Applied, thanks.
+Uneven LBA utilization is the thing where I'm asking, "why should we care".
 
-Miklos
+In terms of how this would cause contention and write amplification,
+<<citation needed>>.  What is your benchmarks where you can
+demonstrate this, and how common is this across NVMe/SSD devices?
+That is, if it's just one trashy product, maybe it should just be
+avoided --- especially if it has other problems.
+
+						- Ted
 
