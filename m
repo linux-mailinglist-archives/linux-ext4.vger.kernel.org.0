@@ -1,182 +1,685 @@
-Return-Path: <linux-ext4+bounces-14196-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14197-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sGYtDGlNoWkfsAQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14196-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 08:53:13 +0100
+	id wFadKNtToWk+sQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14197-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 09:20:43 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E4A1B4204
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 08:53:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A351B46EE
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 09:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F144303B7D5
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 07:52:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 08C7F30E1B5C
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 08:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DA6355F35;
-	Fri, 27 Feb 2026 07:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CEA392800;
+	Fri, 27 Feb 2026 08:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="FexkOtUa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout05.his.huawei.com (canpmsgout05.his.huawei.com [113.46.200.220])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B55132AAD1
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 07:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F59389DF0;
+	Fri, 27 Feb 2026 08:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772178739; cv=none; b=fYW0XwYgCYF6R+ArQxNncLJu4zM6skFnzoh5YdfCHRjnd83TtzA6zO9B30q2QBc7daMn0LfTeK9O/IhRnE8FCLqlnFNsz7zs/7hmwxEoNvpZ1GkfnPMudRBZkmO2eikWxKRj25dWf3sTFIHyyy8cXbWKRGSjYNGJCFKYGm0APFk=
+	t=1772180197; cv=none; b=sSFydXTGAu2f0yv8SjhRi0ujQBVzlQLaOMaK+jSmOgFdiMh73dPYGQYLNwY13YA1bF9DwymDw++fcS9A8X1HrWXm/HKdmeDBwgkyW0Ol0cs653anmBuU56tqg6tcXMtqZ2mC17WT9PCcevTh4iPeaYTF+23Ok55mDtDpK5xLlUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772178739; c=relaxed/simple;
-	bh=bUY81NVini8ehJyw2aPjwPsWMUoB9siRg29m/Xs5viE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=m5QsC00Zh484irKFJAPV23VkhBtuuShWiwlTx6aT0I7CBNFc+Zs7uTKx1yTbMJfVbXOzESPiH/o0jo+5bGTdtB8HOA5j+/YL5sCW9WXE74asNTuhuEdtWhlwBpkkyKIGxgK1cQZ75ELCmTADUgXjkORNoQAAX54tHRGRgIXXH0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-66b612efb4aso25824474eaf.0
-        for <linux-ext4@vger.kernel.org>; Thu, 26 Feb 2026 23:52:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772178737; x=1772783537;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Hj6swBUSI0e11N5NmPgAr9HdO3mYh7gXhmw6hg+I3Q=;
-        b=PC23sdQQ/zMy1WAwgZbSBgAYquWf5/4PnChyNjaKkx/Ktn8hrVgBhRx1SI9ttJ3nif
-         6qeL3RuIOEX2hlgG6ZS70RtWmDn/o1YvnOppgseVvrXp0/1XeTHJKXqmhZ+d/6dOd3OE
-         OZaM9nCEFs76rVHKGODZDWb7Unu2Mr2ULm74IrQHrwg0DrKPp5OpccHC1ILi1JQMPIuV
-         ncf1a0yg/tAxlH4AYmMMxyDg6jfazs3aM5y5M9jyFUs0KWi2TTj3SQSdFWE+ZbaHr4X5
-         8RPIK4u3WqiHvqr6XWOYS20vw9n8FQRTy5StbpC79UtINVPWZqkDs6VIUb9esL6cUe7L
-         jIcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKJ/jER9qEIEhvn4rpjZ1gzGr6p3EdJ1As3QK3drUQlz/oThADwQ70QslRiysc4FQHd/c5tSsprl5P@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyHUV9y1Z0cttB3mtT3DOYZcZ3o6Yy9dSwDwfOYNLehSNe80EH
-	F5MaNeINOV5vYI1GefcHeG7g3exYtyWmjCY5RTBPQpSmwSK3y5cBipB4sPRU2HH+g02WHofLo40
-	7W+6pnKaoTBlbWbKFMrskAwhQzH39aswW2GSpTTUCvhH/pA2uRR0qToLtTCg=
+	s=arc-20240116; t=1772180197; c=relaxed/simple;
+	bh=zBGgejWbGCuCK3ckMD02UY00VnuFtAyQ1cM7M5mvQ/8=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=oZUjjjgK/O2g5BReQLbwUkUcpjAdhYDX4iP7+l6VDfGi8z0cBD1Pn9qyRFDBWItyuXGNgtW3LATXRb3YUf7xv4bXb1seLAI8bQSibVz29xTh0T5U8d8zFFSM+ogAIAAE5IaKhaK/MSHq/waYQs5M2z/wWCqnnVukxRoLZldLeNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=FexkOtUa; arc=none smtp.client-ip=113.46.200.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=Wmv8uJ7HJDbZV50M+x838HOhuGm9CcXmr7O5DxYmnaA=;
+	b=FexkOtUagAcXDFcLvanuYXCxG6VsB4YyIX20qg20gGlU56RQBvPIdX5JmmfvAen1kl9Xcad9P
+	BxTzvSbaMCfK6x/I533upYv8dB5mDxS3zN0xsMCDpaP2BLxgIVtISPyXXJDdxnYqn2e9mf1ZnD9
+	Jm8up2Sq/fbakpqcesMqrt8=
+Received: from mail.maildlp.com (unknown [172.19.162.197])
+	by canpmsgout05.his.huawei.com (SkyGuard) with ESMTPS id 4fMgyt43ckz12LD1;
+	Fri, 27 Feb 2026 16:11:50 +0800 (CST)
+Received: from kwepemk500005.china.huawei.com (unknown [7.202.194.90])
+	by mail.maildlp.com (Postfix) with ESMTPS id DB9DD40363;
+	Fri, 27 Feb 2026 16:16:29 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemk500005.china.huawei.com (7.202.194.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Fri, 27 Feb 2026 16:16:23 +0800
+Subject: Re: [PATCH 47/61] ubifs: update format strings for u64 i_ino
+To: Jeff Layton <jlayton@kernel.org>, Alexander Viro
+	<viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara
+	<jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+	<mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Dan Williams <dan.j.williams@intel.com>, Matthew Wilcox
+	<willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o"
+	<tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, Oscar Salvador
+	<osalvador@suse.de>, David Hildenbrand <david@kernel.org>, David Howells
+	<dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, Andreas Dilger
+	<adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Jaegeuk Kim
+	<jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, Trond Myklebust
+	<trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
+	<chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, Olga Kornievskaia
+	<okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg
+	<ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, Bharath
+ SM <bharathsm@microsoft.com>, Alexander Aring <alex.aring@gmail.com>, Ryusuke
+ Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck
+	<linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne
+	<marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de Bethencourt
+	<luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, "Tigran A.
+ Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>,
+	<coda@cs.cmu.edu>, Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks
+	<code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, Christoph Hellwig
+	<hch@infradead.org>, John Paul Adrian Glaubitz
+	<glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, Mikulas
+ Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse
+	<dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp
+	<shaggy@kernel.org>, Konstantin Komarov
+	<almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>,
+	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg
+	<martin@omnibond.com>, Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen
+	<al@alarsen.net>, Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota
+	<naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, John Johansen
+	<john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris
+	<jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar
+	<zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, Dmitry
+ Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg
+	<eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, Stephen Smalley
+	<stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher
+	<alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=c3=b6nig?=
+	<christian.koenig@amd.com>, David Airlie <airlied@gmail.com>, Simona Vetter
+	<simona@ffwll.ch>, Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet
+	<edumazet@google.com>, Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, Willem de Bruijn <willemb@google.com>, "David S. Miller"
+	<davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Simon Horman
+	<horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra
+	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+	<mark.rutland@arm.com>, Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, James
+ Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, Martin
+ Schiller <ms@dev.tdt.de>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<fsverity@lists.linux.dev>, <linux-mm@kvack.org>, <netfs@lists.linux.dev>,
+	<linux-ext4@vger.kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>,
+	<linux-nfs@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
+	<samba-technical@lists.samba.org>, <linux-nilfs@vger.kernel.org>,
+	<v9fs@lists.linux.dev>, <linux-afs@lists.infradead.org>,
+	<autofs@vger.kernel.org>, <ceph-devel@vger.kernel.org>,
+	<codalist@coda.cs.cmu.edu>, <ecryptfs@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>, <jfs-discussion@lists.sourceforge.net>,
+	<ntfs3@lists.linux.dev>, <ocfs2-devel@lists.linux.dev>,
+	<devel@lists.orangefs.org>, <linux-unionfs@vger.kernel.org>,
+	<apparmor@lists.ubuntu.com>, <linux-security-module@vger.kernel.org>,
+	<linux-integrity@vger.kernel.org>, <selinux@vger.kernel.org>,
+	<amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+	<linux-media@vger.kernel.org>, <linaro-mm-sig@lists.linaro.org>,
+	<netdev@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+	<linux-fscrypt@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+	<linux-hams@vger.kernel.org>, <linux-x25@vger.kernel.org>
+References: <20260226-iino-u64-v1-0-ccceff366db9@kernel.org>
+ <20260226-iino-u64-v1-47-ccceff366db9@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <def8c48d-495c-9942-c66b-4e91d81a8e28@huawei.com>
+Date: Fri, 27 Feb 2026 16:16:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:80a:b0:679:c41f:edf with SMTP id
- 006d021491bc7-679f2330cc6mr3625616eaf.29.1772178737521; Thu, 26 Feb 2026
- 23:52:17 -0800 (PST)
-Date: Thu, 26 Feb 2026 23:52:17 -0800
-In-Reply-To: <20260226110718.1904825-1-yebin@huaweicloud.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69a14d31.050a0220.305b49.00aa.GAE@google.com>
-Subject: [syzbot ci] Re: ext4: test if inode's all dirty pages are submitted
- to disk
-From: syzbot ci <syzbot+cif302214182590c61@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	tytso@mit.edu, yebin@huaweicloud.com
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20260226-iino-u64-v1-47-ccceff366db9@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ kwepemk500005.china.huawei.com (7.202.194.90)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlesource.com:url,googlegroups.com:email,appspotmail.com:email,syzbot.org:url];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14196-lists,linux-ext4=lfdr.de,cif302214182590c61];
-	TO_DN_NONE(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 86E4A1B4204
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FREEMAIL_TO(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,huawei.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de];
+	TAGGED_FROM(0.00)[bounces-14197-lists,linux-ext4=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chengzhihao1@huawei.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_GT_50(0.00)[145];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 59A351B46EE
 X-Rspamd-Action: no action
 
-syzbot ci has tested the following series
+在 2026/2/26 23:55, Jeff Layton 写道:
+> Update format strings and local variable types in ubifs for the
+> i_ino type change from unsigned long to u64.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>   fs/ubifs/debug.c   |  8 ++++----
+>   fs/ubifs/dir.c     | 28 ++++++++++++++--------------
+>   fs/ubifs/file.c    | 28 ++++++++++++++--------------
+>   fs/ubifs/journal.c |  6 +++---
+>   fs/ubifs/super.c   | 16 ++++++++--------
+>   fs/ubifs/tnc.c     |  4 ++--
+>   fs/ubifs/xattr.c   | 14 +++++++-------
+>   7 files changed, 52 insertions(+), 52 deletions(-)
 
-[v1] ext4: test if inode's all dirty pages are submitted to disk
-https://lore.kernel.org/all/20260226110718.1904825-1-yebin@huaweicloud.com
-* [PATCH] ext4: test if inode's all dirty pages are submitted to disk
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> 
+> diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+> index 160c16aa7b6e7088355582670357262ab3930225..5794de5a9069f20302b6630c39c1452183137acc 100644
+> --- a/fs/ubifs/debug.c
+> +++ b/fs/ubifs/debug.c
+> @@ -230,7 +230,7 @@ void ubifs_dump_inode(struct ubifs_info *c, const struct inode *inode)
+>   	int count = 2;
+>   
+>   	pr_err("Dump in-memory inode:");
+> -	pr_err("\tinode          %lu\n", inode->i_ino);
+> +	pr_err("\tinode          %llu\n", inode->i_ino);
+>   	pr_err("\tsize           %llu\n",
+>   	       (unsigned long long)i_size_read(inode));
+>   	pr_err("\tnlink          %u\n", inode->i_nlink);
+> @@ -1101,7 +1101,7 @@ int dbg_check_synced_i_size(const struct ubifs_info *c, struct inode *inode)
+>   	if (ui->ui_size != ui->synced_i_size && !ui->dirty) {
+>   		ubifs_err(c, "ui_size is %lld, synced_i_size is %lld, but inode is clean",
+>   			  ui->ui_size, ui->synced_i_size);
+> -		ubifs_err(c, "i_ino %lu, i_mode %#x, i_size %lld", inode->i_ino,
+> +		ubifs_err(c, "i_ino %llu, i_mode %#x, i_size %lld", inode->i_ino,
+>   			  inode->i_mode, i_size_read(inode));
+>   		dump_stack();
+>   		err = -EINVAL;
+> @@ -1163,7 +1163,7 @@ int dbg_check_dir(struct ubifs_info *c, const struct inode *dir)
+>   	kfree(pdent);
+>   
+>   	if (i_size_read(dir) != size) {
+> -		ubifs_err(c, "directory inode %lu has size %llu, but calculated size is %llu",
+> +		ubifs_err(c, "directory inode %llu has size %llu, but calculated size is %llu",
+>   			  dir->i_ino, (unsigned long long)i_size_read(dir),
+>   			  (unsigned long long)size);
+>   		ubifs_dump_inode(c, dir);
+> @@ -1171,7 +1171,7 @@ int dbg_check_dir(struct ubifs_info *c, const struct inode *dir)
+>   		return -EINVAL;
+>   	}
+>   	if (dir->i_nlink != nlink) {
+> -		ubifs_err(c, "directory inode %lu has nlink %u, but calculated nlink is %u",
+> +		ubifs_err(c, "directory inode %llu has nlink %u, but calculated nlink is %u",
+>   			  dir->i_ino, dir->i_nlink, nlink);
+>   		ubifs_dump_inode(c, dir);
+>   		dump_stack();
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 4c9f57f3b2adbbd396b288878cb18fa87cdbd0df..86d41e077e4d621dbb8c448acd0065c8ac7ae225 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -223,7 +223,7 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>   	struct ubifs_info *c = dir->i_sb->s_fs_info;
+>   	struct fscrypt_name nm;
+>   
+> -	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
+> +	dbg_gen("'%pd' in dir ino %llu", dentry, dir->i_ino);
+>   
+>   	err = fscrypt_prepare_lookup(dir, dentry, &nm);
+>   	if (err == -ENOENT)
+> @@ -281,7 +281,7 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>   	if (IS_ENCRYPTED(dir) &&
+>   	    (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode)) &&
+>   	    !fscrypt_has_permitted_context(dir, inode)) {
+> -		ubifs_warn(c, "Inconsistent encryption contexts: %lu/%lu",
+> +		ubifs_warn(c, "Inconsistent encryption contexts: %llu/%llu",
+>   			   dir->i_ino, inode->i_ino);
+>   		iput(inode);
+>   		inode = ERR_PTR(-EPERM);
+> @@ -318,7 +318,7 @@ static int ubifs_create(struct mnt_idmap *idmap, struct inode *dir,
+>   	 * parent directory inode.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+> +	dbg_gen("dent '%pd', mode %#hx in dir ino %llu",
+>   		dentry, mode, dir->i_ino);
+>   
+>   	err = ubifs_budget_space(c, &req);
+> @@ -386,7 +386,7 @@ static struct inode *create_whiteout(struct inode *dir, struct dentry *dentry)
+>   	 * atomically.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+> +	dbg_gen("dent '%pd', mode %#hx in dir ino %llu",
+>   		dentry, mode, dir->i_ino);
+>   
+>   	inode = ubifs_new_inode(c, dir, mode, false);
+> @@ -460,7 +460,7 @@ static int ubifs_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
+>   	 * be released via writeback.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+> +	dbg_gen("dent '%pd', mode %#hx in dir ino %llu",
+>   		dentry, mode, dir->i_ino);
+>   
+>   	err = fscrypt_setup_filename(dir, &dentry->d_name, 0, &nm);
+> @@ -589,7 +589,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+>   	bool encrypted = IS_ENCRYPTED(dir);
+>   	struct ubifs_dir_data *data = file->private_data;
+>   
+> -	dbg_gen("dir ino %lu, f_pos %#llx", dir->i_ino, ctx->pos);
+> +	dbg_gen("dir ino %llu, f_pos %#llx", dir->i_ino, ctx->pos);
+>   
+>   	if (ctx->pos > UBIFS_S_KEY_HASH_MASK || ctx->pos == 2)
+>   		/*
+> @@ -764,7 +764,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+>   	 * changing the parent inode.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd' to ino %lu (nlink %d) in dir ino %lu",
+> +	dbg_gen("dent '%pd' to ino %llu (nlink %d) in dir ino %llu",
+>   		dentry, inode->i_ino,
+>   		inode->i_nlink, dir->i_ino);
+>   	ubifs_assert(c, inode_is_locked(dir));
+> @@ -836,7 +836,7 @@ static int ubifs_unlink(struct inode *dir, struct dentry *dentry)
+>   	 * deletions.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd' from ino %lu (nlink %d) in dir ino %lu",
+> +	dbg_gen("dent '%pd' from ino %llu (nlink %d) in dir ino %llu",
+>   		dentry, inode->i_ino,
+>   		inode->i_nlink, dir->i_ino);
+>   
+> @@ -941,7 +941,7 @@ static int ubifs_rmdir(struct inode *dir, struct dentry *dentry)
+>   	 * because we have extra space reserved for deletions.
+>   	 */
+>   
+> -	dbg_gen("directory '%pd', ino %lu in dir ino %lu", dentry,
+> +	dbg_gen("directory '%pd', ino %llu in dir ino %llu", dentry,
+>   		inode->i_ino, dir->i_ino);
+>   	ubifs_assert(c, inode_is_locked(dir));
+>   	ubifs_assert(c, inode_is_locked(inode));
+> @@ -1018,7 +1018,7 @@ static struct dentry *ubifs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+>   	 * directory inode.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd', mode %#hx in dir ino %lu",
+> +	dbg_gen("dent '%pd', mode %#hx in dir ino %llu",
+>   		dentry, mode, dir->i_ino);
+>   
+>   	err = ubifs_budget_space(c, &req);
+> @@ -1096,7 +1096,7 @@ static int ubifs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+>   	 * directory inode.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd' in dir ino %lu", dentry, dir->i_ino);
+> +	dbg_gen("dent '%pd' in dir ino %llu", dentry, dir->i_ino);
+>   
+>   	if (S_ISBLK(mode) || S_ISCHR(mode)) {
+>   		dev = kmalloc_obj(union ubifs_dev_desc, GFP_NOFS);
+> @@ -1183,7 +1183,7 @@ static int ubifs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+>   					.dirtied_ino = 1 };
+>   	struct fscrypt_name nm;
+>   
+> -	dbg_gen("dent '%pd', target '%s' in dir ino %lu", dentry,
+> +	dbg_gen("dent '%pd', target '%s' in dir ino %llu", dentry,
+>   		symname, dir->i_ino);
+>   
+>   	err = fscrypt_prepare_symlink(dir, symname, len, UBIFS_MAX_INO_DATA,
+> @@ -1349,7 +1349,7 @@ static int do_rename(struct inode *old_dir, struct dentry *old_dentry,
+>   	 *   ino_req: marks the target inode as dirty and does not write it.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd' ino %lu in dir ino %lu to dent '%pd' in dir ino %lu flags 0x%x",
+> +	dbg_gen("dent '%pd' ino %llu in dir ino %llu to dent '%pd' in dir ino %llu flags 0x%x",
+>   		old_dentry, old_inode->i_ino, old_dir->i_ino,
+>   		new_dentry, new_dir->i_ino, flags);
+>   
+> @@ -1597,7 +1597,7 @@ static int ubifs_xrename(struct inode *old_dir, struct dentry *old_dentry,
+>   	 * parent directory inodes.
+>   	 */
+>   
+> -	dbg_gen("dent '%pd' ino %lu in dir ino %lu exchange dent '%pd' ino %lu in dir ino %lu",
+> +	dbg_gen("dent '%pd' ino %llu in dir ino %llu exchange dent '%pd' ino %llu in dir ino %llu",
+>   		old_dentry, fst_inode->i_ino, old_dir->i_ino,
+>   		new_dentry, snd_inode->i_ino, new_dir->i_ino);
+>   
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index cd04755e792a7f8e7d33ed4e67806cd202c71fad..e73c28b12f97fd1fbeb67510434e499eab84da70 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -90,7 +90,7 @@ static int read_block(struct inode *inode, struct folio *folio, size_t offset,
+>   	return 0;
+>   
+>   dump:
+> -	ubifs_err(c, "bad data node (block %u, inode %lu)",
+> +	ubifs_err(c, "bad data node (block %u, inode %llu)",
+>   		  block, inode->i_ino);
+>   	ubifs_dump_node(c, dn, UBIFS_MAX_DATA_NODE_SZ);
+>   	return -EINVAL;
+> @@ -106,7 +106,7 @@ static int do_readpage(struct folio *folio)
+>   	loff_t i_size = i_size_read(inode);
+>   	size_t offset = 0;
+>   
+> -	dbg_gen("ino %lu, pg %lu, i_size %lld, flags %#lx",
+> +	dbg_gen("ino %llu, pg %lu, i_size %lld, flags %#lx",
+>   		inode->i_ino, folio->index, i_size, folio->flags.f);
+>   	ubifs_assert(c, !folio_test_checked(folio));
+>   	ubifs_assert(c, !folio->private);
+> @@ -162,7 +162,7 @@ static int do_readpage(struct folio *folio)
+>   			dbg_gen("hole");
+>   			err = 0;
+>   		} else {
+> -			ubifs_err(c, "cannot read page %lu of inode %lu, error %d",
+> +			ubifs_err(c, "cannot read page %lu of inode %llu, error %d",
+>   				  folio->index, inode->i_ino, err);
+>   		}
+>   	}
+> @@ -212,7 +212,7 @@ static int write_begin_slow(struct address_space *mapping,
+>   	int err, appending = !!(pos + len > inode->i_size);
+>   	struct folio *folio;
+>   
+> -	dbg_gen("ino %lu, pos %llu, len %u, i_size %lld",
+> +	dbg_gen("ino %llu, pos %llu, len %u, i_size %lld",
+>   		inode->i_ino, pos, len, inode->i_size);
+>   
+>   	/*
+> @@ -526,7 +526,7 @@ static int ubifs_write_end(const struct kiocb *iocb,
+>   	loff_t end_pos = pos + len;
+>   	int appending = !!(end_pos > inode->i_size);
+>   
+> -	dbg_gen("ino %lu, pos %llu, pg %lu, len %u, copied %d, i_size %lld",
+> +	dbg_gen("ino %llu, pos %llu, pg %lu, len %u, copied %d, i_size %lld",
+>   		inode->i_ino, pos, folio->index, len, copied, inode->i_size);
+>   
+>   	if (unlikely(copied < len && !folio_test_uptodate(folio))) {
+> @@ -599,7 +599,7 @@ static int populate_page(struct ubifs_info *c, struct folio *folio,
+>   	size_t offset = 0;
+>   	pgoff_t end_index;
+>   
+> -	dbg_gen("ino %lu, pg %lu, i_size %lld, flags %#lx",
+> +	dbg_gen("ino %llu, pg %lu, i_size %lld, flags %#lx",
+>   		inode->i_ino, folio->index, i_size, folio->flags.f);
+>   
+>   	end_index = (i_size - 1) >> PAGE_SHIFT;
+> @@ -680,7 +680,7 @@ static int populate_page(struct ubifs_info *c, struct folio *folio,
+>   	return 0;
+>   
+>   out_err:
+> -	ubifs_err(c, "bad data node (block %u, inode %lu)",
+> +	ubifs_err(c, "bad data node (block %u, inode %llu)",
+>   		  page_block, inode->i_ino);
+>   	return -EINVAL;
+>   }
+> @@ -913,7 +913,7 @@ static int do_writepage(struct folio *folio, size_t len)
+>   	}
+>   	if (err) {
+>   		mapping_set_error(folio->mapping, err);
+> -		ubifs_err(c, "cannot write folio %lu of inode %lu, error %d",
+> +		ubifs_err(c, "cannot write folio %lu of inode %llu, error %d",
+>   			  folio->index, inode->i_ino, err);
+>   		ubifs_ro_mode(c, err);
+>   	}
+> @@ -987,7 +987,7 @@ static int ubifs_writepage(struct folio *folio, struct writeback_control *wbc)
+>   	loff_t i_size =  i_size_read(inode), synced_i_size;
+>   	int err, len = folio_size(folio);
+>   
+> -	dbg_gen("ino %lu, pg %lu, pg flags %#lx",
+> +	dbg_gen("ino %llu, pg %lu, pg flags %#lx",
+>   		inode->i_ino, folio->index, folio->flags.f);
+>   	ubifs_assert(c, folio->private != NULL);
+>   
+> @@ -1106,7 +1106,7 @@ static int do_truncation(struct ubifs_info *c, struct inode *inode,
+>   	int offset = new_size & (UBIFS_BLOCK_SIZE - 1), budgeted = 1;
+>   	struct ubifs_inode *ui = ubifs_inode(inode);
+>   
+> -	dbg_gen("ino %lu, size %lld -> %lld", inode->i_ino, old_size, new_size);
+> +	dbg_gen("ino %llu, size %lld -> %lld", inode->i_ino, old_size, new_size);
+>   	memset(&req, 0, sizeof(struct ubifs_budget_req));
+>   
+>   	/*
+> @@ -1258,7 +1258,7 @@ int ubifs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>   	struct inode *inode = d_inode(dentry);
+>   	struct ubifs_info *c = inode->i_sb->s_fs_info;
+>   
+> -	dbg_gen("ino %lu, mode %#x, ia_valid %#x",
+> +	dbg_gen("ino %llu, mode %#x, ia_valid %#x",
+>   		inode->i_ino, inode->i_mode, attr->ia_valid);
+>   	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
+>   	if (err)
+> @@ -1308,7 +1308,7 @@ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+>   	struct ubifs_info *c = inode->i_sb->s_fs_info;
+>   	int err;
+>   
+> -	dbg_gen("syncing inode %lu", inode->i_ino);
+> +	dbg_gen("syncing inode %llu", inode->i_ino);
+>   
+>   	if (c->ro_mount)
+>   		/*
+> @@ -1495,7 +1495,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+>   	struct ubifs_budget_req req = { .new_page = 1 };
+>   	int err, update_time;
+>   
+> -	dbg_gen("ino %lu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
+> +	dbg_gen("ino %llu, pg %lu, i_size %lld",	inode->i_ino, folio->index,
+>   		i_size_read(inode));
+>   	ubifs_assert(c, !c->ro_media && !c->ro_mount);
+>   
+> @@ -1531,7 +1531,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+>   	err = ubifs_budget_space(c, &req);
+>   	if (unlikely(err)) {
+>   		if (err == -ENOSPC)
+> -			ubifs_warn(c, "out of space for mmapped file (inode number %lu)",
+> +			ubifs_warn(c, "out of space for mmapped file (inode number %llu)",
+>   				   inode->i_ino);
+>   		return VM_FAULT_SIGBUS;
+>   	}
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index e28ab4395e5ca404d8e8d8f735c3113b58bcc941..40a95a2fad50039f39917e71da7b71a735237469 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -982,7 +982,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
+>   	int kill_xattrs = ui->xattr_cnt && last_reference;
+>   	u8 hash[UBIFS_HASH_ARR_SZ];
+>   
+> -	dbg_jnl("ino %lu, nlink %u", inode->i_ino, inode->i_nlink);
+> +	dbg_jnl("ino %llu, nlink %u", inode->i_ino, inode->i_nlink);
+>   
+>   	if (kill_xattrs && ui->xattr_cnt > ubifs_xattr_max_cnt(c)) {
+>   		ubifs_err(c, "Cannot delete inode, it has too many xattrs!");
+> @@ -1743,7 +1743,7 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
+>   			int dn_len = le32_to_cpu(dn->size);
+>   
+>   			if (dn_len <= 0 || dn_len > UBIFS_BLOCK_SIZE) {
+> -				ubifs_err(c, "bad data node (block %u, inode %lu)",
+> +				ubifs_err(c, "bad data node (block %u, inode %llu)",
+>   					  blk, inode->i_ino);
+>   				ubifs_dump_node(c, dn, dn_size);
+>   				err = -EUCLEAN;
+> @@ -1987,7 +1987,7 @@ int ubifs_jnl_change_xattr(struct ubifs_info *c, const struct inode *inode,
+>   	u8 hash_host[UBIFS_HASH_ARR_SZ];
+>   	u8 hash[UBIFS_HASH_ARR_SZ];
+>   
+> -	dbg_jnl("ino %lu, ino %lu", host->i_ino, inode->i_ino);
+> +	dbg_jnl("ino %llu, ino %llu", host->i_ino, inode->i_ino);
+>   	ubifs_assert(c, inode->i_nlink > 0);
+>   	ubifs_assert(c, mutex_is_locked(&host_ui->ui_mutex));
+>   
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 03bf924756ca003809d229837a970d5935450f23..9a77d8b64ffa70f9d5b695fb3d87c22cb223704f 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -92,7 +92,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
+>   		return 5;
+>   
+>   	if (!ubifs_compr_present(c, ui->compr_type)) {
+> -		ubifs_warn(c, "inode %lu uses '%s' compression, but it was not compiled in",
+> +		ubifs_warn(c, "inode %llu uses '%s' compression, but it was not compiled in",
+>   			   inode->i_ino, ubifs_compr_name(c, ui->compr_type));
+>   	}
+>   
+> @@ -248,14 +248,14 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
+>   	return inode;
+>   
+>   out_invalid:
+> -	ubifs_err(c, "inode %lu validation failed, error %d", inode->i_ino, err);
+> +	ubifs_err(c, "inode %llu validation failed, error %d", inode->i_ino, err);
+>   	ubifs_dump_node(c, ino, UBIFS_MAX_INO_NODE_SZ);
+>   	ubifs_dump_inode(c, inode);
+>   	err = -EINVAL;
+>   out_ino:
+>   	kfree(ino);
+>   out:
+> -	ubifs_err(c, "failed to read inode %lu, error %d", inode->i_ino, err);
+> +	ubifs_err(c, "failed to read inode %llu, error %d", inode->i_ino, err);
+>   	iget_failed(inode);
+>   	return ERR_PTR(err);
+>   }
+> @@ -316,12 +316,12 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
+>   	 * As an optimization, do not write orphan inodes to the media just
+>   	 * because this is not needed.
+>   	 */
+> -	dbg_gen("inode %lu, mode %#x, nlink %u",
+> +	dbg_gen("inode %llu, mode %#x, nlink %u",
+>   		inode->i_ino, (int)inode->i_mode, inode->i_nlink);
+>   	if (inode->i_nlink) {
+>   		err = ubifs_jnl_write_inode(c, inode);
+>   		if (err)
+> -			ubifs_err(c, "can't write inode %lu, error %d",
+> +			ubifs_err(c, "can't write inode %llu, error %d",
+>   				  inode->i_ino, err);
+>   		else
+>   			err = dbg_check_inode_size(c, inode, ui->ui_size);
+> @@ -357,7 +357,7 @@ static void ubifs_evict_inode(struct inode *inode)
+>   		 */
+>   		goto out;
+>   
+> -	dbg_gen("inode %lu, mode %#x", inode->i_ino, (int)inode->i_mode);
+> +	dbg_gen("inode %llu, mode %#x", inode->i_ino, (int)inode->i_mode);
+>   	ubifs_assert(c, !icount_read(inode));
+>   
+>   	truncate_inode_pages_final(&inode->i_data);
+> @@ -375,7 +375,7 @@ static void ubifs_evict_inode(struct inode *inode)
+>   		 * Worst case we have a lost orphan inode wasting space, so a
+>   		 * simple error message is OK here.
+>   		 */
+> -		ubifs_err(c, "can't delete inode %lu, error %d",
+> +		ubifs_err(c, "can't delete inode %llu, error %d",
+>   			  inode->i_ino, err);
+>   
+>   out:
+> @@ -399,7 +399,7 @@ static void ubifs_dirty_inode(struct inode *inode, int flags)
+>   	ubifs_assert(c, mutex_is_locked(&ui->ui_mutex));
+>   	if (!ui->dirty) {
+>   		ui->dirty = 1;
+> -		dbg_gen("inode %lu",  inode->i_ino);
+> +		dbg_gen("inode %llu",  inode->i_ino);
+>   	}
+>   }
+>   
+> diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+> index 694b08d27d7d9c7d9d7d9039f406637c702f8613..52c758c5290d8cc425fdc6d49c608d0cb0ba7ff7 100644
+> --- a/fs/ubifs/tnc.c
+> +++ b/fs/ubifs/tnc.c
+> @@ -3561,8 +3561,8 @@ int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
+>   
+>   out_dump:
+>   	block = key_block(c, key);
+> -	ubifs_err(c, "inode %lu has size %lld, but there are data at offset %lld",
+> -		  (unsigned long)inode->i_ino, size,
+> +	ubifs_err(c, "inode %llu has size %lld, but there are data at offset %lld",
+> +		  (unsigned long long)inode->i_ino, size,
+>   		  ((loff_t)block) << UBIFS_BLOCK_SHIFT);
+>   	mutex_unlock(&c->tnc_mutex);
+>   	ubifs_dump_inode(c, inode);
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index c21a0c2b3e907c1572780d4a3e48cc9d2a11b9d6..b5a9ab9d8a10adcf49e6d7228d385cb986e6e75e 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -76,7 +76,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+>   				.dirtied_ino_d = ALIGN(host_ui->data_len, 8) };
+>   
+>   	if (host_ui->xattr_cnt >= ubifs_xattr_max_cnt(c)) {
+> -		ubifs_err(c, "inode %lu already has too many xattrs (%d), cannot create more",
+> +		ubifs_err(c, "inode %llu already has too many xattrs (%d), cannot create more",
+>   			  host->i_ino, host_ui->xattr_cnt);
+>   		return -ENOSPC;
+>   	}
+> @@ -88,7 +88,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+>   	 */
+>   	names_len = host_ui->xattr_names + host_ui->xattr_cnt + fname_len(nm) + 1;
+>   	if (names_len > XATTR_LIST_MAX) {
+> -		ubifs_err(c, "cannot add one more xattr name to inode %lu, total names length would become %d, max. is %d",
+> +		ubifs_err(c, "cannot add one more xattr name to inode %llu, total names length would become %d, max. is %d",
+>   			  host->i_ino, names_len, XATTR_LIST_MAX);
+>   		return -ENOSPC;
+>   	}
+> @@ -390,7 +390,7 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
+>   	int err, len, written = 0;
+>   	struct fscrypt_name nm = {0};
+>   
+> -	dbg_gen("ino %lu ('%pd'), buffer size %zd", host->i_ino,
+> +	dbg_gen("ino %llu ('%pd'), buffer size %zd", host->i_ino,
+>   		dentry, size);
+>   
+>   	down_read(&host_ui->xattr_sem);
+> @@ -498,7 +498,7 @@ int ubifs_purge_xattrs(struct inode *host)
+>   	if (ubifs_inode(host)->xattr_cnt <= ubifs_xattr_max_cnt(c))
+>   		return 0;
+>   
+> -	ubifs_warn(c, "inode %lu has too many xattrs, doing a non-atomic deletion",
+> +	ubifs_warn(c, "inode %llu has too many xattrs, doing a non-atomic deletion",
+>   		   host->i_ino);
+>   
+>   	down_write(&ubifs_inode(host)->xattr_sem);
+> @@ -641,7 +641,7 @@ int ubifs_init_security(struct inode *dentry, struct inode *inode,
+>   					   &init_xattrs, NULL);
+>   	if (err) {
+>   		struct ubifs_info *c = dentry->i_sb->s_fs_info;
+> -		ubifs_err(c, "cannot initialize security for inode %lu, error %d",
+> +		ubifs_err(c, "cannot initialize security for inode %llu, error %d",
+>   			  inode->i_ino, err);
+>   	}
+>   	return err;
+> @@ -652,7 +652,7 @@ static int xattr_get(const struct xattr_handler *handler,
+>   			   struct dentry *dentry, struct inode *inode,
+>   			   const char *name, void *buffer, size_t size)
+>   {
+> -	dbg_gen("xattr '%s', ino %lu ('%pd'), buf size %zd", name,
+> +	dbg_gen("xattr '%s', ino %llu ('%pd'), buf size %zd", name,
+>   		inode->i_ino, dentry, size);
+>   
+>   	name = xattr_full_name(handler, name);
+> @@ -665,7 +665,7 @@ static int xattr_set(const struct xattr_handler *handler,
+>   			   const char *name, const void *value,
+>   			   size_t size, int flags)
+>   {
+> -	dbg_gen("xattr '%s', host ino %lu ('%pd'), size %zd",
+> +	dbg_gen("xattr '%s', host ino %llu ('%pd'), size %zd",
+>   		name, inode->i_ino, dentry, size);
+>   
+>   	name = xattr_full_name(handler, name);
+> 
 
-and found the following issue:
-WARNING in ext4_evict_inode
-
-Full report is available here:
-https://ci.syzbot.org/series/8f9434e5-a73c-4b31-be9f-e9b76f1c2596
-
-***
-
-WARNING in ext4_evict_inode
-
-tree:      torvalds
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
-base:      f4d0ec0aa20d49f09dc01d82894ce80d72de0560
-arch:      amd64
-compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-config:    https://ci.syzbot.org/builds/7053c6f2-2ee6-4a1d-9f74-d2f56facd9f9/config
-C repro:   https://ci.syzbot.org/findings/4f7c2b91-8121-443d-9a4f-991feda8057c/c_repro
-syz repro: https://ci.syzbot.org/findings/4f7c2b91-8121-443d-9a4f-991feda8057c/syz_repro
-
-------------[ cut here ]------------
-mapping_tagged(&inode->i_data, PAGECACHE_TAG_DIRTY)
-WARNING: fs/ext4/inode.c:191 at ext4_evict_inode+0xbdc/0xf10 fs/ext4/inode.c:191, CPU#1: syz-executor/5915
-Modules linked in:
-CPU: 1 UID: 0 PID: 5915 Comm: syz-executor Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:ext4_evict_inode+0xbdc/0xf10 fs/ext4/inode.c:191
-Code: ba 2c 02 00 48 8b bc 24 a0 00 00 00 e8 bd 49 14 00 e9 71 fe ff ff e8 43 63 40 ff 90 0f 0b 90 e9 e6 f4 ff ff e8 35 63 40 ff 90 <0f> 0b 90 e9 f2 f5 ff ff e8 27 63 40 ff 48 8d 3d 50 df 92 0d 67 48
-RSP: 0018:ffffc900048b79a0 EFLAGS: 00010293
-RAX: ffffffff8285287b RBX: ffff88811d980298 RCX: ffff8881027d8000
-RDX: 0000000000000000 RSI: 0000000004000000 RDI: 0000000000000000
-RBP: ffffc900048b7ab0 R08: ffffffff901181b7 R09: 1ffffffff2023036
-R10: dffffc0000000000 R11: fffffbfff2023037 R12: 1ffff92000916f44
-R13: dffffc0000000000 R14: ffff88811d9804b8 R15: 0000000004000000
-FS:  000055557d541500(0000) GS:ffff8882a9464000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c00003e720 CR3: 000000010f9d2000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- evict+0x61e/0xb10 fs/inode.c:846
- dispose_list fs/inode.c:888 [inline]
- evict_inodes+0x75a/0x7f0 fs/inode.c:942
- generic_shutdown_super+0xaa/0x2d0 fs/super.c:632
- kill_block_super+0x44/0x90 fs/super.c:1725
- ext4_kill_sb+0x68/0xb0 fs/ext4/super.c:7459
- deactivate_locked_super+0xbc/0x130 fs/super.c:476
- cleanup_mnt+0x437/0x4d0 fs/namespace.c:1312
- task_work_run+0x1d9/0x270 kernel/task_work.c:233
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- __exit_to_user_mode_loop kernel/entry/common.c:67 [inline]
- exit_to_user_mode_loop+0xed/0x480 kernel/entry/common.c:98
- __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
- syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:256 [inline]
- syscall_exit_to_user_mode include/linux/entry-common.h:325 [inline]
- do_syscall_64+0x32d/0xf80 arch/x86/entry/syscall_64.c:100
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fcf3c79d897
-Code: a2 c7 05 5c ee 24 00 00 00 00 00 eb 96 e8 e1 12 00 00 90 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 e8 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffe2362cef8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 00007fcf3c831ef0 RCX: 00007fcf3c79d897
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffe2362cfb0
-RBP: 00007ffe2362cfb0 R08: 00007ffe2362dfb0 R09: 00000000ffffffff
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe2362e040
-R13: 00007fcf3c831ef0 R14: 000000000000f11c R15: 00007ffe2362e080
- </TASK>
-
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
-
----
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
