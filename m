@@ -1,656 +1,185 @@
-Return-Path: <linux-ext4+bounces-14211-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14212-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +G9VJE3BoWkVwQQAu9opvQ
-	(envelope-from <linux-ext4+bounces-14211-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:07:41 +0100
+	id yBA0G+rAoWkVwQQAu9opvQ
+	(envelope-from <linux-ext4+bounces-14212-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:06:02 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93B1F1BA8BD
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:07:40 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CB2A1BA846
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 17:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7AE753017001
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 15:54:04 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AB28630117F5
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Feb 2026 16:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8440436379;
-	Fri, 27 Feb 2026 15:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC3244B671;
+	Fri, 27 Feb 2026 16:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vtmAEaVM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZSvjI4qd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vtmAEaVM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZSvjI4qd"
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="LfmMR7yW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894D043635F
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 15:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772207642; cv=none; b=hY4tnW8aMXaAaA7nc4NJzzlJ78pLZz782al4Hfs2fkR/SZH43r+iqjQ7UmBzQ1XUderZbrtF/qXdrQlJCfxuGoMsSGY06+c6GEXLmou/A8uWVpsunc8T0AEZzz9d9GQTv552xfPX3F/TbSww0E+VswkDnfHQ5bQNx3DX8wr+CGk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772207642; c=relaxed/simple;
-	bh=o7/B1iKUNqKpYoADTWzpBiv2GJKcmjrz4Z4aIzAhUJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EWUi0xVrEt5+Ie+D1lWtFli8GDuoOPu0RSBFS7+9vuZ0Mqo0+ilaVe8QoYD2R9PlsvPeWTH9OPpXEdcL/ApiTZBYMEDEJ0ExbNUaNr4xa8YrLzjy8tYRrZnxXza9WMF1FNUByQ2yaC6fIbMobesnA6cR2tR3kU8RKWCPc318Oss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vtmAEaVM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZSvjI4qd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vtmAEaVM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZSvjI4qd; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 907424D667;
-	Fri, 27 Feb 2026 15:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772207638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0LVRqiVr+tiLD4C4eJITtaFTK+AStPRk/b99kbIUT68=;
-	b=vtmAEaVMPLkQnNSXGId7++KIm6dhgan3vTtBX9jZrZANq/XdOTZBMhpBua0CqQdsBFpuX+
-	BU79QTBpSlMTNEUfQszpv4BW2RkDNrTI2IqyoeNHwkgTigjRe/4mmkYcyOGlo+jCOtttGs
-	wpoL1xEUO38rTW3g9LKUdS62NG1SwcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772207638;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0LVRqiVr+tiLD4C4eJITtaFTK+AStPRk/b99kbIUT68=;
-	b=ZSvjI4qd0SQottZydxsaVmV72eRLdUjbMOArEUj3XW2p6sKJYthN6k+6vgXWGXWjcQfKVA
-	GcTPSP5sTOHIyzDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772207638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0LVRqiVr+tiLD4C4eJITtaFTK+AStPRk/b99kbIUT68=;
-	b=vtmAEaVMPLkQnNSXGId7++KIm6dhgan3vTtBX9jZrZANq/XdOTZBMhpBua0CqQdsBFpuX+
-	BU79QTBpSlMTNEUfQszpv4BW2RkDNrTI2IqyoeNHwkgTigjRe/4mmkYcyOGlo+jCOtttGs
-	wpoL1xEUO38rTW3g9LKUdS62NG1SwcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772207638;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0LVRqiVr+tiLD4C4eJITtaFTK+AStPRk/b99kbIUT68=;
-	b=ZSvjI4qd0SQottZydxsaVmV72eRLdUjbMOArEUj3XW2p6sKJYthN6k+6vgXWGXWjcQfKVA
-	GcTPSP5sTOHIyzDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 669F13EA69;
-	Fri, 27 Feb 2026 15:53:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Uh8DGRa+oWmcQwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 27 Feb 2026 15:53:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 20009A06D4; Fri, 27 Feb 2026 16:53:50 +0100 (CET)
-Date: Fri, 27 Feb 2026 16:53:50 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	jack@suse.cz
-Subject: Re: [PATCH v3] ext4: fix mballoc-test.c is not compiled when
- EXT4_KUNIT_TESTS=M
-Message-ID: <4jdxzxwbh7pf6omvzcjwldyuthiq5tfz5ai3erbfgrtqqfgry7@ucmewl7itqnt>
-References: <20260227065514.2365063-1-yebin@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4046F4418E4
+	for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 16:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.182
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772208356; cv=pass; b=Ij9w33pajsWx2WjqPe9od8WEgG48nkiz9e759CbVlScOgPFIputIAUbtvzrOYMOC0LUHsyrTiXTVR0wRKbTv4/7c7xEoNYJ5fynQfwo50pPAtQUGFznq6crzBaWUme0H92Njn4MnQSjQgVb0ShTqiaso7hcV5S+5GlogGMHm/3Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772208356; c=relaxed/simple;
+	bh=XWRFmApZo3EeyDOBlJmpjRgegzMqTxAsMi4wp2Eo1BI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UvFF6/v4uNiUhGLa2CuJ9BRFaCA7qfxE9+s6c+vII+n5RsX1/8ccsWdv96bZswDC4vrWOK1rXVNDBVOFz4mZ6JsEqQ/jVIK2Vt3EVabE/YjrjsybUsSnKsX+A8BF2YR7HBO6ei9pw6L9JqKQsRP5kg3y3vpJ/AUYZoRhFARZH9Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=LfmMR7yW; arc=pass smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-5033387c80aso42306981cf.0
+        for <linux-ext4@vger.kernel.org>; Fri, 27 Feb 2026 08:05:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772208354; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DrFROvq9mkl47K9ds19in7OG2afO55AXZ9WJ1AN+pgKCks/fRM319m05sTLMzLEZkj
+         MNvVatAe7Ihm0QDSJFqSDn4+4uVwUjVwEYvkLzR9HIRnNhEl8CsHmwBJrt8GEd6AtyWv
+         YxY+AddqTiMoPnNU69Mj2ikBi+MAJiXc+6FjY4Hq+tKBoZft4KJ1+qhlG+EGkSoUf0Ok
+         AMjX0q04Zz4TeArOP0RoZRONYpb3ucS5MKr2REFRLxY8YFwusAVXjHr2+L4OcjTQjrhC
+         T5Kjt7kHxAMYcgmY9M6WF3zXapl/2pkecmlWVF1+lRb7LO5wG/TC4jBU6U2iidaIrUJb
+         EHVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
+        fh=IVWo42n+6dxnNhjb5u/q/KB92ie+I+/fgdAhn1VoE/M=;
+        b=U0J8AF2iqsUXq7+S6/OKCEy/eUC/cVnYI9/lu3bHzs5rejtxgeN7teKB0D2HiXOT8b
+         ZcN7o+BBduXKUfsvsXxwYE3gO3uWtPt3GndG1gmJQjwoxSVDQgtycwECixdvCF2c3trA
+         cLxL9ZawGY/O6OmW5zU6WI75tMpz5C6i3GgyoT03SSd1mX/zx/i+f6WZM8EXhIOLpN4i
+         40mW+W+NksuusKSFkuhTFMCaH3MNGGmN2Spo/TlOZSbJvaGOl/mUUvUley6yIQ5klW4e
+         2YrwQhgSOS/Q3cNxKZiiSNx3WMOEpFnwa0zZF/L5YPUewmr6hvq5FLNzAqYo2ZxUJF1Y
+         C7vQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1772208354; x=1772813154; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
+        b=LfmMR7yWSQDmoRuq8VMySSMb8MeEheV9tG0G8OqPmk/6sqF0avT6fPmX07OP7d6QPp
+         R8LeZJN6zJ+aybdL6KzvIV4eRn/fXKAorfRYAC9Hg46GD7soHmbbqrWu9iCrPrF64Jjf
+         /83il98BCG8P0YvthzYNAGxMDWz2f7wI/2dgg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772208354; x=1772813154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=856KIRdxloXmGE2r36jtZze8d7am6/2KS375WxUkhdA=;
+        b=RsaMSCvhZk/XLzYGGid7WsaSgZbEpLRG3eX2IRN6xHBsn7aermgHPE0zCXIniWDoet
+         uO4xmOevdJEDwlGpGpyWnmZWvTffXjyHQs3Kw/BWSaIGaUTmiyfx5Nco7O2ggSPdnKry
+         xXrCphQfys9FWB6Vq02BKw1mxdZUkc+01DOQg76myoKGE1HwXL6MOJ7plEVkofyaaW5I
+         VAURyN3LNjRqdro0JCspEo/aV6LDFVPi6iSejfOU8gs9UOcgQwG+PmCmv63aoDE9JBq6
+         gtppQJxSrOZxpu1Oz92xg4o53BKDrtdUdkopBRLIzyr5kNK2rV/mgsjhK0W7pinGqsOy
+         +rIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ27qO45Q9nrX25FokeGT8OjFbn3dwK3U2MeUuocbt4msVlnA+EUt2CM8JPwJTwNFpqxTQSUhKepUC@vger.kernel.org
+X-Gm-Message-State: AOJu0YwP9Bhr41itEykZLAfSoGNNOjHKR2aaqgTEYSQI0ru6hGJnbtJg
+	19X0giW/HKNVnzUG58yWFJ2QqKrNK+9SkchbvT/PCpp65lis6MZLil2HJxFgbJCuLPUGZldTE4o
+	sih62QGTv3isRiP/YJtf2bfrgN3hCr7RgM34CGC0B+w==
+X-Gm-Gg: ATEYQzzh0vNF3FHqpKQ24SC2ML6QMOOrbTV2jmiRj0lcyK5eKNyRj5g2CyJKgE11cpK
+	gyjVULTRZeZtW6GZtIIRgxU5TdrWZrb3skjo4hTe1ZrBs8Cc/v2wy9b06vw++PqzXHbZ9fjqjkf
+	L5zMT3nwN5o0snEFTZWrX5tjt26MdN/FUx35Dm3ofgrKV0MC6ZyH76QM25H07Tan2iSn2DIwY3+
+	X9sIj64BIpTlpxpuvN0FrH/fjy5qALiUdAyLyaGIv7maBjeNWIaCPkibo4Vpmr8OzMNISiVZ4KX
+	6forfQ==
+X-Received: by 2002:a05:622a:15c6:b0:506:a574:a98 with SMTP id
+ d75a77b69052e-5075240cb43mr43969551cf.25.1772208352680; Fri, 27 Feb 2026
+ 08:05:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260227065514.2365063-1-yebin@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+References: <177188733084.3935219.10400570136529869673.stgit@frogsfrogsfrogs> <177188733154.3935219.17731267668265272256.stgit@frogsfrogsfrogs>
+In-Reply-To: <177188733154.3935219.17731267668265272256.stgit@frogsfrogsfrogs>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 27 Feb 2026 17:05:41 +0100
+X-Gm-Features: AaiRm522nNR8quw6-QPApM41f6VxVhfe4lhaNvG1qaOhqP6WFi_K60TlVjnXPqk
+Message-ID: <CAJfpegubENC3LxtG8MbO4OxUgD_Pd1GR9pw6Xcob_JiG+2cOFg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] fuse: quiet down complaints in fuse_conn_limit_write
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: stable@vger.kernel.org, joannelkoong@gmail.com, bpf@vger.kernel.org, 
+	bernd@bsbernd.com, neal@gompa.dev, linux-fsdevel@vger.kernel.org, 
+	linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[szeredi.hu,quarantine];
+	R_DKIM_ALLOW(-0.20)[szeredi.hu:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.cz:email,suse.cz:dkim];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14211-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,bsbernd.com,gompa.dev];
+	TAGGED_FROM(0.00)[bounces-14212-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[szeredi.hu:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[miklos@szeredi.hu,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 93B1F1BA8BD
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,szeredi.hu:dkim]
+X-Rspamd-Queue-Id: 0CB2A1BA846
 X-Rspamd-Action: no action
 
-On Fri 27-02-26 14:55:14, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> Now, only EXT4_KUNIT_TESTS=Y testcase will be compiled in 'mballoc.c'.
-> To solve this issue, the ext4 test code needs to be decoupled. The ext4
-> test module is compiled into a separate module.
-> 
-> Reported-by: ChenXiaoSong <chenxiaosong@kylinos.cn>
-> Closes: https://patchwork.kernel.org/project/cifs-client/patch/20260118091313.1988168-2-chenxiaosong.chenxiaosong@linux.dev/
-> Fixes: 7c9fa399a369 ("ext4: add first unit test for ext4_mb_new_blocks_simple in mballoc")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+On Tue, 24 Feb 2026 at 00:06, Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> From: Darrick J. Wong <djwong@kernel.org>
+>
+> gcc 15 complains about an uninitialized variable val that is passed by
+> reference into fuse_conn_limit_write:
+>
+>  control.c: In function =E2=80=98fuse_conn_congestion_threshold_write=E2=
+=80=99:
+>  include/asm-generic/rwonce.h:55:37: warning: =E2=80=98val=E2=80=99 may b=
+e used uninitialized [-Wmaybe-uninitialized]
+>     55 |         *(volatile typeof(x) *)&(x) =3D (val);                  =
+          \
+>        |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+>  include/asm-generic/rwonce.h:61:9: note: in expansion of macro =E2=80=98=
+__WRITE_ONCE=E2=80=99
+>     61 |         __WRITE_ONCE(x, val);                                   =
+        \
+>        |         ^~~~~~~~~~~~
+>  control.c:178:9: note: in expansion of macro =E2=80=98WRITE_ONCE=E2=80=
+=99
+>    178 |         WRITE_ONCE(fc->congestion_threshold, val);
+>        |         ^~~~~~~~~~
+>  control.c:166:18: note: =E2=80=98val=E2=80=99 was declared here
+>    166 |         unsigned val;
+>        |                  ^~~
+>
+> Unfortunately there's enough macro spew involved in kstrtoul_from_user
+> that I think gcc gives up on its analysis and sprays the above warning.
+> AFAICT it's not actually a bug, but we could just zero-initialize the
+> variable to enable using -Wmaybe-uninitialized to find real problems.
+>
+> Previously we would use some weird uninitialized_var annotation to quiet
+> down the warnings, so clearly this code has been like this for quite
+> some time.
+>
+> Cc: <stable@vger.kernel.org> # v5.9
+> Fixes: 3f649ab728cda8 ("treewide: Remove uninitialized_var() usage")
+> Signed-off-by: "Darrick J. Wong" <djwong@kernel.org>
 
-Looks good. Feel free to add:
+Applied, thanks.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/Makefile       |   4 +-
->  fs/ext4/mballoc-test.c |  81 +++++++++++++++----------------
->  fs/ext4/mballoc.c      | 105 +++++++++++++++++++++++++++++++++++++++--
->  fs/ext4/mballoc.h      |  30 ++++++++++++
->  4 files changed, 175 insertions(+), 45 deletions(-)
-> 
-> diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
-> index 72206a292676..d836c3fe311b 100644
-> --- a/fs/ext4/Makefile
-> +++ b/fs/ext4/Makefile
-> @@ -14,7 +14,7 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
->  
->  ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
->  ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
-> -ext4-inode-test-objs			+= inode-test.o
-> -obj-$(CONFIG_EXT4_KUNIT_TESTS)		+= ext4-inode-test.o
-> +ext4-test-objs				+= inode-test.o mballoc-test.o
-> +obj-$(CONFIG_EXT4_KUNIT_TESTS)		+= ext4-test.o
->  ext4-$(CONFIG_FS_VERITY)		+= verity.o
->  ext4-$(CONFIG_FS_ENCRYPTION)		+= crypto.o
-> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-> index 4abb40d4561c..749ed2fc2241 100644
-> --- a/fs/ext4/mballoc-test.c
-> +++ b/fs/ext4/mballoc-test.c
-> @@ -8,6 +8,7 @@
->  #include <linux/random.h>
->  
->  #include "ext4.h"
-> +#include "mballoc.h"
->  
->  struct mbt_grp_ctx {
->  	struct buffer_head bitmap_bh;
-> @@ -337,7 +338,7 @@ ext4_mb_mark_context_stub(handle_t *handle, struct super_block *sb, bool state,
->  	if (state)
->  		mb_set_bits(bitmap_bh->b_data, blkoff, len);
->  	else
-> -		mb_clear_bits(bitmap_bh->b_data, blkoff, len);
-> +		mb_clear_bits_test(bitmap_bh->b_data, blkoff, len);
->  
->  	return 0;
->  }
-> @@ -414,14 +415,14 @@ static void test_new_blocks_simple(struct kunit *test)
->  
->  	/* get block at goal */
->  	ar.goal = ext4_group_first_block_no(sb, goal_group);
-> -	found = ext4_mb_new_blocks_simple(&ar, &err);
-> +	found = ext4_mb_new_blocks_simple_test(&ar, &err);
->  	KUNIT_ASSERT_EQ_MSG(test, ar.goal, found,
->  		"failed to alloc block at goal, expected %llu found %llu",
->  		ar.goal, found);
->  
->  	/* get block after goal in goal group */
->  	ar.goal = ext4_group_first_block_no(sb, goal_group);
-> -	found = ext4_mb_new_blocks_simple(&ar, &err);
-> +	found = ext4_mb_new_blocks_simple_test(&ar, &err);
->  	KUNIT_ASSERT_EQ_MSG(test, ar.goal + EXT4_C2B(sbi, 1), found,
->  		"failed to alloc block after goal in goal group, expected %llu found %llu",
->  		ar.goal + 1, found);
-> @@ -429,7 +430,7 @@ static void test_new_blocks_simple(struct kunit *test)
->  	/* get block after goal group */
->  	mbt_ctx_mark_used(sb, goal_group, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->  	ar.goal = ext4_group_first_block_no(sb, goal_group);
-> -	found = ext4_mb_new_blocks_simple(&ar, &err);
-> +	found = ext4_mb_new_blocks_simple_test(&ar, &err);
->  	KUNIT_ASSERT_EQ_MSG(test,
->  		ext4_group_first_block_no(sb, goal_group + 1), found,
->  		"failed to alloc block after goal group, expected %llu found %llu",
-> @@ -439,7 +440,7 @@ static void test_new_blocks_simple(struct kunit *test)
->  	for (i = goal_group; i < ext4_get_groups_count(sb); i++)
->  		mbt_ctx_mark_used(sb, i, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->  	ar.goal = ext4_group_first_block_no(sb, goal_group);
-> -	found = ext4_mb_new_blocks_simple(&ar, &err);
-> +	found = ext4_mb_new_blocks_simple_test(&ar, &err);
->  	KUNIT_ASSERT_EQ_MSG(test,
->  		ext4_group_first_block_no(sb, 0) + EXT4_C2B(sbi, 1), found,
->  		"failed to alloc block before goal group, expected %llu found %llu",
-> @@ -449,7 +450,7 @@ static void test_new_blocks_simple(struct kunit *test)
->  	for (i = 0; i < ext4_get_groups_count(sb); i++)
->  		mbt_ctx_mark_used(sb, i, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->  	ar.goal = ext4_group_first_block_no(sb, goal_group);
-> -	found = ext4_mb_new_blocks_simple(&ar, &err);
-> +	found = ext4_mb_new_blocks_simple_test(&ar, &err);
->  	KUNIT_ASSERT_NE_MSG(test, err, 0,
->  		"unexpectedly get block when no block is available");
->  }
-> @@ -493,16 +494,16 @@ validate_free_blocks_simple(struct kunit *test, struct super_block *sb,
->  			continue;
->  
->  		bitmap = mbt_ctx_bitmap(sb, i);
-> -		bit = mb_find_next_zero_bit(bitmap, max, 0);
-> +		bit = mb_find_next_zero_bit_test(bitmap, max, 0);
->  		KUNIT_ASSERT_EQ_MSG(test, bit, max,
->  				    "free block on unexpected group %d", i);
->  	}
->  
->  	bitmap = mbt_ctx_bitmap(sb, goal_group);
-> -	bit = mb_find_next_zero_bit(bitmap, max, 0);
-> +	bit = mb_find_next_zero_bit_test(bitmap, max, 0);
->  	KUNIT_ASSERT_EQ(test, bit, start);
->  
-> -	bit = mb_find_next_bit(bitmap, max, bit + 1);
-> +	bit = mb_find_next_bit_test(bitmap, max, bit + 1);
->  	KUNIT_ASSERT_EQ(test, bit, start + len);
->  }
->  
-> @@ -525,7 +526,7 @@ test_free_blocks_simple_range(struct kunit *test, ext4_group_t goal_group,
->  
->  	block = ext4_group_first_block_no(sb, goal_group) +
->  		EXT4_C2B(sbi, start);
-> -	ext4_free_blocks_simple(inode, block, len);
-> +	ext4_free_blocks_simple_test(inode, block, len);
->  	validate_free_blocks_simple(test, sb, goal_group, start, len);
->  	mbt_ctx_mark_used(sb, goal_group, 0, EXT4_CLUSTERS_PER_GROUP(sb));
->  }
-> @@ -567,15 +568,15 @@ test_mark_diskspace_used_range(struct kunit *test,
->  
->  	bitmap = mbt_ctx_bitmap(sb, TEST_GOAL_GROUP);
->  	memset(bitmap, 0, sb->s_blocksize);
-> -	ret = ext4_mb_mark_diskspace_used(ac, NULL);
-> +	ret = ext4_mb_mark_diskspace_used_test(ac, NULL);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
->  
->  	max = EXT4_CLUSTERS_PER_GROUP(sb);
-> -	i = mb_find_next_bit(bitmap, max, 0);
-> +	i = mb_find_next_bit_test(bitmap, max, 0);
->  	KUNIT_ASSERT_EQ(test, i, start);
-> -	i = mb_find_next_zero_bit(bitmap, max, i + 1);
-> +	i = mb_find_next_zero_bit_test(bitmap, max, i + 1);
->  	KUNIT_ASSERT_EQ(test, i, start + len);
-> -	i = mb_find_next_bit(bitmap, max, i + 1);
-> +	i = mb_find_next_bit_test(bitmap, max, i + 1);
->  	KUNIT_ASSERT_EQ(test, max, i);
->  }
->  
-> @@ -618,54 +619,54 @@ static void mbt_generate_buddy(struct super_block *sb, void *buddy,
->  	max = EXT4_CLUSTERS_PER_GROUP(sb);
->  	bb_h = buddy + sbi->s_mb_offsets[1];
->  
-> -	off = mb_find_next_zero_bit(bb, max, 0);
-> +	off = mb_find_next_zero_bit_test(bb, max, 0);
->  	grp->bb_first_free = off;
->  	while (off < max) {
->  		grp->bb_counters[0]++;
->  		grp->bb_free++;
->  
-> -		if (!(off & 1) && !mb_test_bit(off + 1, bb)) {
-> +		if (!(off & 1) && !mb_test_bit_test(off + 1, bb)) {
->  			grp->bb_free++;
->  			grp->bb_counters[0]--;
-> -			mb_clear_bit(off >> 1, bb_h);
-> +			mb_clear_bit_test(off >> 1, bb_h);
->  			grp->bb_counters[1]++;
->  			grp->bb_largest_free_order = 1;
->  			off++;
->  		}
->  
-> -		off = mb_find_next_zero_bit(bb, max, off + 1);
-> +		off = mb_find_next_zero_bit_test(bb, max, off + 1);
->  	}
->  
->  	for (order = 1; order < MB_NUM_ORDERS(sb) - 1; order++) {
->  		bb = buddy + sbi->s_mb_offsets[order];
->  		bb_h = buddy + sbi->s_mb_offsets[order + 1];
->  		max = max >> 1;
-> -		off = mb_find_next_zero_bit(bb, max, 0);
-> +		off = mb_find_next_zero_bit_test(bb, max, 0);
->  
->  		while (off < max) {
-> -			if (!(off & 1) && !mb_test_bit(off + 1, bb)) {
-> +			if (!(off & 1) && !mb_test_bit_test(off + 1, bb)) {
->  				mb_set_bits(bb, off, 2);
->  				grp->bb_counters[order] -= 2;
-> -				mb_clear_bit(off >> 1, bb_h);
-> +				mb_clear_bit_test(off >> 1, bb_h);
->  				grp->bb_counters[order + 1]++;
->  				grp->bb_largest_free_order = order + 1;
->  				off++;
->  			}
->  
-> -			off = mb_find_next_zero_bit(bb, max, off + 1);
-> +			off = mb_find_next_zero_bit_test(bb, max, off + 1);
->  		}
->  	}
->  
->  	max = EXT4_CLUSTERS_PER_GROUP(sb);
-> -	off = mb_find_next_zero_bit(bitmap, max, 0);
-> +	off = mb_find_next_zero_bit_test(bitmap, max, 0);
->  	while (off < max) {
->  		grp->bb_fragments++;
->  
-> -		off = mb_find_next_bit(bitmap, max, off + 1);
-> +		off = mb_find_next_bit_test(bitmap, max, off + 1);
->  		if (off + 1 >= max)
->  			break;
->  
-> -		off = mb_find_next_zero_bit(bitmap, max, off + 1);
-> +		off = mb_find_next_zero_bit_test(bitmap, max, off + 1);
->  	}
->  }
->  
-> @@ -707,7 +708,7 @@ do_test_generate_buddy(struct kunit *test, struct super_block *sb, void *bitmap,
->  	/* needed by validation in ext4_mb_generate_buddy */
->  	ext4_grp->bb_free = mbt_grp->bb_free;
->  	memset(ext4_buddy, 0xff, sb->s_blocksize);
-> -	ext4_mb_generate_buddy(sb, ext4_buddy, bitmap, TEST_GOAL_GROUP,
-> +	ext4_mb_generate_buddy_test(sb, ext4_buddy, bitmap, TEST_GOAL_GROUP,
->  			       ext4_grp);
->  
->  	KUNIT_ASSERT_EQ(test, memcmp(mbt_buddy, ext4_buddy, sb->s_blocksize),
-> @@ -761,7 +762,7 @@ test_mb_mark_used_range(struct kunit *test, struct ext4_buddy *e4b,
->  	ex.fe_group = TEST_GOAL_GROUP;
->  
->  	ext4_lock_group(sb, TEST_GOAL_GROUP);
-> -	mb_mark_used(e4b, &ex);
-> +	mb_mark_used_test(e4b, &ex);
->  	ext4_unlock_group(sb, TEST_GOAL_GROUP);
->  
->  	mb_set_bits(bitmap, start, len);
-> @@ -770,7 +771,7 @@ test_mb_mark_used_range(struct kunit *test, struct ext4_buddy *e4b,
->  	memset(buddy, 0xff, sb->s_blocksize);
->  	for (i = 0; i < MB_NUM_ORDERS(sb); i++)
->  		grp->bb_counters[i] = 0;
-> -	ext4_mb_generate_buddy(sb, buddy, bitmap, 0, grp);
-> +	ext4_mb_generate_buddy_test(sb, buddy, bitmap, 0, grp);
->  
->  	KUNIT_ASSERT_EQ(test, memcmp(buddy, e4b->bd_buddy, sb->s_blocksize),
->  			0);
-> @@ -799,7 +800,7 @@ static void test_mb_mark_used(struct kunit *test)
->  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
->  
-> -	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
-> +	ret = ext4_mb_load_buddy_test(sb, TEST_GOAL_GROUP, &e4b);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
->  
->  	grp->bb_free = EXT4_CLUSTERS_PER_GROUP(sb);
-> @@ -810,7 +811,7 @@ static void test_mb_mark_used(struct kunit *test)
->  		test_mb_mark_used_range(test, &e4b, ranges[i].start,
->  					ranges[i].len, bitmap, buddy, grp);
->  
-> -	ext4_mb_unload_buddy(&e4b);
-> +	ext4_mb_unload_buddy_test(&e4b);
->  }
->  
->  static void
-> @@ -826,16 +827,16 @@ test_mb_free_blocks_range(struct kunit *test, struct ext4_buddy *e4b,
->  		return;
->  
->  	ext4_lock_group(sb, e4b->bd_group);
-> -	mb_free_blocks(NULL, e4b, start, len);
-> +	mb_free_blocks_test(NULL, e4b, start, len);
->  	ext4_unlock_group(sb, e4b->bd_group);
->  
-> -	mb_clear_bits(bitmap, start, len);
-> +	mb_clear_bits_test(bitmap, start, len);
->  	/* bypass bb_free validatoin in ext4_mb_generate_buddy */
->  	grp->bb_free += len;
->  	memset(buddy, 0xff, sb->s_blocksize);
->  	for (i = 0; i < MB_NUM_ORDERS(sb); i++)
->  		grp->bb_counters[i] = 0;
-> -	ext4_mb_generate_buddy(sb, buddy, bitmap, 0, grp);
-> +	ext4_mb_generate_buddy_test(sb, buddy, bitmap, 0, grp);
->  
->  	KUNIT_ASSERT_EQ(test, memcmp(buddy, e4b->bd_buddy, sb->s_blocksize),
->  			0);
-> @@ -866,7 +867,7 @@ static void test_mb_free_blocks(struct kunit *test)
->  				bb_counters[MB_NUM_ORDERS(sb)]), GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, grp);
->  
-> -	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
-> +	ret = ext4_mb_load_buddy_test(sb, TEST_GOAL_GROUP, &e4b);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
->  
->  	ex.fe_start = 0;
-> @@ -874,7 +875,7 @@ static void test_mb_free_blocks(struct kunit *test)
->  	ex.fe_group = TEST_GOAL_GROUP;
->  
->  	ext4_lock_group(sb, TEST_GOAL_GROUP);
-> -	mb_mark_used(&e4b, &ex);
-> +	mb_mark_used_test(&e4b, &ex);
->  	ext4_unlock_group(sb, TEST_GOAL_GROUP);
->  
->  	grp->bb_free = 0;
-> @@ -887,7 +888,7 @@ static void test_mb_free_blocks(struct kunit *test)
->  		test_mb_free_blocks_range(test, &e4b, ranges[i].start,
->  					  ranges[i].len, bitmap, buddy, grp);
->  
-> -	ext4_mb_unload_buddy(&e4b);
-> +	ext4_mb_unload_buddy_test(&e4b);
->  }
->  
->  #define COUNT_FOR_ESTIMATE 100000
-> @@ -905,7 +906,7 @@ static void test_mb_mark_used_cost(struct kunit *test)
->  	if (sb->s_blocksize > PAGE_SIZE)
->  		kunit_skip(test, "blocksize exceeds pagesize");
->  
-> -	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
-> +	ret = ext4_mb_load_buddy_test(sb, TEST_GOAL_GROUP, &e4b);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
->  
->  	ex.fe_group = TEST_GOAL_GROUP;
-> @@ -919,7 +920,7 @@ static void test_mb_mark_used_cost(struct kunit *test)
->  			ex.fe_start = ranges[i].start;
->  			ex.fe_len = ranges[i].len;
->  			ext4_lock_group(sb, TEST_GOAL_GROUP);
-> -			mb_mark_used(&e4b, &ex);
-> +			mb_mark_used_test(&e4b, &ex);
->  			ext4_unlock_group(sb, TEST_GOAL_GROUP);
->  		}
->  		end = jiffies;
-> @@ -930,14 +931,14 @@ static void test_mb_mark_used_cost(struct kunit *test)
->  				continue;
->  
->  			ext4_lock_group(sb, TEST_GOAL_GROUP);
-> -			mb_free_blocks(NULL, &e4b, ranges[i].start,
-> +			mb_free_blocks_test(NULL, &e4b, ranges[i].start,
->  				       ranges[i].len);
->  			ext4_unlock_group(sb, TEST_GOAL_GROUP);
->  		}
->  	}
->  
->  	kunit_info(test, "costed jiffies %lu\n", all);
-> -	ext4_mb_unload_buddy(&e4b);
-> +	ext4_mb_unload_buddy_test(&e4b);
->  }
->  
->  static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index b99d1a7e580e..e2341489f4d0 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -4086,7 +4086,7 @@ void ext4_exit_mballoc(void)
->  
->  #define EXT4_MB_BITMAP_MARKED_CHECK 0x0001
->  #define EXT4_MB_SYNC_UPDATE 0x0002
-> -static int
-> +int
->  ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
->  		     ext4_group_t group, ext4_grpblk_t blkoff,
->  		     ext4_grpblk_t len, int flags, ext4_grpblk_t *ret_changed)
-> @@ -7190,6 +7190,105 @@ ext4_mballoc_query_range(
->  	return error;
->  }
->  
-> -#ifdef CONFIG_EXT4_KUNIT_TESTS
-> -#include "mballoc-test.c"
-> +#if IS_ENABLED(CONFIG_EXT4_KUNIT_TESTS)
-> +#define EXPORT_SYMBOL_FOR_EXT4_TEST(sym) \
-> +	EXPORT_SYMBOL_FOR_MODULES(sym, "ext4-test")
-> +
-> +void mb_clear_bits_test(void *bm, int cur, int len)
-> +{
-> +	 mb_clear_bits(bm, cur, len);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_clear_bits_test);
-> +
-> +ext4_fsblk_t
-> +ext4_mb_new_blocks_simple_test(struct ext4_allocation_request *ar,
-> +			       int *errp)
-> +{
-> +	return ext4_mb_new_blocks_simple(ar, errp);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_new_blocks_simple_test);
-> +
-> +int mb_find_next_zero_bit_test(void *addr, int max, int start)
-> +{
-> +	return mb_find_next_zero_bit(addr, max, start);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_find_next_zero_bit_test);
-> +
-> +int mb_find_next_bit_test(void *addr, int max, int start)
-> +{
-> +	return mb_find_next_bit(addr, max, start);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_find_next_bit_test);
-> +
-> +void mb_clear_bit_test(int bit, void *addr)
-> +{
-> +	mb_clear_bit(bit, addr);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_clear_bit_test);
-> +
-> +int mb_test_bit_test(int bit, void *addr)
-> +{
-> +	return mb_test_bit(bit, addr);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_test_bit_test);
-> +
-> +int ext4_mb_mark_diskspace_used_test(struct ext4_allocation_context *ac,
-> +				     handle_t *handle)
-> +{
-> +	return ext4_mb_mark_diskspace_used(ac, handle);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_mark_diskspace_used_test);
-> +
-> +int mb_mark_used_test(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
-> +{
-> +	return mb_mark_used(e4b, ex);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_mark_used_test);
-> +
-> +void ext4_mb_generate_buddy_test(struct super_block *sb, void *buddy,
-> +				 void *bitmap, ext4_group_t group,
-> +				 struct ext4_group_info *grp)
-> +{
-> +	ext4_mb_generate_buddy(sb, buddy, bitmap, group, grp);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_generate_buddy_test);
-> +
-> +int ext4_mb_load_buddy_test(struct super_block *sb, ext4_group_t group,
-> +			    struct ext4_buddy *e4b)
-> +{
-> +	return ext4_mb_load_buddy(sb, group, e4b);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_load_buddy_test);
-> +
-> +void ext4_mb_unload_buddy_test(struct ext4_buddy *e4b)
-> +{
-> +	ext4_mb_unload_buddy(e4b);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_unload_buddy_test);
-> +
-> +void mb_free_blocks_test(struct inode *inode, struct ext4_buddy *e4b,
-> +			 int first, int count)
-> +{
-> +	mb_free_blocks(inode, e4b, first, count);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_free_blocks_test);
-> +
-> +void ext4_free_blocks_simple_test(struct inode *inode, ext4_fsblk_t block,
-> +				  unsigned long count)
-> +{
-> +	return ext4_free_blocks_simple(inode, block, count);
-> +}
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_free_blocks_simple_test);
-> +
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_wait_block_bitmap);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_init);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_get_group_desc);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_count_free_clusters);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_get_group_info);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_free_group_clusters_set);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_release);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_read_block_bitmap_nowait);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(mb_set_bits);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_fc_init_inode);
-> +EXPORT_SYMBOL_FOR_EXT4_TEST(ext4_mb_mark_context);
->  #endif
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index 15a049f05d04..b32e03e7ae8d 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -270,4 +270,34 @@ ext4_mballoc_query_range(
->  	ext4_mballoc_query_range_fn	formatter,
->  	void				*priv);
->  
-> +#if IS_ENABLED(CONFIG_EXT4_KUNIT_TESTS)
-> +extern void mb_clear_bits_test(void *bm, int cur, int len);
-> +extern int ext4_mb_mark_context(handle_t *handle,
-> +		struct super_block *sb, bool state,
-> +		ext4_group_t group, ext4_grpblk_t blkoff,
-> +		ext4_grpblk_t len, int flags,
-> +		ext4_grpblk_t *ret_changed);
-> +extern ext4_fsblk_t
-> +ext4_mb_new_blocks_simple_test(struct ext4_allocation_request *ar,
-> +			       int *errp);
-> +extern int mb_find_next_zero_bit_test(void *addr, int max, int start);
-> +extern int mb_find_next_bit_test(void *addr, int max, int start);
-> +extern void mb_clear_bit_test(int bit, void *addr);
-> +extern int mb_test_bit_test(int bit, void *addr);
-> +extern int
-> +ext4_mb_mark_diskspace_used_test(struct ext4_allocation_context *ac,
-> +				 handle_t *handle);
-> +extern int mb_mark_used_test(struct ext4_buddy *e4b,
-> +			     struct ext4_free_extent *ex);
-> +extern void ext4_mb_generate_buddy_test(struct super_block *sb,
-> +		void *buddy, void *bitmap, ext4_group_t group,
-> +		struct ext4_group_info *grp);
-> +extern int ext4_mb_load_buddy_test(struct super_block *sb,
-> +		ext4_group_t group, struct ext4_buddy *e4b);
-> +extern void ext4_mb_unload_buddy_test(struct ext4_buddy *e4b);
-> +extern void mb_free_blocks_test(struct inode *inode,
-> +		struct ext4_buddy *e4b, int first, int count);
-> +extern void ext4_free_blocks_simple_test(struct inode *inode,
-> +		ext4_fsblk_t block, unsigned long count);
-> +#endif
->  #endif
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Miklos
 
