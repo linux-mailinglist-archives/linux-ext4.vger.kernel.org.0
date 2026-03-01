@@ -1,60 +1,59 @@
-Return-Path: <linux-ext4+bounces-14285-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14286-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0P7qIjauo2kmJwUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14285-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 04:10:46 +0100
+	id UGtmKTyuo2m0JwUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14286-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 04:10:52 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D5F81CE485
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 04:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3BB1CE48D
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 04:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DD2963074E0D
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 02:01:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2802B3301E59
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 02:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551262F4A18;
-	Sun,  1 Mar 2026 02:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B942FE598;
+	Sun,  1 Mar 2026 02:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gF5L4rFv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UY5WXw9R"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F264B16132A;
-	Sun,  1 Mar 2026 02:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8A7259C80;
+	Sun,  1 Mar 2026 02:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772330466; cv=none; b=XlDTSm37cZs4XxAPn08AX/j06jVIrkPMJ3JQeDRKgpPmdQOxrFxzDKNK7AaoJLi6f25mT0Cu28jkS5+SklH9j3uyG9a8+BCC3qY6qDMm57leKEkbL/nc0v1Ze2/8ocEK5ywMxdoEmTigk9ScD3143FjIoPe1EhPjhtlhQsyQ79c=
+	t=1772330473; cv=none; b=BPWLu9w2YkCNDuZSY3FVg8RqEZZufTRg8CIApyzEjXGtkLYzuYuH4MMGDOfvYZzNC2hxdjDmYqDSuWFXkoPyFBb1Xkx+9IMeD+q14mbigOJlsczkvuunm3cdlmowLUIzCv8uJqYQY1i5ee1CEjPRPLKQ+40IcueEZBjkHCZcocw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772330466; c=relaxed/simple;
-	bh=/65fSYzHl0ingl2Ap1KRq0o6NxKTjbEl3og3Y3XRFhw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TPV1XEJI5Eb2Pcb0dSmCOzuUMiPDrXcmKrEreK464HsuQfVi1KbR78Abt/8nVHJHy8c1KgIPu/5LY2CUPlxaL70Uk0B4FstPr7b5lzsdH4wryw3Dr9O+vDvy9BktiyhWB8o+jAawl4XI0bsbjCtKi1ztNQhGtJwtK91ooXtr1OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gF5L4rFv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 091CFC19421;
-	Sun,  1 Mar 2026 02:01:04 +0000 (UTC)
+	s=arc-20240116; t=1772330473; c=relaxed/simple;
+	bh=N+84yPRtQSsIVVI9Mx6KffsAX8pcGcIU7x4RqbqPuKw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AeG1eYgQDVP6yIgzX1zKh6KpJPnXncM/fdRtz05KuZqqzjD7ASIstMGuWNS/5O0mk5y21/wwqsIxNLvNUXK7CA66nLTWGw/seeu+AzCyX2OXQut3Xo6vXSq3PM1mNwHCZNm4MLp8Iik6015Eo614tv7vQc1iYY18VjM7aj3W/fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UY5WXw9R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39334C19421;
+	Sun,  1 Mar 2026 02:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772330465;
-	bh=/65fSYzHl0ingl2Ap1KRq0o6NxKTjbEl3og3Y3XRFhw=;
+	s=k20201202; t=1772330472;
+	bh=N+84yPRtQSsIVVI9Mx6KffsAX8pcGcIU7x4RqbqPuKw=;
 	h=From:To:Cc:Subject:Date:From;
-	b=gF5L4rFvboZd5w7RJ94bfFk50U1AwEH+cY4JLnwXmvvCu9LyCfp/pwQLqcI6mRelf
-	 9ukocyprWM9askyhKrK3oUjIqV6B3qs5IX7K2gQ54dwerycanQJtezp6zlp/tOAZTk
-	 M3mKPIIwhjIlv26SejNPPjuCFq7UtfIlpFE1nlY4Sg4cMyLu4i81LK6ok/knQsZFzL
-	 0J8l62ASa8wwtLRg6qtgy6Zp5pnp9xANBG6ACm1sDjGGKxHa17GN5XMiovE8onrdkP
-	 sdBjwJmlrvSjQ++QcPyDjUSKOEGBG808uAX915+95dD9ZusRBNG4uZDUbew4OMKP1e
-	 ewG420LqPPfSg==
+	b=UY5WXw9RHI1hUSRp/r85irJHFsDVsYk/IxvLD8x7vNThXzGVdDWIbpVhZjNvT57wU
+	 YMP6MhtKrvr/hkL/qIgS3NUX/bIUGkg3muxG+Hrs/cyH11QfNDjn81a3gvPr1umL6Q
+	 97nBvbOa6OC2Ktu/2nrzdz2xAQ8+V9vGUmitcaK2U5BGVew+TpMOsQ2lOierjbxqFH
+	 KAOHF0Hb+CQjBbDYvelwd0aTYK46BgUwYhfYwYzucTfxQJTHz7YJukOlOVmkzSgzci
+	 IXTM7vPEc666Tqx5D3zp7RyE6p0OsX3nbl5SSs0sEIyroKfJkTXvIXluIGvJS6q2GW
+	 pGcRMEv9laE5g==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jack@suse.cz
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Zhang Yi <yi.zhang@huawei.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	stable@kernel.org,
+	zilin@seu.edu.cn
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Baokun Li <libaokun1@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
+	stable@kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: always allocate blocks only from groups inode can use" failed to apply to 5.10-stable tree
-Date: Sat, 28 Feb 2026 21:01:03 -0500
-Message-ID: <20260301020103.1728070-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: fix memory leak in ext4_ext_shift_extents()" failed to apply to 5.10-stable tree
+Date: Sat, 28 Feb 2026 21:01:10 -0500
+Message-ID: <20260301020111.1728228-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -77,7 +76,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14285-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14286-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -85,15 +84,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,msgid.link:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email,suse.de:email]
-X-Rspamd-Queue-Id: 2D5F81CE485
+	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
+X-Rspamd-Queue-Id: 0F3BB1CE48D
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 5.10-stable tree.
@@ -106,106 +105,43 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 4865c768b563deff1b6a6384e74a62f143427b42 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Wed, 14 Jan 2026 19:28:18 +0100
-Subject: [PATCH] ext4: always allocate blocks only from groups inode can use
+From ca81109d4a8f192dc1cbad4a1ee25246363c2833 Mon Sep 17 00:00:00 2001
+From: Zilin Guan <zilin@seu.edu.cn>
+Date: Thu, 25 Dec 2025 08:48:00 +0000
+Subject: [PATCH] ext4: fix memory leak in ext4_ext_shift_extents()
 
-For filesystems with more than 2^32 blocks inodes using indirect block
-based format cannot use blocks beyond the 32-bit limit.
-ext4_mb_scan_groups_linear() takes care to not select these unsupported
-groups for such inodes however other functions selecting groups for
-allocation don't. So far this is harmless because the other selection
-functions are used only with mb_optimize_scan and this is currently
-disabled for inodes with indirect blocks however in the following patch
-we want to enable mb_optimize_scan regardless of inode format.
+In ext4_ext_shift_extents(), if the extent is NULL in the while loop, the
+function returns immediately without releasing the path obtained via
+ext4_find_extent(), leading to a memory leak.
 
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Fix this by jumping to the out label to ensure the path is properly
+released.
+
+Fixes: a18ed359bdddc ("ext4: always check ext4_ext_find_extent result")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Acked-by: Pedro Falcato <pfalcato@suse.de>
-Cc: stable@kernel.org
-Link: https://patch.msgid.link/20260114182836.14120-3-jack@suse.cz
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Link: https://patch.msgid.link/20251225084800.905701-1-zilin@seu.edu.cn
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 ---
- fs/ext4/mballoc.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index dd29558ad753b..910b454b4a21e 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -892,6 +892,21 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
- 	}
- }
- 
-+static ext4_group_t ext4_get_allocation_groups_count(
-+				struct ext4_allocation_context *ac)
-+{
-+	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
-+
-+	/* non-extent files are limited to low blocks/groups */
-+	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
-+		ngroups = EXT4_SB(ac->ac_sb)->s_blockfile_groups;
-+
-+	/* Pairs with smp_wmb() in ext4_update_super() */
-+	smp_rmb();
-+
-+	return ngroups;
-+}
-+
- static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
- 					struct xarray *xa,
- 					ext4_group_t start, ext4_group_t end)
-@@ -899,7 +914,7 @@ static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
- 	struct super_block *sb = ac->ac_sb;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	enum criteria cr = ac->ac_criteria;
--	ext4_group_t ngroups = ext4_get_groups_count(sb);
-+	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
- 	unsigned long group = start;
- 	struct ext4_group_info *grp;
- 
-@@ -951,7 +966,7 @@ static int ext4_mb_scan_groups_p2_aligned(struct ext4_allocation_context *ac,
- 	ext4_group_t start, end;
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	for (i = ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
- 		ret = ext4_mb_scan_groups_largest_free_order_range(ac, i,
-@@ -1001,7 +1016,7 @@ static int ext4_mb_scan_groups_goal_fast(struct ext4_allocation_context *ac,
- 	ext4_group_t start, end;
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
- 	for (; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
-@@ -1083,7 +1098,7 @@ static int ext4_mb_scan_groups_best_avail(struct ext4_allocation_context *ac,
- 		min_order = fls(ac->ac_o_ex.fe_len);
- 
- 	start = group;
--	end = ext4_get_groups_count(ac->ac_sb);
-+	end = ext4_get_allocation_groups_count(ac);
- wrap_around:
- 	for (i = order; i >= min_order; i--) {
- 		int frag_order;
-@@ -1182,11 +1197,7 @@ static int ext4_mb_scan_groups(struct ext4_allocation_context *ac)
- 	int ret = 0;
- 	ext4_group_t start;
- 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
--	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
--
--	/* non-extent files are limited to low blocks/groups */
--	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
--		ngroups = sbi->s_blockfile_groups;
-+	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
- 
- 	/* searching for the right group start from the goal value specified */
- 	start = ac->ac_g_ex.fe_group;
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 27eb2c1df0128..e0295e0339b49 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5406,7 +5406,8 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+ 		if (!extent) {
+ 			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
+ 					 (unsigned long) *iterator);
+-			return -EFSCORRUPTED;
++			ret = -EFSCORRUPTED;
++			goto out;
+ 		}
+ 		if (SHIFT == SHIFT_LEFT && *iterator >
+ 		    le32_to_cpu(extent->ee_block)) {
 -- 
 2.51.0
 
