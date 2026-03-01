@@ -1,59 +1,59 @@
-Return-Path: <linux-ext4+bounces-14243-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14244-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KKjZKDiVo2l7HQUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14243-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:24:08 +0100
+	id wIFXL0GXo2neHgUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14244-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:32:49 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD741CA6B6
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:24:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242351CAEB4
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AD2333026B7A
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:22:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 606573062946
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5536126E6F4;
-	Sun,  1 Mar 2026 01:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF36E274B5F;
+	Sun,  1 Mar 2026 01:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azSyG/tB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PwaKSHDF"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB5013B7AE;
-	Sun,  1 Mar 2026 01:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884722BD0B;
+	Sun,  1 Mar 2026 01:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328134; cv=none; b=qbRcC6ODQH0340Ij/4x7hNKB63+vn0fRNP5fhOg7JbcTqbyKAAeXQx7/O+Z8uLsadS1mIP4Lociv4v8+W1aYTS7wBleMB7PyVoqF8kWMiZGT3IiF6QphyRnNmlX7ReiPGSPImYk4MKQyC2mbQ9ZhC5VHcJ7bbPEQ1ip3x/QyKQI=
+	t=1772328143; cv=none; b=Jt88IppmTlOtHr9InH3qcb4OovXtJxuA/PLhwS6Es9KMwe2UliU5rscchMaa4qMkWHt5wFXy9dqAASXne6GhLiZaEW/6UnIjcZFuTsYix/4j2FwMu8s6nsg4V2RE0rd8txVOjsDE+eC7pZtJpWNzSoZLzNqqo5ymwrTlSi91Dco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328134; c=relaxed/simple;
-	bh=tw4Xe3eDj0h8VQYORhuzbl4Ht7yZwkVp+sv65tI+m3c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qjjD1ggcuIXu1NXSpBYgLk6TTOo7bdbPEo4cT99eMNKkg8w4SXPS9osNxgxWDVwhpERAVkU2OXLn7JqiLRyl5BnqtSb6ql8yeEWa1BsnQGyoFrmCzc3JqoXNHLqaGNdDZP99VNcQyYMUM9jnb6oAPEgM3vhmCHuxQR2wiHtG1h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azSyG/tB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9044BC19421;
-	Sun,  1 Mar 2026 01:22:12 +0000 (UTC)
+	s=arc-20240116; t=1772328143; c=relaxed/simple;
+	bh=3udxCldliSMHTiQ1S/MVj2hfIr5+GBtaPZMiJjz7lh0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FVVprKp2nHp1YyFaypaV4XjtsT6GkyNup9eaozDmYUnP5sGr5AjyGlyx7ajVpYKkGtoifiYNMWi+nJeqhz97iCoXZbpRpdwxsBXJJRH4ppdKu4EUFrsH1p5dyH5h0v9bJumknLJ2cEL5qLThqO7ydKOPRpRXUQ7mr3DbdReZtXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PwaKSHDF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB00AC19421;
+	Sun,  1 Mar 2026 01:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328133;
-	bh=tw4Xe3eDj0h8VQYORhuzbl4Ht7yZwkVp+sv65tI+m3c=;
+	s=k20201202; t=1772328143;
+	bh=3udxCldliSMHTiQ1S/MVj2hfIr5+GBtaPZMiJjz7lh0=;
 	h=From:To:Cc:Subject:Date:From;
-	b=azSyG/tBzbSeFPzvIe2JN2RwXlMyS++45FlTbX6QHWWEHmc+0HS94Mpxd7pmPLx4g
-	 S/jPTf+xuPr6gG9l2nTKkil+S3tF/+hK67LmMQlArVdldj4AVYoVllhX6HcYd0vi3Q
-	 R2KN5GJeO4EVVlUDVQPUbNatQYMp+DPiUaNNvOJEXmsBpFeVSOrrmlaW4cYGn5wlVg
-	 aZM5+D3qYPga9nKojNZXg+aLUVNXBHhGmxO4BHqSPTJ3vnRVgTSUEnZW8dkslXBzTO
-	 vyJknbmuai6NZUNMg10OQdBxxU7giOUXTLViy353dg5vAJGhAI9nHeiTFY7MEl+CZi
-	 drRLZD2AkDkOQ==
+	b=PwaKSHDFXQKXXk3+JilfE0iusK2PI+9eN7fXWipnCMqb2G0v04yt2Cjisnqw/e5C1
+	 w6qqjSCj99znYPSoxZjxv2iofs4a+pcE+cgMPdM0fJsym0wKvrcxX7toGasQRP6rYI
+	 e7epYKfVydp6c8jQ/jpyUeXBTal45xRrlU5W6Jn6RvIsTAaP5mzhROYO03/Nbs01At
+	 u/29s2QkNfqZheWz9kE06SZUND6pjiKFtJ1ODomo+IUAW/Y/x0r0ARVQ5hT+0ycHAT
+	 CBa61oBZOsVQR7yLIOFxHrYI7AH3MCd2dqhmtqKUyL9K/8gp6bmhA8SFniRCqaRVoY
+	 QeisGsajMwbNQ==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	jack@suse.cz
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Zhang Yi <yi.zhang@huawei.com>,
-	stable@kernel.org,
+	zilin@seu.edu.cn
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Baokun Li <libaokun1@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
+	stable@kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: use optimized mballoc scanning regardless of inode format" failed to apply to 6.12-stable tree
-Date: Sat, 28 Feb 2026 20:22:11 -0500
-Message-ID: <20260301012211.1678359-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: fix memory leak in ext4_ext_shift_extents()" failed to apply to 6.12-stable tree
+Date: Sat, 28 Feb 2026 20:22:21 -0500
+Message-ID: <20260301012221.1678711-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -68,31 +68,30 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14243-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14244-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3AD741CA6B6
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 242351CAEB4
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.12-stable tree.
@@ -105,47 +104,43 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 3574c322b1d0eb32dbd76b469cb08f9a67641599 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Wed, 14 Jan 2026 19:28:19 +0100
-Subject: [PATCH] ext4: use optimized mballoc scanning regardless of inode
- format
+From ca81109d4a8f192dc1cbad4a1ee25246363c2833 Mon Sep 17 00:00:00 2001
+From: Zilin Guan <zilin@seu.edu.cn>
+Date: Thu, 25 Dec 2025 08:48:00 +0000
+Subject: [PATCH] ext4: fix memory leak in ext4_ext_shift_extents()
 
-Currently we don't used mballoc optimized scanning (using max free
-extent order and avg free extent order group lists) for inodes with
-indirect block based format. This is confusing for users and I don't see
-a good reason for that. Even with indirect block based inode format we
-can spend big amount of time searching for free blocks for large
-filesystems with fragmented free space. To add to the confusion before
-commit 077d0c2c78df ("ext4: make mb_optimize_scan performance mount
-option work with extents") optimized scanning was applied *only* to
-indirect block based inodes so that commit appears as a performance
-regression to some users. Just use optimized scanning whenever it is
-enabled by mount options.
+In ext4_ext_shift_extents(), if the extent is NULL in the while loop, the
+function returns immediately without releasing the path obtained via
+ext4_find_extent(), leading to a memory leak.
 
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Fix this by jumping to the out label to ensure the path is properly
+released.
+
+Fixes: a18ed359bdddc ("ext4: always check ext4_ext_find_extent result")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Cc: stable@kernel.org
-Link: https://patch.msgid.link/20260114182836.14120-4-jack@suse.cz
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Link: https://patch.msgid.link/20251225084800.905701-1-zilin@seu.edu.cn
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 ---
- fs/ext4/mballoc.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 910b454b4a21e..dbc82b65f810f 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1148,8 +1148,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
- 		return 0;
- 	if (ac->ac_criteria >= CR_GOAL_LEN_SLOW)
- 		return 0;
--	if (!ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
--		return 0;
- 	return 1;
- }
- 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 27eb2c1df0128..e0295e0339b49 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5406,7 +5406,8 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+ 		if (!extent) {
+ 			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
+ 					 (unsigned long) *iterator);
+-			return -EFSCORRUPTED;
++			ret = -EFSCORRUPTED;
++			goto out;
+ 		}
+ 		if (SHIFT == SHIFT_LEFT && *iterator >
+ 		    le32_to_cpu(extent->ee_block)) {
 -- 
 2.51.0
 
