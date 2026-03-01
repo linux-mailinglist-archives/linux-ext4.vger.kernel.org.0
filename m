@@ -1,48 +1,48 @@
-Return-Path: <linux-ext4+bounces-14260-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14261-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IPcoBqKao2l4IAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14260-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:14 +0100
+	id iC2sL3Kpo2nfJQUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14261-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:50:26 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5B821CBB4D
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BF131CDF5B
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A37CC3093417
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:42:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B4C5431CDC39
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B652C0294;
-	Sun,  1 Mar 2026 01:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B91C29A9E9;
+	Sun,  1 Mar 2026 01:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hWydPyAl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jwLZ3oaE"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC8A277C9D;
-	Sun,  1 Mar 2026 01:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B9D13B58A;
+	Sun,  1 Mar 2026 01:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772329343; cv=none; b=nfmpxKuLccA4lhVB2dUElJsdi5yn+hqTE8FNOUypjuDEGpEdnwV/fKlLYr2n8T0eSyTadbiQJu7iKF7LaWEdF38WScPNO3E/i0EDmiEUCWY+grU6Suj3JK371lhOcBgEtnm/kUSh9LSBal4VLg7/55MVK6Wc/30CiKXH4u39ZAc=
+	t=1772329345; cv=none; b=RceP6gvKy/awBzA0BVYrFrRSvu2J6nGFcN8poLT6MVhDnHl9KZ+7WRpt6RogopGJLz6PXeB3WgJ22TROK0AlfT15nk25KYJIG2ynjJGCJifolzZIDB8I7cT5xqQYwL2cRmTgsjXPtPvfNkFg8Ye1z2bTVXb39GCuG/iXN7Ltwrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772329343; c=relaxed/simple;
-	bh=BjgrVegcUHANXVuh/vK3PEtVGb/ek9d5yfA7Mi6bues=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EIPnuKUJP/mdFuRCPsXXzgnkudVPLOfQhRQX4BVlDUIUTJL0DVC0DyH3TfJ6fhAIIReTy/VL9eGHSXn+2fKXTKBjuk/+GN3FHgzRTcV1hZVS0oe0M9Xsf0g7/6KHNR40NG6PZIgDX84N3lDY7T9+d2oj3bbBnzBkEjEHMm0Meac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hWydPyAl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63D4FC19421;
-	Sun,  1 Mar 2026 01:42:22 +0000 (UTC)
+	s=arc-20240116; t=1772329345; c=relaxed/simple;
+	bh=VWSDQRqOmFOzNp12VZsoWxduv1zGxmNnCZnNHuLZ13g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rXJ9pymCLogZSsRmEAzV9QYlDejJyhKOsMey5RIKxD1GEHm+QGjpM36bis8wiH8eVO09FKuN+r0wxan7NGt9DcaJvUNimdzFFd0lj+aycA03Ud00cEt6ixd3VlV3oCVfkeL1UxrZoFyMKBVWRm67vHjFT7NytevwBAx2iyEB+oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jwLZ3oaE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C78B6C19421;
+	Sun,  1 Mar 2026 01:42:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772329343;
-	bh=BjgrVegcUHANXVuh/vK3PEtVGb/ek9d5yfA7Mi6bues=;
+	s=k20201202; t=1772329345;
+	bh=VWSDQRqOmFOzNp12VZsoWxduv1zGxmNnCZnNHuLZ13g=;
 	h=From:To:Cc:Subject:Date:From;
-	b=hWydPyAldNCY1YtOVu1TXbJs7+CJFcom/55Q+xH7TEtnA4Oa7d5OA0xejPalfDAbb
-	 I2YQQYJl5mCDiD9fbtXdISO+vOpU114ncSKc94p/zNBjx5hmr4RB543cpBSxbmuQT+
-	 AAVhHKnLtnDY1mn3wG/4N8SgIWiyhYdhDUi9eb/jsRH2i2FE9jkkOQL57VHxqiIiFg
-	 tm3dooV8GucqgcRBE6xiqxcoCSoc9st1T79T/unA61yBdwpv9vBM1lM0aI7RfudKpU
-	 KrojdKWBxq5Uf4tT+xjgPZlsWFgXDy0nMZG8VkGOJHNA01ZsISU1eacmM3L2zoNFS8
-	 KKS+U03+VMbHg==
+	b=jwLZ3oaEy5RZTkcv5hofeh4NO9IaiH8bJiAB1laY1ZufQ42KR36LMtGmOP2EIyPVM
+	 Q4mHYqv4CS+yCk051so6Girx9yT/ITDgoW/W77bYezYhkkkPzuvmSV5v2SH25C2qwu
+	 OItzpqYiurf89QLlZqcmtLJpvgd6cRlb+BHbgCP+lsDZpG9dB/b50nBSoSyp/9uiY/
+	 uB5Dcx+NVEoyrZ36gHVdoG02bg6fdieldobsWXjEUl/UhPumQcmwQJV+HECBGjpRxp
+	 ZbJpAfQTt+N5GmlfHCu739PpNZQuZS7beLOocp4wKhBNO2++7y0RiaDwWeqiquUkOb
+	 GvoKT8R1Ek0oA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	yi.zhang@huawei.com
@@ -51,9 +51,9 @@ Cc: Baokun Li <libaokun1@huawei.com>,
 	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: drop extent cache after doing PARTIAL_VALID1 zeroout" failed to apply to 6.1-stable tree
-Date: Sat, 28 Feb 2026 20:42:21 -0500
-Message-ID: <20260301014221.1704190-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: drop extent cache when splitting extent fails" failed to apply to 6.1-stable tree
+Date: Sat, 28 Feb 2026 20:42:23 -0500
+Message-ID: <20260301014223.1704235-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -70,13 +70,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14260-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14261-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -90,9 +90,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,huaweicloud.com:email]
-X-Rspamd-Queue-Id: A5B821CBB4D
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
+X-Rspamd-Queue-Id: 6BF131CDF5B
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.1-stable tree.
@@ -105,87 +105,59 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 6d882ea3b0931b43530d44149b79fcd4ffc13030 Mon Sep 17 00:00:00 2001
+From 79b592e8f1b435796cbc2722190368e3e8ffd7a1 Mon Sep 17 00:00:00 2001
 From: Zhang Yi <yi.zhang@huawei.com>
-Date: Sat, 29 Nov 2025 18:32:38 +0800
-Subject: [PATCH] ext4: drop extent cache after doing PARTIAL_VALID1 zeroout
+Date: Sat, 29 Nov 2025 18:32:39 +0800
+Subject: [PATCH] ext4: drop extent cache when splitting extent fails
 
-When splitting an unwritten extent in the middle and converting it to
-initialized in ext4_split_extent() with the EXT4_EXT_MAY_ZEROOUT and
-EXT4_EXT_DATA_VALID2 flags set, it could leave a stale unwritten extent.
-
-Assume we have an unwritten file and buffered write in the middle of it
-without dioread_nolock enabled, it will allocate blocks as written
-extent.
-
-       0  A      B  N
-       [UUUUUUUUUUUU] on-disk extent      U: unwritten extent
-       [UUUUUUUUUUUU] extent status tree
-       [--DDDDDDDD--]                     D: valid data
-          |<-  ->| ----> this range needs to be initialized
-
-ext4_split_extent() first try to split this extent at B with
-EXT4_EXT_DATA_PARTIAL_VALID1 and EXT4_EXT_MAY_ZEROOUT flag set, but
-ext4_split_extent_at() failed to split this extent due to temporary lack
-of space. It zeroout B to N and leave the entire extent as unwritten.
-
-       0  A      B  N
-       [UUUUUUUUUUUU] on-disk extent
-       [UUUUUUUUUUUU] extent status tree
-       [--DDDDDDDDZZ]                     Z: zeroed data
-
-ext4_split_extent() then try to split this extent at A with
-EXT4_EXT_DATA_VALID2 flag set. This time, it split successfully and
-leave an written extent from A to N.
-
-       0  A      B  N
-       [UUWWWWWWWWWW] on-disk extent      W: written extent
-       [UUUUUUUUUUUU] extent status tree
-       [--DDDDDDDDZZ]
-
-Finally ext4_map_create_blocks() only insert extent A to B to the extent
-status tree, and leave an stale unwritten extent in the status tree.
-
-       0  A      B  N
-       [UUWWWWWWWWWW] on-disk extent      W: written extent
-       [UUWWWWWWWWUU] extent status tree
-       [--DDDDDDDDZZ]
-
-Fix this issue by always cached extent status entry after zeroing out
-the second part.
+When the split extent fails, we might leave some extents still being
+processed and return an error directly, which will result in stale
+extent entries remaining in the extent status tree. So drop all of the
+remaining potentially stale extents if the splitting fails.
 
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
 Cc: stable@kernel.org
 Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Message-ID: <20251129103247.686136-7-yi.zhang@huaweicloud.com>
+Message-ID: <20251129103247.686136-8-yi.zhang@huaweicloud.com>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/extents.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ fs/ext4/extents.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index be9fd2ab86679..1094e49234513 100644
+index 1094e49234513..945995d68c4d3 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -3319,8 +3319,16 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
- 			 * extent length and ext4_split_extent() split will the
- 			 * first half again.
- 			 */
--			if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1)
-+			if (split_flag & EXT4_EXT_DATA_PARTIAL_VALID1) {
-+				/*
-+				 * Drop extent cache to prevent stale unwritten
-+				 * extents remaining after zeroing out.
-+				 */
-+				ext4_es_remove_extent(inode,
-+					le32_to_cpu(zero_ex.ee_block),
-+					ext4_ext_get_actual_len(&zero_ex));
- 				goto fix_extent_len;
-+			}
+@@ -3267,7 +3267,7 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
  
- 			/* update the extent length and mark as initialized */
- 			ex->ee_len = cpu_to_le16(ee_len);
+ 	err = PTR_ERR(path);
+ 	if (err != -ENOSPC && err != -EDQUOT && err != -ENOMEM)
+-		return path;
++		goto out_path;
+ 
+ 	/*
+ 	 * Get a new path to try to zeroout or fix the extent length.
+@@ -3281,7 +3281,7 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
+ 	if (IS_ERR(path)) {
+ 		EXT4_ERROR_INODE(inode, "Failed split extent on %u, err %ld",
+ 				 split, PTR_ERR(path));
+-		return path;
++		goto out_path;
+ 	}
+ 	depth = ext_depth(inode);
+ 	ex = path[depth].p_ext;
+@@ -3358,6 +3358,10 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
+ 		ext4_free_ext_path(path);
+ 		path = ERR_PTR(err);
+ 	}
++out_path:
++	if (IS_ERR(path))
++		/* Remove all remaining potentially stale extents. */
++		ext4_es_remove_extent(inode, ee_block, ee_len);
+ 	ext4_ext_show_leaf(inode, path);
+ 	return path;
+ }
 -- 
 2.51.0
 
