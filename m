@@ -1,59 +1,60 @@
-Return-Path: <linux-ext4+bounces-14251-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14252-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oJ/ULHyno2mWJAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14251-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:04 +0100
+	id cPFRJJiao2kwIAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14252-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:04 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442651CDD25
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D601CBB0F
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 41B07308FC41
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:34:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 942103215D69
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95062E62C6;
-	Sun,  1 Mar 2026 01:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5900B2F0661;
+	Sun,  1 Mar 2026 01:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XfLB8sjF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAb1JGN4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7290C2C3266;
-	Sun,  1 Mar 2026 01:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014172C3266;
+	Sun,  1 Mar 2026 01:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328799; cv=none; b=sYkpL2RgDc1lS4nBXck8UteGsiawDVhi70xNsv1K2nYakhoowr2QNtS0DmgoLwDgnGeeKuccLWbkCRfX5VxkyqCyBe2nJqueaIedHTXpWLOVi0Rx6mcgHKHttLIL/TXI54ebqbRGJ+ep88aoTIiexZlU2Qfx3OikdMjtM6xa86A=
+	t=1772328802; cv=none; b=mgzkfXzsXXKC99nGzs/+vGT8Zy3U/D1F3cFhqWwvEDwf0CtJxCEcGJDhm9/TbK9YjBswvbSG/edGxjQrFz4fMx5HjfXnfnDbdfVYxsuIhP+OmtPuXLXrbpDqVdioTIhCsiKoKJIvGCAd2F5eILTD/E2JX1FNB4GAfS3CkHJ+nts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328799; c=relaxed/simple;
-	bh=kllYZI38LV/W1tuKzg/fFCbx9yylAcXuJa8QIxUp3/c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m9bx66aDMovXH8TWUnIytt8bEO6rbitFHrX6yR6EMB6pqgFKDlaeKTOdd/rjecyBjqkUNhd0i0wXN58T8+Z4KstR/VTUvVJQ+8hyLjwM5nJkeRl9+wu77yeJbXhN/oewmFGlI1pztqTxKE82tm1/ki9+PSb00EIIJzWZd2YQ+8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XfLB8sjF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94793C19424;
-	Sun,  1 Mar 2026 01:33:18 +0000 (UTC)
+	s=arc-20240116; t=1772328802; c=relaxed/simple;
+	bh=ora53zNAF1kww3FywVfYNYV1pDzlYcuc+wG8cHYN6YY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VCy89vRIWf7S15lv0S2PfOvyFWXNmWkQ3hYgJdxJPY7j6jvEMp2S5I9dWtcBPWOvXbQ6zsPfSCPXecVM876LlldpkXl+HEKVlgr+qaEg92440r45JFF2v6KTgPRmdYX+oZ9CIdoAjQDwLvyN8/LKLjZk0V2iTLosmPUn4eT+j0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAb1JGN4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E209C19421;
+	Sun,  1 Mar 2026 01:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328799;
-	bh=kllYZI38LV/W1tuKzg/fFCbx9yylAcXuJa8QIxUp3/c=;
+	s=k20201202; t=1772328801;
+	bh=ora53zNAF1kww3FywVfYNYV1pDzlYcuc+wG8cHYN6YY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=XfLB8sjFRP0PXQixOTOgW0jhj0fVP79QJFoiCjf/FSys4q3U5mfcH3+wrrp8A1C0s
-	 wRRg1Rdsf4Je1nVU/RuhxJXIaBSVGocEJM2V95hBnkCt8xbQQYAv3nguCQ2V4JBL3X
-	 FgqIrdG3OL/mR4+spwxWq0HA1mi7g09WKkTQGIgh9eU8Kemmzhs5HtK381wRgcfRjm
-	 bDinPLmOOAKSWv2qUBJWI2uhQKvUmkCczEvFzeG8pu8eZC2k/0IkBfyzGpEi9CX4Sf
-	 4hRSIJHmxndGqS/dtvwVRCJncg0hcCxwEZz3Y9A8S6zgq+mg0F45e9qorxzPXqU4Sy
-	 GGDnTrQR8FaHQ==
+	b=TAb1JGN4bOGKe6Fs58QcnDZ90TiVtq97ciAymfUusFzF4tmrwjMX3Q4dMGgs814Ye
+	 2u2GotQyUXBGQJnkQ33dVSOQcFI1ENarkgxmuDZ6Gh16uiB6tvqxTSGu9crYqSjYQi
+	 XAQg0zFPZqz/D/oWjt5/ineRGIK/+o8NMSKFwm3XurQ5FK6X2lMZZKarse/5lCoWDH
+	 ti+mH1Rvw/7TI5gUhyCQMJgUYdlLiSrNRAiQ3MP52TYpVb8c2zgJ3oYMOgWYIX/Khh
+	 bTV4Odguzu+aqNFZPXPftnFKs5xX+PqRRDjzshaojZRMvvuy2U26CHLqDRXtCTA9xA
+	 nrsfc+aemkALw==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yi.zhang@huawei.com
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Baokun Li <libaokun1@huawei.com>,
+	jack@suse.cz
+Cc: Baokun Li <libaokun1@huawei.com>,
+	Zhang Yi <yi.zhang@huawei.com>,
+	Pedro Falcato <pfalcato@suse.de>,
 	stable@kernel.org,
 	Theodore Ts'o <tytso@mit.edu>,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before submitting I/O" failed to apply to 6.6-stable tree
-Date: Sat, 28 Feb 2026 20:33:17 -0500
-Message-ID: <20260301013317.1692496-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: always allocate blocks only from groups inode can use" failed to apply to 6.6-stable tree
+Date: Sat, 28 Feb 2026 20:33:19 -0500
+Message-ID: <20260301013319.1692545-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -76,7 +77,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14251-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14252-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -84,15 +85,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:email]
-X-Rspamd-Queue-Id: 442651CDD25
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,msgid.link:url,suse.de:email,huawei.com:email,suse.cz:email]
+X-Rspamd-Queue-Id: E9D601CBB0F
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.6-stable tree.
@@ -105,100 +106,106 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From feaf2a80e78f89ee8a3464126077ba8683b62791 Mon Sep 17 00:00:00 2001
-From: Zhang Yi <yi.zhang@huawei.com>
-Date: Sat, 29 Nov 2025 18:32:35 +0800
-Subject: [PATCH] ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before
- submitting I/O
+From 4865c768b563deff1b6a6384e74a62f143427b42 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Wed, 14 Jan 2026 19:28:18 +0100
+Subject: [PATCH] ext4: always allocate blocks only from groups inode can use
 
-When allocating blocks during within-EOF DIO and writeback with
-dioread_nolock enabled, EXT4_GET_BLOCKS_PRE_IO was set to split an
-existing large unwritten extent. However, EXT4_GET_BLOCKS_CONVERT was
-set when calling ext4_split_convert_extents(), which may potentially
-result in stale data issues.
+For filesystems with more than 2^32 blocks inodes using indirect block
+based format cannot use blocks beyond the 32-bit limit.
+ext4_mb_scan_groups_linear() takes care to not select these unsupported
+groups for such inodes however other functions selecting groups for
+allocation don't. So far this is harmless because the other selection
+functions are used only with mb_optimize_scan and this is currently
+disabled for inodes with indirect blocks however in the following patch
+we want to enable mb_optimize_scan regardless of inode format.
 
-Assume we have an unwritten extent, and then DIO writes the second half.
-
-   [UUUUUUUUUUUUUUUU] on-disk extent        U: unwritten extent
-   [UUUUUUUUUUUUUUUU] extent status tree
-            |<-   ->| ----> dio write this range
-
-First, ext4_iomap_alloc() call ext4_map_blocks() with
-EXT4_GET_BLOCKS_PRE_IO, EXT4_GET_BLOCKS_UNWRIT_EXT and
-EXT4_GET_BLOCKS_CREATE flags set. ext4_map_blocks() find this extent and
-call ext4_split_convert_extents() with EXT4_GET_BLOCKS_CONVERT and the
-above flags set.
-
-Then, ext4_split_convert_extents() calls ext4_split_extent() with
-EXT4_EXT_MAY_ZEROOUT, EXT4_EXT_MARK_UNWRIT2 and EXT4_EXT_DATA_VALID2
-flags set, and it calls ext4_split_extent_at() to split the second half
-with EXT4_EXT_DATA_VALID2, EXT4_EXT_MARK_UNWRIT1, EXT4_EXT_MAY_ZEROOUT
-and EXT4_EXT_MARK_UNWRIT2 flags set. However, ext4_split_extent_at()
-failed to insert extent since a temporary lack -ENOSPC. It zeroes out
-the first half but convert the entire on-disk extent to written since
-the EXT4_EXT_DATA_VALID2 flag set, but left the second half as unwritten
-in the extent status tree.
-
-   [0000000000SSSSSS]  data                S: stale data, 0: zeroed
-   [WWWWWWWWWWWWWWWW]  on-disk extent      W: written extent
-   [WWWWWWWWWWUUUUUU]  extent status tree
-
-Finally, if the DIO failed to write data to the disk, the stale data in
-the second half will be exposed once the cached extent entry is gone.
-
-Fix this issue by not passing EXT4_GET_BLOCKS_CONVERT when splitting
-an unwritten extent before submitting I/O, and make
-ext4_split_convert_extents() to zero out the entire extent range
-to zero for this case, and also mark the extent in the extent status
-tree for consistency.
-
-Fixes: b8a8684502a0 ("ext4: Introduce FALLOC_FL_ZERO_RANGE flag for fallocate")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Acked-by: Pedro Falcato <pfalcato@suse.de>
 Cc: stable@kernel.org
-Message-ID: <20251129103247.686136-4-yi.zhang@huaweicloud.com>
+Link: https://patch.msgid.link/20260114182836.14120-3-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/extents.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 1fee84ea20af1..91b56de60c905 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3746,15 +3746,19 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
- 	/* Convert to unwritten */
- 	if (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN) {
- 		split_flag |= EXT4_EXT_DATA_ENTIRE_VALID1;
--	/* Convert to initialized */
--	} else if (flags & EXT4_GET_BLOCKS_CONVERT) {
-+	/* Split the existing unwritten extent */
-+	} else if (flags & (EXT4_GET_BLOCKS_UNWRIT_EXT |
-+			    EXT4_GET_BLOCKS_CONVERT)) {
- 		/*
- 		 * It is safe to convert extent to initialized via explicit
- 		 * zeroout only if extent is fully inside i_size or new_size.
- 		 */
- 		split_flag |= ee_block + ee_len <= eof_block ?
- 			      EXT4_EXT_MAY_ZEROOUT : 0;
--		split_flag |= (EXT4_EXT_MARK_UNWRIT2 | EXT4_EXT_DATA_VALID2);
-+		split_flag |= EXT4_EXT_MARK_UNWRIT2;
-+		/* Convert to initialized */
-+		if (flags & EXT4_GET_BLOCKS_CONVERT)
-+			split_flag |= EXT4_EXT_DATA_VALID2;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index dd29558ad753b..910b454b4a21e 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -892,6 +892,21 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
  	}
- 	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
- 	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
-@@ -3930,7 +3934,7 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
- 	/* get_block() before submitting IO, split the extent */
- 	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE) {
- 		path = ext4_split_convert_extents(handle, inode, map, path,
--				flags | EXT4_GET_BLOCKS_CONVERT, allocated);
-+						  flags, allocated);
- 		if (IS_ERR(path))
- 			return path;
- 		/*
+ }
+ 
++static ext4_group_t ext4_get_allocation_groups_count(
++				struct ext4_allocation_context *ac)
++{
++	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
++
++	/* non-extent files are limited to low blocks/groups */
++	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
++		ngroups = EXT4_SB(ac->ac_sb)->s_blockfile_groups;
++
++	/* Pairs with smp_wmb() in ext4_update_super() */
++	smp_rmb();
++
++	return ngroups;
++}
++
+ static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
+ 					struct xarray *xa,
+ 					ext4_group_t start, ext4_group_t end)
+@@ -899,7 +914,7 @@ static int ext4_mb_scan_groups_xa_range(struct ext4_allocation_context *ac,
+ 	struct super_block *sb = ac->ac_sb;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	enum criteria cr = ac->ac_criteria;
+-	ext4_group_t ngroups = ext4_get_groups_count(sb);
++	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
+ 	unsigned long group = start;
+ 	struct ext4_group_info *grp;
+ 
+@@ -951,7 +966,7 @@ static int ext4_mb_scan_groups_p2_aligned(struct ext4_allocation_context *ac,
+ 	ext4_group_t start, end;
+ 
+ 	start = group;
+-	end = ext4_get_groups_count(ac->ac_sb);
++	end = ext4_get_allocation_groups_count(ac);
+ wrap_around:
+ 	for (i = ac->ac_2order; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
+ 		ret = ext4_mb_scan_groups_largest_free_order_range(ac, i,
+@@ -1001,7 +1016,7 @@ static int ext4_mb_scan_groups_goal_fast(struct ext4_allocation_context *ac,
+ 	ext4_group_t start, end;
+ 
+ 	start = group;
+-	end = ext4_get_groups_count(ac->ac_sb);
++	end = ext4_get_allocation_groups_count(ac);
+ wrap_around:
+ 	i = mb_avg_fragment_size_order(ac->ac_sb, ac->ac_g_ex.fe_len);
+ 	for (; i < MB_NUM_ORDERS(ac->ac_sb); i++) {
+@@ -1083,7 +1098,7 @@ static int ext4_mb_scan_groups_best_avail(struct ext4_allocation_context *ac,
+ 		min_order = fls(ac->ac_o_ex.fe_len);
+ 
+ 	start = group;
+-	end = ext4_get_groups_count(ac->ac_sb);
++	end = ext4_get_allocation_groups_count(ac);
+ wrap_around:
+ 	for (i = order; i >= min_order; i--) {
+ 		int frag_order;
+@@ -1182,11 +1197,7 @@ static int ext4_mb_scan_groups(struct ext4_allocation_context *ac)
+ 	int ret = 0;
+ 	ext4_group_t start;
+ 	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
+-	ext4_group_t ngroups = ext4_get_groups_count(ac->ac_sb);
+-
+-	/* non-extent files are limited to low blocks/groups */
+-	if (!(ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS)))
+-		ngroups = sbi->s_blockfile_groups;
++	ext4_group_t ngroups = ext4_get_allocation_groups_count(ac);
+ 
+ 	/* searching for the right group start from the goal value specified */
+ 	start = ac->ac_g_ex.fe_group;
 -- 
 2.51.0
 
