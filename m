@@ -1,151 +1,123 @@
-Return-Path: <linux-ext4+bounces-14256-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14257-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sLcJL5eno2mWJAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14256-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:31 +0100
+	id GAAiFlGZo2neHgUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14257-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:41:37 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687491CDD4C
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC34A1CB5D0
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9BB26322269C
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:35:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 36294301F48A
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A532F3C34;
-	Sun,  1 Mar 2026 01:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B443F2EDD58;
+	Sun,  1 Mar 2026 01:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKXIPSba"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zKDS3vo9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42A727281D;
-	Sun,  1 Mar 2026 01:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B942ECE9B;
+	Sun,  1 Mar 2026 01:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328823; cv=none; b=bbWbcR0tQ5dFpbV7xiu9pfkNnN1O6jUxWZ5Y6PSRxZGtlOhxXE2/clJMz2mR04LBMdnUFcbUo8NqVQixbIcoImQzQqdp9lXXFf8yhTKjLYs8ddhWTzSNlUk9sZPOKgovObaD7OEqSO2F2oum69UPSPOCEI14BfwYqrma+AyBdIw=
+	t=1772329204; cv=none; b=tZxbc+Qq/T9rv5y/8GqErNaJlc3bJKQbwP/9CUxL/NUwglMW0F26j4gcXBp/PLki7Ao/YA2E+rdc4yzgq2LkzC2Nb6eg4Vtbq8epgyVh1uHtzqOoRQ459cikvrK+vhdcK4EDn1GRVLY+0UVhpU+NoFfMqlwqoWi51cdwV+WpYP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328823; c=relaxed/simple;
-	bh=uflDNc8ZUXioKA5Yz7GqJ6yysLpIvH7hPm4Tq67Iipg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jf6zH4xxSCq51rFUBOCLSBTURlEo3nQaqGDEC+VaPMs3/Jgp5Lb1F3+6hjYFkCvJbmldXfUK3yw4VjNQa3nfNALwoLyk9/XlwHBMiffAFbMvp4+7WBHxeKSMA14vsNg2z7u2/jehvLuE/xCv+A4t8PoOpuDR2vSCCei2V70VXnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKXIPSba; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE4DFC19421;
-	Sun,  1 Mar 2026 01:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328823;
-	bh=uflDNc8ZUXioKA5Yz7GqJ6yysLpIvH7hPm4Tq67Iipg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CKXIPSbatSJUb82tkon/OgBOgYtZUbzw6VJpHhBytsJbaa5PLBEado9fT6tqET9Y6
-	 qoic3tvlodet6VYkFraL1fj/WO74eo5MXBBPte4Ou9utJPfwQxcBhfq0LNfTJcR4PF
-	 /GIMlzlVuujP72fJeboQkIStCcX/lu+oGWPDTgDd8SnLMzclYmqWeL1TXp827a2kwS
-	 xsdP0CDaRB8V2igp/5DVTmXW5PWmmP1SMnwY/iK+kEdCA6hI0kxzv76hv1Pn+oA4pq
-	 Zge8P491Gxe5UGX2LERIf+hdpbJrMgwbZm/pPutFaiZgVQvWxOjyn5MbQlu7BSc5It
-	 DFOx/spN8+lQg==
-From: Sasha Levin <sashal@kernel.org>
-To: stable@vger.kernel.org,
-	zilin@seu.edu.cn
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Baokun Li <libaokun1@huawei.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	stable@kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: fix memory leak in ext4_ext_shift_extents()" failed to apply to 6.6-stable tree
-Date: Sat, 28 Feb 2026 20:33:41 -0500
-Message-ID: <20260301013341.1692982-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1772329204; c=relaxed/simple;
+	bh=ODrn3M6Jr3beV7a2aRS3xw2ATsVSATCbZsZgBhqyZaM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=eD1uuZFkIxpc5ggN0kqmNgZqlhv6ubGyb3gWMALAfSEogg9tTcDj5mhKH1us5Ps/R88azatNycSZggSdVfAMgfGvPrDsUJjDDbgy/I0WDQz8xPYL0Q/2hwZoFpTR/GD5Zla9IyKFTPXedfOBRjbuUeH67zAxq5p+9Jn6NKeueA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zKDS3vo9; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1772329196; bh=Kbc74/8gkbupiUo832K7qBuj+rh3bGkNGf90fmBXdAc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=zKDS3vo9d+ElUSf3FvaNfqpykgEZElAXJySsbsLChLazwH+ox5zhFhwE9R+dXWiIn
+	 9/EaLS9eQNVrtSQQoJ+nLNVxfJPv9F+Wer9wmAmokH6RtzLedoN13/Usj/AKC1e9ZA
+	 dQbKpXdOSTY3MfPEYpPU/xdr3B7iorT1xLZ2xKjg=
+Received: from 192.168.2.102 ([120.235.196.245])
+	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
+	id 9AE004FF; Sun, 01 Mar 2026 09:38:46 +0800
+X-QQ-mid: xmsmtpt1772329126tn0w72dmp
+Message-ID: <tencent_7F28D03F5012FE947083C5B3B2D613D93007@qq.com>
+X-QQ-XMAILINFO: Mpk1SqVBRfAQZwZp5kLZF2RS7aeghlKlU4UpKfAnjDb5J/fZJNyHCdKujGGHib
+	 Rb7mkUpTphek/qkFrsXJDn0IzeV4xWBdGJsPg1grkLFBRJ/bq+TWS1Mjci69aGdfg8Hk2+AuaIt2
+	 9wsLdaBayAZDFSW2AIubiN6EmyoA7j0137RZWKIO3yEL/Dbl93d11/GDJcY9j1vTBeok7iykNVjL
+	 A86R3HIClEKoj9eccp5FfZ1rrJjCW9XNjDyxbDxO7rf1+b8W0LsYwaP8NQlM3sq1H0ofSL+27UVn
+	 b3wfP6xstUgmys63mujtkkYMW/3/VMvJdKu4S3o6iVBV7PoCHeQlw3KFQcMYCoAZBsGxr3pQJlR2
+	 Gv0wRvPJSi+sfCDIZ6lgzrSxM64rjBytC4FWL2nBz4vU0xPAP7FchChSDX09RmiYBXWbT4mxRbWf
+	 rAj7Cu96MNsZCC20q0RUNZcVtkdua/GOvXxjpnxWfYlzzbIvkQ+5DuxYPRrH/n/BbypKtQKk6gYL
+	 RBjarOdMOxiip1NVvh0MCNq0oHeJXk00GUFvhtuxjUB0WX+VRlRP7nRR1fPK+epE1fmEvfwA3/tY
+	 FHzZVR9lh5I6Hm++eh2yzYIy8L3foibS4TwUECBuBkaMc6QW7XKNlW7m8J47EBar1x7fkHwAulJM
+	 hIyDlurg1ul527gX2CWwZmbwQISFRxk5RcSFecta9HhTd3g0dw2+bEgE9ng4gTdYDUB2Lzh8QjDZ
+	 TIFiIBVffMU0vT0xNVO6novL6XlCNzmq9o16E0Zonuz4BuY0LpFj/OxHEg/M4vMQX/+m95Gw+ovB
+	 fbIk20p3D2oWinnRvo5P06YtPklOGT9USg6qkuKsmZnreUj7moOANrSnU1Jq9zb7aJSyV08l3TVb
+	 IzlerPdK2bEkkLbzcUL+mSCFumkvTEdZosjz3PkPDQaLsbzTPTZHwSQG/BVavx0omIr421Xgysgj
+	 oS+OaGLTPfH1tyxElLSHNAinjSoJNkQYRhQf7HbANvuJOLrZJCihvYhGPk+wnd1fvRpu/neNpzna
+	 5mrs6WeGm9hX23SMkjWbK3wupo1Tz0QVhvaPs2fpO/cHkIoEtoZtNrNUvTFBvSindbp2PNyzXBxo
+	 +LPRXPew3KCPhnoRR8jGpRXUnptELTStqBCXVKMv77nMmq5jTgcuu1jo1Ym2R76X5z/HQOis3v92
+	 RgpNE=
+X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
+From: Weixie Cui <523516579@qq.com>
+To: 523516579@qq.com
+Cc: adilger@dilger.ca,
+	cuiweixie@gmail.com,
+	dilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] ext4: simplify mballoc preallocation size rounding for small files
+Date: Sun,  1 Mar 2026 09:38:46 +0800
+X-OQ-MSGID: <20260301013846.74244-1-523516579@qq.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <tencent_E9C5F1B2E9939B3037501FD04A7E9CF0C407@qq.com>
+References: <tencent_E9C5F1B2E9939B3037501FD04A7E9CF0C407@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_TO(0.00)[qq.com];
+	TAGGED_FROM(0.00)[bounces-14257-lists,linux-ext4=lfdr.de];
+	FREEMAIL_FROM(0.00)[qq.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14256-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[dilger.ca,gmail.com,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FROM_NEQ_ENVFROM(0.00)[523516579@qq.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[qq.com:+];
+	TO_DN_NONE(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[seu.edu.cn:email,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,msgid.link:url]
-X-Rspamd-Queue-Id: 687491CDD4C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: CC34A1CB5D0
 X-Rspamd-Action: no action
 
-The patch below does not apply to the 6.6-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
-
-Thanks,
-Sasha
-
------------------- original commit in Linus's tree ------------------
-
-From ca81109d4a8f192dc1cbad4a1ee25246363c2833 Mon Sep 17 00:00:00 2001
-From: Zilin Guan <zilin@seu.edu.cn>
-Date: Thu, 25 Dec 2025 08:48:00 +0000
-Subject: [PATCH] ext4: fix memory leak in ext4_ext_shift_extents()
-
-In ext4_ext_shift_extents(), if the extent is NULL in the while loop, the
-function returns immediately without releasing the path obtained via
-ext4_find_extent(), leading to a memory leak.
-
-Fix this by jumping to the out label to ensure the path is properly
-released.
-
-Fixes: a18ed359bdddc ("ext4: always check ext4_ext_find_extent result")
-Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
-Link: https://patch.msgid.link/20251225084800.905701-1-zilin@seu.edu.cn
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
----
- fs/ext4/extents.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 27eb2c1df0128..e0295e0339b49 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -5406,7 +5406,8 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
- 		if (!extent) {
- 			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
- 					 (unsigned long) *iterator);
--			return -EFSCORRUPTED;
-+			ret = -EFSCORRUPTED;
-+			goto out;
- 		}
- 		if (SHIFT == SHIFT_LEFT && *iterator >
- 		    le32_to_cpu(extent->ee_block)) {
--- 
-2.51.0
-
-
-
+@adilger I think you do not review this new patch because it's send from my other email.  
+my previously patch is send from cuiweixie@gmail.com. But 523516579@qq.com is my other email. 
+So can you help to review it?
 
 
