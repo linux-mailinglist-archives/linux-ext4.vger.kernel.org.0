@@ -1,58 +1,59 @@
-Return-Path: <linux-ext4+bounces-14255-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14256-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SB3kBpCno2mWJAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14255-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:24 +0100
+	id sLcJL5eno2mWJAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14256-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:31 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A095C1CDD34
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 687491CDD4C
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 03:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C8A543135605
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:34:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9BB26322269C
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37CE12F3C19;
-	Sun,  1 Mar 2026 01:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A532F3C34;
+	Sun,  1 Mar 2026 01:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GDWwLC9r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKXIPSba"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41A52D0C79;
-	Sun,  1 Mar 2026 01:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42A727281D;
+	Sun,  1 Mar 2026 01:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328818; cv=none; b=HD19dGJMhXhQgdcEwRyUiyRbjDOaM4bfCwX5jxYUHmX+1j8qUhZng8hu9/G4qDkrzUZYbd2cbEmXhVGPvEQJJdekh8QhuwiN16TfwbBmgSS9yVVf20a8UdmtPaIOdo46gDd9lwPPu7KQFB3YT6EBcpGhY/Q+qJ/ZmjrQ4CrDPeQ=
+	t=1772328823; cv=none; b=bbWbcR0tQ5dFpbV7xiu9pfkNnN1O6jUxWZ5Y6PSRxZGtlOhxXE2/clJMz2mR04LBMdnUFcbUo8NqVQixbIcoImQzQqdp9lXXFf8yhTKjLYs8ddhWTzSNlUk9sZPOKgovObaD7OEqSO2F2oum69UPSPOCEI14BfwYqrma+AyBdIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328818; c=relaxed/simple;
-	bh=bbnxhDkgqj8+2K2uhb7dq1w6jFLvUJ5r6VAomHB4Dm4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jXG3ldpNCUyX+xh1cMEHmy7KFYG7h2u3Qb+NmuyGbIekIFknl39plE5eMSBa3acLKXWfmHzgY62L3jNTggLJXEKkLxTWMPF4rqw1WBFCduH96RmThGkDm07seU6T6MLAXoNBhVIdJ4AD/VDh2u4VLK9nQVf0dCkSss8IeVh1o3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GDWwLC9r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D574C19421;
-	Sun,  1 Mar 2026 01:33:37 +0000 (UTC)
+	s=arc-20240116; t=1772328823; c=relaxed/simple;
+	bh=uflDNc8ZUXioKA5Yz7GqJ6yysLpIvH7hPm4Tq67Iipg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jf6zH4xxSCq51rFUBOCLSBTURlEo3nQaqGDEC+VaPMs3/Jgp5Lb1F3+6hjYFkCvJbmldXfUK3yw4VjNQa3nfNALwoLyk9/XlwHBMiffAFbMvp4+7WBHxeKSMA14vsNg2z7u2/jehvLuE/xCv+A4t8PoOpuDR2vSCCei2V70VXnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKXIPSba; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE4DFC19421;
+	Sun,  1 Mar 2026 01:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328818;
-	bh=bbnxhDkgqj8+2K2uhb7dq1w6jFLvUJ5r6VAomHB4Dm4=;
+	s=k20201202; t=1772328823;
+	bh=uflDNc8ZUXioKA5Yz7GqJ6yysLpIvH7hPm4Tq67Iipg=;
 	h=From:To:Cc:Subject:Date:From;
-	b=GDWwLC9rOFY6V7JcE09p4vZLMeD2K/jr/4+ru4f635SEht0kV2KmsM9VT2X135z++
-	 nWCB4t2eq0ctrV9207fCJRbFsxxa+CXMDCNhXpa49TCnbpz9McYj1NiKBbQPI3hltz
-	 g9FjLheAaxaVzDfJNCSANCrhhWD21g6m2SjjA698sdTCl/PMwUI28O5961hAWZ0m+z
-	 O4a7HhiurlSvrJw7IZIcGh6k0yfogJfPeeQ6ufvws+tRHPPuMpkftvIu+YhNeAGOex
-	 AkzwXet1Bl/JZ6wAl5OAZCzTggk7vGhE5LSSRg+WgFXArCCMBiNkCZrSeEM+1u3XxI
-	 8FrcSBA3tuJzQ==
+	b=CKXIPSbatSJUb82tkon/OgBOgYtZUbzw6VJpHhBytsJbaa5PLBEado9fT6tqET9Y6
+	 qoic3tvlodet6VYkFraL1fj/WO74eo5MXBBPte4Ou9utJPfwQxcBhfq0LNfTJcR4PF
+	 /GIMlzlVuujP72fJeboQkIStCcX/lu+oGWPDTgDd8SnLMzclYmqWeL1TXp827a2kwS
+	 xsdP0CDaRB8V2igp/5DVTmXW5PWmmP1SMnwY/iK+kEdCA6hI0kxzv76hv1Pn+oA4pq
+	 Zge8P491Gxe5UGX2LERIf+hdpbJrMgwbZm/pPutFaiZgVQvWxOjyn5MbQlu7BSc5It
+	 DFOx/spN8+lQg==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	bfoster@redhat.com
-Cc: Baokun Li <libaokun1@huawei.com>,
+	zilin@seu.edu.cn
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Baokun Li <libaokun1@huawei.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	stable@kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: fix dirtyclusters double decrement on fs shutdown" failed to apply to 6.6-stable tree
-Date: Sat, 28 Feb 2026 20:33:36 -0500
-Message-ID: <20260301013336.1692882-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: fix memory leak in ext4_ext_shift_extents()" failed to apply to 6.6-stable tree
+Date: Sat, 28 Feb 2026 20:33:41 -0500
+Message-ID: <20260301013341.1692982-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -65,33 +66,33 @@ X-stable: review
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14255-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14256-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,msgid.link:url]
-X-Rspamd-Queue-Id: A095C1CDD34
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[seu.edu.cn:email,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,msgid.link:url]
+X-Rspamd-Queue-Id: 687491CDD4C
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.6-stable tree.
@@ -104,121 +105,43 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 94a8cea54cd935c54fa2fba70354757c0fc245e3 Mon Sep 17 00:00:00 2001
-From: Brian Foster <bfoster@redhat.com>
-Date: Tue, 13 Jan 2026 12:19:05 -0500
-Subject: [PATCH] ext4: fix dirtyclusters double decrement on fs shutdown
+From ca81109d4a8f192dc1cbad4a1ee25246363c2833 Mon Sep 17 00:00:00 2001
+From: Zilin Guan <zilin@seu.edu.cn>
+Date: Thu, 25 Dec 2025 08:48:00 +0000
+Subject: [PATCH] ext4: fix memory leak in ext4_ext_shift_extents()
 
-fstests test generic/388 occasionally reproduces a warning in
-ext4_put_super() associated with the dirty clusters count:
+In ext4_ext_shift_extents(), if the extent is NULL in the while loop, the
+function returns immediately without releasing the path obtained via
+ext4_find_extent(), leading to a memory leak.
 
-  WARNING: CPU: 7 PID: 76064 at fs/ext4/super.c:1324 ext4_put_super+0x48c/0x590 [ext4]
+Fix this by jumping to the out label to ensure the path is properly
+released.
 
-Tracing the failure shows that the warning fires due to an
-s_dirtyclusters_counter value of -1. IOW, this appears to be a
-spurious decrement as opposed to some sort of leak. Further tracing
-of the dirty cluster count deltas and an LLM scan of the resulting
-output identified the cause as a double decrement in the error path
-between ext4_mb_mark_diskspace_used() and the caller
-ext4_mb_new_blocks().
-
-First, note that generic/388 is a shutdown vs. fsstress test and so
-produces a random set of operations and shutdown injections. In the
-problematic case, the shutdown triggers an error return from the
-ext4_handle_dirty_metadata() call(s) made from
-ext4_mb_mark_context(). The changed value is non-zero at this point,
-so ext4_mb_mark_diskspace_used() does not exit after the error
-bubbles up from ext4_mb_mark_context(). Instead, the former
-decrements both cluster counters and returns the error up to
-ext4_mb_new_blocks(). The latter falls into the !ar->len out path
-which decrements the dirty clusters counter a second time, creating
-the inconsistency.
-
-To avoid this problem and simplify ownership of the cluster
-reservation in this codepath, lift the counter reduction to a single
-place in the caller. This makes it more clear that
-ext4_mb_new_blocks() is responsible for acquiring cluster
-reservation (via ext4_claim_free_clusters()) in the !delalloc case
-as well as releasing it, regardless of whether it ends up consumed
-or returned due to failure.
-
-Fixes: 0087d9fb3f29 ("ext4: Fix s_dirty_blocks_counter if block allocation failed with nodelalloc")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
+Fixes: a18ed359bdddc ("ext4: always check ext4_ext_find_extent result")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
-Link: https://patch.msgid.link/20260113171905.118284-1-bfoster@redhat.com
+Link: https://patch.msgid.link/20251225084800.905701-1-zilin@seu.edu.cn
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Cc: stable@kernel.org
 ---
- fs/ext4/mballoc-test.c |  2 +-
- fs/ext4/mballoc.c      | 21 +++++----------------
- 2 files changed, 6 insertions(+), 17 deletions(-)
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index a9416b20ff64c..4abb40d4561ce 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -567,7 +567,7 @@ test_mark_diskspace_used_range(struct kunit *test,
- 
- 	bitmap = mbt_ctx_bitmap(sb, TEST_GOAL_GROUP);
- 	memset(bitmap, 0, sb->s_blocksize);
--	ret = ext4_mb_mark_diskspace_used(ac, NULL, 0);
-+	ret = ext4_mb_mark_diskspace_used(ac, NULL);
- 	KUNIT_ASSERT_EQ(test, ret, 0);
- 
- 	max = EXT4_CLUSTERS_PER_GROUP(sb);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index de4cacb740b33..dd29558ad753b 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4186,8 +4186,7 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
-  * Returns 0 if success or error code
-  */
- static noinline_for_stack int
--ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
--				handle_t *handle, unsigned int reserv_clstrs)
-+ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac, handle_t *handle)
- {
- 	struct ext4_group_desc *gdp;
- 	struct ext4_sb_info *sbi;
-@@ -4242,13 +4241,6 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
- 	BUG_ON(changed != ac->ac_b_ex.fe_len);
- #endif
- 	percpu_counter_sub(&sbi->s_freeclusters_counter, ac->ac_b_ex.fe_len);
--	/*
--	 * Now reduce the dirty block count also. Should not go negative
--	 */
--	if (!(ac->ac_flags & EXT4_MB_DELALLOC_RESERVED))
--		/* release all the reserved blocks if non delalloc */
--		percpu_counter_sub(&sbi->s_dirtyclusters_counter,
--				   reserv_clstrs);
- 
- 	return err;
- }
-@@ -6333,7 +6325,7 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
- 			ext4_mb_pa_put_free(ac);
- 	}
- 	if (likely(ac->ac_status == AC_STATUS_FOUND)) {
--		*errp = ext4_mb_mark_diskspace_used(ac, handle, reserv_clstrs);
-+		*errp = ext4_mb_mark_diskspace_used(ac, handle);
- 		if (*errp) {
- 			ext4_discard_allocated_blocks(ac);
- 			goto errout;
-@@ -6364,12 +6356,9 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
- out:
- 	if (inquota && ar->len < inquota)
- 		dquot_free_block(ar->inode, EXT4_C2B(sbi, inquota - ar->len));
--	if (!ar->len) {
--		if ((ar->flags & EXT4_MB_DELALLOC_RESERVED) == 0)
--			/* release all the reserved blocks if non delalloc */
--			percpu_counter_sub(&sbi->s_dirtyclusters_counter,
--						reserv_clstrs);
--	}
-+	/* release any reserved blocks */
-+	if (reserv_clstrs)
-+		percpu_counter_sub(&sbi->s_dirtyclusters_counter, reserv_clstrs);
- 
- 	trace_ext4_allocate_blocks(ar, (unsigned long long)block);
- 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 27eb2c1df0128..e0295e0339b49 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -5406,7 +5406,8 @@ ext4_ext_shift_extents(struct inode *inode, handle_t *handle,
+ 		if (!extent) {
+ 			EXT4_ERROR_INODE(inode, "unexpected hole at %lu",
+ 					 (unsigned long) *iterator);
+-			return -EFSCORRUPTED;
++			ret = -EFSCORRUPTED;
++			goto out;
+ 		}
+ 		if (SHIFT == SHIFT_LEFT && *iterator >
+ 		    le32_to_cpu(extent->ee_block)) {
 -- 
 2.51.0
 
