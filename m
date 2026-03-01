@@ -1,365 +1,199 @@
-Return-Path: <linux-ext4+bounces-14290-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14291-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aJUjJRw8pGlnawUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14290-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 14:16:12 +0100
+	id yJ1JHgFmpGlcfgUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14291-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 17:14:57 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE9CD1CFD97
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 14:16:11 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6BAC1D08EC
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 17:14:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F272300F5DD
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 13:15:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 56A82301300D
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 16:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6F41EA7CE;
-	Sun,  1 Mar 2026 13:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D453930F7F3;
+	Sun,  1 Mar 2026 16:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Imd7PUpA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ai/8D3s8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A603B1BD
-	for <linux-ext4@vger.kernel.org>; Sun,  1 Mar 2026 13:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FCA2DCF6C
+	for <linux-ext4@vger.kernel.org>; Sun,  1 Mar 2026 16:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772370957; cv=none; b=tckK6th9aloafUJGeF/N0x1KTm5u6koWYx5ABKzXkJ7028FY/uEKkVn523GfJZcmoLTFyow/9XRhPn9Djsqm1a9gvFuabM/M1CuYOACA2qc9w5dYBx531FoPWL49xIzYLd1guhcAHZFymJFkZao4HeN3TrLTeV0lRtTdfwv+cUQ=
+	t=1772381692; cv=none; b=cMmJn2dIgCABRMD7HoLhxTb4IJSs/bUDe4rLyu8P/sxT+xksRQB0Sq0hg8Kd93rX7SMPvbYbBKdhJwjnESF6oZWcC8xvKH6MzQ7qemgQLwE8StqrxTqwpDu0uujGcfn9QE4HAkl5SJK6e4ucoDXZ6jJzzxlzU7IqDFWT3yzUHOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772370957; c=relaxed/simple;
-	bh=ZLZQE0GXeHZvnuR3V3ClHur20ND39tVVF7L8YuUrOM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oa6CUeBmzo+X57cSrubM5Gt2d0ZGfMIEZFc+C51XUeMCNrozRYB6SJJ84lVfQJIkimyQ9edbE8yEYbd82GwYyPw5gz2LBIcGncPjZac3E+9Nj8ni1SwO/i086WJ0gd0QicWOsLWkXhYUOT9kbfh0oNJH9S3wOkf/6EAbe8v7Te8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Imd7PUpA; arc=none smtp.client-ip=209.85.218.41
+	s=arc-20240116; t=1772381692; c=relaxed/simple;
+	bh=Eno1iht+PVmmfWUYzGsnifDO+DdWBQEKNZ3MtxWnXbc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oh6lSMnXTUnYgs2lU40Lf2+uU1mfplBWeRXTaYoiLwR35l4gMbCnZhuZYWyeDg7SMVEEY1w1WsdpVvTpSrDYZmxYzLVMRhvpzJWzJJH9B4ft4Ee890EYVEYkzdkcURFG4+N1pBwaWgAExmHAjDcsti4e/HeaNwWfWE1RE7HsLYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ai/8D3s8; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b936331787bso559317966b.3
-        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 05:15:55 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-824ba8f0acaso1857210b3a.1
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 08:14:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772370954; x=1772975754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kZuHbNxrjmmINf1/XZXGIBer5llHrVS+trrV0cr48Gc=;
-        b=Imd7PUpAx5LizhFfyaFyReG0dwWtsm2/CbGzRc88/Mwjsd6QRJnR9b8RhV4Pu84VJI
-         suv3MAJFGAlRbqgASpEP+PQnTWd14JM811thsOr7ZRSpFIYn+YwXsWiHKOQzdn95nYcZ
-         FgcZxfTxAgv0bQhpRrUT6TGfIYP6cn2Vghr9MX6A76sMcFsKxQlQ39afmurWDp32jr1v
-         TyRNr5U7UsTWoh4O4Ioc2+HV4D91aptkTUcKDYJdKHUFrPY52QxWKFxb9cK/fNmgieku
-         8PwgXVkh+Ce4o1BlFv6Et1tDt5PAzE5e89anQ83fZCxpnTqD5HH8riYqo2GxpbDBXH9K
-         IXeA==
+        d=gmail.com; s=20230601; t=1772381690; x=1772986490; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JvS7TZbJuLBE+k3dJSuAN7AJazKrzDmLDkhxnSkZZWA=;
+        b=Ai/8D3s8B7jY07QIfqP+9gYC351rcF6PtVkKnLQEvrFyF9LbhYT1fBO1rrmsOSOkq4
+         QH8pEkS84H00Y5KtjL7h2tHptT3Ir3N6UzYZXQ8B1IMwDcUcYEXtvAkonfgvoTi77uk7
+         OxzVAD6HdE8KrbUoRm0RZcOsj/F9S0DOwRZIOraDNsY/vM+s5wr1NpjhhtoL7eTgcyXR
+         IWcAj67Rc4azTpqbLpO4X3zfmmWvRzA8jviFWknJA32203llbInLyivBySQdENu1qyqF
+         5FpYGup3Iu7la2CmInWzBge2z/AyjuxCfyfcKczRB2m49xweFZv2h5+dVSvssqk6qJWU
+         Iy5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772370954; x=1772975754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kZuHbNxrjmmINf1/XZXGIBer5llHrVS+trrV0cr48Gc=;
-        b=HsnGZkj6l9GQS1s1LkywCJm0wjlMLZ5wXxtc8l/JsVaYO9IfbkOJfNw4bsRc3eZWqz
-         kG5g3sZfVVnUO4sAVn2ZxQKe1LoTOstbXUgDX3fHh8EwMmpCQ3qPIsbn/p1imYtzFqJ2
-         WMlLUbuhIBIw1kM416F6s+0XFO0yxeEWGm2xVS6rb6k4ulpkxsygP5AoCjkgh1sYBLaE
-         1LpSeHc7bji3iB7gLD+tDydE4X2D3o+/cOhPLplRvjuWGWkohqTCHGJ58SlR7fGWe8DL
-         MQ9Hi8bUiV2oBqmnVTySok9XiVcraEvTDCOTv8RFcF1+fFTcNCLB04SFuKnKOcY2dkwp
-         k0tA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZJbw03PI60wsQ2Um4oZJhFSZ2NdHalZIZXN1RqedWoqg6evxT4hkR1dUycyq1GjEQiSZ3C3neIIgB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyC78EkZVcTVKzBdOGoUsgkn96oiKsmofSHXTwHE99lHm2H17+q
-	mt5STQHmHozeTXR0Vr19dpw004snOz1hUdoerTzKtDTD31FvE8yZHTRu
-X-Gm-Gg: ATEYQzyjZg6Cvh4R7QGCD3y0vrJNUn9jNAzS1DBH5Vq+S02vuO3UcQR+uXpS3m1+6xs
-	wC1ntK+XOa4QYX+VhF5wihAXrRMTVvVnpYnQu1ehFkohwpxUewluVR8/JsUvBOrgRVzKxkv8TmD
-	tLygSUfQ+YB0vUkYWINKB2JetOGVJImYG1/wczjTOCZD8u92u1gze5YOBZp9TB2r8QLw4E3DXYx
-	mjG7VPWoSq1H/58Do0Okkg3VcQtJ0Vi1EOIxUErhkle4FdeDmp/66SS5zkTJ6gj4QdQ9TFK8vm2
-	o43NM8Iip2273FwzB/n8Nh0b+kdXCdolEsDY9807b63AAONCAtN9uJwjI0QxCHzMdBQscDpX5K5
-	k10PVdweexyrpl3kjI107L5OHFuLVIHUr5jFYZXcT8wB2hEVRF/wzP//4upyfvd65GnNyUUsOKx
-	82IcRAl8skWzzW4oZNq4mPy/dXHgA/+p5sGlAlJdt5Ja3yt6gHLG0mvTsA9vjuTTLiYciMnSya5
-	uNSWq8tloh8vj1zAvo6pEpXuQd3
-X-Received: by 2002:a17:906:ad7:b0:b88:775c:bd6b with SMTP id a640c23a62f3a-b9376553e7amr432998666b.46.1772370953329;
-        Sun, 01 Mar 2026 05:15:53 -0800 (PST)
-Received: from localhost (2001-1c00-570d-ee00-d118-5ff5-6236-8e43.cable.dynamic.v6.ziggo.nl. [2001:1c00:570d:ee00:d118:5ff5:6236:8e43])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b935ac51431sm360050666b.17.2026.03.01.05.15.52
+        d=1e100.net; s=20230601; t=1772381690; x=1772986490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JvS7TZbJuLBE+k3dJSuAN7AJazKrzDmLDkhxnSkZZWA=;
+        b=PzEur2DrE4meB0bP1wUuDZSc+X4g0BGCiqPa/1J/Pu9iDIfRZKSrkcLxTFojOAiE3P
+         gGe2kQrmlpMqQs0p9Cbzb5WC58I7fpD/kJlb+nzAy9OLkI/bxloq/OILwPCjRdzhTP0e
+         XGn+vCgsUg7pjAAbxVBJdRu6D5fD4s7R9Mat4qLiIsFsVaMVfcaWRMswnZF32YpSCKuz
+         hBJOm9rCB3V+HCPmcD+VhICBlNE3hXbMj6rJj7/rykoKkX+1zGVBMxCR0gxUSIEl+H7W
+         UiknzWN5FCaQ4W3vlMdSNiUJqHyBc+RnWnVNqnHzQVsHL7k0yO2dgDruKuqNqdtRRGZC
+         18vw==
+X-Gm-Message-State: AOJu0Yzfe8xi7SIyfi6a5WP+/PznYu7a0f36XkQ3FY0UwmQ6jt9I6Dgj
+	xvOADTEnub36ZAaA9sQ0Ur+kkTOK/2XqTnKDxj7XNFYedO3MxdLTj7D8L+A9lA==
+X-Gm-Gg: ATEYQzyblNoz/qXMV6DyQfC/jWj4/FhMrjKohyXdNXPt/YpCjeKlSVYaYy5VyRBIYRV
+	9LwWC+Xxxdjr0hMsiRBHSJstvntNjl8h4Jb1wYRa4dtg1J0H9HHnmdBDdJc5Iqjb7gxxXeUVqi7
+	VZxvzbUpcdpZRwpJEX4nMNe4uL4POvV61zJ+PM6mGkqFSmOJr4dPGIV0SH+FFoW3aEvO0UbVho5
+	Y5PdObINQ477cqTB8IIlTjK5D2RSWSmtgg6js3FNbmoBMpGeDxNh5326SqXVwJ60dgUXk24A2KD
+	Kik5QITNOJ/DAYE2fn5Op0VQz7lOz4gEzvRpp+JtBm48CrRhvi3Gk3nev8jxBQn8cp3z7jiaH/h
+	9dGM92QCx3Owp8MBVrfeHMZHeOg1BJRpMUNYw9lRIjdCGMJkIDFXKtBA5bLI3qSouZfI43EtBuU
+	tUsK/63MIORIigSCvLL2eiJbgN7lFLuA==
+X-Received: by 2002:a05:6a00:1c8e:b0:827:3f79:2349 with SMTP id d2e1a72fcca58-8274da2a016mr8746149b3a.61.1772381689990;
+        Sun, 01 Mar 2026 08:14:49 -0800 (PST)
+Received: from dw-tp.ibmuc.com ([49.205.216.49])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82739dabd43sm12428765b3a.25.2026.03.01.08.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 05:15:52 -0800 (PST)
-Date: Sun, 1 Mar 2026 14:15:52 +0100
-From: Amir Goldstein <amir73il@gmail.com>
-To: Anand Jain <asj@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 5/9] fstests: verify fanotify isolation on cloned
- filesystems
-Message-ID: <aaQ8CB7C4FjDuedR@amir-ThinkPad-T480>
-References: <cover.1772095513.git.asj@kernel.org>
- <b54dea5e72585db5f5c3d74ce399f9d839965821.1772095513.git.asj@kernel.org>
+        Sun, 01 Mar 2026 08:14:49 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH] ext4: kunit: extents-test: Fix percpu_counters list corruption
+Date: Sun,  1 Mar 2026 21:44:26 +0530
+Message-ID: <5bb9041471dab8ce870c191c19cbe4df57473be8.1772381213.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b54dea5e72585db5f5c3d74ce399f9d839965821.1772095513.git.asj@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14290-lists,linux-ext4=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14291-lists,linux-ext4=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linux.ibm.com,gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_NEQ_ENVFROM(0.00)[riteshlist@gmail.com,linux-ext4@vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[popdir.pl:url,popattr.py:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,btrfs_crc32c_forged_name.py:url,scaleread.sh:url]
-X-Rspamd-Queue-Id: EE9CD1CFD97
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E6BAC1D08EC
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 10:41:46PM +0800, Anand Jain wrote:
-> Verify that fanotify events are correctly routed to the appropriate
-> watcher when cloned filesystems are mounted.
-> Helps verify kernel's event notification distinguishes between devices
-> sharing the same FSID/UUID.
-> 
-> Signed-off-by: Anand Jain <asj@kernel.org>
-> ---
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/fanotify.c        | 66 +++++++++++++++++++++++++++++++++
->  tests/generic/791     | 86 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/791.out |  7 ++++
->  5 files changed, 161 insertions(+), 1 deletion(-)
->  create mode 100644 src/fanotify.c
->  create mode 100644 tests/generic/791
->  create mode 100644 tests/generic/791.out
-> 
-> diff --git a/.gitignore b/.gitignore
-> index 82c57f415301..7f91310ce58b 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -212,6 +212,7 @@ tags
->  /src/dio-writeback-race
->  /src/unlink-fsync
->  /src/file_attr
-> +/src/fanotify
->  
->  # Symlinked files
->  /tests/generic/035.out
-> diff --git a/src/Makefile b/src/Makefile
-> index d0a4106e6be8..ff71cde936a7 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -36,7 +36,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
->  	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
->  	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault min_dio_alignment \
-> -	rw_hint
-> +	rw_hint fanotify
+commit 82f80e2e3b23 ("ext4: add extent status cache support to kunit tests"),
+added ext4_es_register_shrinker() in extents_kunit_init() function but
+failed to add the unregister shrinker routine in extents_kunit_exit().
 
-Check if you already have fsnotifywait installed on your system
-most likely you do. It was added to inotify-tools quite some time ago.
-Could save you from adding a custom prog.
-Not 100% sure about fsnotifywait, but quite sure that
-fsnotifywatch --verbose prints the FSID of events.
+This could cause the following percpu_counters list corruption bug.
 
-Thanks,
-Amir.
+         ok 1 split unwrit extent to 2 extents and convert 1st half writ
+  slab kmalloc-4k start c0000002007ff000 pointer offset 1448 size 4096
+ list_add corruption. next->prev should be prev (c000000004bc9e60), but was 0000000000000000. (next=c0000002007ff5a8).
+ ------------[ cut here ]------------
+ kernel BUG at lib/list_debug.c:29!
+cpu 0x2: Vector: 700 (Program Check) at [c000000241927a30]
+    pc: c000000000f26ed0: __list_add_valid_or_report+0x120/0x164
+    lr: c000000000f26ecc: __list_add_valid_or_report+0x11c/0x164
+    sp: c000000241927cd0
+   msr: 800000000282b033
+  current = 0xc000000241215200
+  paca    = 0xc0000003fffff300   irqmask: 0x03   irq_happened: 0x09
+    pid   = 258, comm = kunit_try_catch
+kernel BUG at lib/list_debug.c:29!
+enter ? for help
+ __percpu_counter_init_many+0x148/0x184
+ ext4_es_register_shrinker+0x74/0x23c
+ extents_kunit_init+0x100/0x308
+ kunit_try_run_case+0x78/0x1f8
+ kunit_generic_run_threadfn_adapter+0x40/0x70
+ kthread+0x190/0x1a0
+ start_kernel_thread+0x14/0x18
+2:mon>
 
->  
->  EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
->  	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> diff --git a/src/fanotify.c b/src/fanotify.c
-> new file mode 100644
-> index 000000000000..e30c48dc0e52
-> --- /dev/null
-> +++ b/src/fanotify.c
-> @@ -0,0 +1,66 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0
-> + * Copyright (c) 2026 Anand Jain <asj@kernel.org>.  All Rights Reserved.
-> + *
-> + * Simple fanotify monitor to verify mount-point event isolation.
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <stdint.h>
-> +#include <sys/fanotify.h>
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int fd;
-> +	char buf[4096] __attribute__((aligned(8)));
-> +	setlinebuf(stdout);
-> +
-> +	if (argc < 2) {
-> +		fprintf(stderr, "Usage: %s <path>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	// Initialize with FID reporting
-> +	fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
-> +	if (fd < 0) {
-> +		perror("fanotify_init");
-> +		return 1;
-> +	}
-> +
-> +	if (fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-> +			  FAN_CREATE, AT_FDCWD, argv[1]) < 0) {
-> +		perror("fanotify_mark");
-> +		return 1;
-> +	}
-> +
-> +	printf("Listening for events on %s...\n", argv[1]);
-> +	while (1) {
-> +		struct fanotify_event_metadata *metadata = (struct fanotify_event_metadata *)buf;
-> +		ssize_t len = read(fd, buf, sizeof(buf));
-> +
-> +		if (len <= 0) break;
-> +
-> +		while (FAN_EVENT_OK(metadata, len)) {
-> +			// metadata_len is the offset to the first info record
-> +			if (metadata->event_len > metadata->metadata_len) {
-> +				struct fanotify_event_info_header *hdr =
-> +(struct fanotify_event_info_header *)((char *)metadata + metadata->metadata_len);
-> +
-> +				if (hdr->info_type == FAN_EVENT_INFO_TYPE_FID) {
-> +					struct fanotify_event_info_fid *fid = (struct fanotify_event_info_fid *)hdr;
-> +					printf("FSID: %08x%08x\n",
-> +						fid->fsid.val[0], fid->fsid.val[1]);
-> +				}
-> +			}
-> +			metadata = FAN_EVENT_NEXT(metadata, len);
-> +		}
-> +	}
-> +
-> +	fflush(stdout);
-> +	close(fd);
-> +	return 0;
-> +}
-> diff --git a/tests/generic/791 b/tests/generic/791
-> new file mode 100644
-> index 000000000000..fe8109083732
-> --- /dev/null
-> +++ b/tests/generic/791
-> @@ -0,0 +1,86 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2026 Anand Jain <asj@kernel.org>.  All Rights Reserved.
-> +#
-> +# FS QA Test 791
-> +# Verify fanotify FID functionality on cloned filesystems by setting up
-> +# watchers and making sure notifications are in the correct logs files.
-> +
-> +. ./common/preamble
-> +
-> +_begin_fstest auto quick mount clone
-> +
-> +_require_test
-> +_require_scratch_dev_pool 2
-> +
-> +[ "$FSTYP" = "ext4" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"ext4: derive f_fsid from block device to avoid collisions"
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -r -f $tmp.*
-> +	umount $mnt1 $mnt2 2>/dev/null
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +_scratch_dev_pool_get 2
-> +_scratch_mkfs_sized_clone >$seqres.full 2>&1
-> +devs=($SCRATCH_DEV_POOL)
-> +mnt2=$TEST_DIR/mnt2
-> +mkdir -p $mnt2
-> +
-> +_scratch_mount $(_clone_mount_option)
-> +_mount $(_common_dev_mount_options) $(_clone_mount_option) ${devs[1]} $mnt2 || \
-> +						_fail "Failed to mount dev2"
-> +
-> +fsid1=$(stat -f -c "%i" $SCRATCH_MNT)
-> +fsid2=$(stat -f -c "%i" $mnt2)
-> +
-> +[[ "$fsid1" == "$fsid2" ]] && \
-> +	_notrun "Require clone filesystem with unique f_fsid"
-> +
-> +log1=$tmp.fanotify1
-> +log2=$tmp.fanotify2
-> +
-> +echo "Setup FID fanotify watchers on both SCRATCH_MNT and mnt2"
-> +$here/src/fanotify $SCRATCH_MNT > $log1 2>&1 &
-> +pid1=$!
-> +$here/src/fanotify $mnt2 > $log2 2>&1 &
-> +pid2=$!
-> +sleep 2
-> +
-> +echo "Trigger file creation on SCRATCH_MNT"
-> +touch $SCRATCH_MNT/file_on_scratch_mnt
-> +sync
-> +sleep 1
-> +
-> +echo "Trigger file creation on mnt2"
-> +touch $mnt2/file_on_mnt2
-> +sync
-> +sleep 1
-> +
-> +echo "Verify fsid in the fanotify"
-> +kill $pid1 $pid2
-> +wait $pid1 $pid2 2>/dev/null
-> +
-> +echo fsid1=$fsid1 fsid2=$fsid2 >> $seqres.full
-> +cat $log1 >> $seqres.full
-> +cat $log2 >> $seqres.full
-> +
-> +if grep -q "${fsid1}" $log1 && ! grep -q "${fsid2}" $log1; then
-> +	echo "SUCCESS: SCRATCH_MNT events found"
-> +else
-> +	[ ! -s $log1 ] && echo "  - SCRATCH_MNT received no events."
-> +	grep -q "${fsid2}" $log1 && echo "  - SCRATCH_MNT received event from mnt2."
-> +fi
-> +
-> +if grep -q "${fsid2}" $log2 && ! grep -q "${fsid1}" $log2; then
-> +	echo "SUCCESS: mnt2 events found"
-> +else
-> +	[ ! -s $log2 ] && echo "  - mnt2 received no events."
-> +	grep -q "${fsid1}" $log2 && echo "  - mnt2 received event from SCRATCH_MNT."
-> +fi
-> +
-> +status=0
-> +exit
-> diff --git a/tests/generic/791.out b/tests/generic/791.out
-> new file mode 100644
-> index 000000000000..9725c99bcb4b
-> --- /dev/null
-> +++ b/tests/generic/791.out
-> @@ -0,0 +1,7 @@
-> +QA output created by 791
-> +Setup FID fanotify watchers on both SCRATCH_MNT and mnt2
-> +Trigger file creation on SCRATCH_MNT
-> +Trigger file creation on mnt2
-> +Verify fsid in the fanotify
-> +SUCCESS: SCRATCH_MNT events found
-> +SUCCESS: mnt2 events found
-> -- 
-> 2.43.0
-> 
+This happens because:
+
+extents_kunit_init(test N):
+  ext4_es_register_shrinker(sbi)
+    percpu_counters_init() x 4; // this adds 4 list nodes to global percpu_counters list
+      list_add(&fbc->list, &percpu_counters);
+    shrinker_register();
+
+extents_kunit_exit(test N):
+  kfree(sbi);			// frees sbi w/o removing those 4 list nodes.
+  				// So, those list node now becomes dangling pointers
+
+extents_kunit_init(test N+1):
+  kzalloc_obj(ext4_sb_info)	// allocator returns same page, but zeroed.
+  ext4_es_register_shrinker(sbi)
+    percpu_counters_init()
+      list_add(&fbc->list, &percpu_counters);
+        __list_add_valid(new, prev, next);
+	next->prev != prev 		// list corruption bug detected, since next->prev = NULL
+
+Fixes: 82f80e2e3b23 ("ext4: add extent status cache support to kunit tests")
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
+ fs/ext4/extents-test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/extents-test.c b/fs/ext4/extents-test.c
+index 7c4690eb7dad..a6b3e6b592a5 100644
+--- a/fs/ext4/extents-test.c
++++ b/fs/ext4/extents-test.c
+@@ -142,8 +142,10 @@ static struct file_system_type ext_fs_type = {
+
+ static void extents_kunit_exit(struct kunit *test)
+ {
+-	struct ext4_sb_info *sbi = k_ctx.k_ei->vfs_inode.i_sb->s_fs_info;
++	struct super_block *sb = k_ctx.k_ei->vfs_inode.i_sb;
++	struct ext4_sb_info *sbi = sb->s_fs_info;
+
++	ext4_es_unregister_shrinker(sbi);
+ 	kfree(sbi);
+ 	kfree(k_ctx.k_ei);
+ 	kfree(k_ctx.k_data);
+--
+2.53.0
+
 
