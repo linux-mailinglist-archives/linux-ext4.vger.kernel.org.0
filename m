@@ -1,123 +1,196 @@
-Return-Path: <linux-ext4+bounces-14257-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14258-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GAAiFlGZo2neHgUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14257-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:41:37 +0100
+	id GDhtAYKao2l4IAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14258-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:46:42 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC34A1CB5D0
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:41:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910761CBAA4
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:46:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 36294301F48A
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:40:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 916B83035890
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B443F2EDD58;
-	Sun,  1 Mar 2026 01:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96572DCBFA;
+	Sun,  1 Mar 2026 01:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zKDS3vo9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4UvNbZH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B942ECE9B;
-	Sun,  1 Mar 2026 01:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717DF29B795;
+	Sun,  1 Mar 2026 01:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772329204; cv=none; b=tZxbc+Qq/T9rv5y/8GqErNaJlc3bJKQbwP/9CUxL/NUwglMW0F26j4gcXBp/PLki7Ao/YA2E+rdc4yzgq2LkzC2Nb6eg4Vtbq8epgyVh1uHtzqOoRQ459cikvrK+vhdcK4EDn1GRVLY+0UVhpU+NoFfMqlwqoWi51cdwV+WpYP4=
+	t=1772329323; cv=none; b=mUOhzIabk68LD0aCjFhmN6ODUKVFPY8QayO15d9VpM0Rbk8seMpQK6PrCupPe59DfK4zVUn9ilpjk+YujBiKxE/OUf/NadGnPso0z4KiNBdtMk7YIDtD4LqMdKKzaCZ83gFsErMzGzwhJGB6kR1DqLb3NBXzOGqICOy9gQLUtgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772329204; c=relaxed/simple;
-	bh=ODrn3M6Jr3beV7a2aRS3xw2ATsVSATCbZsZgBhqyZaM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=eD1uuZFkIxpc5ggN0kqmNgZqlhv6ubGyb3gWMALAfSEogg9tTcDj5mhKH1us5Ps/R88azatNycSZggSdVfAMgfGvPrDsUJjDDbgy/I0WDQz8xPYL0Q/2hwZoFpTR/GD5Zla9IyKFTPXedfOBRjbuUeH67zAxq5p+9Jn6NKeueA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zKDS3vo9; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1772329196; bh=Kbc74/8gkbupiUo832K7qBuj+rh3bGkNGf90fmBXdAc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=zKDS3vo9d+ElUSf3FvaNfqpykgEZElAXJySsbsLChLazwH+ox5zhFhwE9R+dXWiIn
-	 9/EaLS9eQNVrtSQQoJ+nLNVxfJPv9F+Wer9wmAmokH6RtzLedoN13/Usj/AKC1e9ZA
-	 dQbKpXdOSTY3MfPEYpPU/xdr3B7iorT1xLZ2xKjg=
-Received: from 192.168.2.102 ([120.235.196.245])
-	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
-	id 9AE004FF; Sun, 01 Mar 2026 09:38:46 +0800
-X-QQ-mid: xmsmtpt1772329126tn0w72dmp
-Message-ID: <tencent_7F28D03F5012FE947083C5B3B2D613D93007@qq.com>
-X-QQ-XMAILINFO: Mpk1SqVBRfAQZwZp5kLZF2RS7aeghlKlU4UpKfAnjDb5J/fZJNyHCdKujGGHib
-	 Rb7mkUpTphek/qkFrsXJDn0IzeV4xWBdGJsPg1grkLFBRJ/bq+TWS1Mjci69aGdfg8Hk2+AuaIt2
-	 9wsLdaBayAZDFSW2AIubiN6EmyoA7j0137RZWKIO3yEL/Dbl93d11/GDJcY9j1vTBeok7iykNVjL
-	 A86R3HIClEKoj9eccp5FfZ1rrJjCW9XNjDyxbDxO7rf1+b8W0LsYwaP8NQlM3sq1H0ofSL+27UVn
-	 b3wfP6xstUgmys63mujtkkYMW/3/VMvJdKu4S3o6iVBV7PoCHeQlw3KFQcMYCoAZBsGxr3pQJlR2
-	 Gv0wRvPJSi+sfCDIZ6lgzrSxM64rjBytC4FWL2nBz4vU0xPAP7FchChSDX09RmiYBXWbT4mxRbWf
-	 rAj7Cu96MNsZCC20q0RUNZcVtkdua/GOvXxjpnxWfYlzzbIvkQ+5DuxYPRrH/n/BbypKtQKk6gYL
-	 RBjarOdMOxiip1NVvh0MCNq0oHeJXk00GUFvhtuxjUB0WX+VRlRP7nRR1fPK+epE1fmEvfwA3/tY
-	 FHzZVR9lh5I6Hm++eh2yzYIy8L3foibS4TwUECBuBkaMc6QW7XKNlW7m8J47EBar1x7fkHwAulJM
-	 hIyDlurg1ul527gX2CWwZmbwQISFRxk5RcSFecta9HhTd3g0dw2+bEgE9ng4gTdYDUB2Lzh8QjDZ
-	 TIFiIBVffMU0vT0xNVO6novL6XlCNzmq9o16E0Zonuz4BuY0LpFj/OxHEg/M4vMQX/+m95Gw+ovB
-	 fbIk20p3D2oWinnRvo5P06YtPklOGT9USg6qkuKsmZnreUj7moOANrSnU1Jq9zb7aJSyV08l3TVb
-	 IzlerPdK2bEkkLbzcUL+mSCFumkvTEdZosjz3PkPDQaLsbzTPTZHwSQG/BVavx0omIr421Xgysgj
-	 oS+OaGLTPfH1tyxElLSHNAinjSoJNkQYRhQf7HbANvuJOLrZJCihvYhGPk+wnd1fvRpu/neNpzna
-	 5mrs6WeGm9hX23SMkjWbK3wupo1Tz0QVhvaPs2fpO/cHkIoEtoZtNrNUvTFBvSindbp2PNyzXBxo
-	 +LPRXPew3KCPhnoRR8jGpRXUnptELTStqBCXVKMv77nMmq5jTgcuu1jo1Ym2R76X5z/HQOis3v92
-	 RgpNE=
-X-QQ-XMRINFO: NS+P29fieYNwqS3WCnRCOn9D1NpZuCnCRA==
-From: Weixie Cui <523516579@qq.com>
-To: 523516579@qq.com
-Cc: adilger@dilger.ca,
-	cuiweixie@gmail.com,
-	dilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] ext4: simplify mballoc preallocation size rounding for small files
-Date: Sun,  1 Mar 2026 09:38:46 +0800
-X-OQ-MSGID: <20260301013846.74244-1-523516579@qq.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <tencent_E9C5F1B2E9939B3037501FD04A7E9CF0C407@qq.com>
-References: <tencent_E9C5F1B2E9939B3037501FD04A7E9CF0C407@qq.com>
+	s=arc-20240116; t=1772329323; c=relaxed/simple;
+	bh=tK/Z6uzqIGUGEBI2xpmH0wmW59rupbw35o8wTISOXSc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cf6OSUr2ss10BPtEbVLbndWHm3m6UKIyjUGjERFPyDcSngBzFKcBJ66485kzVJKlhKQvVngnAgUem4TZognIO8ILCpKtQcdTiN4l68gHF+jZhY2TNj7UwJ0Y2CdDiVJRu3uJ7+g7J7MyDQNcWh/rzcYwIpVnpxPowgNJjPg2XbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4UvNbZH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92F7AC2BC87;
+	Sun,  1 Mar 2026 01:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772329323;
+	bh=tK/Z6uzqIGUGEBI2xpmH0wmW59rupbw35o8wTISOXSc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=h4UvNbZH2GJM4ELox/q74/aSEGilHLvb32evRmTbyy/INGA0EPtDD6hsBqop9bc1f
+	 gwh6YfmMCI2TTqsPJ0WX+oies/fAPvgA8x3U+FAnbrLbKBcz+XfcGD1WqYZy2JvTTO
+	 jgBwvId2WtUjJ/5CKFFxpTyDNJmx0qymsMKXsJLoq3k1/Np1Dju1LxTpPLeSXTv1sH
+	 JD1hWMLjMH3uBTbn0gcCBSVwykPnT0AXaWgNjEOkmvFt2b9bTIZo5lj6nUpVLBwhpN
+	 9BrkjX6vGpauUPn/ONpxk1zsF+0ineIIH4/z7Nz5zfX/7DHnqNoE3Hw4rOr2XpUNDU
+	 gNmQbmJ05OZZw==
+From: Sasha Levin <sashal@kernel.org>
+To: stable@vger.kernel.org,
+	yi.zhang@huawei.com
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Baokun Li <libaokun1@huawei.com>,
+	stable@kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	linux-ext4@vger.kernel.org
+Subject: FAILED: Patch "ext4: subdivide EXT4_EXT_DATA_VALID1" failed to apply to 6.1-stable tree
+Date: Sat, 28 Feb 2026 20:42:01 -0500
+Message-ID: <20260301014201.1703796-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Patchwork-Hint: ignore
+X-stable: review
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[qq.com];
-	TAGGED_FROM(0.00)[bounces-14257-lists,linux-ext4=lfdr.de];
-	FREEMAIL_FROM(0.00)[qq.com];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14258-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[dilger.ca,gmail.com,vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[523516579@qq.com,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[qq.com:+];
-	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CC34A1CB5D0
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:email]
+X-Rspamd-Queue-Id: 910761CBAA4
 X-Rspamd-Action: no action
 
-@adilger I think you do not review this new patch because it's send from my other email.  
-my previously patch is send from cuiweixie@gmail.com. But 523516579@qq.com is my other email. 
-So can you help to review it?
+The patch below does not apply to the 6.1-stable tree.
+If someone wants it applied there, or to any other stable or longterm
+tree, then please email the backport, including the original git commit
+id to <stable@vger.kernel.org>.
+
+Thanks,
+Sasha
+
+------------------ original commit in Linus's tree ------------------
+
+From 22784ca541c0f01c5ebad14e8228298dc0a390ed Mon Sep 17 00:00:00 2001
+From: Zhang Yi <yi.zhang@huawei.com>
+Date: Sat, 29 Nov 2025 18:32:33 +0800
+Subject: [PATCH] ext4: subdivide EXT4_EXT_DATA_VALID1
+
+When splitting an extent, if the EXT4_GET_BLOCKS_CONVERT flag is set and
+it is necessary to split the target extent in the middle,
+ext4_split_extent() first handles splitting the latter half of the
+extent and passes the EXT4_EXT_DATA_VALID1 flag. This flag implies that
+all blocks before the split point contain valid data; however, this
+assumption is incorrect.
+
+Therefore, subdivid EXT4_EXT_DATA_VALID1 into
+EXT4_EXT_DATA_ENTIRE_VALID1 and EXT4_EXT_DATA_PARTIAL_VALID1, which
+indicate that the first half of the extent is either entirely valid or
+only partially valid, respectively. These two flags cannot be set
+simultaneously.
+
+This patch does not use EXT4_EXT_DATA_PARTIAL_VALID1, it only replaces
+EXT4_EXT_DATA_VALID1 with EXT4_EXT_DATA_ENTIRE_VALID1 at the location
+where it is set, no logical changes.
+
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+Cc: stable@kernel.org
+Message-ID: <20251129103247.686136-2-yi.zhang@huaweicloud.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/extents.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 2cf5759ba6894..8d5ca450aa5d2 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -43,8 +43,13 @@
+ #define EXT4_EXT_MARK_UNWRIT1	0x2  /* mark first half unwritten */
+ #define EXT4_EXT_MARK_UNWRIT2	0x4  /* mark second half unwritten */
+ 
+-#define EXT4_EXT_DATA_VALID1	0x8  /* first half contains valid data */
+-#define EXT4_EXT_DATA_VALID2	0x10 /* second half contains valid data */
++/* first half contains valid data */
++#define EXT4_EXT_DATA_ENTIRE_VALID1	0x8   /* has entirely valid data */
++#define EXT4_EXT_DATA_PARTIAL_VALID1	0x10  /* has partially valid data */
++#define EXT4_EXT_DATA_VALID1		(EXT4_EXT_DATA_ENTIRE_VALID1 | \
++					 EXT4_EXT_DATA_PARTIAL_VALID1)
++
++#define EXT4_EXT_DATA_VALID2	0x20 /* second half contains valid data */
+ 
+ static __le32 ext4_extent_block_csum(struct inode *inode,
+ 				     struct ext4_extent_header *eh)
+@@ -3190,8 +3195,9 @@ static struct ext4_ext_path *ext4_split_extent_at(handle_t *handle,
+ 	unsigned int ee_len, depth;
+ 	int err = 0;
+ 
+-	BUG_ON((split_flag & (EXT4_EXT_DATA_VALID1 | EXT4_EXT_DATA_VALID2)) ==
+-	       (EXT4_EXT_DATA_VALID1 | EXT4_EXT_DATA_VALID2));
++	BUG_ON((split_flag & EXT4_EXT_DATA_VALID1) == EXT4_EXT_DATA_VALID1);
++	BUG_ON((split_flag & EXT4_EXT_DATA_VALID1) &&
++	       (split_flag & EXT4_EXT_DATA_VALID2));
+ 
+ 	ext_debug(inode, "logical block %llu\n", (unsigned long long)split);
+ 
+@@ -3373,7 +3379,7 @@ static struct ext4_ext_path *ext4_split_extent(handle_t *handle,
+ 			split_flag1 |= EXT4_EXT_MARK_UNWRIT1 |
+ 				       EXT4_EXT_MARK_UNWRIT2;
+ 		if (split_flag & EXT4_EXT_DATA_VALID2)
+-			split_flag1 |= EXT4_EXT_DATA_VALID1;
++			split_flag1 |= EXT4_EXT_DATA_ENTIRE_VALID1;
+ 		path = ext4_split_extent_at(handle, inode, path,
+ 				map->m_lblk + map->m_len, split_flag1, flags1);
+ 		if (IS_ERR(path))
+@@ -3728,7 +3734,7 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
+ 
+ 	/* Convert to unwritten */
+ 	if (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN) {
+-		split_flag |= EXT4_EXT_DATA_VALID1;
++		split_flag |= EXT4_EXT_DATA_ENTIRE_VALID1;
+ 	/* Convert to initialized */
+ 	} else if (flags & EXT4_GET_BLOCKS_CONVERT) {
+ 		/*
+-- 
+2.51.0
+
+
+
 
 
