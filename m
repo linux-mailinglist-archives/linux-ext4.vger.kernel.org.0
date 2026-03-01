@@ -1,199 +1,205 @@
-Return-Path: <linux-ext4+bounces-14291-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14292-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yJ1JHgFmpGlcfgUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14291-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 17:14:57 +0100
+	id MJ1KOBd6pGl3iAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14292-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 18:40:39 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6BAC1D08EC
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 17:14:56 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E979C1D0D81
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 18:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 56A82301300D
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 16:14:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AC262300608A
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 17:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D453930F7F3;
-	Sun,  1 Mar 2026 16:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ai/8D3s8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA71C333725;
+	Sun,  1 Mar 2026 17:40:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FCA2DCF6C
-	for <linux-ext4@vger.kernel.org>; Sun,  1 Mar 2026 16:14:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB1830B514
+	for <linux-ext4@vger.kernel.org>; Sun,  1 Mar 2026 17:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772381692; cv=none; b=cMmJn2dIgCABRMD7HoLhxTb4IJSs/bUDe4rLyu8P/sxT+xksRQB0Sq0hg8Kd93rX7SMPvbYbBKdhJwjnESF6oZWcC8xvKH6MzQ7qemgQLwE8StqrxTqwpDu0uujGcfn9QE4HAkl5SJK6e4ucoDXZ6jJzzxlzU7IqDFWT3yzUHOM=
+	t=1772386833; cv=none; b=Sccp1fI0gomzdfEJRz8rxIIzjYkMR769Px+gCeL7Z6GxgXfh5yhj3gvmg6XUCVAgg+6pcisQPRHF/3NlQ4ZGp2PBoG1VTVy71b2Vx0Qs6xo3qW8pYxfiIt6ux0oGehGAAMhr9gn1OP6nNr0z4xCnU9ALo1N8hqV3PjzTuvtSypY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772381692; c=relaxed/simple;
-	bh=Eno1iht+PVmmfWUYzGsnifDO+DdWBQEKNZ3MtxWnXbc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oh6lSMnXTUnYgs2lU40Lf2+uU1mfplBWeRXTaYoiLwR35l4gMbCnZhuZYWyeDg7SMVEEY1w1WsdpVvTpSrDYZmxYzLVMRhvpzJWzJJH9B4ft4Ee890EYVEYkzdkcURFG4+N1pBwaWgAExmHAjDcsti4e/HeaNwWfWE1RE7HsLYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ai/8D3s8; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-824ba8f0acaso1857210b3a.1
-        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 08:14:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772381690; x=1772986490; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvS7TZbJuLBE+k3dJSuAN7AJazKrzDmLDkhxnSkZZWA=;
-        b=Ai/8D3s8B7jY07QIfqP+9gYC351rcF6PtVkKnLQEvrFyF9LbhYT1fBO1rrmsOSOkq4
-         QH8pEkS84H00Y5KtjL7h2tHptT3Ir3N6UzYZXQ8B1IMwDcUcYEXtvAkonfgvoTi77uk7
-         OxzVAD6HdE8KrbUoRm0RZcOsj/F9S0DOwRZIOraDNsY/vM+s5wr1NpjhhtoL7eTgcyXR
-         IWcAj67Rc4azTpqbLpO4X3zfmmWvRzA8jviFWknJA32203llbInLyivBySQdENu1qyqF
-         5FpYGup3Iu7la2CmInWzBge2z/AyjuxCfyfcKczRB2m49xweFZv2h5+dVSvssqk6qJWU
-         Iy5Q==
+	s=arc-20240116; t=1772386833; c=relaxed/simple;
+	bh=c2AMNUmcL6ZVHG+nGRVd2R0Fvdz/nVNFA0bmNMjkJEk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=keMjhIlMhbQ45D+QVvhb4IBIk3A/TUCiJvTpzEt4ltkDO9Z6GyVZEhCvDp4SjIblqZpG79CPawL9RIoJrG7QZLNfXJKlByqbD2VuRxENnUwRAxvCNWr60Xf/RagQnSHLWnKgQxuB7IL/EGR+I7QYZlARP934z0dSUfWWaPMuVtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-463c4133ccaso48782096b6e.2
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 09:40:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772381690; x=1772986490;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JvS7TZbJuLBE+k3dJSuAN7AJazKrzDmLDkhxnSkZZWA=;
-        b=PzEur2DrE4meB0bP1wUuDZSc+X4g0BGCiqPa/1J/Pu9iDIfRZKSrkcLxTFojOAiE3P
-         gGe2kQrmlpMqQs0p9Cbzb5WC58I7fpD/kJlb+nzAy9OLkI/bxloq/OILwPCjRdzhTP0e
-         XGn+vCgsUg7pjAAbxVBJdRu6D5fD4s7R9Mat4qLiIsFsVaMVfcaWRMswnZF32YpSCKuz
-         hBJOm9rCB3V+HCPmcD+VhICBlNE3hXbMj6rJj7/rykoKkX+1zGVBMxCR0gxUSIEl+H7W
-         UiknzWN5FCaQ4W3vlMdSNiUJqHyBc+RnWnVNqnHzQVsHL7k0yO2dgDruKuqNqdtRRGZC
-         18vw==
-X-Gm-Message-State: AOJu0Yzfe8xi7SIyfi6a5WP+/PznYu7a0f36XkQ3FY0UwmQ6jt9I6Dgj
-	xvOADTEnub36ZAaA9sQ0Ur+kkTOK/2XqTnKDxj7XNFYedO3MxdLTj7D8L+A9lA==
-X-Gm-Gg: ATEYQzyblNoz/qXMV6DyQfC/jWj4/FhMrjKohyXdNXPt/YpCjeKlSVYaYy5VyRBIYRV
-	9LwWC+Xxxdjr0hMsiRBHSJstvntNjl8h4Jb1wYRa4dtg1J0H9HHnmdBDdJc5Iqjb7gxxXeUVqi7
-	VZxvzbUpcdpZRwpJEX4nMNe4uL4POvV61zJ+PM6mGkqFSmOJr4dPGIV0SH+FFoW3aEvO0UbVho5
-	Y5PdObINQ477cqTB8IIlTjK5D2RSWSmtgg6js3FNbmoBMpGeDxNh5326SqXVwJ60dgUXk24A2KD
-	Kik5QITNOJ/DAYE2fn5Op0VQz7lOz4gEzvRpp+JtBm48CrRhvi3Gk3nev8jxBQn8cp3z7jiaH/h
-	9dGM92QCx3Owp8MBVrfeHMZHeOg1BJRpMUNYw9lRIjdCGMJkIDFXKtBA5bLI3qSouZfI43EtBuU
-	tUsK/63MIORIigSCvLL2eiJbgN7lFLuA==
-X-Received: by 2002:a05:6a00:1c8e:b0:827:3f79:2349 with SMTP id d2e1a72fcca58-8274da2a016mr8746149b3a.61.1772381689990;
-        Sun, 01 Mar 2026 08:14:49 -0800 (PST)
-Received: from dw-tp.ibmuc.com ([49.205.216.49])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82739dabd43sm12428765b3a.25.2026.03.01.08.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 08:14:49 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH] ext4: kunit: extents-test: Fix percpu_counters list corruption
-Date: Sun,  1 Mar 2026 21:44:26 +0530
-Message-ID: <5bb9041471dab8ce870c191c19cbe4df57473be8.1772381213.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        d=1e100.net; s=20230601; t=1772386831; x=1772991631;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rqF6YfiVtI9PUPl6zKaf/kpEamc4fPsUxjwnl79XGXA=;
+        b=teqO7xPEaeMuLibQ1Wa+91YZVpVajR2ZyQdyOHt3pDp5VqqAzzLrf0VjDX5FuZ5jHo
+         K3GrC3x+TU5ZCmDU3wtTjKlmZazQ0mpUhRvQ/p8/5Vw1kiCx7xUArxNt7/xfKiTjOSGm
+         fGcxQkMIa9v97/VD1r9dEB/TaWmFPGHs5D3vAOxgkjUFIz1HSsb68cDb+jF5p39VV298
+         rtsQsomlFYg+ar1Op+Bz1zq5Zv5oyR4VEBhWhO2Ilpv7i66qOBgKg+skj97wG1bZBFnH
+         iPL1EozV0mA8OMpIFSrV/oXJDQIMf9GfVvLSezuTe4iM1xs/qD9UAFSm4KSC8jqNLsy/
+         OKlg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTgk4TF4NULQV0rEFlZ+0qNHRqwPnC20PHQeU20lpRQFpusIvSDdWsbPyaPIkmwsXldE2Bpux+AhvW@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUl8aCOHqP6pz0PyTd2ar4O2Z+cfgEjF+jbQ4gDfZvI/YTrZxF
+	rdwoOXUAYGgca2aor0ZX6tkNemCHc5ILSaAY73j2UGyQlOKSZeEbklMZRBC6fdkHP/JLxMvepjE
+	lVPvISjz+/jqOYFONP2uUEU1oooAHg3wpnOJzMUi3fppOQ7fQjZS8aHjY56w=
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6820:4988:b0:662:f763:c539 with SMTP id
+ 006d021491bc7-679fadb7a4amr4755094eaf.14.1772386831234; Sun, 01 Mar 2026
+ 09:40:31 -0800 (PST)
+Date: Sun, 01 Mar 2026 09:40:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69a47a0f.050a0220.3a55be.0065.GAE@google.com>
+Subject: [syzbot] [ext4?] kernel BUG in ext4_ext_map_blocks
+From: syzbot <syzbot+b20d00cf1ba477ac419f@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=70fe0401f305d8d4];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14291-lists,linux-ext4=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux.ibm.com,gmail.com];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14292-lists,linux-ext4=lfdr.de,b20d00cf1ba477ac419f];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_NEQ_ENVFROM(0.00)[riteshlist@gmail.com,linux-ext4@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E6BAC1D08EC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[googlegroups.com:email,storage.googleapis.com:url,goo.gl:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E979C1D0D81
 X-Rspamd-Action: no action
 
-commit 82f80e2e3b23 ("ext4: add extent status cache support to kunit tests"),
-added ext4_es_register_shrinker() in extents_kunit_init() function but
-failed to add the unregister shrinker routine in extents_kunit_exit().
+Hello,
 
-This could cause the following percpu_counters list corruption bug.
+syzbot found the following issue on:
 
-         ok 1 split unwrit extent to 2 extents and convert 1st half writ
-  slab kmalloc-4k start c0000002007ff000 pointer offset 1448 size 4096
- list_add corruption. next->prev should be prev (c000000004bc9e60), but was 0000000000000000. (next=c0000002007ff5a8).
- ------------[ cut here ]------------
- kernel BUG at lib/list_debug.c:29!
-cpu 0x2: Vector: 700 (Program Check) at [c000000241927a30]
-    pc: c000000000f26ed0: __list_add_valid_or_report+0x120/0x164
-    lr: c000000000f26ecc: __list_add_valid_or_report+0x11c/0x164
-    sp: c000000241927cd0
-   msr: 800000000282b033
-  current = 0xc000000241215200
-  paca    = 0xc0000003fffff300   irqmask: 0x03   irq_happened: 0x09
-    pid   = 258, comm = kunit_try_catch
-kernel BUG at lib/list_debug.c:29!
-enter ? for help
- __percpu_counter_init_many+0x148/0x184
- ext4_es_register_shrinker+0x74/0x23c
- extents_kunit_init+0x100/0x308
- kunit_try_run_case+0x78/0x1f8
- kunit_generic_run_threadfn_adapter+0x40/0x70
- kthread+0x190/0x1a0
- start_kernel_thread+0x14/0x18
-2:mon>
+HEAD commit:    7dff99b35460 Remove WARN_ALL_UNSEEDED_RANDOM kernel config..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1749955a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70fe0401f305d8d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=b20d00cf1ba477ac419f
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
 
-This happens because:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-extents_kunit_init(test N):
-  ext4_es_register_shrinker(sbi)
-    percpu_counters_init() x 4; // this adds 4 list nodes to global percpu_counters list
-      list_add(&fbc->list, &percpu_counters);
-    shrinker_register();
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f33ddab53df8/disk-7dff99b3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3c50676d2681/vmlinux-7dff99b3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bbae16d525e0/bzImage-7dff99b3.xz
 
-extents_kunit_exit(test N):
-  kfree(sbi);			// frees sbi w/o removing those 4 list nodes.
-  				// So, those list node now becomes dangling pointers
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b20d00cf1ba477ac419f@syzkaller.appspotmail.com
 
-extents_kunit_init(test N+1):
-  kzalloc_obj(ext4_sb_info)	// allocator returns same page, but zeroed.
-  ext4_es_register_shrinker(sbi)
-    percpu_counters_init()
-      list_add(&fbc->list, &percpu_counters);
-        __list_add_valid(new, prev, next);
-	next->prev != prev 		// list corruption bug detected, since next->prev = NULL
+EXT4-fs (loop9): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: writeback.
+------------[ cut here ]------------
+kernel BUG at fs/ext4/ext4_extents.h:193!
+Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+CPU: 0 UID: 0 PID: 8704 Comm: syz.9.339 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:193 [inline]
+RIP: 0010:ext4_ext_map_blocks+0x5521/0x58b0 fs/ext4/extents.c:4453
+Code: 06 af ff ff e8 b0 5a 4e ff 48 c7 c7 80 d6 e2 8d be 04 00 00 00 e8 5f e1 32 ff 65 48 ff 43 08 e9 e6 ae ff ff e8 90 5a 4e ff 90 <0f> 0b e8 88 5a 4e ff 90 0f 0b e8 80 5a 4e ff 90 0f 0b e8 78 5a 4e
+RSP: 0018:ffffc9001238ef60 EFLAGS: 00010283
+RAX: ffffffff8275f850 RBX: 0000000000000000 RCX: 0000000000080000
+RDX: ffffc90006f92000 RSI: 000000000000d48e RDI: 000000000000d48f
+RBP: ffffc9001238f240 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff1ed44b7 R12: 1ffff92002471e1c
+R13: 0000000000000003 R14: 00000000000001c1 R15: 0000000000000000
+FS:  0000[  298.651065][ T8704] FS:  00007f0b370f66c0(0000) GS:ffff888126343000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0b2ece1000 CR3: 0000000040192000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ ext4_map_create_blocks+0x11d/0x540 fs/ext4/inode.c:616
+ ext4_map_blocks+0x7cd/0x11d0 fs/ext4/inode.c:809
+ _ext4_get_block+0x1e3/0x470 fs/ext4/inode.c:909
+ ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:942
+ ext4_block_write_begin+0xb14/0x1950 fs/ext4/inode.c:1196
+ ext4_write_begin+0xb40/0x18c0 fs/ext4/ext4_jbd2.h:-1
+ ext4_da_write_begin+0x355/0xd90 fs/ext4/inode.c:3123
+ generic_perform_write+0x2af/0x8b0 mm/filemap.c:4314
+ ext4_buffered_write_iter+0xd0/0x3a0 fs/ext4/file.c:300
+ ext4_file_write_iter+0x299/0x1c10 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x629/0xba0 fs/read_write.c:688
+ ksys_pwrite64 fs/read_write.c:795 [inline]
+ __do_sys_pwrite64 fs/read_write.c:803 [inline]
+ __se_sys_pwrite64 fs/read_write.c:800 [inline]
+ __x64_sys_pwrite64+0x19c/0x230 fs/read_write.c:800
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f0b38e9c629
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0b370f6028 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 00007f0b39115fa0 RCX: 00007f0b38e9c629
+RDX: 000000000000fdef RSI: 0000200000000140 RDI: 0000000000000007
+RBP: 00007f0b38f32b39 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000c00 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f0b39116038 R14: 00007f0b39115fa0 R15: 00007ffd1d3115a8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_ext_mark_unwritten fs/ext4/ext4_extents.h:193 [inline]
+RIP: 0010:ext4_ext_map_blocks+0x5521/0x58b0 fs/ext4/extents.c:4453
+Code: 06 af ff ff e8 b0 5a 4e ff 48 c7 c7 80 d6 e2 8d be 04 00 00 00 e8 5f e1 32 ff 65 48 ff 43 08 e9 e6 ae ff ff e8 90 5a 4e ff 90 <0f> 0b e8 88 5a 4e ff 90 0f 0b e8 80 5a 4e ff 90 0f 0b e8 78 5a 4e
+RSP: 0018:ffffc9001238ef60 EFLAGS: 00010283
+RAX: ffffffff8275f850 RBX: 0000000000000000 RCX: 0000000000080000
+RDX: ffffc90006f92000 RSI: 000000000000d48e RDI: 000000000000d48f
+RBP: ffffc9001238f240 R08: 0000000000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff1ed44b7 R12: 1ffff92002471e1c
+R13: 0000000000000003 R14: 00000000000001c1 R15: 0000000000000000
+FS:  00007f0b370f66c0(0000) GS:ffff888126443000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0b2ece7000 CR3: 0000000040192000 CR4: 00000000003526f0
 
-Fixes: 82f80e2e3b23 ("ext4: add extent status cache support to kunit tests")
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+
 ---
- fs/ext4/extents-test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/ext4/extents-test.c b/fs/ext4/extents-test.c
-index 7c4690eb7dad..a6b3e6b592a5 100644
---- a/fs/ext4/extents-test.c
-+++ b/fs/ext4/extents-test.c
-@@ -142,8 +142,10 @@ static struct file_system_type ext_fs_type = {
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
- static void extents_kunit_exit(struct kunit *test)
- {
--	struct ext4_sb_info *sbi = k_ctx.k_ei->vfs_inode.i_sb->s_fs_info;
-+	struct super_block *sb = k_ctx.k_ei->vfs_inode.i_sb;
-+	struct ext4_sb_info *sbi = sb->s_fs_info;
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-+	ext4_es_unregister_shrinker(sbi);
- 	kfree(sbi);
- 	kfree(k_ctx.k_ei);
- 	kfree(k_ctx.k_data);
---
-2.53.0
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
