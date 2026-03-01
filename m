@@ -1,60 +1,59 @@
-Return-Path: <linux-ext4+bounces-14253-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14254-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UEvwBZ2ao2l4IAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14253-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:09 +0100
+	id kLbEJqWao2kwIAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14254-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:17 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A5D1CBB31
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 045891CBB5E
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E95363216FA6
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:34:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3F42E32185FC
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4212E7F39;
-	Sun,  1 Mar 2026 01:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF472E8E09;
+	Sun,  1 Mar 2026 01:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mv/0ZHf+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SOmcTg25"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846902E7637;
-	Sun,  1 Mar 2026 01:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0414D2C11DE;
+	Sun,  1 Mar 2026 01:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328804; cv=none; b=p/BzNUYyyZtCrdw5s+Hb4CEPn9e7SFEAeLS/V1dE4ynT5hf3AClmTUOOS6Xu2Ttua2Z4KUZH+QFKZws/4DlT16lR2mQSvYBxayCr5a9qkFpCnNOPa8yoy14e2s42bamCU8oOa/X4OA+oB7vDZzDgmzUjWcX34ZPRy/BOL2XCpSQ=
+	t=1772328807; cv=none; b=u15XE+kTaePF1yHhwBi+E5BULbRg7u9csD0qQJp62KilG6IYQfyOd3R5DnHu1so8q8nFdHWaijLzFOqAF70aTIiFyAsgn49wpSCooTZ0myO1ukZ3OIB0as1BB8UdtkVS0kjBqD12iUP7kg8LsEQJ9aK1xbMSBqkP8wPJXK0hsG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328804; c=relaxed/simple;
-	bh=gnm0qrX9tfG86/RiFpCMhZ9TzJnpRaMfgUIUVvRFWdg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=H4H/NPqHiVktN33UU2N7eQDhudLVHBxxgMDv4alUxF6/qTJ9TaN6SXOL3t2aTfE/8UbBx1EmepQ5RPYfX7+l6U1ixBNUUyC2TIAhT+Dxv4Hjn2u/ew1R4p6c2uJBpPrt7aeYBsUXZev1O96tOhEMGTdDifaBFQ18FDPsJ0Z241s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mv/0ZHf+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 945DEC19421;
-	Sun,  1 Mar 2026 01:33:23 +0000 (UTC)
+	s=arc-20240116; t=1772328807; c=relaxed/simple;
+	bh=JTt67oBsk6cub1IpA5IfsIHar5ySmsmTNh+z3yobY3M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T6oVeQmdeN8ua1UMVf+jb4YOIoQfaajSucfRi3ZkRYN5Wu3TGvaWmNrQI6x8ABTlfCK/sTmhYLtgBl4d827iXvUIRDz53F6Jz/NG8VXepdkgXsk0r4dz0Hmy6Xbhwk1BG3mVfO1MRPmfeCQ442hM20+YRVbASkc9AMUkRmbZ6ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SOmcTg25; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F84C19421;
+	Sun,  1 Mar 2026 01:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328804;
-	bh=gnm0qrX9tfG86/RiFpCMhZ9TzJnpRaMfgUIUVvRFWdg=;
+	s=k20201202; t=1772328806;
+	bh=JTt67oBsk6cub1IpA5IfsIHar5ySmsmTNh+z3yobY3M=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Mv/0ZHf+P1MHBdww5JemCoH47+uJTrbSOdVlLXpzscpX/yqR6E6Se6s/722AWltRz
-	 O1sLlrb/9c2QmgqdC+Bejhcc8Aqp44o1wKyaxdPyZwyaU0MtaPz2h/beJUWeBNoQGk
-	 l4dPYYWA+SrIGxrOVE8vONyX1TWDAfJkTPrSN4KBMj6Qnqgw9qHyGDErvjaDMDuuog
-	 IG+PLd6CoMrllG4JHpqMEoeFp4Dr4zhdreyLv8ff8Z+0dFoga7BwyGJTacALyGktPe
-	 4p7Xdooyq3YENX2gAwA30ZvxAyj5KnABXgd0ZuYOk6M8EhZJgzaWpIOJENmsJbNnaQ
-	 HOlhDpjZccBOA==
+	b=SOmcTg250TVvMdab2JLi/moNbRLAHhBKIcW+RG7cMvRywyTjtIkIeanSbDFS5+P1+
+	 pozHVc1E9RMtylZhIysIDA46UPxJHvG+ypkI17o1i0kMGiYee0RwKhJh/Zb4e1XX50
+	 3zdhZ7yWa7LfeCXb0rEU2f2o33DWl536W7mBtPk+lNCJzU5uYvdm2er+B6T/c6X0Zh
+	 PG5PwA3IiNjTgiv/azEMu/xUZPBXshMMBfDuxIvlVCtVu8LMNLophM7VrJWlYtrAd+
+	 4FT+wxSaYvMqKWXmFkUjPHqEgUADvwLPlRhbZ28jxpCzUskI/50dxqUd5G4OzB+BAR
+	 er4U3iAJFOhvA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	sunyongjian1@huawei.com
-Cc: Zhang Yi <yi.zhang@huawei.com>,
-	Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
+	jack@suse.cz
+Cc: Baokun Li <libaokun1@huawei.com>,
+	Zhang Yi <yi.zhang@huawei.com>,
 	stable@kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: fix e4b bitmap inconsistency reports" failed to apply to 6.6-stable tree
-Date: Sat, 28 Feb 2026 20:33:22 -0500
-Message-ID: <20260301013322.1692592-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: use optimized mballoc scanning regardless of inode format" failed to apply to 6.6-stable tree
+Date: Sat, 28 Feb 2026 20:33:24 -0500
+Message-ID: <20260301013324.1692638-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -77,7 +76,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14253-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14254-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -85,15 +84,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email,suse.cz:email]
-X-Rspamd-Queue-Id: B3A5D1CBB31
+	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,suse.cz:email,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 045891CBB5E
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.6-stable tree.
@@ -106,125 +105,47 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From bdc56a9c46b2a99c12313122b9352b619a2e719e Mon Sep 17 00:00:00 2001
-From: Yongjian Sun <sunyongjian1@huawei.com>
-Date: Tue, 6 Jan 2026 17:08:20 +0800
-Subject: [PATCH] ext4: fix e4b bitmap inconsistency reports
+From 3574c322b1d0eb32dbd76b469cb08f9a67641599 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Wed, 14 Jan 2026 19:28:19 +0100
+Subject: [PATCH] ext4: use optimized mballoc scanning regardless of inode
+ format
 
-A bitmap inconsistency issue was observed during stress tests under
-mixed huge-page workloads. Ext4 reported multiple e4b bitmap check
-failures like:
+Currently we don't used mballoc optimized scanning (using max free
+extent order and avg free extent order group lists) for inodes with
+indirect block based format. This is confusing for users and I don't see
+a good reason for that. Even with indirect block based inode format we
+can spend big amount of time searching for free blocks for large
+filesystems with fragmented free space. To add to the confusion before
+commit 077d0c2c78df ("ext4: make mb_optimize_scan performance mount
+option work with extents") optimized scanning was applied *only* to
+indirect block based inodes so that commit appears as a performance
+regression to some users. Just use optimized scanning whenever it is
+enabled by mount options.
 
-ext4_mb_complex_scan_group:2508: group 350, 8179 free clusters as
-per group info. But got 8192 blocks
-
-Analysis and experimentation confirmed that the issue is caused by a
-race condition between page migration and bitmap modification. Although
-this timing window is extremely narrow, it is still hit in practice:
-
-folio_lock                        ext4_mb_load_buddy
-__migrate_folio
-  check ref count
-  folio_mc_copy                     __filemap_get_folio
-                                      folio_try_get(folio)
-                                  ......
-                                  mb_mark_used
-                                  ext4_mb_unload_buddy
-  __folio_migrate_mapping
-    folio_ref_freeze
-folio_unlock
-
-The root cause of this issue is that the fast path of load_buddy only
-increments the folio's reference count, which is insufficient to prevent
-concurrent folio migration. We observed that the folio migration process
-acquires the folio lock. Therefore, we can determine whether to take the
-fast path in load_buddy by checking the lock status. If the folio is
-locked, we opt for the slow path (which acquires the lock) to close this
-concurrency window.
-
-Additionally, this change addresses the following issues:
-
-When the DOUBLE_CHECK macro is enabled to inspect bitmap-related
-issues, the following error may be triggered:
-
-corruption in group 324 at byte 784(6272): f in copy != ff on
-disk/prealloc
-
-Analysis reveals that this is a false positive. There is a specific race
-window where the bitmap and the group descriptor become momentarily
-inconsistent, leading to this error report:
-
-ext4_mb_load_buddy                   ext4_mb_load_buddy
-  __filemap_get_folio(create|lock)
-    folio_lock
-  ext4_mb_init_cache
-    folio_mark_uptodate
-                                     __filemap_get_folio(no lock)
-                                     ......
-                                     mb_mark_used
-                                       mb_mark_used_double
-  mb_cmp_bitmaps
-                                       mb_set_bits(e4b->bd_bitmap)
-  folio_unlock
-
-The original logic assumed that since mb_cmp_bitmaps is called when the
-bitmap is newly loaded from disk, the folio lock would be sufficient to
-prevent concurrent access. However, this overlooks a specific race
-condition: if another process attempts to load buddy and finds the folio
-is already in an uptodate state, it will immediately begin using it without
-holding folio lock.
-
-Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://patch.msgid.link/20260106090820.836242-1-sunyongjian@huaweicloud.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Cc: stable@kernel.org
+Link: https://patch.msgid.link/20260114182836.14120-4-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/mballoc.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ fs/ext4/mballoc.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 56d50fd3310b4..de4cacb740b33 100644
+index 910b454b4a21e..dbc82b65f810f 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -1706,16 +1706,17 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+@@ -1148,8 +1148,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+ 		return 0;
+ 	if (ac->ac_criteria >= CR_GOAL_LEN_SLOW)
+ 		return 0;
+-	if (!ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
+-		return 0;
+ 	return 1;
+ }
  
- 	/* Avoid locking the folio in the fast path ... */
- 	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
--	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-+	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
-+		/*
-+		 * folio_test_locked is employed to detect ongoing folio
-+		 * migrations, since concurrent migrations can lead to
-+		 * bitmap inconsistency. And if we are not uptodate that
-+		 * implies somebody just created the folio but is yet to
-+		 * initialize it. We can drop the folio reference and
-+		 * try to get the folio with lock in both cases to avoid
-+		 * concurrency.
-+		 */
- 		if (!IS_ERR(folio))
--			/*
--			 * drop the folio reference and try
--			 * to get the folio with lock. If we
--			 * are not uptodate that implies
--			 * somebody just created the folio but
--			 * is yet to initialize it. So
--			 * wait for it to initialize.
--			 */
- 			folio_put(folio);
- 		folio = __filemap_get_folio(inode->i_mapping, pnum,
- 				FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
-@@ -1764,7 +1765,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
- 
- 	/* we need another folio for the buddy */
- 	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
--	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
-+	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
- 		if (!IS_ERR(folio))
- 			folio_put(folio);
- 		folio = __filemap_get_folio(inode->i_mapping, pnum,
 -- 
 2.51.0
 
