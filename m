@@ -1,59 +1,60 @@
-Return-Path: <linux-ext4+bounces-14262-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14263-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OB5xH6qao2kwIAUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14262-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:22 +0100
+	id 0GCxIvKao2l4IAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14263-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:48:34 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C6C1CBB76
-	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:47:22 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 720851CBD4E
+	for <lists+linux-ext4@lfdr.de>; Sun, 01 Mar 2026 02:48:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 26D94303A4A9
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:42:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3E0533035F68
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 01:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9311829B795;
-	Sun,  1 Mar 2026 01:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59712BD59C;
+	Sun,  1 Mar 2026 01:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2SJOPN+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z15404rC"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0C01A3165;
-	Sun,  1 Mar 2026 01:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6D013B58A;
+	Sun,  1 Mar 2026 01:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772329348; cv=none; b=GXoqDUwyCOCNxDaxhHs5mY0NXSJN9WmcM6EVqcW1CdTXW3MRmK/VeAv2gxTayr1332inri/m5SoYy122Nn1Ag2HCkGU2sdArhF5ogZ4AN4hir0/am3f8V4Pc1SlOt8oCnhji51q3MQ7WKg5T2fIagnDRfZiwOMuB/3fXNAbm18c=
+	t=1772329357; cv=none; b=n1gGYfVy10SIL182JxOPO3bLoFywBRvVehnQyP6Y5cm8bKJlE4O+2XLeQ91KHOUzjqCBsmtFLDhBKR3EvaGzYvHqhjpoDHR2gHcwL0j+WeKn3Y12nUzo4Nmu4E6i2j60CxRegFZ+3La9tc+woBSlMDnZhyAF/QMSXwHtYYgnphQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772329348; c=relaxed/simple;
-	bh=DDsUsaQNu5IMQrKdK4c7UCR6uG+16Io/2QJ6l3qobis=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ExSZgRWvqEu8qO0gEyW34ujjMDTlsTmksaKBeUwRl2y5gEUpRl3hXP4o8VbSvYz/wISOtR2Dj7DnozVC5JHb3KgTkRIQ9YTai+6sU4NKPAn5Zb9ZhGD679Q6WE/9E5EAz3A8zivGIl4+lUeUeYcg56FadEqbuOq/kaEpXU5+NhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2SJOPN+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59F22C19421;
-	Sun,  1 Mar 2026 01:42:27 +0000 (UTC)
+	s=arc-20240116; t=1772329357; c=relaxed/simple;
+	bh=xbMChPBeBLd4qQF5Jxs4Hjo3wt2T+U4+oBRZ0+kLhqQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SESgMhNd4U8H/1sr3LXHAIe4BoABuSRJt51kJN8gCR/e5s4pigkw83TrQnzp4ba5dAxv6e4QkeDYKPR2VpOt9Ij3KwmPiCzOZBZyRT7F5gfTztCbC7Wj7SBM9wyGuZq/zjMJevd4HnybteZhKPpD2dJMh+q9CvNTbK4AP1+YAIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z15404rC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 523A2C19421;
+	Sun,  1 Mar 2026 01:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772329348;
-	bh=DDsUsaQNu5IMQrKdK4c7UCR6uG+16Io/2QJ6l3qobis=;
+	s=k20201202; t=1772329357;
+	bh=xbMChPBeBLd4qQF5Jxs4Hjo3wt2T+U4+oBRZ0+kLhqQ=;
 	h=From:To:Cc:Subject:Date:From;
-	b=L2SJOPN+YQK9ZQ4WddQBL1mIiCu5nY05ooSCJY+SJnUbuVa9T1H76s75b6+zb4mJX
-	 c94JCkatV9dxLhO3If9wOtjpFpWKTYYCXRWlKXQM+6rnb3UTpT0Dpvb0I2Xbe+uB4C
-	 /eFithXL3m9kW2i4XetZtbI3UEd9ePB68BWXUZQcfzmEvSHjAJrAhpamBnWonAp21D
-	 Ju1OvnAaIZYsTmXuAdWsR1LvqWsj0+/G+PKl3KX9IFigqMcY39sgetY+RFb+akqsRz
-	 9jon34RUUP27PxLzRyTZIZqpiUEDBFe0aAFB9OfLqthT2KYnZBBKJdX0F8OOMU9I1X
-	 slh2QAGWPgBEg==
+	b=Z15404rCJUUGFwj9gYJEKV9zyhmNYWs5VC5gZ6rv+oe/t7hTFMSM2mzn0hu2HGty8
+	 MsubTN9yI+LizKZX8meUgNMQ2Xnvr+4raqyce7N5C9IaJRpN4SPZhAcHiuKoPqkUFi
+	 pCU6OQz0lemO8pvWCHKtGpqbXvgOnR6GDNFechh/b3kNWAz0uq+jLs59KLRSLMMQyd
+	 dQqWaeiJOLccqv9NlFIwB9dyDaVbVKnQ4RqOsHpObjPWb+c1u+1yw4KKUzJLw4tjW9
+	 S+VClsrjygRHkxoq2kELO2EcTi+C22cU/vUDTx6oNT++gSNs6bisrP8idMOv+4t1g/
+	 oQPBwrf6Ovu4Q==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	yi.zhang@huawei.com
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	sunyongjian1@huawei.com
+Cc: Zhang Yi <yi.zhang@huawei.com>,
 	Baokun Li <libaokun1@huawei.com>,
-	stable@kernel.org,
+	Jan Kara <jack@suse.cz>,
 	Theodore Ts'o <tytso@mit.edu>,
+	stable@kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: FAILED: Patch "ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before submitting I/O" failed to apply to 6.1-stable tree
-Date: Sat, 28 Feb 2026 20:42:25 -0500
-Message-ID: <20260301014226.1704280-1-sashal@kernel.org>
+Subject: FAILED: Patch "ext4: fix e4b bitmap inconsistency reports" failed to apply to 6.1-stable tree
+Date: Sat, 28 Feb 2026 20:42:34 -0500
+Message-ID: <20260301014235.1704488-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -70,13 +71,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14262-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14263-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -84,15 +85,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:email,huaweicloud.com:email]
-X-Rspamd-Queue-Id: 33C6C1CBB76
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:email,msgid.link:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 720851CBD4E
 X-Rspamd-Action: no action
 
 The patch below does not apply to the 6.1-stable tree.
@@ -105,100 +106,125 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From feaf2a80e78f89ee8a3464126077ba8683b62791 Mon Sep 17 00:00:00 2001
-From: Zhang Yi <yi.zhang@huawei.com>
-Date: Sat, 29 Nov 2025 18:32:35 +0800
-Subject: [PATCH] ext4: don't set EXT4_GET_BLOCKS_CONVERT when splitting before
- submitting I/O
+From bdc56a9c46b2a99c12313122b9352b619a2e719e Mon Sep 17 00:00:00 2001
+From: Yongjian Sun <sunyongjian1@huawei.com>
+Date: Tue, 6 Jan 2026 17:08:20 +0800
+Subject: [PATCH] ext4: fix e4b bitmap inconsistency reports
 
-When allocating blocks during within-EOF DIO and writeback with
-dioread_nolock enabled, EXT4_GET_BLOCKS_PRE_IO was set to split an
-existing large unwritten extent. However, EXT4_GET_BLOCKS_CONVERT was
-set when calling ext4_split_convert_extents(), which may potentially
-result in stale data issues.
+A bitmap inconsistency issue was observed during stress tests under
+mixed huge-page workloads. Ext4 reported multiple e4b bitmap check
+failures like:
 
-Assume we have an unwritten extent, and then DIO writes the second half.
+ext4_mb_complex_scan_group:2508: group 350, 8179 free clusters as
+per group info. But got 8192 blocks
 
-   [UUUUUUUUUUUUUUUU] on-disk extent        U: unwritten extent
-   [UUUUUUUUUUUUUUUU] extent status tree
-            |<-   ->| ----> dio write this range
+Analysis and experimentation confirmed that the issue is caused by a
+race condition between page migration and bitmap modification. Although
+this timing window is extremely narrow, it is still hit in practice:
 
-First, ext4_iomap_alloc() call ext4_map_blocks() with
-EXT4_GET_BLOCKS_PRE_IO, EXT4_GET_BLOCKS_UNWRIT_EXT and
-EXT4_GET_BLOCKS_CREATE flags set. ext4_map_blocks() find this extent and
-call ext4_split_convert_extents() with EXT4_GET_BLOCKS_CONVERT and the
-above flags set.
+folio_lock                        ext4_mb_load_buddy
+__migrate_folio
+  check ref count
+  folio_mc_copy                     __filemap_get_folio
+                                      folio_try_get(folio)
+                                  ......
+                                  mb_mark_used
+                                  ext4_mb_unload_buddy
+  __folio_migrate_mapping
+    folio_ref_freeze
+folio_unlock
 
-Then, ext4_split_convert_extents() calls ext4_split_extent() with
-EXT4_EXT_MAY_ZEROOUT, EXT4_EXT_MARK_UNWRIT2 and EXT4_EXT_DATA_VALID2
-flags set, and it calls ext4_split_extent_at() to split the second half
-with EXT4_EXT_DATA_VALID2, EXT4_EXT_MARK_UNWRIT1, EXT4_EXT_MAY_ZEROOUT
-and EXT4_EXT_MARK_UNWRIT2 flags set. However, ext4_split_extent_at()
-failed to insert extent since a temporary lack -ENOSPC. It zeroes out
-the first half but convert the entire on-disk extent to written since
-the EXT4_EXT_DATA_VALID2 flag set, but left the second half as unwritten
-in the extent status tree.
+The root cause of this issue is that the fast path of load_buddy only
+increments the folio's reference count, which is insufficient to prevent
+concurrent folio migration. We observed that the folio migration process
+acquires the folio lock. Therefore, we can determine whether to take the
+fast path in load_buddy by checking the lock status. If the folio is
+locked, we opt for the slow path (which acquires the lock) to close this
+concurrency window.
 
-   [0000000000SSSSSS]  data                S: stale data, 0: zeroed
-   [WWWWWWWWWWWWWWWW]  on-disk extent      W: written extent
-   [WWWWWWWWWWUUUUUU]  extent status tree
+Additionally, this change addresses the following issues:
 
-Finally, if the DIO failed to write data to the disk, the stale data in
-the second half will be exposed once the cached extent entry is gone.
+When the DOUBLE_CHECK macro is enabled to inspect bitmap-related
+issues, the following error may be triggered:
 
-Fix this issue by not passing EXT4_GET_BLOCKS_CONVERT when splitting
-an unwritten extent before submitting I/O, and make
-ext4_split_convert_extents() to zero out the entire extent range
-to zero for this case, and also mark the extent in the extent status
-tree for consistency.
+corruption in group 324 at byte 784(6272): f in copy != ff on
+disk/prealloc
 
-Fixes: b8a8684502a0 ("ext4: Introduce FALLOC_FL_ZERO_RANGE flag for fallocate")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Analysis reveals that this is a false positive. There is a specific race
+window where the bitmap and the group descriptor become momentarily
+inconsistent, leading to this error report:
+
+ext4_mb_load_buddy                   ext4_mb_load_buddy
+  __filemap_get_folio(create|lock)
+    folio_lock
+  ext4_mb_init_cache
+    folio_mark_uptodate
+                                     __filemap_get_folio(no lock)
+                                     ......
+                                     mb_mark_used
+                                       mb_mark_used_double
+  mb_cmp_bitmaps
+                                       mb_set_bits(e4b->bd_bitmap)
+  folio_unlock
+
+The original logic assumed that since mb_cmp_bitmaps is called when the
+bitmap is newly loaded from disk, the folio lock would be sufficient to
+prevent concurrent access. However, this overlooks a specific race
+condition: if another process attempts to load buddy and finds the folio
+is already in an uptodate state, it will immediately begin using it without
+holding folio lock.
+
+Signed-off-by: Yongjian Sun <sunyongjian1@huawei.com>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 Reviewed-by: Baokun Li <libaokun1@huawei.com>
-Cc: stable@kernel.org
-Message-ID: <20251129103247.686136-4-yi.zhang@huaweicloud.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://patch.msgid.link/20260106090820.836242-1-sunyongjian@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 ---
- fs/ext4/extents.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 1fee84ea20af1..91b56de60c905 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3746,15 +3746,19 @@ static struct ext4_ext_path *ext4_split_convert_extents(handle_t *handle,
- 	/* Convert to unwritten */
- 	if (flags & EXT4_GET_BLOCKS_CONVERT_UNWRITTEN) {
- 		split_flag |= EXT4_EXT_DATA_ENTIRE_VALID1;
--	/* Convert to initialized */
--	} else if (flags & EXT4_GET_BLOCKS_CONVERT) {
-+	/* Split the existing unwritten extent */
-+	} else if (flags & (EXT4_GET_BLOCKS_UNWRIT_EXT |
-+			    EXT4_GET_BLOCKS_CONVERT)) {
- 		/*
- 		 * It is safe to convert extent to initialized via explicit
- 		 * zeroout only if extent is fully inside i_size or new_size.
- 		 */
- 		split_flag |= ee_block + ee_len <= eof_block ?
- 			      EXT4_EXT_MAY_ZEROOUT : 0;
--		split_flag |= (EXT4_EXT_MARK_UNWRIT2 | EXT4_EXT_DATA_VALID2);
-+		split_flag |= EXT4_EXT_MARK_UNWRIT2;
-+		/* Convert to initialized */
-+		if (flags & EXT4_GET_BLOCKS_CONVERT)
-+			split_flag |= EXT4_EXT_DATA_VALID2;
- 	}
- 	flags |= EXT4_GET_BLOCKS_SPLIT_NOMERGE;
- 	return ext4_split_extent(handle, inode, path, map, split_flag, flags,
-@@ -3930,7 +3934,7 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
- 	/* get_block() before submitting IO, split the extent */
- 	if (flags & EXT4_GET_BLOCKS_SPLIT_NOMERGE) {
- 		path = ext4_split_convert_extents(handle, inode, map, path,
--				flags | EXT4_GET_BLOCKS_CONVERT, allocated);
-+						  flags, allocated);
- 		if (IS_ERR(path))
- 			return path;
- 		/*
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 56d50fd3310b4..de4cacb740b33 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1706,16 +1706,17 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+ 
+ 	/* Avoid locking the folio in the fast path ... */
+ 	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
+-	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
++	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
++		/*
++		 * folio_test_locked is employed to detect ongoing folio
++		 * migrations, since concurrent migrations can lead to
++		 * bitmap inconsistency. And if we are not uptodate that
++		 * implies somebody just created the folio but is yet to
++		 * initialize it. We can drop the folio reference and
++		 * try to get the folio with lock in both cases to avoid
++		 * concurrency.
++		 */
+ 		if (!IS_ERR(folio))
+-			/*
+-			 * drop the folio reference and try
+-			 * to get the folio with lock. If we
+-			 * are not uptodate that implies
+-			 * somebody just created the folio but
+-			 * is yet to initialize it. So
+-			 * wait for it to initialize.
+-			 */
+ 			folio_put(folio);
+ 		folio = __filemap_get_folio(inode->i_mapping, pnum,
+ 				FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
+@@ -1764,7 +1765,7 @@ ext4_mb_load_buddy_gfp(struct super_block *sb, ext4_group_t group,
+ 
+ 	/* we need another folio for the buddy */
+ 	folio = __filemap_get_folio(inode->i_mapping, pnum, FGP_ACCESSED, 0);
+-	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
++	if (IS_ERR(folio) || !folio_test_uptodate(folio) || folio_test_locked(folio)) {
+ 		if (!IS_ERR(folio))
+ 			folio_put(folio);
+ 		folio = __filemap_get_folio(inode->i_mapping, pnum,
 -- 
 2.51.0
 
