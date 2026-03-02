@@ -1,181 +1,235 @@
-Return-Path: <linux-ext4+bounces-14333-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14334-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uFz1CZTWpWmBHQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14333-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 19:27:32 +0100
+	id 4MRGBfLnpWlLHwAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14334-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:41:38 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 846DD1DE633
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 19:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FBC1DEE74
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:41:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 18612303F543
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 18:27:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 21E2D302E7D1
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 19:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5FD3370EA;
-	Mon,  2 Mar 2026 18:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9319847DD4B;
+	Mon,  2 Mar 2026 19:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mm+n9zBk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kXZS+Mh3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mm+n9zBk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kXZS+Mh3"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="cqOb0Coi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB9F31280D
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 18:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852A247DD42
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 19:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772476047; cv=none; b=HFGJbb4Dejveu0DmX+pLybAoXN/8ooqwc2c3YIHSrRX9bnKhN+HhJKGvhYAAQndAadw/IJzPVTlbbm2C5lUAEUflVzxZijtYJZGJhc48k8dmgdfvMP+b48F4IpQz8twTl0nF16U6s/u2DCZ1Nbr6LgVQXCBsr2ess8leuyEKTtc=
+	t=1772480492; cv=none; b=aZpjXt1jhcBjp86WBS+7lqSCYKfv/GKdNSL0OyUePGfHsi/h9Hjc+aEPohr7iiJkNzKJFEu1YnLjfd+8hNGXF69wZ9KWvTetXfZAn13fh0wsM5BXyfEDaJPxJOHvFLiuT6hp+Hs28q19ggxPnVW/zN414kOyO/JGrfW3PkFMvDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772476047; c=relaxed/simple;
-	bh=NBG53fJQtIEasj8rfe/5jylaKHRmSRoybtT1+mSx588=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hT53QQf2e1neGYIMCftpZhVAad8IGIbtfle8FAHzuHLoL4tZ2Jm8SXs3RcsFgrAeKZiVdEQTAeumZsPYQQ/tkPiKZMh1l2/lIY0WvvlD5o8L8lbOa0d1VXEz0Gga08YW1n4vgOC1aw39Y3RecR2GKDJD+B0kE8X72YLylELeVVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mm+n9zBk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kXZS+Mh3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mm+n9zBk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kXZS+Mh3; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A4BA43F824;
-	Mon,  2 Mar 2026 18:27:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772476037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=07I1tRE3iZWpjnfI1hc8HBBBxYQJiHuNoozkp+j7tEU=;
-	b=Mm+n9zBkB5ebOuyC2CzBzY7LOQCA7dysSalitI8VXetkNhia2hMu3tCq1JA5Ufz4VLRjpz
-	w0VTH3aME8yTKkGtaJABAKpYbqSxY2xVwFhDybbJ6y0YjiQi6Z1MbG8+TfbBcPa/uTaj5T
-	gK5D5Z7TNlXuCVMv/WwaA5O2HNHCm20=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772476037;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=07I1tRE3iZWpjnfI1hc8HBBBxYQJiHuNoozkp+j7tEU=;
-	b=kXZS+Mh3mgBdjfgM5DkkZc1E2+b3YferEPbclOciRO+FQj7xMA+WDilDGHwVF+OQBAtJFs
-	/XLLUzzcmDImSSDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772476037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=07I1tRE3iZWpjnfI1hc8HBBBxYQJiHuNoozkp+j7tEU=;
-	b=Mm+n9zBkB5ebOuyC2CzBzY7LOQCA7dysSalitI8VXetkNhia2hMu3tCq1JA5Ufz4VLRjpz
-	w0VTH3aME8yTKkGtaJABAKpYbqSxY2xVwFhDybbJ6y0YjiQi6Z1MbG8+TfbBcPa/uTaj5T
-	gK5D5Z7TNlXuCVMv/WwaA5O2HNHCm20=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772476037;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=07I1tRE3iZWpjnfI1hc8HBBBxYQJiHuNoozkp+j7tEU=;
-	b=kXZS+Mh3mgBdjfgM5DkkZc1E2+b3YferEPbclOciRO+FQj7xMA+WDilDGHwVF+OQBAtJFs
-	/XLLUzzcmDImSSDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9AABF3EA69;
-	Mon,  2 Mar 2026 18:27:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EDC5JYXWpWkAMgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Mar 2026 18:27:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 54B2CA0A4E; Mon,  2 Mar 2026 19:27:13 +0100 (CET)
-Date: Mon, 2 Mar 2026 19:27:13 +0100
-From: Jan Kara <jack@suse.cz>
-To: Li Chen <me@linux.beauty>
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, 
-	Mark Fasheh <mark@fasheh.com>, linux-ext4@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
-	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] jbd2: store jinode dirty range in PAGE_SIZE units
-Message-ID: <6oexp6kpanvquzjn3nnqqg6wyyhh6og7jjb7fitlj7vzlj5vzp@cobcxovcgzg5>
-References: <20260224092434.202122-1-me@linux.beauty>
- <20260224092434.202122-5-me@linux.beauty>
+	s=arc-20240116; t=1772480492; c=relaxed/simple;
+	bh=NqSXEN1SaHPthBzjtNpNQ3VrNlhW/QUVBKKvpSF/g0o=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=gpIPJQeT8Q1dBdcZ1dkAcOytKfqOSMsxVBK3hL/bDUB2vtZIR0Bq7icPhF2sKvsaQqNflxKEmHggoOwQxoUK+scUCEddjNqUoBNqCzOZd7Hio4+2rXUlwz4Cf+hp7XYm90KMnTggdLkAwaeuZBAsVzrx97RCwj7uoW5K5a+zJwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=cqOb0Coi; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-826c49b7628so3118667b3a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 11:41:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772480489; x=1773085289; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uc0uyGCA4f24QmRWDH0aGYcMOP0JiqsOmpw+Umalrkc=;
+        b=cqOb0Coiui8gWrJSzX4IFHnLQ7+nyi5uAlGCKQlgQyZciPQN/zI2lnBVTpi3Tv9R3i
+         CxIZwAs741jQmdeU+BH6+BtaG6fikkYt+7DPDR0ChZvxfST4+5XC1Z/z+bTJRdDRckVl
+         ZxaPy/+r8o7EXk/RZI9kw4VDG7oOFjCWvbmzJMnNYFYRQJ/Zyk3ihEoVay72AB/HpXUF
+         QdZKMgvqWRa3fr7h5WO/sVKTJxOqBWuhEiK4GlYZOE3uYornoVQPX0lKnebNTpp7zOGg
+         pR2S3RWRrw30t7P64yskKgGCVREBtsKDlP5o1QmEWuMKQH7fvn9Jnan4piFhdhKGvWDP
+         T13w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772480489; x=1773085289;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uc0uyGCA4f24QmRWDH0aGYcMOP0JiqsOmpw+Umalrkc=;
+        b=a44/WM1xGBGY2eM1BTxMaFRFTAxCbpAK8slYfYdSV9uu3tQhODNvFXWhqxIXEISwIS
+         PA5lQTuaWBhwikZeadE6YovQ9nphvEpoOWtwsN+oEaN5Q4jhCvwkD9X1+KD3R0zvEF6c
+         qgyjBnYWMs6MU8lyKcNwyjcVkH0EA+dWiOzqUm/SLUoKEDcIxJ9wcn5YFqHVU5VlVs25
+         XrmEr4K9qvubEU02NlzWf2HLmNgZr762AlTxuI2PmG9fqijKGzsLidSQyi6QMzT2jsb1
+         JdM+o4qBr8liW8iti+FV2a5zjzd0t/2eGTyzeWh3EIGPKyJCCTrytcq4+8dtQhjTIF8W
+         MiJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdI2Shk2q7NAZqqbKWzG36phb0scIr/nxQ4C5svS7lqS9mG/j3snxXbN9XwMdlAWCOy0pcu5urbo80@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMHkt0EQHSdgyJMsQ65PiBvXY8kCEHxPwLTdKJiY7aIfFLmn1G
+	pU9qw1j+2n7dKgExhlmsHBydfaoZ2F7OQFf/fitf39L56mATfQeiVeAhnLlfrhfzJHyi9EBd2vB
+	4mQFdfEM=
+X-Gm-Gg: ATEYQzwzuQzihGkw08cKMreX2m6Yh7StF+Yfh4MPzbr9VLYvCDYjrMz+fG1wjcir156
+	O/sDX0Ty4gRE+1KVGsddy7Y0WpUp26G2tvmCmDrMN3kKvV8Zs+ew5HwPO9OGXf/wp83901qpHuq
+	hMRJRQERzmJMg84iQ7MAmKBpsFr4+cBXQfFYp82V0N7+penJQy+EI52Q0c3gzNAgUDJqwGJPSsZ
+	wsgsKQjt39JXkLDoppcDrCrBo0B6WhbDQ1kKnzpPPrm02c87aBPEpICNTbUfapynVSW7/V5L5K9
+	/1qCxG+R+QfGNIgAp8smEgw1RLMk4z0hnGDi6vf0/9lybwyhKHAYm6WSEoSlreBEpXBs3C2RRNO
+	XRsAN6Cj1EfPYh743Av8n73JKs0jqJW8H/3qC3KTjWcPu2E1joswCoWrRGSc8vHHgYr5W1fjFj3
+	60eJBLZ7YrDYCXeMnXr08EWF3iqxnCei89txadrT0Hq0b7rRoFe1hsww3qFRnRn8ctb4B6MxqHC
+	BdVOw==
+X-Received: by 2002:a05:6a21:44c8:b0:38b:d9f5:3c4e with SMTP id adf61e73a8af0-395c3b30e8cmr11570600637.55.1772480488664;
+        Mon, 02 Mar 2026 11:41:28 -0800 (PST)
+Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa5eab4esm11985402a12.6.2026.03.02.11.41.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Mar 2026 11:41:28 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260224092434.202122-5-me@linux.beauty>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 846DD1DE633
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
+Subject: Re: [PATCH] ext4: avoid allocate block from corrupted group in
+ ext4_mb_find_by_goal()
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <20260302134619.3145520-1-yebin@huaweicloud.com>
+Date: Mon, 2 Mar 2026 12:41:16 -0700
+Cc: tytso@mit.edu,
+ linux-ext4@vger.kernel.org,
+ jack@suse.cz
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <578ABB60-B0E6-4BB2-B247-15C9875AC6A5@dilger.ca>
+References: <20260302134619.3145520-1-yebin@huaweicloud.com>
+To: Ye Bin <yebin@huaweicloud.com>
+X-Mailer: Apple Mail (2.3864.100.1.1.5)
+X-Rspamd-Queue-Id: 34FBC1DEE74
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TAGGED_FROM(0.00)[bounces-14333-lists,linux-ext4=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
+	TAGGED_FROM(0.00)[bounces-14334-lists,linux-ext4=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.beauty:email,suse.cz:dkim,suse.cz:email];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[dilger.ca];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,dilger.ca:mid,dilger.ca:email,dilger-ca.20230601.gappssmtp.com:dkim]
 X-Rspamd-Action: no action
 
-On Tue 24-02-26 17:24:33, Li Chen wrote:
-> jbd2_inode fields are updated under journal->j_list_lock, but some paths
-> read them without holding the lock (e.g. fast commit helpers and ordered
-> truncate helpers).
-> 
-> READ_ONCE() alone is not sufficient for the dirty range fields when they
-> are stored as loff_t because 32-bit platforms can observe torn loads.
-> Store the dirty range in PAGE_SIZE units as pgoff_t instead.
-> 
-> Use READ_ONCE() on the read side and WRITE_ONCE() on the write side for the
-> dirty range and i_flags to match the existing lockless access pattern.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Li Chen <me@linux.beauty>
-...
-> @@ -2654,15 +2655,20 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
->  	jbd2_debug(4, "Adding inode %lu, tid:%d\n", jinode->i_vfs_inode->i_ino,
->  			transaction->t_tid);
->  
-> +	start_page = (pgoff_t)(start_byte >> PAGE_SHIFT);
-> +	end_page = (pgoff_t)(end_byte >> PAGE_SHIFT);
+On Mar 2, 2026, at 06:46, Ye Bin <yebin@huaweicloud.com> wrote:
+>=20
+> From: Ye Bin <yebin10@huawei.com>
+>=20
+> There's issue as follows:
+> ...
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2243 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2239 at =
+logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>=20
+> EXT4-fs (mmcblk0p1): error count since last fsck: 1
+> EXT4-fs (mmcblk0p1): initial error at time 1765597433: =
+ext4_mb_generate_buddy:760
+> EXT4-fs (mmcblk0p1): last error at time 1765597433: =
+ext4_mb_generate_buddy:760
+> ...
+>=20
+> According to the log analysis, blocks are always requested from the
+> corrupted block group. This may happen as follows:
+> ext4_mb_find_by_goal
+>  ext4_mb_load_buddy
+>   ext4_mb_load_buddy_gfp
+>     ext4_mb_init_cache
+>      ext4_read_block_bitmap_nowait
+>      ext4_wait_block_bitmap
+>       ext4_validate_block_bitmap
+>        if (!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp))
+>         return -EFSCORRUPTED; // There's no logs.
+> if (err)
+>  return err;  // Will return error
+> ext4_lock_group(ac->ac_sb, group);
+>  if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) // =
+Unreachable
+>   goto out;
+>=20
+> After commit 9008a58e5dce ("ext4: make the bitmap read routines return
+> real error codes") merged, Commit 163a203ddb36 ("ext4: mark block =
+group
+> as corrupt on block bitmap error") is no real solution for allocating
+> blocks from corrupted block groups. This is because if
+> 'EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)' is true, then
+> 'ext4_mb_load_buddy()' may return an error. This means that the block
+> allocation will fail.
+> Therefore, check block group if corrupted when ext4_mb_load_buddy()
+> returns error.
+>=20
+> Fixes: 163a203ddb36 ("ext4: mark block group as corrupt on block =
+bitmap error")
+> Fixes: 9008a58e5dce ("ext4: make the bitmap read routines return real =
+error codes")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-MAX_LFS_SIZE on 32-bit is ULONG_MAX << PAGE_SHIFT and that's maximum file
-size. So we could do here end_page = DIV_ROUND_UP(end_byte, PAGE_SIZE) and
-just use end_page as exclusive end of a range to flush and get rid of
-special JBD2_INODE_DIRTY_RANGE_NONE value.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca =
+<mailto:adilger@dilger.ca>>
 
-The problem with the scheme you use is that files of MAX_LFS_SIZE would be
-treated as having empty flush range...
+> ---
+> fs/ext4/mballoc.c | 6 +++++-
+> 1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index e2341489f4d0..ffa6886de8a3 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2443,8 +2443,12 @@ int ext4_mb_find_by_goal(struct =
+ext4_allocation_context *ac,
+> return 0;
+>=20
+> err =3D ext4_mb_load_buddy(ac->ac_sb, group, e4b);
+> - if (err)
+> + if (err) {
+> + if (EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info) &&
+> +    !(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
+> + return 0;
+> return err;
+> + }
+>=20
+> ext4_lock_group(ac->ac_sb, group);
+> if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
+> --=20
+> 2.34.1
+>=20
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
