@@ -1,195 +1,182 @@
-Return-Path: <linux-ext4+bounces-14295-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14296-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cNi3LP9apWlc+QUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14295-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 10:40:15 +0100
+	id oJp/Ih5jpWmx+wUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14296-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 11:14:54 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1482C1D5AAD
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 10:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D644F1D631D
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 11:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1FDD3300B131
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 09:39:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1C3BB306B4C9
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 10:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8797532938D;
-	Mon,  2 Mar 2026 09:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KUQKA5j4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lOxMqJZL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KUQKA5j4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lOxMqJZL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56719394497;
+	Mon,  2 Mar 2026 10:08:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01B33B7A8
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 09:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE56F392C2D
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 10:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772444396; cv=none; b=rsqV6I649KIgKu749/FIHwP5WeZbb6GRZL/f5t0tQbZPVMI+ztyMDrc0U3ezdFogpcZQ43uewhT4zgH9dnQ8snsbxe38f9jFDr4wAKAof8pQfPeGtjmw3QXLT+ucmc8FZIKJAfTs3aPrVRKBl95YU+2yT+ToM15+5j+PTnB5pEc=
+	t=1772446115; cv=none; b=I3BaieKglDz6+LkvD9hXuRqCwJGnQxgtnJXZlmQUaL20Wp/db/E9yJtBS3l0/x9mMRx3O0/qWhQmXoKWKH85m2wTcJZRh++GgN2oGNgxW1sYn0fJ+OrJCUsRJScucmzwMUmDS1HlcuW1Lqb6ALgiDm83UGOg/MNEvKbPFbImye8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772444396; c=relaxed/simple;
-	bh=o9t91VHZqrCvG+QmOglDA2lBYTLUZm3Mtc+Pq09JxMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PIA+BO1EpPl2P5Vjn94y7/eSk38XqKu6T5aciBDplgwT3bTQHKOQXdoDaBveOmjm92E2w6S7nB5l6cEjZTb3mwgKGSXezrUIETa4VhFmKuinX2BZejEyHoxw+9RGj8S9PW04oODMr8GcDFq/k4mIBB/yGd8WjLdwTHJJ3ukHBM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KUQKA5j4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lOxMqJZL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KUQKA5j4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lOxMqJZL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2B03E3E806;
-	Mon,  2 Mar 2026 09:39:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772444393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=whUKEMVbT9wAeIrApAGiAnvPRWmwMWV6hw0segYI0ao=;
-	b=KUQKA5j4WRjs59hLGO/Djn2fcOqkfegfdoAMuax5Uy8s0f8vKDl3lsE8QA2rhs7rh2SM8R
-	ek8oS2X+J3w0gLxyqFadiEWfrDOV1Y3Y1A1fojR1wcuukQnSiXlaCujFOtzYkgidnyswwc
-	rm47y4j2xbL63VwhYCUrbf7xScecEJE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772444393;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=whUKEMVbT9wAeIrApAGiAnvPRWmwMWV6hw0segYI0ao=;
-	b=lOxMqJZL7ZkaEIkRCsb1NVnIZciokrvzrOAKYSEEkQOSKQEMJVjiCwDfU2BcuP7GFeTLaK
-	qbGwk1MyzHy7WMBg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KUQKA5j4;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lOxMqJZL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772444393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=whUKEMVbT9wAeIrApAGiAnvPRWmwMWV6hw0segYI0ao=;
-	b=KUQKA5j4WRjs59hLGO/Djn2fcOqkfegfdoAMuax5Uy8s0f8vKDl3lsE8QA2rhs7rh2SM8R
-	ek8oS2X+J3w0gLxyqFadiEWfrDOV1Y3Y1A1fojR1wcuukQnSiXlaCujFOtzYkgidnyswwc
-	rm47y4j2xbL63VwhYCUrbf7xScecEJE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772444393;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=whUKEMVbT9wAeIrApAGiAnvPRWmwMWV6hw0segYI0ao=;
-	b=lOxMqJZL7ZkaEIkRCsb1NVnIZciokrvzrOAKYSEEkQOSKQEMJVjiCwDfU2BcuP7GFeTLaK
-	qbGwk1MyzHy7WMBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2067C3EA69;
-	Mon,  2 Mar 2026 09:39:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HlnhB+lapWk1fAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Mar 2026 09:39:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D75C2A0A27; Mon,  2 Mar 2026 10:39:48 +0100 (CET)
-Date: Mon, 2 Mar 2026 10:39:48 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	jack@suse.cz
-Subject: Re: [PATCH v2] ext4: test if inode's all dirty pages are submitted
- to disk
-Message-ID: <lth55hzudtc53wjkwsob2x3riy3wj4bbq6rm2evp2hsav62tpd@cqfscuyimwi7>
-References: <20260228025650.2664098-1-yebin@huaweicloud.com>
+	s=arc-20240116; t=1772446115; c=relaxed/simple;
+	bh=z11m+T4Go0CfM7+eDHqU4dwhn5ocO+dyfUhHqt1y39g=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=rhwasUZxtDVpaBpW3EBM2r92Rq1A9cHWaI4HBp+U5r0an1wpoCyaWLHSVvH1k7UPJrMAY0NYPGYmw8GqQkWFHkvpIFgJL92rXIj6ytAz6fyUTxgGrGI9uEw8rgQcdyiNHcPlefV+5P+4yeJ0MLBsNJV1+0349PlFAC+MK5dGHwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-679deba5e9fso56129402eaf.0
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 02:08:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772446113; x=1773050913;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZVeo7WDtL/mn/zUYlFfeDxmHGt7ioMx7GyHHlBMi+iw=;
+        b=i8qgOd1YQm9RIT1VpOWE0FJbx/gRBzE595SA4xOCq6Dy6s6+Lxx6tMUPykI7TZJkKu
+         qmnD5Rpj47R8V+f8y2L80EcxPVF58Tl/dZOd+rFae9+aXCJrzB41Dw4KXIhEsdgt3VW8
+         WgUgsRc6BwqwyT1jv07RaVLsoSRHYSACfqQKOjDdIxkB2lYuInPI778gcUyCC/uVS5u5
+         +tEMhAipUcAtArG92XCWbAWd2eHuDUYnZPALVf7PtcaERvYHGekY2oHc/8MPMhWTBQat
+         6Ej0cBHsHJkCYDyIuofW0UJxMXLOG2xXsVvi62fhHhYDiBv7/nwfqmK46eIEQ6CQtDi6
+         vG6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWL7AkjzM+wXspSGCXuATvt8L+pnAbRiN05LVZiTXIdaMnOaEpWwWnCnJhfIKYSXll2H8412PyhbMHk@vger.kernel.org
+X-Gm-Message-State: AOJu0YzHfpSm2HUTbB4G2HcGRRxt2RedF6OS7hv/PMtOPKVRHfcT+fol
+	yMReU1Cf3mzjKeiEwVpT5gs9OercOvWie6GEo4nAuhMsuAPj8haDWufE2nSp3amggmxpIvenSV+
+	HETYTtMk6dcOY+Zk6ywb9chncBUOkjnPR+7mepr2dI4zdpHDFTze78r5uRvw=
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6820:1b10:b0:663:b86:493 with SMTP id
+ 006d021491bc7-679fae78f67mr6891272eaf.33.1772446112744; Mon, 02 Mar 2026
+ 02:08:32 -0800 (PST)
+Date: Mon, 02 Mar 2026 02:08:32 -0800
 In-Reply-To: <20260228025650.2664098-1-yebin@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Spam-Level: 
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69a561a0.050a0220.3a55be.0073.GAE@google.com>
+Subject: [syzbot ci] Re: ext4: test if inode's all dirty pages are submitted
+ to disk
+From: syzbot ci <syzbot+ci218c29ae48f2e4ea@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	tytso@mit.edu, yebin@huaweicloud.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.cz:email,suse.cz:dkim,huawei.com:email];
-	DMARC_NA(0.00)[suse.cz];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[googlesource.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlegroups.com:email,appspotmail.com:email];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14295-lists,linux-ext4=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-0.824];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 1482C1D5AAD
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	R_DKIM_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14296-lists,linux-ext4=lfdr.de,ci218c29ae48f2e4ea];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: D644F1D631D
 X-Rspamd-Action: no action
 
-On Sat 28-02-26 10:56:50, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> The commit aa373cf55099 ("writeback: stop background/kupdate works from
-> livelocking other works") introduced an issue where unmounting a filesystem
-> in a multi-logical-partition scenario could lead to batch file data loss.
-> This problem was not fixed until the commit d92109891f21 ("fs/writeback:
-> bail out if there is no more inodes for IO and queued once"). It took
-> considerable time to identify the root cause. Additionally, in actual
-> production environments, we frequently encountered file data loss after
-> normal system reboots. Therefore, we are adding a check in the inode
-> release flow to verify whether all dirty pages have been flushed to disk,
-> in order to determine whether the data loss is caused by a logic issue in
-> the filesystem code.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+syzbot ci has tested the following series
 
-Looks good! Thanks! Feel free to add:
+[v2] ext4: test if inode's all dirty pages are submitted to disk
+https://lore.kernel.org/all/20260228025650.2664098-1-yebin@huaweicloud.com
+* [PATCH v2] ext4: test if inode's all dirty pages are submitted to disk
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+and found the following issue:
+WARNING in ext4_evict_inode
 
-								Honza
+Full report is available here:
+https://ci.syzbot.org/series/b58ccb85-a946-44ae-9d57-c02bee2a43ba
 
-> ---
->  fs/ext4/inode.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 396dc3a5d16b..a64d9c7381ea 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -184,6 +184,12 @@ void ext4_evict_inode(struct inode *inode)
->  	if (EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)
->  		ext4_evict_ea_inode(inode);
->  	if (inode->i_nlink) {
-> +		/*
-> +		 * If there's dirty page will lead to data loss, user
-> +		 * could see stale data.
-> +		 */
-> +		WARN_ON(!ext4_emergency_state(inode->i_sb) &&
-> +			mapping_tagged(&inode->i_data, PAGECACHE_TAG_DIRTY));
->  		truncate_inode_pages_final(&inode->i_data);
->  
->  		goto no_delete;
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+***
+
+WARNING in ext4_evict_inode
+
+tree:      torvalds
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux
+base:      4d349ee5c7782f8b27f6cb550f112c5e26fff38d
+arch:      amd64
+compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+config:    https://ci.syzbot.org/builds/1accd9c8-371e-4c6c-9c4b-b930c65c23be/config
+C repro:   https://ci.syzbot.org/findings/ccbdbde1-d214-4e90-aeb7-d4bbda01329c/c_repro
+syz repro: https://ci.syzbot.org/findings/ccbdbde1-d214-4e90-aeb7-d4bbda01329c/syz_repro
+
+------------[ cut here ]------------
+!ext4_emergency_state(inode->i_sb) && mapping_tagged(&inode->i_data, PAGECACHE_TAG_DIRTY)
+WARNING: fs/ext4/inode.c:192 at ext4_evict_inode+0xce7/0x1020 fs/ext4/inode.c:191, CPU#1: syz-executor/5917
+Modules linked in:
+CPU: 1 UID: 0 PID: 5917 Comm: syz-executor Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ext4_evict_inode+0xce7/0x1020 fs/ext4/inode.c:191
+Code: f3 ff ff e8 ab 60 40 ff 49 89 dc 48 8b 5c 24 18 e9 ea f5 ff ff e8 99 60 40 ff 48 8b 5c 24 18 e9 db f5 ff ff e8 8a 60 40 ff 90 <0f> 0b 90 e9 cd f5 ff ff e8 7c 60 40 ff 48 8d 3d 85 e4 92 0d 67 48
+RSP: 0018:ffffc900057e79a0 EFLAGS: 00010293
+RAX: ffffffff82852b46 RBX: ffff88812000f5b8 RCX: ffff88811128ba00
+RDX: 0000000000000000 RSI: 0000000004000000 RDI: 0000000000000000
+RBP: ffffc900057e7ab0 R08: ffff8881111b6387 R09: 1ffff11022236c70
+R10: dffffc0000000000 R11: ffffed1022236c71 R12: 1ffff92000afcf44
+R13: dffffc0000000000 R14: 0000000004000000 R15: ffff8881111b6380
+FS:  0000555570b0d500(0000) GS:ffff8882a9464000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff533fce88 CR3: 000000010b644000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ evict+0x61e/0xb10 fs/inode.c:846
+ dispose_list fs/inode.c:888 [inline]
+ evict_inodes+0x75a/0x7f0 fs/inode.c:942
+ generic_shutdown_super+0xaa/0x2d0 fs/super.c:632
+ kill_block_super+0x44/0x90 fs/super.c:1725
+ ext4_kill_sb+0x68/0xb0 fs/ext4/super.c:7459
+ deactivate_locked_super+0xbc/0x130 fs/super.c:476
+ cleanup_mnt+0x437/0x4d0 fs/namespace.c:1312
+ task_work_run+0x1d9/0x270 kernel/task_work.c:233
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ __exit_to_user_mode_loop kernel/entry/common.c:67 [inline]
+ exit_to_user_mode_loop+0xed/0x480 kernel/entry/common.c:98
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:256 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:325 [inline]
+ do_syscall_64+0x32d/0xf80 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb75539d9d7
+Code: a2 c7 05 1c ed 24 00 00 00 00 00 eb 96 e8 e1 12 00 00 90 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 e8 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffe2e6b7108 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fb755431f90 RCX: 00007fb75539d9d7
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffe2e6b71c0
+RBP: 00007ffe2e6b71c0 R08: 00007ffe2e6b81c0 R09: 00000000ffffffff
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe2e6b8250
+R13: 00007fb755431f90 R14: 000000000000f951 R15: 00007ffe2e6b8290
+ </TASK>
+
+
+***
+
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
+
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
