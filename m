@@ -1,143 +1,167 @@
-Return-Path: <linux-ext4+bounces-14293-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14294-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qJU8OlrJpGmMrQUAu9opvQ
-	(envelope-from <linux-ext4+bounces-14293-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 00:18:50 +0100
+	id +C/iMZXapGlhuAUAu9opvQ
+	(envelope-from <linux-ext4+bounces-14294-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 01:32:21 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE7231D1ED8
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 00:18:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 330AD1D21F5
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 01:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3E2A83004D95
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2026 23:18:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A2C7D3018289
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 00:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F33B239E88;
-	Sun,  1 Mar 2026 23:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3827202997;
+	Mon,  2 Mar 2026 00:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="CIT9/zFL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cvMgTN2D"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A674227442
-	for <linux-ext4@vger.kernel.org>; Sun,  1 Mar 2026 23:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453983B2A0
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 00:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772407123; cv=none; b=oIM/Xf0CE/60FG0+8Gkkzm3X4YOFJiRoCsMd5nqhgdKBnDo+TcTXicpP17zlXr9LLEG/cHH99IyemVw1dehHL5yWGqEcy48KaGvhAmhOQXarWSlkJ30YIlt6Urw9cuZ8d5SzkPcgYGaIFKFUvsnlWC9Qd29vLEJ+n0AcN3iiYyc=
+	t=1772411521; cv=none; b=kbk8Tr9aUBc/QcxTKxrRg5A7Q+Bv6HVKN5O0ue67H5NdU+7Avk9G5u+vUanVWhsCwOxhEMZJmsJGFNco2P3gT73UQFnd/Xerwuvf6x0bW0iIlmoLumMbFeLKMlQrI+DJfEinrTzifNeNebwbsD+ESvirtE6QK3mVuCUSwHP3UOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772407123; c=relaxed/simple;
-	bh=qsW/b4NcIZ2IdLaUvA5gDxHEvwnzRCf/hJAp3man0W4=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=QT74/degvCrdj64QagDlATltcZMVVRuOsfkByHBNTs8bk1/r9aZVWZpO6rx8r9DvU9BfK5JIPtmn4m7hu+ktcLO9ieIggYAD5Jgx2EAB/KrrN/iwo8bMTuB309kHJse0XErpZqMyLS2lErzSwGsrEgfAJaXRNvyLPGtxurpS+Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=CIT9/zFL; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2ae4d48dc2fso1674815ad.3
-        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 15:18:41 -0800 (PST)
+	s=arc-20240116; t=1772411521; c=relaxed/simple;
+	bh=AlrKbqDeHRNXNb4EDS6ApO+T0fQy/Ymm4/uVtcv5ddg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ahP6SmdQiYuRPTaEG73kQQBSFP5QSXHfJ2uiMyQnrodmmrPV4zK2qTXM73TTLLcv1joj/Dc9W4g4A9+zwIZidwCOZM0Ed8WQBScjbWHsnG4qRx831DjbPWRRvDmin7+RIPNZ0YJxi9Nr0JQz232VFQIxcF32jZeXnjnQzcZtm+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cvMgTN2D; arc=none smtp.client-ip=74.125.82.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-124a635476fso4544595c88.0
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2026 16:31:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772407121; x=1773011921; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qsW/b4NcIZ2IdLaUvA5gDxHEvwnzRCf/hJAp3man0W4=;
-        b=CIT9/zFLD1lwHQnFBqJuqEiK8nf1kboS98V1zXP0mDF/Y6nZI+5pxbfVtSCkl0Ca65
-         ryYihyu64DX7RkBUzjqL9g9oY1RwrGh4fZP4g0JYoyvfzsVt0V4kGcYyMKrMB/gmIPOq
-         9xwREs1WLMnQwL5U4mRhpTd6UYGHHo/LaRY2uRWVhwgNufmwhs9IDl+q4U7rgG8X764w
-         C6kSn3K7OOnwWsCroSWXzryGd42VO2GPxKfzBdCjM23wqGatI8EUqEZl7XReqkE+bNBX
-         q7FCY7oiS0u3V2D7kpIg69huQXlyMi3/sXxUIueyOaJ8muNHvxaqhiH1SnWkQnva3L+E
-         ZD1g==
+        d=gmail.com; s=20230601; t=1772411518; x=1773016318; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aa44Hm0AKiWgB7Fd7mIwjWSqvDDfhYq64s8ZEZ38CMg=;
+        b=cvMgTN2Dx3VxpoDFfDdGAhHRC9Vdc54ier4nbq1SzuGG2T31NtLR/bx4rlfpcawODr
+         KmDpx8yAPnBrG/xYwavqB5E37uzmJlfUHkqmeuJHPC775frl+Zp85bCzxsNQeH29QfyW
+         2V7Qd+/l2+hxtDU3ZeCfEqrkUptbjXv2QKne3HKl+lwv1xmi5uvB7LDaVfJx3Jz5agPC
+         uLvU5oox8lSq0OyynyDFYc1mxTG0/X5Ba6ahncy8X3CKZdqJkw+kGIyKSCCsQrNIhR16
+         1OKgw3G6yH3ioFkS97L8e20931sfKU5IkRLwNzgRZeUW2zoe/3Gr8a7OgngVeP4X5WwI
+         u7Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772407121; x=1773011921;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qsW/b4NcIZ2IdLaUvA5gDxHEvwnzRCf/hJAp3man0W4=;
-        b=bAgUUKm56qNc+WTAZUiDYSPJ7JTqm6lizki6NV+r48XcMo1Sz5aTISi29JjoNxIM3n
-         Z6iNR69hxQu/NhWo/etXonutgV4tgkui8wlpX1zAhBBocbH3RDcYYvuwR10JiU4pm56M
-         7rZz2TC4/XkNsXY81sZJVL6gxYTmYPAYTaW3FbFNQUvkBTJ9ttDDump0SudGSMuOH4s6
-         IHMYOZ32JH+QnTPYsonwua8HR4P7sY1wybyTZbxMsFXZBZ9QRuPTF/wIdx+1/gdx7UsS
-         PfY1z44LxApNwLrGbdAsJHIiIlEh9o6T3dvbHB8aIAvbRqVurmKInAaMyANEEL2htJ0K
-         kI1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXyZpDTb97N05X4z3i/bX6pn2I9DptFaRRdPhzTvudpNawaFRc6OAcDdorfo4PPidPLqkZQSs4XNisj@vger.kernel.org
-X-Gm-Message-State: AOJu0YzkpuNiTp+ByMnbsFSBEPb3NSFS8HwmJuK5r52EOgKYjZdTNi/5
-	txV+yQLaQXN9CA04zpfe5hsw3nCKlyJuOSpTeFd9M+1ARoGqSHV5oQxOgBKXl29rteY=
-X-Gm-Gg: ATEYQzz8Hb/eZtpcyVxKnDKx78jNKSDOVRdmSmmqZm0zdzzP+edS/XdCt1IIwHR+XfH
-	K8a3hu+BlwB8Y6ONiH9fIL24oydJ7get7kHm63U74CY2GslWduSeSCTLq1fxMCxEtYQX2QBsuBc
-	PRo5R4m2ZWpOsnhSeV71LnwG4bAljbCvkGFwEcYxZUpVpEyNJmm/EnbGcwlfRJ5Y/l+fHiCZ5N0
-	v1pT2C0+tKrl4UuFJOFyA4RHG9iPPj48EMUD5zBtWUSLhGy5ahXeEvLwVlg6I3SsHA2i4lImed9
-	4VvM3VsJIn/mBTCrSn2lPC1xQ41QDNNemhRgHCcluOULryFrhJWx8XfG0x80qaDKbQ/f0WCZWMn
-	Y6XgcuLZn2Zzn3arQzmSBTdpn+445ynXKgRdeFvAdOPMMxZn8Ba0scm7mSuoNM7LNRheFtjWIGP
-	U2fgSPjvB3YyRPaxMtEqlSBM4iEiBsnN68txVfC/C15CIBkMqqHJD5qM5Gr5dRaQgyZjQggiiIA
-	dUMKQ==
-X-Received: by 2002:a17:903:32cb:b0:2ad:e99a:8169 with SMTP id d9443c01a7336-2ae2e3d12a1mr96958065ad.33.1772407120893;
-        Sun, 01 Mar 2026 15:18:40 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae4b782c53sm23509195ad.41.2026.03.01.15.18.40
+        d=1e100.net; s=20230601; t=1772411518; x=1773016318;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aa44Hm0AKiWgB7Fd7mIwjWSqvDDfhYq64s8ZEZ38CMg=;
+        b=V3WVAqfALK7k018VGELZtTOFFvF+1/Ab1vwNCieYiVHyjZbiuv8PQTOX0m+bzflBSs
+         azcHuHeyVUuOHyPTo3838pE/JOI/7BmcyWapqGdX0iSTgx50lr1nLkGbzmDz+OH0Y/Lm
+         QqMz0fuwi5aAI7R+vJGEW22Et7B8WE4ixeg6AN/QYXf9XOMiQdf80FxrcH9hiMyTe67c
+         exeGtjtuZxMkpg14NLRmJdTUBTg4XGHwyCu4QhJ9kKYODVSHrtiTtAAuCirFebHYMwVb
+         wbvSn6b0cuqk+k016uzmqFjN5Ie+oZhHAGqPxUcJO8USxWXcwCe9Y44ulhZrn59dnxza
+         7qfQ==
+X-Gm-Message-State: AOJu0YzQAYvXtsyqSxMzlqNz4dEjlU8lpV7asEwUSP2axTXMpEd3W5xn
+	i71kgxbh8GjR5hk6TM28kN2mLfykbHGMjQR+H/+K0ZMjSRYg+GXccI90
+X-Gm-Gg: ATEYQzwmIFoYakvmLqOhc65UB6i1qX2zQ4uwo8TY+DXUv9TrsZ1W286+EvrTdR5yA+m
+	KlVGnuIchxbbf2NEq0ERBUac9/C89PlRElZ4Vh1TkSWMIh8fnw1I8Zb1HZBu7ICLhGgbXQRfY0j
+	Y81UYkGrlq5Vb2LknDL47nRCJj/jwI4+QOS86LlfGuk20qXi4w1+enR+lpqjTR20MNx4GoYb6s5
+	mmnrHdVpAAJ+IRANJO+0c0gZZuIVVQb48+VnjrUpJydTWKuOGsgyG7mBe8IGVWACXT0XmRanHFC
+	psz5zjCB1DkqRT9QNxci65qZP1w7kfxvVYZyGyvwRa6yBvT5ukfc5dmOtqOlTvtB9uNU3eAsAS7
+	qtBo3gc06x6VOEYa9E/dSDhWBZ3JF5nsXaD35DMUn/U4+pu5Yc6HhEomjcBuGNK/T0lYUUNwMSG
+	JgHgk6wsANAH9odCfoLXL4YXyscZIzqEOS7FYJe+DaI84PynQ+/fVx+/PocPmqHNNKP9uSn+cNz
+	YDGcp4w0rUMYhLtdeU0Y48SiE1H6QJUkWUOhflR3KGnojNdLQyn/t9telwK4DmO5WCnu6oc/i54
+	1uOuEdeHoY3UGtJib8Iu9Al5ZX+g
+X-Received: by 2002:a05:7022:698e:b0:11b:ade6:45a7 with SMTP id a92af1059eb24-1278fb7de0emr3640973c88.1.1772411518251;
+        Sun, 01 Mar 2026 16:31:58 -0800 (PST)
+Received: from arch.lan (c-98-51-119-100.hsd1.ca.comcast.net. [98.51.119.100])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12789962f89sm11506020c88.0.2026.03.01.16.31.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 15:18:40 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Andreas Dilger <adilger@dilger.ca>
+        Sun, 01 Mar 2026 16:31:57 -0800 (PST)
+From: Milos Nikic <nikic.milos@gmail.com>
+To: jack@suse.com,
+	tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Milos Nikic <nikic.milos@gmail.com>
+Subject: [PATCH] jbd2: gracefully abort instead of panicking on unlocked buffer
+Date: Sun,  1 Mar 2026 16:31:35 -0800
+Message-ID: <20260302003135.93802-1-nikic.milos@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v4] ext4: simplify mballoc preallocation size rounding for small files
-Date: Sun, 1 Mar 2026 16:18:29 -0700
-Message-Id: <DA3BC35A-78D8-4D47-925E-820E94ADC912@dilger.ca>
-References: <tencent_7F28D03F5012FE947083C5B3B2D613D93007@qq.com>
-Cc: cuiweixie@gmail.com, dilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, 523516579@qq.com
-In-Reply-To: <tencent_7F28D03F5012FE947083C5B3B2D613D93007@qq.com>
-To: Weixie Cui <523516579@qq.com>
-X-Mailer: iPhone Mail (23D127)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14293-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[qq.com];
-	FREEMAIL_CC(0.00)[gmail.com,dilger.ca,vger.kernel.org,qq.com];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14294-lists,linux-ext4=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	APPLE_IOS_MAILER_COMMON(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[nikicmilos@gmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger.ca:mid]
-X-Rspamd-Queue-Id: AE7231D1ED8
+	TAGGED_RCPT(0.00)[linux-ext4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 330AD1D21F5
 X-Rspamd-Action: no action
 
-On Feb 28, 2026, at 18:38, Weixie Cui <523516579@qq.com> wrote:
->=20
-> =EF=BB=BF@adilger I think you do not review this new patch because it's se=
-nd from my other email. =20
-> my previously patch is send from cuiweixie@gmail.com. But 523516579@qq.com=
- is my other email.
-> So can you help to review it?
+In jbd2_journal_get_create_access(), if the caller passes an unlocked
+buffer, the code currently triggers a fatal J_ASSERT.
 
-It isn't necessary to re-review each version of a patch if there are not sig=
-nificant changes between versions.=20
+While an unlocked buffer here is a clear API violation and a bug in the
+caller, crashing the entire system is an overly severe response. It brings
+down the whole machine for a localized filesystem inconsistency.
 
-Cheers, Andreas=
+Replace the J_ASSERT with a WARN_ON_ONCE to capture the offending caller's
+stack trace, and return an error (-EINVAL). This allows the journal to
+gracefully abort the transaction, protecting data integrity without
+causing a kernel panic.
+
+Signed-off-by: Milos Nikic <nikic.milos@gmail.com>
+---
+ fs/jbd2/transaction.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index dca4b5d8aaaa..04d17a5f2a82 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1302,7 +1302,12 @@ int jbd2_journal_get_create_access(handle_t *handle, struct buffer_head *bh)
+ 		goto out;
+ 	}
+ 
+-	J_ASSERT_JH(jh, buffer_locked(jh2bh(jh)));
++	if (WARN_ON_ONCE(!buffer_locked(jh2bh(jh)))) {
++		err = -EINVAL;
++		spin_unlock(&jh->b_state_lock);
++		jbd2_journal_abort(journal, err);
++		goto out;
++	}
+ 
+ 	if (jh->b_transaction == NULL) {
+ 		/*
+-- 
+2.53.0
+
 
