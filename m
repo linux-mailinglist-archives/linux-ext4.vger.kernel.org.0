@@ -1,83 +1,81 @@
-Return-Path: <linux-ext4+bounces-14334-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14335-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4MRGBfLnpWlLHwAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14334-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:41:38 +0100
+	id CMzNEnXopWlLHwAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14335-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:43:49 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FBC1DEE74
-	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:41:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6AE1DEEB2
+	for <lists+linux-ext4@lfdr.de>; Mon, 02 Mar 2026 20:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 21E2D302E7D1
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 19:41:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 00CAC3037F01
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2026 19:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9319847DD4B;
-	Mon,  2 Mar 2026 19:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF5047DD69;
+	Mon,  2 Mar 2026 19:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="cqOb0Coi"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="mDmPsOJV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852A247DD42
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 19:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1044E47DD6E
+	for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2026 19:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772480492; cv=none; b=aZpjXt1jhcBjp86WBS+7lqSCYKfv/GKdNSL0OyUePGfHsi/h9Hjc+aEPohr7iiJkNzKJFEu1YnLjfd+8hNGXF69wZ9KWvTetXfZAn13fh0wsM5BXyfEDaJPxJOHvFLiuT6hp+Hs28q19ggxPnVW/zN414kOyO/JGrfW3PkFMvDM=
+	t=1772480612; cv=none; b=au3Cm37fNDtD5xBFJ4NPJCkM7WuX4ESr2//JpaaKYsqncWAW9rLx7Iule25bOdTpYlbRmx/99MV82tDCBUgRkKdA2rATMR5pTXIB5KMiP8+TCRPfnNbRei+JbAJfIJ/VfRVleNeOhThP2HRFeEXK91IEYfKwjeQ5ndA9WchFdEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772480492; c=relaxed/simple;
-	bh=NqSXEN1SaHPthBzjtNpNQ3VrNlhW/QUVBKKvpSF/g0o=;
+	s=arc-20240116; t=1772480612; c=relaxed/simple;
+	bh=8lJx5NBB0VtnAYy0nI1F9Sj8cT6itdzZV+8/NzG6K/s=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=gpIPJQeT8Q1dBdcZ1dkAcOytKfqOSMsxVBK3hL/bDUB2vtZIR0Bq7icPhF2sKvsaQqNflxKEmHggoOwQxoUK+scUCEddjNqUoBNqCzOZd7Hio4+2rXUlwz4Cf+hp7XYm90KMnTggdLkAwaeuZBAsVzrx97RCwj7uoW5K5a+zJwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=cqOb0Coi; arc=none smtp.client-ip=209.85.210.172
+	 Message-Id:References:To; b=iFs402WC9Is1KG2v+QVCrp68cBvkXo54wHFaLm9p8xvFuMonlrtGgkDYHJFt5dkGgEVU029uRpQqdMUcd+ElnM5zjz0rf9jngKBbHKbyrl9zA+yIFvXVDX0ORaG1GhAup77YulryOoffbpQGyGt1O3/9ebrD6zDaxGyyZ4uTBKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=mDmPsOJV; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-826c49b7628so3118667b3a.0
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 11:41:29 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2a8fba3f769so22613895ad.2
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 11:43:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772480489; x=1773085289; darn=vger.kernel.org;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772480608; x=1773085408; darn=vger.kernel.org;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uc0uyGCA4f24QmRWDH0aGYcMOP0JiqsOmpw+Umalrkc=;
-        b=cqOb0Coiui8gWrJSzX4IFHnLQ7+nyi5uAlGCKQlgQyZciPQN/zI2lnBVTpi3Tv9R3i
-         CxIZwAs741jQmdeU+BH6+BtaG6fikkYt+7DPDR0ChZvxfST4+5XC1Z/z+bTJRdDRckVl
-         ZxaPy/+r8o7EXk/RZI9kw4VDG7oOFjCWvbmzJMnNYFYRQJ/Zyk3ihEoVay72AB/HpXUF
-         QdZKMgvqWRa3fr7h5WO/sVKTJxOqBWuhEiK4GlYZOE3uYornoVQPX0lKnebNTpp7zOGg
-         pR2S3RWRrw30t7P64yskKgGCVREBtsKDlP5o1QmEWuMKQH7fvn9Jnan4piFhdhKGvWDP
-         T13w==
+        bh=GRhwhivd/YnYyBfDs59U5DDbjc6jpKsipX86BtgVaVI=;
+        b=mDmPsOJViGHU7xTlmB/RVi64RNoXL5Kx7GaaqlrlWiJvEpEDlBDQrNQnzgP0U0aS1P
+         +z+3KOBeIXq5H68JMAkGgP7od+ncQWZhP0XEbEPUDQgf6EMiPORtZ92HXODdbAvTWxe5
+         J+gAKEXPE7Oaiho6NMeC6xH7mtqhprZQzaN7hsCnoZorzAXyZ5Uxik9srbDxpNYAYdlp
+         g9hMwJO7vCcCzdaNkLMok0+/pwA/flgNBRTQdVsGxFyeMfttfkVzqLnY5Me7Ng5ux3Sv
+         FQh+pDfkaF9ujZPL6BRDKnyH4TMSeDhBfMnNGZn11B0A/7civ/nuYapxSxhI9RIf1Jjc
+         UNrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772480489; x=1773085289;
+        d=1e100.net; s=20230601; t=1772480608; x=1773085408;
         h=to:references:message-id:content-transfer-encoding:cc:date
          :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uc0uyGCA4f24QmRWDH0aGYcMOP0JiqsOmpw+Umalrkc=;
-        b=a44/WM1xGBGY2eM1BTxMaFRFTAxCbpAK8slYfYdSV9uu3tQhODNvFXWhqxIXEISwIS
-         PA5lQTuaWBhwikZeadE6YovQ9nphvEpoOWtwsN+oEaN5Q4jhCvwkD9X1+KD3R0zvEF6c
-         qgyjBnYWMs6MU8lyKcNwyjcVkH0EA+dWiOzqUm/SLUoKEDcIxJ9wcn5YFqHVU5VlVs25
-         XrmEr4K9qvubEU02NlzWf2HLmNgZr762AlTxuI2PmG9fqijKGzsLidSQyi6QMzT2jsb1
-         JdM+o4qBr8liW8iti+FV2a5zjzd0t/2eGTyzeWh3EIGPKyJCCTrytcq4+8dtQhjTIF8W
-         MiJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdI2Shk2q7NAZqqbKWzG36phb0scIr/nxQ4C5svS7lqS9mG/j3snxXbN9XwMdlAWCOy0pcu5urbo80@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMHkt0EQHSdgyJMsQ65PiBvXY8kCEHxPwLTdKJiY7aIfFLmn1G
-	pU9qw1j+2n7dKgExhlmsHBydfaoZ2F7OQFf/fitf39L56mATfQeiVeAhnLlfrhfzJHyi9EBd2vB
-	4mQFdfEM=
-X-Gm-Gg: ATEYQzwzuQzihGkw08cKMreX2m6Yh7StF+Yfh4MPzbr9VLYvCDYjrMz+fG1wjcir156
-	O/sDX0Ty4gRE+1KVGsddy7Y0WpUp26G2tvmCmDrMN3kKvV8Zs+ew5HwPO9OGXf/wp83901qpHuq
-	hMRJRQERzmJMg84iQ7MAmKBpsFr4+cBXQfFYp82V0N7+penJQy+EI52Q0c3gzNAgUDJqwGJPSsZ
-	wsgsKQjt39JXkLDoppcDrCrBo0B6WhbDQ1kKnzpPPrm02c87aBPEpICNTbUfapynVSW7/V5L5K9
-	/1qCxG+R+QfGNIgAp8smEgw1RLMk4z0hnGDi6vf0/9lybwyhKHAYm6WSEoSlreBEpXBs3C2RRNO
-	XRsAN6Cj1EfPYh743Av8n73JKs0jqJW8H/3qC3KTjWcPu2E1joswCoWrRGSc8vHHgYr5W1fjFj3
-	60eJBLZ7YrDYCXeMnXr08EWF3iqxnCei89txadrT0Hq0b7rRoFe1hsww3qFRnRn8ctb4B6MxqHC
-	BdVOw==
-X-Received: by 2002:a05:6a21:44c8:b0:38b:d9f5:3c4e with SMTP id adf61e73a8af0-395c3b30e8cmr11570600637.55.1772480488664;
-        Mon, 02 Mar 2026 11:41:28 -0800 (PST)
+        bh=GRhwhivd/YnYyBfDs59U5DDbjc6jpKsipX86BtgVaVI=;
+        b=SZgt8YTJTkAYXz+rjD+eak+6EAQcum2bTNuLkCdQUwMLRy4Oq/TwIsTIlJuVyFcApm
+         LY9LdA/oO9ULb/2W5RP7DqHeTZbirr1/T4btegqlFzQOzfYLThphi/QakopB9atDVNYi
+         VCfgDp/TJEHNyVKbLfuuUKgrXeo0KbiS9kgM6BRygL0wp0S31FsCO5dbyXxjzYEksiSC
+         5aJOeP4wqimNxx7iSxQSK9s2g5sO+IDNmgzpEkUvEUybgY2cNkyIdaXL9vyf4jHDnI0d
+         H6cwhKQm/CHmRwLu0PrZ3KsfdVKX5zCnoet99bgov2AEZCHzOyp00cMhWY8EuKB3OLZq
+         m2vA==
+X-Gm-Message-State: AOJu0YxnH7RXPlFoRzisbEZ7D3D8psqGiJIBMqK6qpVY1luEsnp90UWy
+	p5APxNTWQ6UfPnq1Z6W1YFIZfbRGPmzbCyERSAQWm7rH6zsL/s37r36kRzQ04i6IDqU=
+X-Gm-Gg: ATEYQzxUnpeHe83mLPh9a407gJDFUSXf5Fyfsfu9jeybyL62Xx45SZd0F9MqyTgMQST
+	1mRxE5LThoLhg3nO6OY4ECbLo/erO5HSrmNvgqgkjgMZfp6LJjauum9qncx6ZGdj+ARvi4A8VEP
+	mrludw/+OIrzb5cpB82XcBlM0K5oltljx4b70wxCurAvwy4vYjC9EHzHLqiB6vO+270q2dcacBw
+	RXtVTCJ0+3NiOv/htlfIS1Lt8qD98+uBhSvQzYOGWsn41CuExejzvN1BikW1nPCypLdezFAaOpT
+	NeohGZ0Yx+iy35dpOn2QTWwEStKSMJrO4VPGioF64tlGozld6H59LMrzDe7yc8LRARjz8qg1ALH
+	kq4GpOJVUWFXzhMuJzs4dqnBSIyPSsVau+R4mhS/WcugJMX87ekG0BGR6tLXGSegTrh00BU+BFX
+	l3ibqfz3l/XKpiu2hwC8ug7M5c3uGE39CY35GPJeUUqNCNbTrfMka8DPaWMdnOn0oUNiAlag3rW
+	jjyQQ==
+X-Received: by 2002:a17:903:4405:b0:2ae:3b9b:db34 with SMTP id d9443c01a7336-2ae3b9bdcebmr94693435ad.42.1772480608193;
+        Mon, 02 Mar 2026 11:43:28 -0800 (PST)
 Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa5eab4esm11985402a12.6.2026.03.02.11.41.27
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb5b53f4sm143125915ad.18.2026.03.02.11.43.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Mar 2026 11:41:28 -0800 (PST)
+        Mon, 02 Mar 2026 11:43:27 -0800 (PST)
 Content-Type: text/plain;
 	charset=us-ascii
 Precedence: bulk
@@ -86,150 +84,108 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH] ext4: avoid allocate block from corrupted group in
- ext4_mb_find_by_goal()
+Subject: Re: [PATCH v2] ext4: Minor fix for ext4_split_extent_zeroout()
 From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260302134619.3145520-1-yebin@huaweicloud.com>
-Date: Mon, 2 Mar 2026 12:41:16 -0700
-Cc: tytso@mit.edu,
- linux-ext4@vger.kernel.org,
- jack@suse.cz
+In-Reply-To: <20260302143811.605174-1-ojaswin@linux.ibm.com>
+Date: Mon, 2 Mar 2026 12:43:16 -0700
+Cc: linux-ext4@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <578ABB60-B0E6-4BB2-B247-15C9875AC6A5@dilger.ca>
-References: <20260302134619.3145520-1-yebin@huaweicloud.com>
-To: Ye Bin <yebin@huaweicloud.com>
+Message-Id: <8FD2F152-AB17-4F07-87BD-953937A0B466@dilger.ca>
+References: <20260302143811.605174-1-ojaswin@linux.ibm.com>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 X-Mailer: Apple Mail (2.3864.100.1.1.5)
-X-Rspamd-Queue-Id: 34FBC1DEE74
+X-Rspamd-Queue-Id: 8C6AE1DEEB2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14334-lists,linux-ext4=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14335-lists,linux-ext4=lfdr.de];
 	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[dilger.ca];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,linaro.org,gmail.com];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,dilger.ca:mid,dilger.ca:email,dilger-ca.20230601.gappssmtp.com:dkim]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger-ca.20230601.gappssmtp.com:dkim,dilger.ca:mid,dilger.ca:email]
 X-Rspamd-Action: no action
 
-On Mar 2, 2026, at 06:46, Ye Bin <yebin@huaweicloud.com> wrote:
+On Mar 2, 2026, at 07:38, Ojaswin Mujoo <ojaswin@linux.ibm.com> wrote:
 >=20
-> From: Ye Bin <yebin10@huawei.com>
+> We missed storing the error which triggerd smatch warning:
 >=20
-> There's issue as follows:
-> ...
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+> fs/ext4/extents.c:3369 ext4_split_extent_zeroout()
+> warn: duplicate zero check 'err' (previous on line 3363)
 >=20
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+> fs/ext4/extents.c
+>    3361
+>    3362         err =3D ext4_ext_get_access(handle, inode, path + =
+depth);
+>    3363         if (err)
+>    3364                 return err;
+>    3365
+>    3366         ext4_ext_mark_initialized(ex);
+>    3367
+>    3368         ext4_ext_dirty(handle, inode, path + depth);
+> --> 3369         if (err)
+>    3370                 return err;
+>    3371
+>    3372         return 0;
+>    3373 }
 >=20
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+> Fix it by correctly storing the err value from ext4_ext_dirty().
 >=20
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
->=20
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2243 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
->=20
-> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2239 at =
-logical offset 0 with max blocks 1 with error 117
-> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
->=20
-> EXT4-fs (mmcblk0p1): error count since last fsck: 1
-> EXT4-fs (mmcblk0p1): initial error at time 1765597433: =
-ext4_mb_generate_buddy:760
-> EXT4-fs (mmcblk0p1): last error at time 1765597433: =
-ext4_mb_generate_buddy:760
-> ...
->=20
-> According to the log analysis, blocks are always requested from the
-> corrupted block group. This may happen as follows:
-> ext4_mb_find_by_goal
->  ext4_mb_load_buddy
->   ext4_mb_load_buddy_gfp
->     ext4_mb_init_cache
->      ext4_read_block_bitmap_nowait
->      ext4_wait_block_bitmap
->       ext4_validate_block_bitmap
->        if (!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp))
->         return -EFSCORRUPTED; // There's no logs.
-> if (err)
->  return err;  // Will return error
-> ext4_lock_group(ac->ac_sb, group);
->  if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) // =
-Unreachable
->   goto out;
->=20
-> After commit 9008a58e5dce ("ext4: make the bitmap read routines return
-> real error codes") merged, Commit 163a203ddb36 ("ext4: mark block =
-group
-> as corrupt on block bitmap error") is no real solution for allocating
-> blocks from corrupted block groups. This is because if
-> 'EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)' is true, then
-> 'ext4_mb_load_buddy()' may return an error. This means that the block
-> allocation will fail.
-> Therefore, check block group if corrupted when ext4_mb_load_buddy()
-> returns error.
->=20
-> Fixes: 163a203ddb36 ("ext4: mark block group as corrupt on block =
-bitmap error")
-> Fixes: 9008a58e5dce ("ext4: make the bitmap read routines return real =
-error codes")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> Link: https://lore.kernel.org/all/aYXvVgPnKltX79KE@stanley.mountain/
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: a985e07c26455 ("ext4: refactor zeroout path and handle all =
+cases")
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca =
 <mailto:adilger@dilger.ca>>
 
 > ---
-> fs/ext4/mballoc.c | 6 +++++-
-> 1 file changed, 5 insertions(+), 1 deletion(-)
+> fs/ext4/extents.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e2341489f4d0..ffa6886de8a3 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2443,8 +2443,12 @@ int ext4_mb_find_by_goal(struct =
-ext4_allocation_context *ac,
-> return 0;
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 3630b27e4fd7..5579e0e68c0f 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3365,7 +3365,7 @@ static int ext4_split_extent_zeroout(handle_t =
+*handle, struct inode *inode,
 >=20
-> err =3D ext4_mb_load_buddy(ac->ac_sb, group, e4b);
-> - if (err)
-> + if (err) {
-> + if (EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info) &&
-> +    !(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
-> + return 0;
+> ext4_ext_mark_initialized(ex);
+>=20
+> - ext4_ext_dirty(handle, inode, path + depth);
+> + err =3D ext4_ext_dirty(handle, inode, path + depth);
+> if (err)
 > return err;
-> + }
 >=20
-> ext4_lock_group(ac->ac_sb, group);
-> if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
 > --=20
-> 2.34.1
+> 2.52.0
+>=20
 >=20
 
 
