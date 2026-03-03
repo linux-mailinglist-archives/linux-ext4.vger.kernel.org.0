@@ -1,162 +1,196 @@
-Return-Path: <linux-ext4+bounces-14576-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14577-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MO63Lq4qp2nSfAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14576-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 19:38:38 +0100
+	id OAwIMWY0p2k9fwAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14577-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 20:20:06 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314201F563E
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 19:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 677C61F5E28
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 20:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 088523010BB2
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 18:38:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 416B2307C9DE
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 19:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09ACC3CB2FB;
-	Tue,  3 Mar 2026 18:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="o7bN5tno"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4C939659E;
+	Tue,  3 Mar 2026 19:19:37 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886F6382F06
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 18:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2121739656F
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 19:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772563115; cv=none; b=QD7stq9nzbFOmgjJzMrBRNOPTRyzykm6V7KBCHqplXXidiSIBpDPkhZ/EYf6mbz1h8Sxp0iPPC7Ce3arhmKy2xg+MlX/W+4ygV2fhYfEv8gOZpIuXEgNfQ/iBH+kpdudJ9X6AOMqQ0uqrHPCPMkGUwUA7d15VB7w33hEE7dBVCo=
+	t=1772565577; cv=none; b=YXrM2TD4Tl9x+FeenFgyVHXVF/tCSk/X9z4lgpg9k2ceOfShY0kpQe+dKNkOI08PU2uPYSn0dkTMrW6pn8bbKCda3SrAkDIbccYWpJII9KtS10kfkTcM3MDRPNQYEumnfchq2nkydizu1phPVUVjHlSAyM/m1gEkU9fGZ3tY3ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772563115; c=relaxed/simple;
-	bh=kiTK4rHfOL3QhVqin5WZZ1wmOh/hB7rK3J7Kr7t5Otw=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=Ys2qKnU+8aHc8pZ8pEcNxGLfVIqpG1B5UWmWi9BO3tYWhiR2RAoNIrFC7NVsNrFLpZRKrFKRjazC6eVmeq4mNGy4+1jeSvt0cRHmgI5xzk/x+xX3diTr/91/2+hRI40WnVKGqaOvBrFpwlgfmnwRis7bjXJ+exT2DGUXIp/Da5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=o7bN5tno; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2ae43042ea7so33386675ad.0
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Mar 2026 10:38:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772563114; x=1773167914; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mJPHr58XJoOjF4oWsM5xXqTpCc5Yqk6AU7WaoOd8DYM=;
-        b=o7bN5tnoB1du/9jSz3NXo53WVjEYQTYl4nFfR6D1/kE5tyD+R2zl5uxPdQJLHyxN0X
-         fMyegtdE30NF9npyhNTp4NGVHmPRmWL4piuDmG8gwuEJG9MuUOSsXCRfNP+xCQYy5xyg
-         9K+DbJP5YLFuif5fGPHThfBNf8oXuWGaHm7wlFnEQj2gMGMirF+GC+Qr+0T5zk0j3NPJ
-         ZmI1fHRTpt25W/wGov72Zsf5DebrzD+ykd79WbnUY+fSWmszRDQae09cHk26VI1TXZi3
-         2/FyUIztwaTRzkLBIfezZDdqv/TX+FodfrLB9pzaKlm7NWRxs8HapA+mwbzG1BWmi/nz
-         gkbw==
+	s=arc-20240116; t=1772565577; c=relaxed/simple;
+	bh=Z/Ii9CniBRHk23b/zMxRSoA1SGewDyFifdBQAs84En0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=hYj1TuOx0DzhN0vWQmBpXG7/+RCIPHuWkLLNIXoGf8+oT9DzE6WMwplOW4GsIEuFWbPI/W9yP0S3X6xY0PTOL7dDKraI990YAQ6d1rMwyRCZGquz2UC8p85PHyWMUkC7qkKE9UdbXlJAdQCAlVGW8yFae841a8Ox54G1ruiDpWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-663019e3e05so39281861eaf.3
+        for <linux-ext4@vger.kernel.org>; Tue, 03 Mar 2026 11:19:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772563114; x=1773167914;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mJPHr58XJoOjF4oWsM5xXqTpCc5Yqk6AU7WaoOd8DYM=;
-        b=g9hse5yeZYJlGbo4KOqJu0HsDO1N/aWMeC5uHBTVak5apUNR4mFlKjxB8aK8maMj8g
-         Dlxg6Yq4qiVthaNW6YRs/tdSXy8B4Xm3HOhBmoZSVc+Kgnbq0keLVs34cI717gm7sYyO
-         w1YkXVxnyv7RSFrJnC9XUypXRENwKXMZZ9OFF+INKbK2Jn215GspidMvdFHXj24sfwTA
-         V6R9sVGtAyBHlDJJP8e1qnCvmQnf9h2CHJ6uPbN47IDHx7GXZjF8eDixQhLw1dtvECrd
-         cLdwNGPzjLYCGda7xes98S5gLd/OvNy4OulwgFQ95TCow2KF/1+ETasr6c517BNCvd6U
-         Nyhg==
-X-Gm-Message-State: AOJu0YxVWnF5/cEvOTSp4iUaDFi3tm9W59OR0nGHkA0ZycZmxGAYXHri
-	gJMqAwBYaoijgPhX3G2VeyUpQNrwV0fJ2usGID0O9+y/3mcZ0OPbR5K2WZTxd0WxWlJOPDxg99i
-	uJHOHJS8=
-X-Gm-Gg: ATEYQzyeTPLsbpwgRxIOOoJyh1gJtmKD/R/VmYN2EmBIwGxRbTr/RURv3ifHNQU+4Ar
-	KsN54D6iap8oPBDlpIgfrlL5kB7gmsfBPvWDyAujmddnkxxeRKmyWXlTFYvlATJs7Cjxpi2oWJC
-	ko4FxgqC/lV43J9mH6veqDuWnCX6bNNSqi4jNFNntv7KAI2QArwUX295vpx+3SBbH5gtgBIKvZm
-	DzKL7jGVr9esTwDXIqtuF9yaSireNn56yUerB21hxRjEMsQy7w8Qo0/oLyEGtyJts7GjmdPOPH3
-	SlvHXnGHbcJWdNGf9868PaZsyMz7j6TZlBru9bAHopLKGq3fep2LH/PPiO20NEYGlA5TwvSXpp4
-	kgOMLLTiQczXw/6tyLQRxk3NXWt8zXMIv4QeGCrF4gFkZMNRO3v0spFJXmqNCp6r5VhCiRp4+m2
-	f7WxFoNgDRPaRWLiOrxazX7N2zBqWwvpdN078Gui7w1Gpn0V9q5qaAjDuPCZ3jbbjcViQaqlEVr
-	3StgQ==
-X-Received: by 2002:a17:903:4b47:b0:2ae:57e2:9b44 with SMTP id d9443c01a7336-2ae57e29d83mr55320635ad.43.1772563113671;
-        Tue, 03 Mar 2026 10:38:33 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ae4b782c53sm77205495ad.41.2026.03.03.10.38.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Mar 2026 10:38:33 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1772565575; x=1773170375;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q+Qe1W6KkrIcUagLnQbxWlrMY3cGxaZHtnEdoD9tGUY=;
+        b=puG8trvA5l0a61JTgId+2IBBPUDe8uGbpoxKjuxcUrlrLa43n+1h90GSFhMol1s3MM
+         DRn7HjfTvKaaLS85WtB1KcmBEzPxmcEe02uZr+GUdLtj4HyWRF6LpM8PrRonFRdir11S
+         N4unZSSmExDJX+7DikvKnmt6n2jTBYb0vKT/A45BVyKHoLOeemF/8SC0qjyj5fx1LmXb
+         q6Y1d1Gu4eVqzzlc2PifpOrNLzjqRBgCr1y2ulxiX1qCFRVJ1K6B4YvKirctCJzbRwlz
+         mN3A7t0I33vCwo6WONlysrJGDIXBliwB6I2NR/YIVcsBUqmCTmozS4DyVdyevszVahPd
+         V6aw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbDI/sr5Io5BMpKDAt+Eabg69U0wSbeMCZKPvoaziaNEtpU6cRFKCKZlh26Y4s6IWX0qKOD36tgiAg@vger.kernel.org
+X-Gm-Message-State: AOJu0YykwJGaXUZ7DfvpLAmgefamWfZbsu0XKB0KrKd3AnM7DibaNQw0
+	CYrqToshvN2urMkdrov2rugk7fUrVe6AJfhecdubfw7cjk2iG/YvjuwkAwly3OvcWsI0cpM+3+y
+	wKdqI8TKOBHLsK6OPVboYijY09Um52462GxpMPKPAMwRfQrEDYH4tjmm9iZI=
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH 1/1] filefrag: fix fibmap error message
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260303115637.453629-2-dxdt@dev.snart.me>
-Date: Tue, 3 Mar 2026 11:38:22 -0700
-Cc: linux-ext4@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <EADED599-9316-41A9-B5CD-7C8869DEDD95@dilger.ca>
-References: <20260303115637.453629-1-dxdt@dev.snart.me>
- <20260303115637.453629-2-dxdt@dev.snart.me>
-To: David Timber <dxdt@dev.snart.me>
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
-X-Rspamd-Queue-Id: 314201F563E
+MIME-Version: 1.0
+X-Received: by 2002:a4a:edcc:0:b0:679:e8fd:6a7d with SMTP id
+ 006d021491bc7-679faf0a2e3mr9456915eaf.49.1772565575118; Tue, 03 Mar 2026
+ 11:19:35 -0800 (PST)
+Date: Tue, 03 Mar 2026 11:19:35 -0800
+In-Reply-To: <6989419b.050a0220.3b3015.0065.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69a73447.a70a0220.b118c.0012.GAE@google.com>
+Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_es_cache_extent (4)
+From: syzbot <syzbot+ccf1421545dbe5caa20c@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: 677C61F5E28
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=779072223d02a312];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14576-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[dilger.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14577-lists,linux-ext4=lfdr.de,ccf1421545dbe5caa20c];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.991];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,dilger-ca.20230601.gappssmtp.com:dkim,snart.me:email,dilger.ca:mid,dilger.ca:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,storage.googleapis.com:url,syzkaller.appspot.com:url]
 X-Rspamd-Action: no action
 
-On Mar 3, 2026, at 04:55, David Timber <dxdt@dev.snart.me> wrote:
-> 
-> When an errno other than EINVAL, ENOTTY or EPERM is returned from FIBMAP
-> ioctl, the negative errno is passsed to strerror(), which only accepts
-> positive errno values.
-> 
-> Signed-off-by: David Timber <dxdt@dev.snart.me>
+syzbot has found a reproducer for the following issue on:
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca <mailto:adilger@dilger.ca>>
+HEAD commit:    af4e9ef3d784 uaccess: Fix scoped_user_read_access() for 'p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13811b5a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=779072223d02a312
+dashboard link: https://syzkaller.appspot.com/bug?extid=ccf1421545dbe5caa20c
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1620e552580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13810a02580000
 
-> ---
-> misc/filefrag.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/misc/filefrag.c b/misc/filefrag.c
-> index 4641714c..d45288cd 100644
-> --- a/misc/filefrag.c
-> +++ b/misc/filefrag.c
-> @@ -517,7 +517,7 @@ static int frag_report(const char *filename)
-> filename);
->  			} else {
->  				fprintf(stderr, "%s: FIBMAP error: %s",
-> -					filename, strerror(expected));
-> +					filename, strerror(-expected));
->  			}
->  			rc = expected;
->  			goto out_close;
-> -- 
-> 2.53.0.1.ga224b40d3f.dirty
-> 
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f6b75c8f432f/disk-af4e9ef3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4513ad566789/vmlinux-af4e9ef3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/f7eea878db42/bzImage-af4e9ef3.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/8d81a7f0b7b8/mount_0.gz
+  fsck result: failed (log: https://syzkaller.appspot.com/x/fsck.log?x=1351b006580000)
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ccf1421545dbe5caa20c@syzkaller.appspotmail.com
+
+EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #15: comm syz.0.36: ES cache extent failed: add [0,1,177,0x1] conflict with existing [0,1,113,0x2]
+EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #15: comm syz.0.36: ES cache extent failed: add [1,15,177,0x1] conflict with existing [1,35,576460752303423487,0x18]
+EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #15: comm syz.0.36: ES cache extent failed: add [16,1,177,0x1] conflict with existing [1,35,576460752303423487,0x18]
+EXT4-fs warning (device loop0): ext4_es_cache_extent:1082: inode #15: comm syz.0.36: ES cache extent failed: add [17,10,177,0x1] conflict with existing [1,35,576460752303423487,0x18]
+------------[ cut here ]------------
+kernel BUG at fs/ext4/extents_status.c:1044!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 6062 Comm: syz.0.36 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
+RIP: 0010:ext4_es_cache_extent+0x875/0x9e0 fs/ext4/extents_status.c:1044
+Code: e1 07 80 c1 03 38 c1 0f 8c 5c fe ff ff 48 8b 7c 24 18 e8 fe ac ad ff e9 4d fe ff ff e8 a4 6e 43 ff 90 0f 0b e8 9c 6e 43 ff 90 <0f> 0b 65 8b 1d e6 98 99 10 bf 07 00 00 00 89 de e8 c6 72 43 ff 83
+RSP: 0018:ffffc90003456d20 EFLAGS: 00010293
+RAX: ffffffff82822744 RBX: 0000000000000018 RCX: ffff88803155bd00
+RDX: 0000000000000000 RSI: 000000000000001b RDI: 0000000000000018
+RBP: ffffc90003456e68 R08: ffffc90003456dd7 R09: ffffc90003456dc0
+R10: dffffc0000000000 R11: fffff5200068adbb R12: ffffc90003456dc0
+R13: 000000000000001b R14: 000000000000000f R15: dffffc0000000000
+FS:  00007fbdae25d6c0(0000) GS:ffff888125464000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbdad3e9e80 CR3: 00000000781f0000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ext4_cache_extents fs/ext4/extents.c:539 [inline]
+ __read_extent_tree_block+0x4b4/0x890 fs/ext4/extents.c:586
+ ext4_find_extent+0x76f/0xcc0 fs/ext4/extents.c:939
+ ext4_ext_map_blocks+0x283/0x58b0 fs/ext4/extents.c:4261
+ ext4_map_create_blocks+0x11d/0x540 fs/ext4/inode.c:616
+ ext4_map_blocks+0x7cd/0x11d0 fs/ext4/inode.c:809
+ _ext4_get_block+0x1e3/0x470 fs/ext4/inode.c:909
+ ext4_get_block_unwritten+0x2e/0x100 fs/ext4/inode.c:942
+ ext4_block_write_begin+0xb14/0x1950 fs/ext4/inode.c:1196
+ ext4_write_begin+0xb40/0x18c0 fs/ext4/ext4_jbd2.h:-1
+ ext4_da_write_begin+0x355/0xd80 fs/ext4/inode.c:3123
+ generic_perform_write+0x2e2/0x8f0 mm/filemap.c:4314
+ ext4_buffered_write_iter+0xce/0x3a0 fs/ext4/file.c:300
+ ext4_file_write_iter+0x298/0x1bf0 fs/ext4/file.c:-1
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x61d/0xb90 fs/read_write.c:688
+ ksys_pwrite64 fs/read_write.c:795 [inline]
+ __do_sys_pwrite64 fs/read_write.c:803 [inline]
+ __se_sys_pwrite64 fs/read_write.c:800 [inline]
+ __x64_sys_pwrite64+0x199/0x230 fs/read_write.c:800
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fbdad39c799
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fbdae25d028 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 00007fbdad615fa0 RCX: 00007fbdad39c799
+RDX: 00000000200000c1 RSI: 00002000000000c0 RDI: 0000000000000006
+RBP: 00007fbdad432bd9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000009000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fbdad616038 R14: 00007fbdad615fa0 R15: 00007fff33d9aaf8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_es_cache_extent+0x875/0x9e0 fs/ext4/extents_status.c:1044
+Code: e1 07 80 c1 03 38 c1 0f 8c 5c fe ff ff 48 8b 7c 24 18 e8 fe ac ad ff e9 4d fe ff ff e8 a4 6e 43 ff 90 0f 0b e8 9c 6e 43 ff 90 <0f> 0b 65 8b 1d e6 98 99 10 bf 07 00 00 00 89 de e8 c6 72 43 ff 83
+RSP: 0018:ffffc90003456d20 EFLAGS: 00010293
+RAX: ffffffff82822744 RBX: 0000000000000018 RCX: ffff88803155bd00
+RDX: 0000000000000000 RSI: 000000000000001b RDI: 0000000000000018
+RBP: ffffc90003456e68 R08: ffffc90003456dd7 R09: ffffc90003456dc0
+R10: dffffc0000000000 R11: fffff5200068adbb R12: ffffc90003456dc0
+R13: 000000000000001b R14: 000000000000000f R15: dffffc0000000000
+FS:  00007fbdae25d6c0(0000) GS:ffff888125464000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbdad3e9e80 CR3: 00000000781f0000 CR4: 0000000000350ef0
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
