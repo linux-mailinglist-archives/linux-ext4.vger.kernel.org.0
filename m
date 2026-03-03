@@ -1,134 +1,146 @@
-Return-Path: <linux-ext4+bounces-14470-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14471-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wGchFnQ6pmnQMgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14470-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:33:40 +0100
+	id uHxUHLA/pmkZNAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14471-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:56:00 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23A71E7B6B
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:33:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1B81E7DBA
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 530903016AD4
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:33:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9337230743CE
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41D2367F58;
-	Tue,  3 Mar 2026 01:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4FD373BE4;
+	Tue,  3 Mar 2026 01:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="T1b5uIjX"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EHRbEgKC"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C726BFCE
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:33:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BF2282F27
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772501615; cv=none; b=qKIB3UtptSK1WrdEPB41bjfsrlUpcYrkcLTO7IqBb21bPlF0ZUnq0QSZcqkDR4s+OoIDTLIxSz8gWHH5WHptfDMFPvfrqB7T9eEmuT7pRtuYZDFSkg4o3d+LYP0FPCBslc9t0y3wo/1p/XpiR1f0b1TNxBTJL3E8gLzjGl5imVw=
+	t=1772502956; cv=none; b=bGxwn06b9/IxioA71y+MDUJlw7ln6ZGdAVuEK79lLmUGottJLT1fErCKbHOcCdN/4f5CkQoZhMI+qyHOv+KkEv3XiHAaOrYSDzA4jxxh8PDQSjtSbSGTDlKY2TxWm8437WRQMM1O2QM7SDQ17IU2rAqIKvPEc5uhBHDRjrjdYts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772501615; c=relaxed/simple;
-	bh=1x/z4lsjvRVrm8u90IJ/ogmuf2BMAxXWCertaRUyDi4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WPyuxqyuTQDR+QyduOQ/jgzdTrkgavu5o+8pFJmsqbXZahLhieNOkfQgCfYGklfCRGsOo+Hod+9KUPGJXFTrOtf6m44NALUf/TLuvCSo8cEDKQ/Fn2h39lA65itzSa1JztTJg9miRmiSrlw76lZ1fXLDjIB00r8GEnDFw5u7AI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=T1b5uIjX; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org (pool-173-48-102-84.bstnma.fios.verizon.net [173.48.102.84])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6231XAkA029560
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 2 Mar 2026 20:33:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1772501592; bh=LjvMyfV6wGhEgTswJWDP+qMkqBgbdWSVw/aER82y5jk=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=T1b5uIjXQ9U1se7/MT8v5M89PAihrlaKLwADFXPiIdJUkTNIHlKZLANTt7xF4eMAd
-	 TieofBFVLNBalBIi+CXhZfP01cC0g6qN0bT9puMWwIHJKCYmViW0ggsU8DokadfB02
-	 JOmw7YAnDTZoAcEy8PzLzqO2V+VZqEWjgmY0wbyjuoMf+Sf4uAN4CG56KugtyISYYQ
-	 Kf13KmJUUA0V0Ar1XOqTY+MYHzwvWc2l+ZxlLgDlgyHyiSXt9BN1YnY7nRCt6iqFNf
-	 eF82UoOZYXLLeAFKsNi8UAThkglYW9D2U10JVZYNaWR3zW5JtaRr+iSazPH/2pEzqP
-	 BXTPhrO5w1ZXw==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id CCB9B5AC5D2D; Mon,  2 Mar 2026 20:33:09 -0500 (EST)
-Date: Mon, 2 Mar 2026 20:33:09 -0500
-From: "Theodore Tso" <tytso@mit.edu>
-To: Mario Lohajner <mario_lohajner@rocketmail.com>
-Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangerkun@huawei.com,
-        libaokun9@gmail.com
-Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
- allocation policy
-Message-ID: <20260303013309.GB6520@macsyma-wired.lan>
-References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
- <20260225201520.220071-1-mario_lohajner@rocketmail.com>
- <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
- <20260226024819.GA39209@macsyma-wired.lan>
- <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
- <20260227011200.GA68551@macsyma-wired.lan>
- <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
- <20260227164319.GB93969@macsyma-wired.lan>
- <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
+	s=arc-20240116; t=1772502956; c=relaxed/simple;
+	bh=7xMQmdykjNEjdwemZwhaQn5gi/74+H9bg1NU0yjB2tw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TfEboulv9q1I1/NryO7Is8ONzfEoKXyykRAWX620miag1D0Sx7UclYuZaCJmrQvCFsgyLKGmh4ITpNOTSIjZsHnZmlXDb7E0ct4ImhMXw2uopy6Tk4yFsRUnSpwC3v1jQ/xRKBO+tvp6ThHBGY215k/AJAQkmn7uVa0L5pf/Tco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EHRbEgKC; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772502950; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=BU9i7ek1rGiqJNvhWqYgIHcjwcXJLXQu5iL1st1pQ0g=;
+	b=EHRbEgKCvJkifmYBlmY0ADZOS+Z0ZSaf+azI8iG5NmxHgouDF3oCp6cXYYlYw8Ff7/znqqetiZOFjGu7PuFaDJO16EQCPgkEyrdPe8wpQqTLRMrXV9kpH67Kx3vq907Q2e9O85KPAAKCgo76dY2z9UQS2vWEUOEt+UKiNpbIvG8=
+Received: from 30.221.146.232(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X-80Zrx_1772502948 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 03 Mar 2026 09:55:49 +0800
+Message-ID: <765b1b39-3043-4a24-ba74-5e018071455e@linux.alibaba.com>
+Date: Tue, 3 Mar 2026 09:55:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
-X-Rspamd-Queue-Id: F23A71E7B6B
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ext4: Minor fix for ext4_split_extent_zeroout()
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>
+References: <20260302143811.605174-1-ojaswin@linux.ibm.com>
+Content-Language: en-US
+From: Baokun Li <libaokun@linux.alibaba.com>
+In-Reply-To: <20260302143811.605174-1-ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: AF1B81E7DBA
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-14470-lists,linux-ext4=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[rocketmail.com];
+	TAGGED_FROM(0.00)[bounces-14471-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[mit.edu:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.963];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,macsyma-wired.lan:mid]
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linaro.org,gmail.com,vger.kernel.org,mit.edu];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-0.995];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linaro.org:email,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
 X-Rspamd-Action: no action
 
-On Mon, Mar 02, 2026 at 09:04:44PM +0100, Mario Lohajner wrote:
-> RRALLOC spreads allocation starting points across block groups to avoid
-> repeated concentration under parallel load.
 
-There are already other ways in which we spread allocations across
-block groups.  You need to tell explain a specific workload where this
-actually makes a difference.
+On 3/2/26 10:38 PM, Ojaswin Mujoo wrote:
+> We missed storing the error which triggerd smatch warning:
+>
+> 	fs/ext4/extents.c:3369 ext4_split_extent_zeroout()
+> 	warn: duplicate zero check 'err' (previous on line 3363)
+>
+> fs/ext4/extents.c
+>     3361
+>     3362         err = ext4_ext_get_access(handle, inode, path + depth);
+>     3363         if (err)
+>     3364                 return err;
+>     3365
+>     3366         ext4_ext_mark_initialized(ex);
+>     3367
+>     3368         ext4_ext_dirty(handle, inode, path + depth);
+> --> 3369         if (err)
+>     3370                 return err;
+>     3371
+>     3372         return 0;
+>     3373 }
+>
+> Fix it by correctly storing the err value from ext4_ext_dirty().
+>
+> Link: https://lore.kernel.org/all/aYXvVgPnKltX79KE@stanley.mountain/
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Fixes: a985e07c26455 ("ext4: refactor zeroout path and handle all cases")
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Looks good to me.
 
-Also note that in most use cases, files are written once, and read
-multiple times.  So spreading blocks across different block groups is
-can often be actively harmful.
-
-> In high-concurrency testing, performance is consistently comparable to
-> or occasionally better than the regular allocator. No regressions have
-> been observed across tested configurations.
-
-No regressions, and only "occasionally better" not enough of a justifiation.
-
-What is your real life workload which is motivating your efforts?
-
-     	     	       		      	 - Ted
+Reviewed-by: Baokun Li <libaokun@linux.alibaba.com>
+> ---
+>  fs/ext4/extents.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 3630b27e4fd7..5579e0e68c0f 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3365,7 +3365,7 @@ static int ext4_split_extent_zeroout(handle_t *handle, struct inode *inode,
+>  
+>  	ext4_ext_mark_initialized(ex);
+>  
+> -	ext4_ext_dirty(handle, inode, path + depth);
+> +	err = ext4_ext_dirty(handle, inode, path + depth);
+>  	if (err)
+>  		return err;
+>  
 
