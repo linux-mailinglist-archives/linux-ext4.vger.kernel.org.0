@@ -1,95 +1,95 @@
-Return-Path: <linux-ext4+bounces-14527-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14528-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oD7XCMTFpmn3TQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14527-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 12:28:04 +0100
+	id eK6vFVLGpmn3TQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14528-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 12:30:26 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DDDF1EDC79
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 12:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B16691EDD18
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 12:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5E3F730117A7
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 11:26:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 56DD7300956A
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 11:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4003943E49A;
-	Tue,  3 Mar 2026 11:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70A342F57D;
+	Tue,  3 Mar 2026 11:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MMje5RHt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mBJ7uKd5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MMje5RHt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mBJ7uKd5"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oy8pWoHq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jJuhp4wn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oy8pWoHq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jJuhp4wn"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A14429803
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 11:22:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F373242DFFA
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 11:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772536942; cv=none; b=IeDallM3blVFg8Z+5zU/r9UdOJNtmPb6SNYUu8EVYPcJ2UBfibLuF52FORBer0l9kzQZHNw3dQ62avuzFzuX6/UJSkQFwRbxOjHBIUtAfTlCwwWY+vK8GM/qF+8JVGA//Bu04VKBnjSSOloq9MCHHEv8tzBuCrDNQEWpDHyKh0g=
+	t=1772537050; cv=none; b=fQUW+txMgXHNinIu8ht5sC+/IJXS3fhXpjJroC1rrlaAZCKZLe3zTLS9Y0TAi/S12Z8QMuoxtdwG2bBnEae8KJgEQrTEWM/prrB6XW3ICqfuJHaQhzHq87M6i9rxrms4+GU48x+DTk6Ub3PkneJiQS8F1bfKu5ayrLrbQBDDBXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772536942; c=relaxed/simple;
-	bh=iD0Wqygw4Db7XrWppsDTFhO3V0HC7DQoBfo+BR46vbo=;
+	s=arc-20240116; t=1772537050; c=relaxed/simple;
+	bh=DKHjLxle+79NqOqJYw+ujWsj6uosfgTj+rOQHipa0Xk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=spv2Y+WL/7yB4mP3jUQ85w/oYFI31LYwnEpX9r5FHyS+vb2hQoWukhAD7+BFbTbW1BKFfL6QkUizBuLBnarHCt6Kul0hk6v4nfjsVz9PSofi23eCZ6Tdn4Co8VfECxInFxeOYHfqJ+Hde1Rk0pDlV5ti8MHB2gP/X8NeZOnFTZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MMje5RHt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mBJ7uKd5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MMje5RHt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mBJ7uKd5; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=j2SA8xMhtYFTaxyaA0iCstwlsFbD1n3M820RxS5FtaBoCSh7asBnf0Np6TRql91YExrrErIgol+DNztnVfZSyUnE01p2IX1YiuwsKxAmQNgTdLBw/h2rksYCVAk/q3qEY2A4UX42fQWlcrCfl67xq8vuq8XryVLa5IdA0DcxFLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oy8pWoHq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jJuhp4wn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oy8pWoHq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jJuhp4wn; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 086CC5BDED;
-	Tue,  3 Mar 2026 11:22:14 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 491595BD1C;
+	Tue,  3 Mar 2026 11:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772536934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772537042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KeUIkqizRv13GXqCMqsXZmgZff1w7sG5Qjbx6Jj7J7Q=;
-	b=MMje5RHtAq0iyN2Ci5NB3siR+5uKf4OabgxeLPpbapGQwdYTZLHIG9WbEhBZtfZH4K6FJj
-	K6dLcOOiweD5MCv526aROGLBnxAitX0xVEFukIg5VKf81+ODBL8aapNjjd2HAUQ3YbMqn7
-	qxFG09Zg+uhBneAwqCoeimjK9RUv3zM=
+	bh=K7Yl9Dt7jVlcVQjEf63B1tQYNVt8eYC4EdfdZsuIVJM=;
+	b=oy8pWoHqrMEHlN4brCXg2tPFAhfnj7hNnLiWr7QZqvLnhUUVRLml6dG2v7DgEPSLDnZovj
+	KAXy3PwMSytjm6CRgomx/IgEopJ3owCZp+3PaBD8ZCWWFIlSZ6TreqR/OCjywszkRFPjhM
+	RZ129a6nRDsR1gOHwRCIua5AvBIGjGg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772536934;
+	s=susede2_ed25519; t=1772537042;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KeUIkqizRv13GXqCMqsXZmgZff1w7sG5Qjbx6Jj7J7Q=;
-	b=mBJ7uKd5M1QzjfrDgXpF0iEdCEhfwIvS8TCLCSzoZDho+dSibf/db1v1ycUm9i74WcZRv4
-	dGapPbtCt8Qt4hAA==
+	bh=K7Yl9Dt7jVlcVQjEf63B1tQYNVt8eYC4EdfdZsuIVJM=;
+	b=jJuhp4wn8vYJLdotyAquo63x/02x111qPRtzSjYNdGjAowRt5gzgynAxTUYw+Ln14/yoSt
+	LKDZZhnGQ3WO8cCw==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1772536934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1772537042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KeUIkqizRv13GXqCMqsXZmgZff1w7sG5Qjbx6Jj7J7Q=;
-	b=MMje5RHtAq0iyN2Ci5NB3siR+5uKf4OabgxeLPpbapGQwdYTZLHIG9WbEhBZtfZH4K6FJj
-	K6dLcOOiweD5MCv526aROGLBnxAitX0xVEFukIg5VKf81+ODBL8aapNjjd2HAUQ3YbMqn7
-	qxFG09Zg+uhBneAwqCoeimjK9RUv3zM=
+	bh=K7Yl9Dt7jVlcVQjEf63B1tQYNVt8eYC4EdfdZsuIVJM=;
+	b=oy8pWoHqrMEHlN4brCXg2tPFAhfnj7hNnLiWr7QZqvLnhUUVRLml6dG2v7DgEPSLDnZovj
+	KAXy3PwMSytjm6CRgomx/IgEopJ3owCZp+3PaBD8ZCWWFIlSZ6TreqR/OCjywszkRFPjhM
+	RZ129a6nRDsR1gOHwRCIua5AvBIGjGg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1772536934;
+	s=susede2_ed25519; t=1772537042;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KeUIkqizRv13GXqCMqsXZmgZff1w7sG5Qjbx6Jj7J7Q=;
-	b=mBJ7uKd5M1QzjfrDgXpF0iEdCEhfwIvS8TCLCSzoZDho+dSibf/db1v1ycUm9i74WcZRv4
-	dGapPbtCt8Qt4hAA==
+	bh=K7Yl9Dt7jVlcVQjEf63B1tQYNVt8eYC4EdfdZsuIVJM=;
+	b=jJuhp4wn8vYJLdotyAquo63x/02x111qPRtzSjYNdGjAowRt5gzgynAxTUYw+Ln14/yoSt
+	LKDZZhnGQ3WO8cCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E87E03EA6E;
-	Tue,  3 Mar 2026 11:22:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 391D93EA6D;
+	Tue,  3 Mar 2026 11:24:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +yVQOGXEpmnzRwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 03 Mar 2026 11:22:13 +0000
+	id 06TwDdLEpmm2SQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 03 Mar 2026 11:24:02 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9E82BA0A1B; Tue,  3 Mar 2026 12:22:13 +0100 (CET)
-Date: Tue, 3 Mar 2026 12:22:13 +0100
+	id D1FB8A0A1B; Tue,  3 Mar 2026 12:24:01 +0100 (CET)
+Date: Tue, 3 Mar 2026 12:24:01 +0100
 From: Jan Kara <jack@suse.cz>
 To: Jeff Layton <jlayton@kernel.org>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
@@ -168,10 +168,10 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
 	linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
 	linux-x25@vger.kernel.org, audit@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
 	linux-can@vger.kernel.org, linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 014/110] proc: use PRIino format for i_ino
-Message-ID: <ylcfz3i2lduxgi5sywsxolkk3yc6u5satyzrf2mymj2vcirtiy@bfgr5natl6gf>
+Subject: Re: [PATCH v2 029/110] ext2: use PRIino format for i_ino
+Message-ID: <ru6heof6ndlg2doksb3mhaz2gnfdt32pqkiwv3trx6ppbmtu3l@466clvjonlps>
 References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
- <20260302-iino-u64-v2-14-e5388800dae0@kernel.org>
+ <20260302-iino-u64-v2-29-e5388800dae0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -180,11 +180,11 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260302-iino-u64-v2-14-e5388800dae0@kernel.org>
-X-Spam-Flag: NO
+In-Reply-To: <20260302-iino-u64-v2-29-e5388800dae0@kernel.org>
 X-Spam-Score: -0.30
 X-Spam-Level: 
-X-Rspamd-Queue-Id: 8DDDF1EDC79
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: B16691EDD18
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -195,9 +195,9 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14527-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14528-lists,linux-ext4=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.cz:dkim,suse.cz:email,suse.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
 	DMARC_NA(0.00)[suse.cz];
 	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.or
  g];
@@ -212,18 +212,18 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_GT_50(0.00)[172];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-On Mon 02-03-26 15:23:58, Jeff Layton wrote:
-> Convert proc i_ino format strings to use the PRIino format
+On Mon 02-03-26 15:24:13, Jeff Layton wrote:
+> Convert ext2 i_ino format strings to use the PRIino format
 > macro in preparation for the widening of i_ino via kino_t.
 > 
-> Update local variables and function parameters that hold i_ino
-> values from unsigned long to kino_t.
+> Also correct signed format specifiers to unsigned, since inode
+> numbers are unsigned values.
 > 
 > Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
@@ -232,51 +232,6 @@ Looks good. Feel free to add:
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
-
-> ---
->  fs/proc/fd.c       | 2 +-
->  fs/proc/task_mmu.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/proc/fd.c b/fs/proc/fd.c
-> index 9eeccff49b2abf57d766ce17fe47070c379ed2c8..936d0258d688be5fdc384ee5c4dfbb8fa0d19dff 100644
-> --- a/fs/proc/fd.c
-> +++ b/fs/proc/fd.c
-> @@ -54,7 +54,7 @@ static int seq_show(struct seq_file *m, void *v)
->  	if (ret)
->  		return ret;
->  
-> -	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%lu\n",
-> +	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\nino:\t%" PRIino "u\n",
->  		   (long long)file->f_pos, f_flags,
->  		   real_mount(file->f_path.mnt)->mnt_id,
->  		   file_inode(file)->i_ino);
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index e091931d7ca19d71f31699913d177eec0821ca7b..702b0f0433f91077cd0d0af4a07e9d67d9fa9a45 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -442,7 +442,7 @@ static void get_vma_name(struct vm_area_struct *vma,
->  static void show_vma_header_prefix(struct seq_file *m,
->  				   unsigned long start, unsigned long end,
->  				   vm_flags_t flags, unsigned long long pgoff,
-> -				   dev_t dev, unsigned long ino)
-> +				   dev_t dev, kino_t ino)
->  {
->  	seq_setwidth(m, 25 + sizeof(void *) * 6 - 1);
->  	seq_put_hex_ll(m, NULL, start, 8);
-> @@ -465,7 +465,7 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
->  	const struct path *path;
->  	const char *name_fmt, *name;
->  	vm_flags_t flags = vma->vm_flags;
-> -	unsigned long ino = 0;
-> +	kino_t ino = 0;
->  	unsigned long long pgoff = 0;
->  	unsigned long start, end;
->  	dev_t dev = 0;
-> 
-> -- 
-> 2.53.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
