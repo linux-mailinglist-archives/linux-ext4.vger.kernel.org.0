@@ -1,187 +1,75 @@
-Return-Path: <linux-ext4+bounces-14469-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14470-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CEGqNLU4pmnQMgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14469-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:26:13 +0100
+	id wGchFnQ6pmnQMgAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14470-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:33:40 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 384561E7A3E
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:26:13 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23A71E7B6B
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:33:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6221C307AA17
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:26:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 530903016AD4
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CAEC358387;
-	Tue,  3 Mar 2026 01:26:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41D2367F58;
+	Tue,  3 Mar 2026 01:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Wc4TKdAE"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="T1b5uIjX"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6717E34B190
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C726BFCE
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772501168; cv=none; b=dbgH46Ku91P35RgcJJDv1gykrQsQKPuKxU0ZTNdm2cI5ltWPhZhfk4u3CDToyoo2a3nqVOLqKqLmWZUZfpkOsAQacVEMCeC61SbdKujn2kPdszhMS4d/VILPt5dPigGupWpO6iPyBxZIrrRxbU+cwUywvJdfMjwGBesCMURi3Js=
+	t=1772501615; cv=none; b=qKIB3UtptSK1WrdEPB41bjfsrlUpcYrkcLTO7IqBb21bPlF0ZUnq0QSZcqkDR4s+OoIDTLIxSz8gWHH5WHptfDMFPvfrqB7T9eEmuT7pRtuYZDFSkg4o3d+LYP0FPCBslc9t0y3wo/1p/XpiR1f0b1TNxBTJL3E8gLzjGl5imVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772501168; c=relaxed/simple;
-	bh=g+VdGlVLVkH1poZKLQaU9Z6Cz1tsg2GNZN6MfKpgxB4=;
+	s=arc-20240116; t=1772501615; c=relaxed/simple;
+	bh=1x/z4lsjvRVrm8u90IJ/ogmuf2BMAxXWCertaRUyDi4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q+0fY4IPUEV+0/r+VdEkGsK0KKS7Ljfhg0h+x5aCOUz19zdLto3hWtyRAIVEWz23XJsqRpDgqdS7HCTxDWHf3KknMrDZ3ADd+sR7gmNKqWtkBYGejtIbePwyllsMHu0NBnqew0dxL2t6y64lInoyIUTa5QephVOmaE00kYkVcZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Wc4TKdAE; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=WPyuxqyuTQDR+QyduOQ/jgzdTrkgavu5o+8pFJmsqbXZahLhieNOkfQgCfYGklfCRGsOo+Hod+9KUPGJXFTrOtf6m44NALUf/TLuvCSo8cEDKQ/Fn2h39lA65itzSa1JztTJg9miRmiSrlw76lZ1fXLDjIB00r8GEnDFw5u7AI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=T1b5uIjX; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from macsyma.thunk.org (pool-173-48-102-84.bstnma.fios.verizon.net [173.48.102.84])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6231Pu3R026610
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6231XAkA029560
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 2 Mar 2026 20:25:57 -0500
+	Mon, 2 Mar 2026 20:33:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1772501160; bh=/4PzqDjQa596+Pxv5nyCAFN8lvFTxej9AhTZolOU+To=;
+	t=1772501592; bh=LjvMyfV6wGhEgTswJWDP+qMkqBgbdWSVw/aER82y5jk=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Wc4TKdAEZiew43ZUa9oyK9BzvbQO3OJloJSKo3pd6MKCTHI4a2teHHPqzw1FRDL2y
-	 +yu6xwBU02gN3nI0t8y5UIoSUv5mdCVHfMEIdSd/UzmQ8n8XljJLn8WdsWZlzyvKGT
-	 rAz3wh7Iki5RyLotCb/Z/VDWmYDbAE0BsYdyvuoQ8F38jRx/zf/TpFP5KA5Lqp0Cw+
-	 Ng03SymNceY21qntaXusQUmsrvhvWlmHGa8roce7/UvpNA6pe9TJunmAktEO3gj4vh
-	 AMgTW7BxiT//fgI8Xnd0Mi0ldl+zhjAuEvp4QGZN3wtROS2Wpi13Sob+oCVUSW/6ZX
-	 sKXZK8+2UchSg==
+	b=T1b5uIjXQ9U1se7/MT8v5M89PAihrlaKLwADFXPiIdJUkTNIHlKZLANTt7xF4eMAd
+	 TieofBFVLNBalBIi+CXhZfP01cC0g6qN0bT9puMWwIHJKCYmViW0ggsU8DokadfB02
+	 JOmw7YAnDTZoAcEy8PzLzqO2V+VZqEWjgmY0wbyjuoMf+Sf4uAN4CG56KugtyISYYQ
+	 Kf13KmJUUA0V0Ar1XOqTY+MYHzwvWc2l+ZxlLgDlgyHyiSXt9BN1YnY7nRCt6iqFNf
+	 eF82UoOZYXLLeAFKsNi8UAThkglYW9D2U10JVZYNaWR3zW5JtaRr+iSazPH/2pEzqP
+	 BXTPhrO5w1ZXw==
 Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 33A7D5AC5A1E; Mon,  2 Mar 2026 20:25:56 -0500 (EST)
-Date: Mon, 2 Mar 2026 20:25:56 -0500
+	id CCB9B5AC5D2D; Mon,  2 Mar 2026 20:33:09 -0500 (EST)
+Date: Mon, 2 Mar 2026 20:33:09 -0500
 From: "Theodore Tso" <tytso@mit.edu>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Paulo Alcantara <pc@manguebit.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
-        Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-        Tom Talpey <tom@talpey.com>, Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Bharath SM <bharathsm@microsoft.com>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Yangtao Li <frank.li@vivo.com>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        James Clark <james.clark@linaro.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>,
-        Eric Paris <eparis@redhat.com>, Joerg Reuter <jreuter@yaina.de>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        David Ahern <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Remi Denis-Courmont <courmisch@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Stanislav Fomichev <sdf@fomichev.me>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org,
-        v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-        autofs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        netdev@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-hams@vger.kernel.org, linux-x25@vger.kernel.org,
-        audit@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-sctp@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 001/110] vfs: introduce kino_t typedef and PRIino
- format macro
-Message-ID: <20260303012556.GA6520@macsyma-wired.lan>
-References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
- <20260302-iino-u64-v2-1-e5388800dae0@kernel.org>
+To: Mario Lohajner <mario_lohajner@rocketmail.com>
+Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangerkun@huawei.com,
+        libaokun9@gmail.com
+Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
+ allocation policy
+Message-ID: <20260303013309.GB6520@macsyma-wired.lan>
+References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
+ <20260225201520.220071-1-mario_lohajner@rocketmail.com>
+ <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
+ <20260226024819.GA39209@macsyma-wired.lan>
+ <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
+ <20260227011200.GA68551@macsyma-wired.lan>
+ <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
+ <20260227164319.GB93969@macsyma-wired.lan>
+ <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -190,77 +78,57 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260302-iino-u64-v2-1-e5388800dae0@kernel.org>
-X-Rspamd-Queue-Id: 384561E7A3E
+In-Reply-To: <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
+X-Rspamd-Queue-Id: F23A71E7B6B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,telemann.coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.o
- rg];
+	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-14470-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[rocketmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14469-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[mit.edu:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[171];
+	NEURAL_HAM(-0.00)[-0.963];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.998];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[macsyma-wired.lan:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,macsyma-wired.lan:mid]
 X-Rspamd-Action: no action
 
-On Mon, Mar 02, 2026 at 03:23:45PM -0500, Jeff Layton wrote:
-> The PRIino macro is a length modifier, not a complete format specifier.
-> It is used as: "%" PRIino "u" for decimal, "%" PRIino "x" for hex, etc.
-> This follows the pattern used by userspace PRIu64/PRIx64 macros.
+On Mon, Mar 02, 2026 at 09:04:44PM +0100, Mario Lohajner wrote:
+> RRALLOC spreads allocation starting points across block groups to avoid
+> repeated concentration under parallel load.
 
-For the record, I really hate the inttypes.h format specifiers, but I
-agree that we should forward the example of the C99 spec, for better
-or for worse.
+There are already other ways in which we spread allocations across
+block groups.  You need to tell explain a specific workload where this
+actually makes a difference.
 
-That being said, the userspace PRIu64, et. al macros are complete
-format specifiers, not just a length modifier.  And I think this
-results in less ugly format specifiers in our kernel code.
+Also note that in most use cases, files are written once, and read
+multiple times.  So spreading blocks across different block groups is
+can often be actively harmful.
 
----- cut here ---
-#!/bin/sh
-cat <<EOF > /tmp/blah.c
-#include <inttypes.h>
-#include <stdio.h>
+> In high-concurrency testing, performance is consistently comparable to
+> or occasionally better than the regular allocator. No regressions have
+> been observed across tested configurations.
 
-int main(int arg, char **argv)
-{
-        printf("PRIu64 is %s\n", PRIu64);
-        printf("PRId64 is %s\n", PRId64);
-        printf("PRIx64 is %s\n", PRIx64);
-        return 0;
-}
-EOF
+No regressions, and only "occasionally better" not enough of a justifiation.
 
-clang -m32 -o /tmp/blah /tmp/blah.c
-/tmp/blah
----- cut here ---
+What is your real life workload which is motivating your efforts?
 
-% /tmp/blah.sh
-PRIu64 is llu
-PRId64 is lld
-PRIx64 is llx
-
-Thanks!
-
-						- Ted
+     	     	       		      	 - Ted
 
