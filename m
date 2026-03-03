@@ -1,189 +1,146 @@
-Return-Path: <linux-ext4+bounces-14467-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14468-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBgMOdozpmlJMQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14467-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:05:30 +0100
+	id lTrUDUY4pmnQMgAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14468-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:24:22 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BA31E7792
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:05:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A2191E7A33
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:24:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AA31230255E5
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:05:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F20B430790A6
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6452222C5;
-	Tue,  3 Mar 2026 01:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="OCA+ociv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A1E3563DD;
+	Tue,  3 Mar 2026 01:24:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430A73909AE
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F411A6810
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772499924; cv=none; b=PZ+xJHZ/dOo9AG+XXCj31dGr27+lh4gzovA3WWlELLc65mTC4pHJYMPT+bL64Y6jwXZZyUd2KhxctSSb4A3Hf4uGBqtIA9UIN3cfplPlLg8W2th26xAOYLmah4gF9Q2CzpH3UQlUv6UG+3DUqf/Sf2+bSLEpZaYYF2b53g/TCBY=
+	t=1772501058; cv=none; b=bcht0VL/y4HRPdzg7oo9xcd2gnfP1cYgsW7Dhdg0iRHCpA00b66O6u5Ebe5+vRhhzUy1DkHMcjywH4EyhOZwpvKmRPlkpf7tMDkQx9F8Qvfrh4vX753eawY5+Lna7QGpC939bwpuT8zsSICnCkaBUX2c+dG0xa8kRf8drdGm+EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772499924; c=relaxed/simple;
-	bh=LNNVIkNFBWtwEP4iHXWMpZCTtQG/MxASHpDBycUWkTs=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=Bz/x8v0Pae3ERDOdlx6Iug899xuhpMS73KieSRjBG/UzlHoFu8db1Imkhwci4jTIGTYyS/lmtRkTChuGWty5IAY5f+sdgTB+4eySoqR1Q8Eb5HiDV5+HQ4w8JLmCRgfeGlcI6AdbGQtmfGuEh+Gu8Ptgcyq6qFZzmasntX++unE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=OCA+ociv; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-824a829f9bbso2339855b3a.0
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 17:05:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772499921; x=1773104721; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hEECmBkCFf380ySY0l2Du8HTROikW88C0Mw2oBNlHbE=;
-        b=OCA+ocivJ0rlwEVz7iweT0ruB/Q++MpVCfigk6JmJaWOtHMn8X0JMjuOWlhVKBPkh7
-         iUDRtbVXktmI899E4LTMB+pO4FhqSFszh3l1ERg+66yHmJQyBdMM4COeL+t5DKkSVch2
-         viXX5jNUVvu3Zh4tbuv9/aBO1oAEN3gfsqNSz8WWAFPnYOlvKDyKBQsLd3lARGGj1JgE
-         k8r9Q5fCy4UdoNfheXcb2Pa6wwbFz6/678l51ct+Cuyx2msoYLxt9zc7cQpb8YlKVLgu
-         WB+Ia+4qQhLohhcdVN69w4X31wSqbz+NT5ZC88ruLcqq6kgiNt2vjvyLEjfqNPxYIWA+
-         QK6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772499921; x=1773104721;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hEECmBkCFf380ySY0l2Du8HTROikW88C0Mw2oBNlHbE=;
-        b=Fp7kN04oAbufgcV3hjbkQtwQiqFmUoDxDcMiJe6Z2y0wUJAM7GnN5diOoMnH+ldyEo
-         SYdaIvpX9FixuXvAgAcNRN4UYGPg7Zit5Ve6QchEVTalLEASYAz784ZXcygcO2Hlj6Uz
-         RhuDZTSIipHBIQ51KgK6+yxxgMVe2XduEP+7HfczzscAIKeTSwgccg3xjm7/WHbCKmvo
-         TB8DhXDXpb05SH+7p06xhuHxTVh3TrDd3DXlghDbKPPlBisDI4YRZ4LUMSkWyz5BDRp2
-         8UICXKznKn3hMb3Ocp+WpSFSHtNC8/BJ4kjAd/9EAMmaNKvVEteppaTl9jr3p1ee9jkz
-         qqBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOlXgqL8GHY7vroBwMftrWeDSxpV0sWR78rjPCAWR65hY4pjuSuGq8Wd0wHN/F6cPXgqIh+N+FXAmv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOdgWifxtR6ZxC1lihDd5bZkQ60SIQoDE3xG141fHhHd0wrjzy
-	MDJfak27ODC7jNbL7BRUPaXVD2OYPJ7vcEXetGcHbHkdO228qY6H1oSWTVPfnq0Sp6k=
-X-Gm-Gg: ATEYQzyDsapKv0oWTaRO60HVSmyd/3+HICzPOhcGQtvs4qOa9PWmgvK6Rh+sQIH82Zb
-	GKCpIe/c1zOSpx8euIHYfNVAk1PhW+3pPcHOZZjcU2woBJUPyNSLkH5LdAZW5fk1aTs/1qyrI2/
-	ZYi3DEC/9ONlkJIM0U0Sqt3a6/MoD1lYry6F4/8oAjVp27NcVZpV9WkQyXhpbMMEy13KQ/MO4VT
-	1PWNvgwrAMPykScA5YNszORjJEDAE1kkCzsR9/Eoh+WL71WiKPNO8jz1ubQraWVW4opcYXJeyYD
-	Ni/x7ZJbcjRpnV2Ynu9mE6lFd3OzCmgt8EbqC1McBEO5CFxXSxKJ2Cm9TTvhhTGDM6kwzqn5cse
-	vZYeove9vwTBUmwtez5G0UuCKrRQO7nHlfB89wuok+HsVXdN18LMvzagGIald4qE0YDlDMfQlGf
-	kCgWdW/D/T5wVOMaD8z17sTAerr19gGo0jDJ6/G9upt/67hWZNBRTAxMxFKQ2aZFLGROieVZIzM
-	VoeQ03TVOoTnUgZ
-X-Received: by 2002:a05:6a00:3c8b:b0:819:5db9:6ac0 with SMTP id d2e1a72fcca58-8274d9e9b22mr15196880b3a.37.1772499921401;
-        Mon, 02 Mar 2026 17:05:21 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82739db3e4asm14251338b3a.28.2026.03.02.17.05.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Mar 2026 17:05:20 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1772501058; c=relaxed/simple;
+	bh=T26qdnd/NFAnwX+HuVFfAZZHs+wLkoIsehNBNR9zHc0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M/dmTRfA3iyfzLN+Qa8gZRFkQrHC4NsnIkykrMDSTrtk+3Qhs/HI51IhQw+5Ve1zP5bl+bNPmi4Pln5uN09rLgzEeD4do1OHL3abE+7dvp/lEW224PZF2dctpVcSvu8DCeCx8UJ1mWSrWgQkTffl/xZ8P54sW9JqNl2swAU7jM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fPykd62R0zKHLtC
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 09:24:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 7CC1240591
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 09:24:13 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.87.132])
+	by APP4 (Coremail) with SMTP id gCh0CgC3ZPU8OKZpUh5+JQ--.63131S4;
+	Tue, 03 Mar 2026 09:24:13 +0800 (CST)
+From: Ye Bin <yebin@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Cc: jack@suse.cz
+Subject: [PATCH -next v3] ext4: test if inode's all dirty pages are submitted to disk
+Date: Tue,  3 Mar 2026 09:22:42 +0800
+Message-Id: <20260303012242.3206465-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH v3 1/2] jbd2: gracefully abort instead of panicking on
- unlocked buffer
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <20260303005502.337108-2-nikic.milos@gmail.com>
-Date: Mon, 2 Mar 2026 18:05:09 -0700
-Cc: jack@suse.cz,
- tytso@mit.edu,
- linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Zhang Yi <yi.zhang@huawei.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E5CC201C-6F63-412E-A083-77C80CEDF5AE@dilger.ca>
-References: <20260303005502.337108-1-nikic.milos@gmail.com>
- <20260303005502.337108-2-nikic.milos@gmail.com>
-To: Milos Nikic <nikic.milos@gmail.com>
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
-X-Rspamd-Queue-Id: D1BA31E7792
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgC3ZPU8OKZpUh5+JQ--.63131S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF1DWryxCw43Ar13Kw4rKrg_yoW8Xw4kpF
+	95GrZ8Grn8WrWqk3yIyr42vry5Kan7GFW5XFWFyr10g3sxXry0qF1akF1FkayxtrWfGr4F
+	vF45Kw1fCrZxu3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUglb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+	z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+	AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+	IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+	xhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
+X-Rspamd-Queue-Id: 4A2191E7A33
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14467-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14468-lists,linux-ext4=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger.ca:mid,dilger.ca:email,huawei.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,suse.cz:email]
+	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yebin@huaweicloud.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.898];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,huaweicloud.com:mid]
 X-Rspamd-Action: no action
 
-On Mar 2, 2026, at 17:55, Milos Nikic <nikic.milos@gmail.com> wrote:
->=20
-> In jbd2_journal_get_create_access(), if the caller passes an unlocked
-> buffer, the code currently triggers a fatal J_ASSERT.
->=20
-> While an unlocked buffer here is a clear API violation and a bug in =
-the
-> caller, crashing the entire system is an overly severe response. It =
-brings
-> down the whole machine for a localized filesystem inconsistency.
->=20
-> Replace the J_ASSERT with a WARN_ON_ONCE to capture the offending =
-caller's
-> stack trace, and return an error (-EINVAL). This allows the journal to
-> gracefully abort the transaction, protecting data integrity without
-> causing a kernel panic.
->=20
-> Signed-off-by: Milos Nikic <nikic.milos@gmail.com>
-> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+From: Ye Bin <yebin10@huawei.com>
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca =
-<mailto:adilger@dilger.ca>>
+The commit aa373cf55099 ("writeback: stop background/kupdate works from
+livelocking other works") introduced an issue where unmounting a filesystem
+in a multi-logical-partition scenario could lead to batch file data loss.
+This problem was not fixed until the commit d92109891f21 ("fs/writeback:
+bail out if there is no more inodes for IO and queued once"). It took
+considerable time to identify the root cause. Additionally, in actual
+production environments, we frequently encountered file data loss after
+normal system reboots. Therefore, we are adding a check in the inode
+release flow to verify whether all dirty pages have been flushed to disk,
+in order to determine whether the data loss is caused by a logic issue in
+the filesystem code.
 
-> ---
-> fs/jbd2/transaction.c | 7 ++++++-
-> 1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index dca4b5d8aaaa..04d17a5f2a82 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -1302,7 +1302,12 @@ int jbd2_journal_get_create_access(handle_t =
-*handle, struct buffer_head *bh)
-> goto out;
-> }
->=20
-> -	J_ASSERT_JH(jh, buffer_locked(jh2bh(jh)));
-> +	if (WARN_ON_ONCE(!buffer_locked(jh2bh(jh)))) {
-> +		err =3D -EINVAL;
-> +		spin_unlock(&jh->b_state_lock);
-> +		jbd2_journal_abort(journal, err);
-> +	goto out;
-> +	}
->=20
-> if (jh->b_transaction =3D=3D NULL) {
-> /*
-> --=20
-> 2.53.0
->=20
->=20
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/ext4/inode.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 396dc3a5d16b..d4d65593bce2 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -184,6 +184,14 @@ void ext4_evict_inode(struct inode *inode)
+ 	if (EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)
+ 		ext4_evict_ea_inode(inode);
+ 	if (inode->i_nlink) {
++		/*
++		 * If there's dirty page will lead to data loss, user
++		 * could see stale data.
++		 */
++		if (unlikely(!ext4_emergency_state(inode->i_sb) &&
++		    mapping_tagged(&inode->i_data, PAGECACHE_TAG_DIRTY)))
++			ext4_warning_inode(inode, "data will be lost");
++
+ 		truncate_inode_pages_final(&inode->i_data);
+ 
+ 		goto no_delete;
+-- 
+2.34.1
 
 
