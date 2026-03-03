@@ -1,182 +1,317 @@
-Return-Path: <linux-ext4+bounces-14551-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14552-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yKVNKxjVpmnHWgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14551-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 13:33:28 +0100
+	id oDjENS/hpmnFYQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14552-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:25:03 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527781EF7D1
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 13:33:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CA131F026C
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0773F303135E
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 12:33:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7E0CA310335D
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 13:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D913932F757;
-	Tue,  3 Mar 2026 12:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75889426694;
+	Tue,  3 Mar 2026 13:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8dFu4S7";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="fc5saU2E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uqFg1JSx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09B2335546
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 12:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.133.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772541167; cv=pass; b=Car2WmoaKk3USOuac418Nkcvb861IHEriO20dbEb4IaOHrbN7VEAlTTPwyD8+f7N7oBYRt2VkICak6mdSP18VdaA3x2gCD+40b89nT8swPio1D+1coRDRf7PG4Tywl1ta+lB/lPD61ETGvzvK9sSKODFg7f3qWwoKW/aMe9GuYQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772541167; c=relaxed/simple;
-	bh=DAsbkvWEurEl7FG/bk0zWpeDiH+kFLfDNlmqSJEZ1OI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TMWTPRG9qd3sx5P7lLHWHjB2QkaFtL2rTj9hB77EBjZMUuZ45wEaA9TNTeSYrAotkOPbmlZnP2qi9E4YOEKPsB8nHNV7YgECNFdS7ydVPfovTLnd6gn+mpUGS+lQaYCU6t4Fq/Z4LPaEbJU27WHjMJEYIhpD6lLw2rZLH44Wiz0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8dFu4S7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=fc5saU2E; arc=pass smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772541164;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DAsbkvWEurEl7FG/bk0zWpeDiH+kFLfDNlmqSJEZ1OI=;
-	b=a8dFu4S7JefFGS+0kKamr7Vu2juHCbECEOM4LvUK4KrsLOmKKIQvnGTMf8pDGksBOPIUVy
-	wHvV7cZaxrillKvA+VZG/0cvGpNHc5SWpp7jLJu+WKMb/H2Ai1aCpNumQhHbd7jEGm/ZFs
-	GiqZhLRFQGzAkdbuT81Vla6cLZUgYqw=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-526-ikgtGgknO6OkeoNfEh4-Mg-1; Tue, 03 Mar 2026 07:32:43 -0500
-X-MC-Unique: ikgtGgknO6OkeoNfEh4-Mg-1
-X-Mimecast-MFC-AGG-ID: ikgtGgknO6OkeoNfEh4-Mg_1772541163
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-7982c3b7da7so102837737b3.1
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Mar 2026 04:32:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772541163; cv=none;
-        d=google.com; s=arc-20240605;
-        b=R4WAwlxcokUyQHQwadL/r1lHoq47HZa2Fl9bLMBn9iTRCr5i0td5Gpd1z/vxkzvDQy
-         WG9Paa6eFJszKx0YulMCtLJF/TpilEkWQ3zQohAu5q9oK0+ohu0EbdjG9PRsrIe5bZI7
-         KG6umIRkltlSULf3yIM50S2z/Z3M76l6sE1Ev7F94GBnMHycN1liF8/3WFWNZyd4xw3M
-         WPjb8UT/AHKxTLtpBhoBrBn9C9Q0tEw8dtw78BQg8pHlQn+L3n3qDAbPp15LIRlFEbWT
-         vRQtOeBc0Z39Ip9AYQKo2yQkfA9suHiq/DCBpADRTyjJND8uI/Cfqk0RxPz9IADFl7sF
-         aCJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=DAsbkvWEurEl7FG/bk0zWpeDiH+kFLfDNlmqSJEZ1OI=;
-        fh=t+Ng8QwDMYvKckSDK7Hi1JY3+VwNhkK6oF3eKQEyUIU=;
-        b=U5JbEZj3GZBavVT5mWFMAeAkjagTEuDAvX+ttHAZItyMN68DWhQpcUMAi4c3wF67NZ
-         s6XjXR0evF6MquuZ/DqzQfDUNuSe7cGSQX5s+ky2AQy5NEuJac92Wx2Sc9d8GIIkp4h6
-         jT8VP7q+rWhZmc/eGjgVOeVWvWtfvlKCSYy14ZBi14llnK8UNvAubyhxDMV7DJtzLGcz
-         758VkbiTOC2IFhcOqm3g/L+WN3WZAzFTdYmYR96En2h2b0LLmCVkN+vRE1PDw6C36uu9
-         rVvEFCmBu0tAAnHz4qOxLigKGe1ROrLKbyDpkiPAqC9mDJC8X+kehsk42AXMeKY4a4bA
-         e17g==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1772541163; x=1773145963; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DAsbkvWEurEl7FG/bk0zWpeDiH+kFLfDNlmqSJEZ1OI=;
-        b=fc5saU2ElXfHNungKAKLATIvnTe+rHeKlCyQ9Q3llbs/2uiZ6ucv3eBvvngF0arfS8
-         92mykTZDjnOFJrCjzc8xEsEIXcCZNqj1jSQM7RZtwZg/MlT1/0StgmKewpxyw+BsPkZz
-         gcxnMza2u2ksQfavYm/49ubx0+GcfZ3g1R2CIMFn7B7wBD7401wexYjDkhR27vDddt1H
-         qmdShPSaHEnk4NyM6kbTRn2u1R7/rsK1zNwguMYNpS+OMXm6NYk0vQsgeptOOdIibUTh
-         NC1HFe+dVihSlk+6Fa8Q282J7bMnDe0RS0bdzA1oafkAJCm3JO5saTiFHtxP/3l5tBq2
-         4GBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772541163; x=1773145963;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=DAsbkvWEurEl7FG/bk0zWpeDiH+kFLfDNlmqSJEZ1OI=;
-        b=IlHwLwoP6YSBvNrm0LZ31OXDxtinE0A4lJP6ptWOqDgUEjAjFVXwsyyewyK7raHQl2
-         VHDKwrUt44+aAbScdD28viYmq05pwcablqZ+rL8GNuo9ohwFRCdW4wKRScD810sPzaza
-         Ao9G70M88U/oiG7jxpPKM8ifAuea+OBA2aw9TdLtsYKngNvhaPyaBTFU7QAebTAZHGMk
-         txen8rRN2S+8+GhAbLBVbykLMCNcxGiQ0Rwuct8gMCI5BrllLwY6OGFbLJWVDzly80oI
-         vVDuUusFP1WpNDXG9J6+TiQX12iaDJb8QRkG1VNp63zsFvHKWMIIHZIsCxXGEPB6mC5r
-         9pCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXOMIH8ephP/gq8I9WO9+wPU6/Elpo4BMo3V5eL2XqsJr9v/bRge6vCwWmGLnn11ym+yFt3IWZhVEtd@vger.kernel.org
-X-Gm-Message-State: AOJu0YwNUqVCRG2LCABXz1LaoSmfUqKnWLhLr6yO59We5JGTnaBpCuRO
-	vVYCPJO1E4KVPVuQLiWw9o2TlfbWNUedvG1ko0+HlfMlmEPYlS0Vjxt5ViePnp9P/kk29NWyCbr
-	d0xoJ6ajhANjo3b1pUuJ0RBWHKkJEatCsLR1HBxdgD0DgY1mxjEWpNDKp2THK8UVV7gO/yDArd+
-	kKk55pOTGh7qJl/s/gr4rRpnuDkiEleiMK+N3TgdMmHF6ILSfZ
-X-Gm-Gg: ATEYQzxRAb3jMf6Wj+tYAUm9oUO7JbeOouLiTIOUzgnzpC90H9CqZOGxiA78dCVvr3N
-	okJz4uIQDn557FwltpMm0BOatQtanbCnDm2pMXlYHtKbisCl504uAxxDAcFYmT1xeEItanzvLUl
-	BDfakb5/zbfvygUAlVlbBDSPN0OMFTFz9A+uu9wRiu27a1CpZyY0p2MIte74S1dQVnT2whJwZH4
-	flPBYhNyOs1/OFLG8oQZQ9oQw2wAZpQv+gZ8E4ss/DBF7rYcbp7/YWmtNAO+ZEsmQ==
-X-Received: by 2002:a05:690c:4986:b0:798:61a4:e2cc with SMTP id 00721157ae682-798855a41d7mr139268217b3.34.1772541163335;
-        Tue, 03 Mar 2026 04:32:43 -0800 (PST)
-X-Received: by 2002:a05:690c:4986:b0:798:61a4:e2cc with SMTP id
- 00721157ae682-798855a41d7mr139267957b3.34.1772541162941; Tue, 03 Mar 2026
- 04:32:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B32C39D6CF;
+	Tue,  3 Mar 2026 13:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772544004; cv=none; b=aWc/W6B+ntnfQGZTQJ3rnK+8IwaW2GwNqdHHhKdaZwRJ8rQD6spJgrPSupog8bFbGWtUmawygb2iBu94Tqr9/GnFRNpSzLHODpdvi8wr2H2LGb37XbEpHhDo7JTSPCawlIJNndJwbZRWjQYTvs1rVnwAtvea18oknf+AZ9rWhT8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772544004; c=relaxed/simple;
+	bh=EevoioCXPDnDw9Dx0CTLNigeicoSZ+92kk+jyNLVd/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jfeDrw5BREDhERC/wuPQX6iH6ONWt3rj5tPsPVmj16CnjGYWKmERaL8wS+KdX/APzBr/bGhPZZZRZ+9V/6lVfnT0Q08k9SgKhtwbv4Jv/gooKYgVDkBWYKdiQccQSAVwt14ySp9/FpJQgpXZSeAv+uwdQc4DM5M5sHWnepj8mbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uqFg1JSx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 645A5C116C6;
+	Tue,  3 Mar 2026 13:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772544003;
+	bh=EevoioCXPDnDw9Dx0CTLNigeicoSZ+92kk+jyNLVd/k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uqFg1JSx1lMKdyVNGeIg8uWY7xV3rKZnCWIlCf2pGD2yqnLwC7IWp8ndWogir/Xdr
+	 3eBDmqdXcQ93qaEkOOkBL7447yN+4rrFx+tIn6DYuDFbJVQXwEAByTflNY4RJDCqA7
+	 j7AUTVLqp3itaTaGvOGxOx2BwCXb1eWLZhOEk7WTkSPMiX5WB8FEW6k4MtJjXdx3He
+	 iVHU2tRQ2vEgyg7JPUhGumsU/Eyg01dzU6JLaSS+hifP6dUORURe7uIJlzjzYUHNeS
+	 EkX09pTsv80S8omK8KYRYbBoRGRofjOHzXRkq+nsYyQqsxClRqSoNeZnzHSXtyAgmZ
+	 +I/kicco9PpZA==
+Date: Tue, 3 Mar 2026 14:19:59 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Theodore Tso <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>, 
+	Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-man@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <aabdQf-gsEprJoFp@devuan>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+ <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
+ <20260219133244.GB69183@macsyma-wired.lan>
+ <aZxLxum4WFYKbx2O@devuan>
+ <20260223193238.GA63263@macsyma-wired.lan>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260303101717.27224-1-jack@suse.cz> <20260303103406.4355-43-jack@suse.cz>
-In-Reply-To: <20260303103406.4355-43-jack@suse.cz>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Tue, 3 Mar 2026 13:32:31 +0100
-X-Gm-Features: AaiRm51g_TgIhOkGLCDR-668UB9OmDW-WHgYo8dNTw7KZZwkVFcUvPwu-AmQRn4
-Message-ID: <CAHc6FU61tUwnFf4pXWun_nLnL2jyUYHLKAN7C1hanbKk0GTZMA@mail.gmail.com>
-Subject: Re: [PATCH 11/32] gfs2: Don't zero i_private_data
-To: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, linux-ext4@vger.kernel.org, 
-	Ted Tso <tytso@mit.edu>, "Tigran A. Aivazian" <aivazian.tigran@gmail.com>, 
-	David Sterba <dsterba@suse.com>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
-	David Hildenbrand <david@kernel.org>, linux-mm@kvack.org, linux-aio@kvack.org, 
-	Benjamin LaHaise <bcrl@kvack.org>, gfs2@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 527781EF7D1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cwylalky2hmunx5a"
+Content-Disposition: inline
+In-Reply-To: <20260223193238.GA63263@macsyma-wired.lan>
+X-Rspamd-Queue-Id: 7CA131F026C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14551-lists,linux-ext4=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,zeniv.linux.org.uk,mit.edu,gmail.com,suse.com,mail.parknet.co.jp,linux.dev,suse.de,kvack.org,lists.linux.dev];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14552-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[agruenba@redhat.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.gmail.com:mid]
+	FREEMAIL_CC(0.00)[dilger.ca,gmail.com,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.997];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alx@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alejandro-colomar.es:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Jan,
 
-On Tue, Mar 3, 2026 at 11:34=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
-> The zeroing is the only use within gfs2 so it is pointless.
+--cwylalky2hmunx5a
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Theodore Tso <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>, 
+	Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-man@vger.kernel.org
+Subject: Re: Writing more than 4096 bytes with O_SYNC flag does not persist
+ all previously written data if system crashes
+Message-ID: <aabdQf-gsEprJoFp@devuan>
+References: <3d8f73f4-3a64-4a86-8fc9-d910d4fa3be1@gmail.com>
+ <174A8D06-B9B6-4546-A528-7A814D538208@dilger.ca>
+ <20260219133244.GB69183@macsyma-wired.lan>
+ <aZxLxum4WFYKbx2O@devuan>
+ <20260223193238.GA63263@macsyma-wired.lan>
+MIME-Version: 1.0
+In-Reply-To: <20260223193238.GA63263@macsyma-wired.lan>
 
-"Remove the explicit zeroing of mapping->i_private_data since this
-field is no longer used."
+Hi Ted,
 
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
+On 2026-02-23T14:32:38-0500, Theodore Tso wrote:
+[...]
+> The text in VERSIONS is not incorrect, in that it is talking about the
+> distinction of O_SYNC and O_DSYNC in terms of which kinds of metadata
+> will be persisted.
+>=20
+> However, the reason why all of this information regarding Synchronized
+> I/O is in VERSIONS is describing the historic behaviour of Linux
+> version 2.6.33 versus more modern versions of Linux.  But 2.6.33 dates
+> from February 24, 2010 --- 16 years ago.  So it might be simpler if we
+> simply dropped this kind of historical information.
 
-Thanks,
-Andreas
+I prefer keeping it, but I agree with moving it to a place where it
+doesn't distract (maybe even a separate page).
 
+> But if you do
+> want to keep it, we should move the bulk of that inforamtion into
+> O_SYNC and O_DSYNC.
+>=20
+> So maybe:
+>=20
+>        O_DSYNC
+>               Write  operations  on the file will complete according to t=
+he re=E2=80=90
+>               quirements of synchronized I/O data integrity completion.
+>=20
+>               By the time write(2) (and similar) return, the  output  dat=
+a  has
+>               been  transferred to the underlying hardware, along with an=
+y file
+>               metadata that would be required to retrieve that data.
+>=20
+> 	      See VERSIONS for a description of how historial versions
+> 	      of the Linux kernes from 2010 behaved.
+>=20
+>        O_SYNC Write  operations  on the file will complete according to t=
+he re=E2=80=90
+>               quirements of synchronized I/O file integrity completion (b=
+y con=E2=80=90
+>               trast with the synchronized I/O data  integrity  completion=
+  pro=E2=80=90
+>               vided by O_DSYNC.)
+>=20
+>               By the time write(2) (or similar) returns, the output
+>               data and all file metadata associated inode for the
+>               opened file have been transferred to the underlying
+>               hardware.
+> 	     =20
+> 	      See VERSIONS for a description of how historial versions
+> 	      of the Linux kernes from 2010 behaved.
+
+LGTM.
+
+>=20
+>     VERSIONS
+>        Before Linux 2.6.33, Linux implemented only the O_SYNC flag for
+>        open().  However, when that flag was specified, most
+>        filesystems actually pro=E2=80=90 vided the equivalent of synchron=
+ized
+>        I/O data integrity completion (i.e., O_SYNC was actually
+>        implemented as the equivalent of O_DSYNC).
+>=20
+> I'd suggest dropping everything else in VERSIONS, including the
+> discussion of O_RSYNC.  All of that is much more appropriate for a
+> tutorial.
+
+How about having an O_RSYNC(2const) manual page that talks in detail
+about it?
+
+>=20
+> If you really want to keep all of that text, perhaps it could be moved
+> into a synchronized-io man page in section 7.
+
+Yes, a syncronized-io(7) page would make sense.
+
+>  In that we can talk
+> about the difference of fsync() and fdatasync(), which is interesting
+> as a conceptual model, and conceptually it is similar to the O_SYNC
+> and O_DSYNC.  But the difference of what data will be written back
+> (the data that was written in the file descriptor where the
+> O_SYNC/O_DSYNC flag was set, eitehr via open or fcntl, versus all
+> buffered data in the buffer cache).  The synchronized-io man page
+> could also have more of the information around O_DIRECT in one place.
+
+I like the idea of a chapter 7 manual page, or separate 2const pages for
+each different macro.  Whatever you consider more useful/readable.
+
+>=20
+> > If you'd write a patch, I'd appreciate that.
+>=20
+> Well, there's a question of what's the minimal change that is needed
+> to fix out-and-out inaccuracies, and we can just delete some
+> parenthetical comments.
+
+Yup; I strongly prefer many minimal patches.  If you (or anyone) start
+by removing parentheticals that are unnecessary or incorrect, that'd be
+good.
+
+I would do that, but I wouldn't be able to write the commit messages, or
+decide how to group them.  I'd need someone expert in those APIs to
+write the patches.  I can then amend them editorially if they have any
+minor issues.
+
+> BTW, if we want to delete inaccurate information, I'd also suggest
+> deleting the following text in the O_DIRECT section of the man page:
+>=20
+>       A semantically similar (but deprecated) interface for block
+>       devices is described in raw(8).
+>=20
+> ----
+>=20
+> Then there's trying to rearrange the tutorial-style information for
+> people who want to implement code which needs data persistence
+> guarantees.  That's quite a lot more work, and while I'm happy to
+> review or assist someone to write that more expansive tutorial
+> material, it's not something I'm willing to sign up to do.
+
+Okay.  While I can't do the removal of inaccurate text, I can reorganize
+correct text.  If you do the former, I can do this afterwards.  I'll CC
+you in such patches.
+
+> ----
+>=20
+> Finally, there are some philosophical questions about what the goals
+> of the Linux kernel man pages --- how important is having historical
+> information (for exmaple O_DIRECT has a "since 2.4.10", which is 25
+> years ago --- really)? and how important is there to have tutorial
+> infomation and where should that information should be organized in
+> the man page.
+
+Michael Kerrisk wanted to keep everything after Linux 2.6.  Moving it to
+HISTORY, and reducing less important details, is appropriate, but
+removing it all is not so much.
+
+I more or less keep that guideline, although I'm slightly more prone to
+removals, but not too much.
+
+> My personal opinion is that the primary priority of the Linux man page
+> is to document the specification of the kernel interfaces that we
+> expose to user space.  Things like tutorial material and a descriptive
+> of historical versions are of secondary importance.
+
+Yup.  I've been moving a lot of text to separate pages or HISTORY
+sections, or removing unnecessary details.
+
+> I'd also advocate dropping historical information for kernel versions
+> which are older than say, 7 years.  Curretly the oldest LTS kernel
+> which is supported upstream is 5.10, which was originally released in
+> 2020, and will EOL by end of 2026.  The Linux kernel 5.0 was released
+> on March 3, 2019, so using a 7 year lookback means that explanation
+> about how the Linux kernel in 2.4.x, 2.6.y, 3.x, 4.x, etc. can be
+> dropped from the man pages, since IMHO it will reduces a lot of noise
+> that will likely confuse readers.
+>=20
+> But that's a call for Alex and the man pages project to make.
+
+
+Have a lovely day!
+Alex
+
+>=20
+> Cheers,
+>=20
+> 					- Ted
+
+--=20
+<https://www.alejandro-colomar.es>
+
+--cwylalky2hmunx5a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEES7Jt9u9GbmlWADAi64mZXMKQwqkFAmmm3/kACgkQ64mZXMKQ
+wqmQ5xAAilOVkKnvEPkeVJsvbf7Eq7vmSaIm9PU8wsbwEH1sgTagIsPbzTPaEMZc
+OEfSO4Xpz4fO8UwGALHpnNgf6xySDujKNmJOkNQLsFjJaJFRIK1Z3urDK67VQ3Uy
+5u8ltUW41HcPuhBNlyx7Tlx7OY2+qdp/9aNsDH5yuyN8kVkX3sJtMAK0XK4KRjo/
+cFU/09ytvdDI9gCk9tYZqaW8Cis1UjaQgdUEas7BxV+CTu5OlruOy+KTN3yzlJKI
+XfkIO1tgp+e7CbJCqy7H+5XkanQvzQCsutpiyf90ixojiTO9dzKENHrl0Jj8x6gq
+1kW31TG7plLdqD006UyVmbGKJOyYPmpwI76sFIld2hgzaFRvic/UidqquRdWfx+X
+relshs71ME3WAG8tISIZItcyjuPj/eCdx3XTiXdBR96m4T0HoYrh2b5xYxIbxZjT
+SXKS2KOXZQ/Bbm1PASrw3RcR6/SP49p+9CBdPnXGaJCwk5EgXaAwYyIF+3LsWHdp
+uNWsl2RoHt8YJx0qzLuk/+O77+Ti/7wqVxPzRxmK2kRYE/+myElirisPKSNJcTFb
+aDLf1TQ8/IQbiNpZq+S2oASeHcv8FY2A05X4ouJRMNOEmb+fzYE8nPajeA3fHKWk
+eUT9urM3bF3WADye02uGDJIBd2C996r2MbGa+2FdwWoZKqZahHM=
+=J8OC
+-----END PGP SIGNATURE-----
+
+--cwylalky2hmunx5a--
 
