@@ -1,393 +1,189 @@
-Return-Path: <linux-ext4+bounces-14466-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14467-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QLwXHhsypmnKMAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14466-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 01:58:03 +0100
+	id cBgMOdozpmlJMQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14467-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:05:30 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11DF71E76E4
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 01:58:02 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1BA31E7792
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B35BB304F5C6
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 00:55:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AA31230255E5
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5353B1B81CA;
-	Tue,  3 Mar 2026 00:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F6452222C5;
+	Tue,  3 Mar 2026 01:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6zxz3O0"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="OCA+ociv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E3223D281
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 00:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430A73909AE
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772499319; cv=none; b=FMjRMlIyvZo1ljL4d3AE47ri9ClDfytY/H4gPMQU43L86g/VtEQNWsgeb0u39eEM+soTk5UtD9Yo9Cv0nczNUhywemzj4fCWOEbYeBAdWYt9WROuM2Z6b+uV9VPFhvd+v+/anqjm6Vn2fhwv0P0niBM6t79MVTVVHmwqSkxyvBA=
+	t=1772499924; cv=none; b=PZ+xJHZ/dOo9AG+XXCj31dGr27+lh4gzovA3WWlELLc65mTC4pHJYMPT+bL64Y6jwXZZyUd2KhxctSSb4A3Hf4uGBqtIA9UIN3cfplPlLg8W2th26xAOYLmah4gF9Q2CzpH3UQlUv6UG+3DUqf/Sf2+bSLEpZaYYF2b53g/TCBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772499319; c=relaxed/simple;
-	bh=zbyzfNx8/Pak6zoD/choS8v5s28io8lQmomT+XUdy48=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C2hXealDSNC/F5IvxIFkPXqWYl5AHVopBoNDksRzBBMcyM0B10v4+G2gZCWrVTGA2PK4oCsD8sN7FzPjWvLqHRqgZV5Pt0dqr5rhzBBwmdjcJEeSq6sUHigSKc1dIVOmKyJN7TVCnG9hTsazgvveuKeGkHJ1+wpUo04UfdQMth4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6zxz3O0; arc=none smtp.client-ip=74.125.82.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-127380532eeso2212056c88.1
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 16:55:16 -0800 (PST)
+	s=arc-20240116; t=1772499924; c=relaxed/simple;
+	bh=LNNVIkNFBWtwEP4iHXWMpZCTtQG/MxASHpDBycUWkTs=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=Bz/x8v0Pae3ERDOdlx6Iug899xuhpMS73KieSRjBG/UzlHoFu8db1Imkhwci4jTIGTYyS/lmtRkTChuGWty5IAY5f+sdgTB+4eySoqR1Q8Eb5HiDV5+HQ4w8JLmCRgfeGlcI6AdbGQtmfGuEh+Gu8Ptgcyq6qFZzmasntX++unE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=OCA+ociv; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-824a829f9bbso2339855b3a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 17:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772499315; x=1773104115; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772499921; x=1773104721; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cJwawZM7sG51IM4V5SWWW2Cn1eGnHGmPjyUNqQUV4dM=;
-        b=U6zxz3O0Xoo4xgidY5krm1cW9RuWevBQaUrU8aQmDzDH9rRuiRYOdYhG82u7KVUFk/
-         h28Ymwtz1k3AJgpSxaEeisG9k7UeixaaXjyBUR/QnCuLCKQO6BdVV2l6d+Nh+xgaW1k1
-         KEg2j4aITZRq72Y33kwpgqiyc3k9Pfffy5ZrStCfbUOtiMBpM3Q+dNP3KVKJIbXO7bx3
-         FTn2E3GOspTAKeHqWM3+rErdh3o3+Nxl2V4kc/c3WoW99/LbCJ5CppufdBCe7XaxcWGc
-         azLKx9KOKapMsVTopoe6YYrSEFmj1eLoNId3kRVc2Cymt+Gev07pjnkcPphfw7/jock1
-         0qNA==
+        bh=hEECmBkCFf380ySY0l2Du8HTROikW88C0Mw2oBNlHbE=;
+        b=OCA+ocivJ0rlwEVz7iweT0ruB/Q++MpVCfigk6JmJaWOtHMn8X0JMjuOWlhVKBPkh7
+         iUDRtbVXktmI899E4LTMB+pO4FhqSFszh3l1ERg+66yHmJQyBdMM4COeL+t5DKkSVch2
+         viXX5jNUVvu3Zh4tbuv9/aBO1oAEN3gfsqNSz8WWAFPnYOlvKDyKBQsLd3lARGGj1JgE
+         k8r9Q5fCy4UdoNfheXcb2Pa6wwbFz6/678l51ct+Cuyx2msoYLxt9zc7cQpb8YlKVLgu
+         WB+Ia+4qQhLohhcdVN69w4X31wSqbz+NT5ZC88ruLcqq6kgiNt2vjvyLEjfqNPxYIWA+
+         QK6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772499315; x=1773104115;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cJwawZM7sG51IM4V5SWWW2Cn1eGnHGmPjyUNqQUV4dM=;
-        b=njCvvNjdgV+AiZt9hqbGshAwB3obwWIe0NK0g1wavnvf16Wx2J3xHIeJZGwIubRmO2
-         2neuIZGsNHB07GmYaeCeGvDPwEp44Acb3S2RYW1VSyHfNPQoVQpOXnLFK9OEtJMdyken
-         RGOKuhQ6/Hi+QOLaWQnJ4R/rob1Qs1uyjwTlv5hw/yPmveygydW16zN7GyHNilBr38kO
-         8otOjrrCj3G5yN80hJdaVmA5vxMMYA4skMlhiWUsBFv7WH9G/nXpqxJFem49JzD5KH7A
-         n5PPYxGlVNLBsKP4MIGGIN+lFluVtqPiuZtmlbOG3MFLb/U+nkBdjg9+8t8JPtdLv0qN
-         Uq2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU+NLxFatEmNv2MKiSdoNqZAZR2s0lHpDxK3IuZrdYrMixD3fQRo72jhMb/WFLB2j51HoKCLtnQ/ma1@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYPCE6QPNnVIbGB3vpCL3N51oODly/A8BM4/FIaNgc0YEjPWRe
-	2s0mCmtP2afv33LKvFB9pjeRjfjiOOcvd78t4P5oJex2/yC9E5DRuU/d
-X-Gm-Gg: ATEYQzx17x5vWFmNPSnQlNCb8YCD6rU4Jfmqo6ob6trNBLUaJlCwkQ47juGAuz2aTam
-	MU8PEu0UIjebhqwZKvF/LbigWzRdMScwZ2CF3WGzMN5zXwd1U9CQ5fYmauZAxAFTTXTCuGiBQxn
-	Lbke39xCUZwl6AO2oWrO3yz0tBhiR5mYjbXARnRPmGuhMILJ2+KOBO3ici2IwIp/0eswPce6Y5N
-	sLfeTQKBm1xd4eA3Cw3Ffi5GOkR5PTuTj2Ch2ZIJNpsvGpnWXKJC8pPu2DkacjSMByu0E3oyKa6
-	GVTgenk+bjyrIFJdlGG8Fj7caz41j7/3ionWtvE42wjoW6k4CmugsEETHSUeDmcsk89NtdcRvWG
-	FFAejwhBg+J/mUT3xi2b1kLFU1BCYQPN2uwB+t32aqWkn7i4n9+7tYIslda5wpV0hsp6MlGZtxL
-	UV3FWCJ+y5kZNbA0RA0Ql6jRXB5c2Id1pRoCqZrAK2rkwukjqSnhMg/Cy2RwBBb3JbbKEdchxVS
-	YNpj2GBFTGdsjGkU97udIOfgK6jbccd0FbhoGHV/RsRb/XgxzssIt5WxJleoCkClOEC4jiRcv+E
-	t1iJDDkqYRCKAonzCGBSZZqzliH4
-X-Received: by 2002:a05:7022:911:b0:11b:88a7:e1ac with SMTP id a92af1059eb24-1278fc6beecmr6799560c88.19.1772499315143;
-        Mon, 02 Mar 2026 16:55:15 -0800 (PST)
-Received: from arch.lan (c-98-51-119-100.hsd1.ca.comcast.net. [98.51.119.100])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1279cbd1993sm6552005c88.2.2026.03.02.16.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Mar 2026 16:55:13 -0800 (PST)
-From: Milos Nikic <nikic.milos@gmail.com>
-To: jack@suse.cz
-Cc: tytso@mit.edu,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Milos Nikic <nikic.milos@gmail.com>
-Subject: [PATCH v3 2/2] jbd2: gracefully abort on transaction state corruptions
-Date: Mon,  2 Mar 2026 16:55:02 -0800
-Message-ID: <20260303005502.337108-3-nikic.milos@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260303005502.337108-1-nikic.milos@gmail.com>
-References: <20260303005502.337108-1-nikic.milos@gmail.com>
+        d=1e100.net; s=20230601; t=1772499921; x=1773104721;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hEECmBkCFf380ySY0l2Du8HTROikW88C0Mw2oBNlHbE=;
+        b=Fp7kN04oAbufgcV3hjbkQtwQiqFmUoDxDcMiJe6Z2y0wUJAM7GnN5diOoMnH+ldyEo
+         SYdaIvpX9FixuXvAgAcNRN4UYGPg7Zit5Ve6QchEVTalLEASYAz784ZXcygcO2Hlj6Uz
+         RhuDZTSIipHBIQ51KgK6+yxxgMVe2XduEP+7HfczzscAIKeTSwgccg3xjm7/WHbCKmvo
+         TB8DhXDXpb05SH+7p06xhuHxTVh3TrDd3DXlghDbKPPlBisDI4YRZ4LUMSkWyz5BDRp2
+         8UICXKznKn3hMb3Ocp+WpSFSHtNC8/BJ4kjAd/9EAMmaNKvVEteppaTl9jr3p1ee9jkz
+         qqBA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOlXgqL8GHY7vroBwMftrWeDSxpV0sWR78rjPCAWR65hY4pjuSuGq8Wd0wHN/F6cPXgqIh+N+FXAmv@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOdgWifxtR6ZxC1lihDd5bZkQ60SIQoDE3xG141fHhHd0wrjzy
+	MDJfak27ODC7jNbL7BRUPaXVD2OYPJ7vcEXetGcHbHkdO228qY6H1oSWTVPfnq0Sp6k=
+X-Gm-Gg: ATEYQzyDsapKv0oWTaRO60HVSmyd/3+HICzPOhcGQtvs4qOa9PWmgvK6Rh+sQIH82Zb
+	GKCpIe/c1zOSpx8euIHYfNVAk1PhW+3pPcHOZZjcU2woBJUPyNSLkH5LdAZW5fk1aTs/1qyrI2/
+	ZYi3DEC/9ONlkJIM0U0Sqt3a6/MoD1lYry6F4/8oAjVp27NcVZpV9WkQyXhpbMMEy13KQ/MO4VT
+	1PWNvgwrAMPykScA5YNszORjJEDAE1kkCzsR9/Eoh+WL71WiKPNO8jz1ubQraWVW4opcYXJeyYD
+	Ni/x7ZJbcjRpnV2Ynu9mE6lFd3OzCmgt8EbqC1McBEO5CFxXSxKJ2Cm9TTvhhTGDM6kwzqn5cse
+	vZYeove9vwTBUmwtez5G0UuCKrRQO7nHlfB89wuok+HsVXdN18LMvzagGIald4qE0YDlDMfQlGf
+	kCgWdW/D/T5wVOMaD8z17sTAerr19gGo0jDJ6/G9upt/67hWZNBRTAxMxFKQ2aZFLGROieVZIzM
+	VoeQ03TVOoTnUgZ
+X-Received: by 2002:a05:6a00:3c8b:b0:819:5db9:6ac0 with SMTP id d2e1a72fcca58-8274d9e9b22mr15196880b3a.37.1772499921401;
+        Mon, 02 Mar 2026 17:05:21 -0800 (PST)
+Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82739db3e4asm14251338b3a.28.2026.03.02.17.05.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Mar 2026 17:05:20 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 11DF71E76E4
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
+Subject: Re: [PATCH v3 1/2] jbd2: gracefully abort instead of panicking on
+ unlocked buffer
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <20260303005502.337108-2-nikic.milos@gmail.com>
+Date: Mon, 2 Mar 2026 18:05:09 -0700
+Cc: jack@suse.cz,
+ tytso@mit.edu,
+ linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Zhang Yi <yi.zhang@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E5CC201C-6F63-412E-A083-77C80CEDF5AE@dilger.ca>
+References: <20260303005502.337108-1-nikic.milos@gmail.com>
+ <20260303005502.337108-2-nikic.milos@gmail.com>
+To: Milos Nikic <nikic.milos@gmail.com>
+X-Mailer: Apple Mail (2.3864.100.1.1.5)
+X-Rspamd-Queue-Id: D1BA31E7792
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,vger.kernel.org,gmail.com];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14466-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14467-lists,linux-ext4=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nikicmilos@gmail.com,linux-ext4@vger.kernel.org];
+	DMARC_NA(0.00)[dilger.ca];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dilger.ca:mid,dilger.ca:email,huawei.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,suse.cz:email]
 X-Rspamd-Action: no action
 
-Auditing the jbd2 codebase reveals several legacy J_ASSERT calls
-that enforce internal state machine invariants (e.g., verifying
-jh->b_transaction or jh->b_next_transaction pointers).
+On Mar 2, 2026, at 17:55, Milos Nikic <nikic.milos@gmail.com> wrote:
+>=20
+> In jbd2_journal_get_create_access(), if the caller passes an unlocked
+> buffer, the code currently triggers a fatal J_ASSERT.
+>=20
+> While an unlocked buffer here is a clear API violation and a bug in =
+the
+> caller, crashing the entire system is an overly severe response. It =
+brings
+> down the whole machine for a localized filesystem inconsistency.
+>=20
+> Replace the J_ASSERT with a WARN_ON_ONCE to capture the offending =
+caller's
+> stack trace, and return an error (-EINVAL). This allows the journal to
+> gracefully abort the transaction, protecting data integrity without
+> causing a kernel panic.
+>=20
+> Signed-off-by: Milos Nikic <nikic.milos@gmail.com>
+> Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-When these invariants are broken, the journal is in a corrupted
-state. However, triggering a fatal panic brings down the entire
-system for a localized filesystem error.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca =
+<mailto:adilger@dilger.ca>>
 
-This patch targets a specific class of these asserts: those
-residing inside functions that natively return integer error codes,
-booleans, or error pointers. It replaces the hard J_ASSERTs with
-WARN_ON_ONCE to capture the offending stack trace, safely drops
-any held locks, gracefully aborts the journal, and returns -EINVAL.
-
-This prevents a catastrophic kernel panic while ensuring the
-corrupted journal state is safely contained and upstream callers
-(like ext4 or ocfs2) can gracefully handle the aborted handle.
-
-Functions modified in fs/jbd2/transaction.c:
-- jbd2__journal_start()
-- do_get_write_access()
-- jbd2_journal_dirty_metadata()
-- jbd2_journal_forget()
-- jbd2_journal_try_to_free_buffers()
-- jbd2_journal_file_inode()
-
-Signed-off-by: Milos Nikic <nikic.milos@gmail.com>
----
- fs/jbd2/transaction.c | 108 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 85 insertions(+), 23 deletions(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 04d17a5f2a82..3cb4e524e0a6 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -474,7 +474,8 @@ handle_t *jbd2__journal_start(journal_t *journal, int nblocks, int rsv_blocks,
- 		return ERR_PTR(-EROFS);
- 
- 	if (handle) {
--		J_ASSERT(handle->h_transaction->t_journal == journal);
-+		if (WARN_ON_ONCE(handle->h_transaction->t_journal != journal))
-+			return ERR_PTR(-EINVAL);
- 		handle->h_ref++;
- 		return handle;
- 	}
-@@ -1036,7 +1037,13 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 	 */
- 	if (!jh->b_transaction) {
- 		JBUFFER_TRACE(jh, "no transaction");
--		J_ASSERT_JH(jh, !jh->b_next_transaction);
-+		if (WARN_ON_ONCE(jh->b_next_transaction)) {
-+			spin_unlock(&jh->b_state_lock);
-+			unlock_buffer(bh);
-+			error = -EINVAL;
-+			jbd2_journal_abort(journal, error);
-+			goto out;
-+		}
- 		JBUFFER_TRACE(jh, "file as BJ_Reserved");
- 		/*
- 		 * Make sure all stores to jh (b_modified, b_frozen_data) are
-@@ -1069,13 +1076,27 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
- 	 */
- 	if (jh->b_frozen_data) {
- 		JBUFFER_TRACE(jh, "has frozen data");
--		J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
-+		if (WARN_ON_ONCE(jh->b_next_transaction)) {
-+			spin_unlock(&jh->b_state_lock);
-+			error = -EINVAL;
-+			jbd2_journal_abort(journal, error);
-+			goto out;
-+		}
- 		goto attach_next;
- 	}
- 
- 	JBUFFER_TRACE(jh, "owned by older transaction");
--	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
--	J_ASSERT_JH(jh, jh->b_transaction == journal->j_committing_transaction);
-+	if (WARN_ON_ONCE(jh->b_next_transaction ||
-+			 jh->b_transaction !=
-+			 journal->j_committing_transaction)) {
-+		pr_err("JBD2: %s: assertion failure: b_next_transaction=%p b_transaction=%p j_committing_transaction=%p\n",
-+		       journal->j_devname, jh->b_next_transaction,
-+		       jh->b_transaction, journal->j_committing_transaction);
-+		spin_unlock(&jh->b_state_lock);
-+		error = -EINVAL;
-+		jbd2_journal_abort(journal, error);
-+		goto out;
-+	}
- 
- 	/*
- 	 * There is one case we have to be very careful about.  If the
-@@ -1520,8 +1541,14 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	if (data_race(jh->b_transaction != transaction &&
- 	    jh->b_next_transaction != transaction)) {
- 		spin_lock(&jh->b_state_lock);
--		J_ASSERT_JH(jh, jh->b_transaction == transaction ||
--				jh->b_next_transaction == transaction);
-+		if (WARN_ON_ONCE(jh->b_transaction != transaction &&
-+				 jh->b_next_transaction != transaction)) {
-+			pr_err("JBD2: %s: assertion failure: b_transaction=%p transaction=%p b_next_transaction=%p\n",
-+			       journal->j_devname, jh->b_transaction,
-+			       transaction, jh->b_next_transaction);
-+			ret = -EINVAL;
-+			goto out_unlock_bh;
-+		}
- 		spin_unlock(&jh->b_state_lock);
- 	}
- 	if (data_race(jh->b_modified == 1)) {
-@@ -1531,13 +1558,15 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 			spin_lock(&jh->b_state_lock);
- 			if (jh->b_transaction == transaction &&
- 			    jh->b_jlist != BJ_Metadata)
--				pr_err("JBD2: assertion failure: h_type=%u "
--				       "h_line_no=%u block_no=%llu jlist=%u\n",
-+				pr_err("JBD2: assertion failure: h_type=%u h_line_no=%u block_no=%llu jlist=%u\n",
- 				       handle->h_type, handle->h_line_no,
- 				       (unsigned long long) bh->b_blocknr,
- 				       jh->b_jlist);
--			J_ASSERT_JH(jh, jh->b_transaction != transaction ||
--					jh->b_jlist == BJ_Metadata);
-+			if (WARN_ON_ONCE(jh->b_transaction == transaction &&
-+					 jh->b_jlist != BJ_Metadata)) {
-+				ret = -EINVAL;
-+				goto out_unlock_bh;
-+			}
- 			spin_unlock(&jh->b_state_lock);
- 		}
- 		goto out;
-@@ -1636,7 +1665,10 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- 	}
- 
- 	/* That test should have eliminated the following case: */
--	J_ASSERT_JH(jh, jh->b_frozen_data == NULL);
-+	if (WARN_ON_ONCE(jh->b_frozen_data)) {
-+		ret = -EINVAL;
-+		goto out_unlock_bh;
-+	}
- 
- 	JBUFFER_TRACE(jh, "file as BJ_Metadata");
- 	spin_lock(&journal->j_list_lock);
-@@ -1675,6 +1707,7 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- 	int err = 0;
- 	int was_modified = 0;
- 	int wait_for_writeback = 0;
-+	int abort_journal = 0;
- 
- 	if (is_handle_aborted(handle))
- 		return -EROFS;
-@@ -1708,7 +1741,11 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- 	jh->b_modified = 0;
- 
- 	if (jh->b_transaction == transaction) {
--		J_ASSERT_JH(jh, !jh->b_frozen_data);
-+		if (WARN_ON_ONCE(jh->b_frozen_data)) {
-+			err = -EINVAL;
-+			abort_journal = 1;
-+			goto drop;
-+		}
- 
- 		/* If we are forgetting a buffer which is already part
- 		 * of this transaction, then we can just drop it from
-@@ -1747,8 +1784,11 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- 		}
- 		spin_unlock(&journal->j_list_lock);
- 	} else if (jh->b_transaction) {
--		J_ASSERT_JH(jh, (jh->b_transaction ==
--				 journal->j_committing_transaction));
-+		if (WARN_ON_ONCE(jh->b_transaction != journal->j_committing_transaction)) {
-+			err = -EINVAL;
-+			abort_journal = 1;
-+			goto drop;
-+		}
- 		/* However, if the buffer is still owned by a prior
- 		 * (committing) transaction, we can't drop it yet... */
- 		JBUFFER_TRACE(jh, "belongs to older transaction");
-@@ -1766,7 +1806,11 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- 			jh->b_next_transaction = transaction;
- 			spin_unlock(&journal->j_list_lock);
- 		} else {
--			J_ASSERT(jh->b_next_transaction == transaction);
-+			if (WARN_ON_ONCE(jh->b_next_transaction != transaction)) {
-+				err = -EINVAL;
-+				abort_journal = 1;
-+				goto drop;
-+			}
- 
- 			/*
- 			 * only drop a reference if this transaction modified
-@@ -1812,6 +1856,8 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- drop:
- 	__brelse(bh);
- 	spin_unlock(&jh->b_state_lock);
-+	if (abort_journal)
-+		jbd2_journal_abort(journal, err);
- 	if (wait_for_writeback)
- 		wait_on_buffer(bh);
- 	jbd2_journal_put_journal_head(jh);
-@@ -2136,7 +2182,8 @@ bool jbd2_journal_try_to_free_buffers(journal_t *journal, struct folio *folio)
- 	struct buffer_head *bh;
- 	bool ret = false;
- 
--	J_ASSERT(folio_test_locked(folio));
-+	if (WARN_ON_ONCE(!folio_test_locked(folio)))
-+		return false;
- 
- 	head = folio_buffers(folio);
- 	bh = head;
-@@ -2651,6 +2698,8 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
- {
- 	transaction_t *transaction = handle->h_transaction;
- 	journal_t *journal;
-+	int err = 0;
-+	int abort_transaction = 0;
- 
- 	if (is_handle_aborted(handle))
- 		return -EROFS;
-@@ -2685,20 +2734,33 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
- 	/* On some different transaction's list - should be
- 	 * the committing one */
- 	if (jinode->i_transaction) {
--		J_ASSERT(jinode->i_next_transaction == NULL);
--		J_ASSERT(jinode->i_transaction ==
--					journal->j_committing_transaction);
-+		if (WARN_ON_ONCE(jinode->i_next_transaction ||
-+				 jinode->i_transaction !=
-+				 journal->j_committing_transaction)) {
-+			pr_err("JBD2: %s: assertion failure: i_next_transaction=%p i_transaction=%p j_committing_transaction=%p\n",
-+			       journal->j_devname, jinode->i_next_transaction,
-+			       jinode->i_transaction,
-+			       journal->j_committing_transaction);
-+			err = -EINVAL;
-+			abort_transaction = 1;
-+			goto done;
-+		}
- 		jinode->i_next_transaction = transaction;
- 		goto done;
- 	}
- 	/* Not on any transaction list... */
--	J_ASSERT(!jinode->i_next_transaction);
-+	if (WARN_ON_ONCE(jinode->i_next_transaction)) {
-+		err = -EINVAL;
-+		abort_transaction = 1;
-+		goto done;
-+	}
- 	jinode->i_transaction = transaction;
- 	list_add(&jinode->i_list, &transaction->t_inode_list);
- done:
- 	spin_unlock(&journal->j_list_lock);
--
--	return 0;
-+	if (abort_transaction)
-+		jbd2_journal_abort(journal, err);
-+	return err;
- }
- 
- int jbd2_journal_inode_ranged_write(handle_t *handle,
--- 
-2.53.0
+> ---
+> fs/jbd2/transaction.c | 7 ++++++-
+> 1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index dca4b5d8aaaa..04d17a5f2a82 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -1302,7 +1302,12 @@ int jbd2_journal_get_create_access(handle_t =
+*handle, struct buffer_head *bh)
+> goto out;
+> }
+>=20
+> -	J_ASSERT_JH(jh, buffer_locked(jh2bh(jh)));
+> +	if (WARN_ON_ONCE(!buffer_locked(jh2bh(jh)))) {
+> +		err =3D -EINVAL;
+> +		spin_unlock(&jh->b_state_lock);
+> +		jbd2_journal_abort(journal, err);
+> +	goto out;
+> +	}
+>=20
+> if (jh->b_transaction =3D=3D NULL) {
+> /*
+> --=20
+> 2.53.0
+>=20
+>=20
 
 
