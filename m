@@ -1,185 +1,248 @@
-Return-Path: <linux-ext4+bounces-14555-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14553-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2NGcNh/mpmnjZAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14555-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:46:07 +0100
+	id GDKbOAjlpmnjZAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14553-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:41:28 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B901F09DE
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:46:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F5571F07AF
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 14:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B7B063034E18
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 13:39:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E70430D033A
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 13:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55CFB2D7D2E;
-	Tue,  3 Mar 2026 13:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502753385B2;
+	Tue,  3 Mar 2026 13:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b="JgGyj5kQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C+NAzkUg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sonic316-20.consmr.mail.ne1.yahoo.com (sonic316-20.consmr.mail.ne1.yahoo.com [66.163.187.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD62829B8D9
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 13:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.187.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E7E27AC31;
+	Tue,  3 Mar 2026 13:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772545165; cv=none; b=r0x25ItdsWa2HgcySS/B3FHh5QzvZEAHcPg9WQqx0UfA8b1xsaElqIHCy3o75+YJxlGqf4hH9d1wVlY4OemSJvV5b8ITnEJqNAd5mfI4d166uLeksbqZhPSKflgOMqDJmMtuyK/YEIRR4q/dXkL5erhC7l2rgwiPdSqldYM6sak=
+	t=1772545086; cv=none; b=R8JbZxEpsZ7f87L+WSNb7mbFYLYPblcSvskCXGRDcXzwwEJYj/7YcN7Vu3EquTyuxHWHMXzFfAiJpguPj8AeO+d9ha51UTy9n3tZyq39JA35+bxW3muuKhjJP9qCE6XrfSCtG2EErjtUCPd/prhbeTOMPbz1YC2WlMzp0aVacoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772545165; c=relaxed/simple;
-	bh=SQeOjelVD4f6TzL6veX/BG5IRz78jJ9iAh8pcsO69N8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ypa5Bas6xKqPxMg0yn8hzVHwMT+FSS2ar4eDce2HBuk49uMseL3jKAUBaDJQCYV5n47RPD7EybxnH+WNnpJpNUzhpUE0Jn8mNN7DYuwSgBDNdrhwUtNmwafhs9jlRLVh8o7aHfq7riN9ubouqefp+l1x7cXmNIp4xgS/26+cTnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com; spf=pass smtp.mailfrom=rocketmail.com; dkim=pass (2048-bit key) header.d=rocketmail.com header.i=@rocketmail.com header.b=JgGyj5kQ; arc=none smtp.client-ip=66.163.187.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rocketmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rocketmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1772545144; bh=AgQogLg7FPGiIEIYvDYGu/57C2o556vqXctsyyx6Ba8=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=JgGyj5kQzTjSwuJ72J+PvkMFLco3Xutw0mpT157nK8bz9w5F244kAQWwIkIqtAUHo+JTud6ok/5QHE366vYy54atMnyRiHIMtiBh/0bh23LAwZRrf7FS6RxlKzPmADtMlwh9GGakDVSY3qyPtSpXjLkdJ0x3R0lsJFJoRH2yrM8PEqflnPgL91WG2Ca2FXRJnHFjEspZ4rBcS30E/KZOeL+gDvpm5lP1gFqZa5pc+8aun2I89XQ4V+VEA/z6bH3qv/KjCqqOANNd9DEGXZaUDiELDGga7/ziSDd5EMm0SzOAyxssafcsSNHaBOErVEGck9UBT/vIE65/dQqw8IqZOg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1772545144; bh=PR9Vly8bEu9cxI/wtdwDcKcT7fHlhj3p46Heo4N5aXJ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=tU/+C/Cy3sY3AyU5hnqA+sdm8cMPZDXz2ewzVsq71FeaBnrM/r3XJMEJYfQRoNhDEJEkGriBkyiLId0r1UZBN6a7lVmy1BqhXM2zs4qYovyfHWL6AfStXxyt/Orafn/FxHrbAzszyfOG9Zq7IKoYfeZd/2g87PIbjZKGukBF1q5JOaa3ElUeSIy+ItXx9oZ7699L2w+k7VxiQPMjDrPxS+tl8ULkfpeY/b/hFL9bGai6T5i7dBwVBW2VXQ5YGHO6CJyPQ8j4oJhBoI07Kj/9HIDh6urMHPjtsMQwQwsDHvzHrfekczoFtXEn7hcuGbiAf/QvQfk9YtZtjt9Ki7Yb0Q==
-X-YMail-OSG: gDovndcVM1lBkdbnVC1_Ef.sFXZwC2ttbMtQm0k4Y58eG4OIzvM_pU0kTkdS9P6
- mhHx4oLAkjAQA5XKjD946Jk.LaMI_0T76MpxL3ZTfjrLf2VMg0yOk7iD1aOtn3ARNudHakQipUgj
- goXmdHJyKiVEBrUFQAloq2HXZu5wLtozKLLcGhBQHufIA5KSvRKVM8IkyqNK2BG..WZOzZK7GB3_
- Wi_kipMF.E3LeC18ohsZLtvKLztwyIPjmBLeyH4rCVDvQnn6FZvej0ER3OlMNByBAYSb2psUhdTh
- hUMPZw.8oJTb0mfdzWbU8K3cPswxZ_F05xiVbRPFx3WE471On1nr.IpxspGkTFZmiiWwDRhfscVY
- U.gbl7l0qRAhkcce9helAyDsfOKoBs.dZ3i2p_I4Yu8EGG5oGcLveRGWF1qDdQWHExmFdM4joRvl
- gv83pXc3sABT44IX0a7C5r.il.Rw3cY4GTmauVvZ7nWxr8rP48NAr3FxeSq.q8GM5xYXFbPBh32P
- fibHaP8ucHLV6paxBqorHuvib.twDL3uY5ImxCqqc5tUmuA734UC8ylKaSPm6aSHFi4ZfmCiFTA3
- xku.ECvcUs1jD6uCtBF2QX9eFBy.SHxfH3RGkTMSxbYXKOstP6a56FEHnH7wnTwu_OuD_V1YIARO
- L.S156WPzUJoBD3uBt8Oj.HNSVkH9g1pmUwF3VgH1a7DRV1BlVXZQ.EtZP11.EbDqK3vUVayeMj2
- m.NvKYQvgZQWnfdHsWhKZvqvkJ01Uk.ckxmxtfDFMrlHVPEkZzgml8LetgorpxQ4fslydZcvrEky
- 5NOJiDpm_aI1QmAprEbqmWaBwXh2U4wCtGN2gG9TDWXbatF0v7VjCs5zYr7YsSl5Uw_3FIMafo0H
- VJwDHj3_XEnuIU1q3wfsYLO7Yg5ZD5Zcmn99CkJeXBpG0fkq098UG7h2AgV_2ooLhIhOv0aYOEI6
- sj835Vds1pjyDD2p4b.q.MmVjAisbHeSmnw7cHbnpZ62kNFqmuhEjUi9b4tpByrfWLwp80_lhJL2
- PylOio4C3jc9pU5SuUV_yU6BXI5F7njGgSIjgH_sSphe_ajO5sFbe7k2VC0AkwicefXn.4nGzCIv
- JQt6o4Tv5CH.bfeS_t0VJzuTOVLyQjehNXAdPG_Pg3DAo2QzaHtLei9eeB2.3SfZwXhUZohm0Yr5
- lQnFDgjqhuErxDubKg0FXexZhzcNzOybHhxSNcIs3enwI5UL8FZZfk6PS6qSq9J1e69HnemXPn33
- J.Tu1H_rNYo.TnfwOA_XAPmg58J5SnmuogiqdAj77n9Bq6nwsHlALyXZvyWf6MQLzDwvQRGuvVHP
- NK_DG022vrWf62OkpLF.73dx.J5wiG7fsXAPY17.WvwMqi7jEYk1dw4ddcWujEzaBtu3040ZGEmp
- Wyjq1vYWS1f3YumaMORH4FSKUPa8PAkffl3Ik1rEFi3Kp10bdr4c0Z618RzgqZ9a3k5KBdH69Kdn
- 9xkFyoYY7Vn_Bje2EwigHQfuKADJHVQRElM4AscJMt_sSR07B0UAyFOcBMB_GTcD6vpmV_ByUnEQ
- PtWw1nPhbtyVVxqQvWaYbW3R3C08l1UnnwB9WIzkTGAZmpq6MxdUaC6EtI6BjXDJjjS.NtsI5ZOM
- FcfP90MdDMOwiilVtbwpW6v5kvJXGIyfqox.jzQKuObF8iReFW5BB6h3Jg_io4QFhy3LieDUHrD1
- STAnqn5QcErxhmpBnphDih9253OltmeZX0XICuizwEaPdxyDtoriXkYnZLxY9p6k60UG_QUjVkJy
- lzi4fYA.DhHn5S4KexMt4PYDZyjbUerfbsUrytAbWykUsreCd9U3cjZAkOTbeClI3SCgftI.KCYq
- 2UP0IujcxU.hWoH6jOaluJs1S2DqIAfSvh4NWrd9Wydwu_ZFPZvdrRx1Uw_qFPwqQTtA7B.xLAvw
- za0HZHOVkDP6NdlpMI4hmh0Z3doPItUpSgaTSRZ6HqTxyF0hbuLXByJVQxpqA541AmWFpBlj688E
- 9XBHdFl4RzIGDugDcnrPPYwh1ERJSpA3gI5zVupCEnWSfwZlDjgfwPyBsc2HucV17ZVI7PX5aZ.q
- 0zW0p4ICLCsacbM5MCTrTV7FQ_tdmRvUhdrYsLAfCkVwa81CfmTvLBPjfdPR0hU2_PgFeVhfgW9a
- urIL4dmRZfKsWQ8r16ZRxcGlTuPvn0sVO7wQ6IdPnmsogZpQ.OKrGWHc4eSMiJZYceW6Q6AUzmcJ
- NoB6JEO5dNlN9H.48FR9O1gY-
-X-Sonic-MF: <mario_lohajner@rocketmail.com>
-X-Sonic-ID: 1493c106-ef6b-4848-abc3-64548f28b1a5
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Tue, 3 Mar 2026 13:39:04 +0000
-Received: by hermes--production-ir2-bbcfb4457-v9kq7 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 9686c52ec99ca4522e39aaa35476498a;
-          Tue, 03 Mar 2026 13:28:49 +0000 (UTC)
-Message-ID: <cba02030-752e-43e1-9f65-8b726c4d42fb@rocketmail.com>
-Date: Tue, 3 Mar 2026 14:28:47 +0100
+	s=arc-20240116; t=1772545086; c=relaxed/simple;
+	bh=PUXhAzVyDg5opgkKNFU6JDJ0GnFs4fQn60ZJlvuuzq4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iydiijkJmAjhNPWZGpQa+DIaaVStJuGbrS8VDEcZXOK67lymeuISDBmD01E/Uio+8xsFbGdLEGf8GZSbrzDKFg+fSrUcATNjzuUne2hLPK5wQ1rhQIymDe/SmgKcHqCTaWU02Rs2RRRP/d5aHV/GB4UN589UshE6LWmwJClVbXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C+NAzkUg; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Tk3uESbdvJBK0ZQDjaLs3gOQpD471/ds7fVyav3aEqM=; b=C+NAzkUgUxjxJBynLnQ11RqjfR
+	zbYsG/zy2ofectzScTg6NHncmcu0JStQWd88qwniMwEHPUDMrzeu5AbPFjRTOGOusjBgApX2iupEQ
+	4TSFZW7l8R1upfRlXqKLi4RgyAdnukQQvbYPR1dAqrxxpUxnOkbsrwTNYlBbOrqkyVi4QvfAA8Hbw
+	HJt/UXrH+SdGFi54kJW0+OTTU2dVCgOBYq2an1JkF/fBKXqVFdbNMcBaFcL7O/j1sFF7d0sWaEROA
+	h3pRPEd5DrrHSXCFjh0Qfque8DSpJNMUn053UKYZ0bE9iWOzQNS+w/08ekbSH5pMrlzHr3N0R0CUZ
+	4DO7FRhQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vxPvS-0000000FEic-3CMP;
+	Tue, 03 Mar 2026 13:36:38 +0000
+Date: Tue, 3 Mar 2026 05:36:38 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Theodore Tso <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Steve French <sfrench@samba.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Alex Markuze <amarkuze@redhat.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+	Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>,
+	Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Ahern <dsahern@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+	fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org,
+	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org, ceph-devel@vger.kernel.org,
+	codalist@telemann.coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+	netdev@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-hams@vger.kernel.org, linux-x25@vger.kernel.org,
+	audit@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	linux-can@vger.kernel.org, linux-sctp@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2 001/110] vfs: introduce kino_t typedef and PRIino
+ format macro
+Message-ID: <aabj5o1x4T-bRmro@infradead.org>
+References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
+ <20260302-iino-u64-v2-1-e5388800dae0@kernel.org>
+ <20260303012556.GA6520@macsyma-wired.lan>
+ <20260303042546.GF13868@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
- allocation policy
-Content-Language: hr
-To: Theodore Tso <tytso@mit.edu>
-Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
- adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com, libaokun9@gmail.com
-References: <20260225201520.220071-1-mario_lohajner.ref@rocketmail.com>
- <20260225201520.220071-1-mario_lohajner@rocketmail.com>
- <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
- <20260226024819.GA39209@macsyma-wired.lan>
- <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
- <20260227011200.GA68551@macsyma-wired.lan>
- <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
- <20260227164319.GB93969@macsyma-wired.lan>
- <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
- <20260303013309.GB6520@macsyma-wired.lan>
-From: Mario Lohajner <mario_lohajner@rocketmail.com>
-In-Reply-To: <20260303013309.GB6520@macsyma-wired.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.25198 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Rspamd-Queue-Id: E1B901F09DE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260303042546.GF13868@frogsfrogsfrogs>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Rspamd-Queue-Id: 9F5571F07AF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[rocketmail.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[rocketmail.com:s=s2048];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-14555-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[rocketmail.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,kernel.org,zeniv.linux.org.uk,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,telemann.coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.
+ linaro.org];
+	TAGGED_FROM(0.00)[bounces-14553-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[rocketmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[172];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mario_lohajner@rocketmail.com,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,rocketmail.com:dkim,rocketmail.com:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-
-
-On 03. 03. 2026. 02:33, Theodore Tso wrote:
-> On Mon, Mar 02, 2026 at 09:04:44PM +0100, Mario Lohajner wrote:
->> RRALLOC spreads allocation starting points across block groups to avoid
->> repeated concentration under parallel load.
+On Mon, Mar 02, 2026 at 08:25:46PM -0800, Darrick J. Wong wrote:
+> > That being said, the userspace PRIu64, et. al macros are complete
+> > format specifiers, not just a length modifier.  And I think this
+> > results in less ugly format specifiers in our kernel code.
 > 
-> There are already other ways in which we spread allocations across
-> block groups.  You need to tell explain a specific workload where this
-> actually makes a difference.
-> 
-> Also note that in most use cases, files are written once, and read
-> multiple times.  So spreading blocks across different block groups is
-> can often be actively harmful.
-> 
->> In high-concurrency testing, performance is consistently comparable to
->> or occasionally better than the regular allocator. No regressions have
->> been observed across tested configurations.
-> 
-> No regressions, and only "occasionally better" not enough of a justifiation.
-> 
-> What is your real life workload which is motivating your efforts?
-> 
->       	     	       		      	 - Ted
+> Yeah, I don't like "ino=%" PRIino "u, lolz\n" either.  I'd rather have
+> the whole format in the PRIino definition -- it /is/ unsigned long
+> after all.
 
-RRALLOC targets sustained parallel overwrite-heavy workloads such as
-scratch disks, rendering outputs, database storage and VM image storage.
+Just drop the bloody macro and the pointless micro-splitting of the
+change.  After this the inode is always 64-bit and we can just use
+normal ll specifiers without messing things up.
 
-It introduces a round-robin allocation policy across block groups to
-reduce short-term allocation concentration under high concurrency.
-
-It is not intended to improve write-once/read-many workloads and remains
-disabled by default.
-
-I do understand that without clearly measurable workload-specific 
-improvement, this is likely not sufficient justification for upstream 
-inclusion.
-
-I will continue evaluating and refining the allocator out-of-tree.
-If I am able to demonstrate concrete and reproducible benefits beyond
-allocation geometry and occasional contention-related effects,
-I will revisit the discussion with additional data.
-
-Thank you for the review and valuable feedback.
-
-Regards,
-Mario Lohajner
 
