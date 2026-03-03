@@ -1,248 +1,195 @@
-Return-Path: <linux-ext4+bounces-14474-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14475-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YHJ+GOVHpmlyNQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14474-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:31:01 +0100
+	id uF0cAERJpmleNgAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14475-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:36:52 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF511E812E
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:31:01 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E46A1E81E2
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:36:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id CFCE53024B17
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 02:30:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1EF4B302E7EC
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 02:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F25375F65;
-	Tue,  3 Mar 2026 02:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2AE2375F76;
+	Tue,  3 Mar 2026 02:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="JfPMs15Z"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="lfc+rIMB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FB9375F70
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 02:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.215.174
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772505028; cv=pass; b=GsXyA/1lfdv1EbppQsEPRFaGC9c8NpdIshA4dGOt5Qe+rA0YrcEJmFrJ3qndnnAkAAIdZYX+P7yze0N2RFzN5+weITSOV8g06UCQyXgUnlpuWAV6bsGqq0f1/pajp45qyvgGI8JaJOfYCvBQXC5FtZq5M+KLrV1Zs+sQXnEnlC0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772505028; c=relaxed/simple;
-	bh=dpQSmzkUM5eywQT8MkIz9dqIAPHwbz822026FlJmJ4U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QAlsa1SQfZbSvf2s4qzVxjXel8mP5EThZm+lE1OurGPCbjLepii67d4ikLWuQJyeJ7N1hXpnoEUNioo5XliDrh7JlDQV/Qw5jFkhSYBnLvTa5pyGEStnBpYAvrDp78g52hnbMcNlWKG2rjsELnzukcvnDO4duV1EojdYcsqay7U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=JfPMs15Z; arc=pass smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-c70378ddaafso3484813a12.3
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2026 18:30:24 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772505024; cv=none;
-        d=google.com; s=arc-20240605;
-        b=AOAUv1Oa22MzYieuBPhSblnCyGb7ETzLSlT/fHhkpA6HmY/3va3qUUusTX8dYv6L1q
-         v3qK6Tfv/LGccDckrabyyjphLeF7bifX/oIWKViw4phHG9kpA++u4gE+wX0o0KJWM1o5
-         wCtmNnis1ofPKG1pY/KTLkT00VfrTuM62pqbgIRhuHizNn3XdtJWdac4OqWL8mmRbKgc
-         giyzWj0pMGYuA3497dSai8b9OYEKravvhewtZw9/wU2z9R72RmlqUDqe7sRkjEfuWOSl
-         gnba4fo4IR3kKGpY9f4rEFV96l6d54frtK/Ff2qOseY4XatjT9ULohNrnQk/UIDJHUAy
-         tj1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
-        fh=ou/QyNkM+YzVJf497N7OJx5rZo+9R2n42nS1x5N+TX4=;
-        b=Lcfr1G3TtBCOdiZKaAIMEvI+nXGFqugjffp9c0ak35AeUKD9o1tJFGHvzJSd3NDgUz
-         i6n5dRbAAxWpe4W/nKCp909caMbRQl0CbzkjtV4H6C3lNVcP0NL/o2vUA4fSkkbaSMja
-         d6IyE8LbWjYu4l4WAIA/rcvC5PzwQ9Zsf91CkcLYno7dTXUR8EsHQefY1oNYAN2E2lEL
-         BiWka6trGRAUWV+XbbB6PpEK4OCvYjMZ0oaGLve1xPlXRCGouAmnWQy0iuY7FKds0FF2
-         z6fX2pWbwAQ12EP4jcUHIkAitssVMWPr9/74zCjvF4+XwQOvfSokBTUz+qH40TVJX3CI
-         VcMA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1772505024; x=1773109824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
-        b=JfPMs15ZCu5uQlmdqQusmBhN/hCtjzE2ILqtdhvnIFAYHSV1FHjmSyA1arRjcsqd4i
-         Z4zhEf/tJOotLdNVozbOOjxhBlRwJk71hprzA2SYVvUIKNvz8c/GjcFp3BL7vDklngvO
-         zl4V4Vp916TZAWDuaMm3M9LB/UUzTTI4PNa8ZN0UQKnn5dtnNA/PDX+I+seNTfdQA7FQ
-         eAeF4P/7MyBqU3rFB/xabPpQJ0tZLgdAdrccAFYA5DSO631fAvLOUoY97xGiqrBBqUXo
-         Z1tmyiODc/zF//4CcHZRtYJNPYA1OChITkK1DJK96ljrZqSQHtTgNfr5zJ5nJo1M7dd7
-         ac4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772505024; x=1773109824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VKlMqpEd7YBdXym1IpYpN4BFku3eaQLOirqfkrIT+SY=;
-        b=FoziKD8WMHUcaIMPwyPNtnUXjkyh9T0xKWBlCs+kYUrE/8CuQkrnuAPN6y+PDAWzJT
-         wn6wrL8MeCTF5OeG2jdSYl6pc5wm31SGSCDwv3dvzNPiJdFp2vYXLtFbKhUenIILsje0
-         I4F2vDM5Svy1UFk1McvGkAHqUb985ZpSsNyuOPTxoUFKZpvKnthnKM/6zkn30e0DkSUk
-         wqQbsZhP9qfUcRWExHxP3sr/CoKNZ9Lv5vV7LtGACJrxjLoqZbeOwF/j3O0d/qhCtBBR
-         rTt04XvtifD2pXpwj5tOuB5omYYpJrroeStodoTNGplavGkSSq9o2fRZuCvM+yYs9Iuo
-         Ls+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUmEdE0R4rEKKsNpGpDW+j2YAtqr4CrDClX/ecBTUHiWdFVjJ4yntiedLK8a/Rhqn3y/ZtGAHXKisq4@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKc0n7wowAxtqTrqfofwJCQpTssp2m6qkSYYUawdU9ujZaenj6
-	oR683o3IBv592Ts41Ak8MQFKYZyWJCWMsJTBUezOs/oTuciBdxAxrHpg5eN3fE94KY3Fpy9R5Cu
-	w8nyGcVGh0qvvOxkVA88cDXV/z79bDrdeF20OJi1N
-X-Gm-Gg: ATEYQzyf6iBWiNHTTBylpNFEVaDjnaw//MzdA6Nynx9OFcA5z5tY5bTV2eyfxrNmuEQ
-	sItbMr0X80bfh2zEU97UTU6RMQ9IFy1/kN65pVA9smXk5hRt0CTmycEVyOmR1M82diPG1csfohI
-	w5M0NBb4fl6JCTlfvCyuWA3Z0XF3/buaASl0QWOu7lyzFd4gHBQd6lbx/okdGpXu6cdy9Rno9ab
-	jjRGpNPt97Yg9wSQsZ6mrN/YPd/ReCXJIxcGMtqGtH5//WM4cZNPqxYr/7u3o42v9PWnL6w5jOj
-	HHIZrKxyHMtshx/NoA==
-X-Received: by 2002:a17:903:244a:b0:2ae:56f8:747b with SMTP id
- d9443c01a7336-2ae56f8786cmr37920855ad.57.1772505023451; Mon, 02 Mar 2026
- 18:30:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28EA375F80
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 02:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772505406; cv=none; b=shWMrZcwZkO2g2TpoYrNsHHwlE3/1MA4YEoQHMO/H3xa9f2TgWilLg0+DHDjOGzyNhyxKNak7xP6hzNvWzUOhb9vq/Qi7LdKtmdc8EFBcd7VqV/+9DzjiKg3BuswZVGzjKh4ezBESzKf3GQBO3o+UM93+La1L01BdjTqPO2Mgto=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772505406; c=relaxed/simple;
+	bh=SstLVoPgW2DAHDXYz+LJvSQcHtkoNP/EvwaIN8/CtpI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i+aYfgwyOiijXTAnPmizL4G7Rgo8DcEotP+XN4tUbz0FmtnGrDpem8/CawIiwIrao2/3YpqEHSl6DEDidcBcMvE7W+BupnE/e1ZEl8wFac5h5Wcev7EZ+It4h54x7AmCwcPAghKrTGxnDTk6LW3B5Fvcofq90O9MuLH5+xBaOqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=lfc+rIMB; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1772505402; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=QFlnj6RFEUeesbO+l+2Ge3cqltJPBYZWnevUN6K+jMM=;
+	b=lfc+rIMBy6O8rigJX5TJBQvLjjMvwGnbMR2wK7GdUHn/W7E4UCpzDsztr2VCWQnssWYEh0vA1HA8rSeQQDTJY2RdKfFuI+dzOlQTNlKo9Tr7bl5fjd3lpKzfK5DelVowvfqRVs/MmV30EtuOAzkWCVOj5R7qtBIn8tKXgy2ujZY=
+Received: from 30.221.146.232(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X-8BzXS_1772505401 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 03 Mar 2026 10:36:42 +0800
+Message-ID: <80be4b7a-976f-44cc-a50d-66a0e9ed05a0@linux.alibaba.com>
+Date: Tue, 3 Mar 2026 10:36:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org> <20260302-iino-u64-v2-105-e5388800dae0@kernel.org>
-In-Reply-To: <20260302-iino-u64-v2-105-e5388800dae0@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 2 Mar 2026 21:30:10 -0500
-X-Gm-Features: AaiRm53tOqTCLn9NgvLgqwCOFo4xSyksjolr8ucn59RQ44Ck0r7mzGeRmSI5U0c
-Message-ID: <CAHC9VhSHj7qc-tKxEN45bkfr+Dha59ihzOGiCO2WDYTYoB-LeA@mail.gmail.com>
-Subject: Re: [PATCH v2 105/110] security: replace PRIino with %llu/%llx format strings
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Matthew Wilcox <willy@infradead.org>, Eric Biggers <ebiggers@kernel.org>, 
-	"Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, 
-	Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, 
-	Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, 
-	Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, 
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, 
-	Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
-	John Johansen <john.johansen@canonical.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, Joerg Reuter <jreuter@yaina.de>, 
-	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, David Ahern <dsahern@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Remi Denis-Courmont <courmisch@gmail.com>, 
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
-	fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev, 
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org, 
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, 
-	ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev, 
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com, 
-	linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, 
-	linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
-	linux-x25@vger.kernel.org, audit@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org, 
-	linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 1EF511E812E
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: avoid allocate block from corrupted group in
+ ext4_mb_find_by_goal()
+To: Ye Bin <yebin@huaweicloud.com>
+Cc: jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org
+References: <20260302134619.3145520-1-yebin@huaweicloud.com>
+Content-Language: en-US
+From: Baokun Li <libaokun@linux.alibaba.com>
+In-Reply-To: <20260302134619.3145520-1-yebin@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 6E46A1E81E2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,infradead.org,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.org];
-	TAGGED_FROM(0.00)[bounces-14474-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[171];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[paul-moore.com:+];
-	NEURAL_HAM(-0.00)[-0.998];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-ext4];
+	TAGGED_FROM(0.00)[bounces-14475-lists,linux-ext4=lfdr.de];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,paul-moore.com:dkim,paul-moore.com:email,paul-moore.com:url]
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-0.998];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:dkim,linux.alibaba.com:mid,huawei.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Mon, Mar 2, 2026 at 3:50=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
-te:
+
+On 3/2/26 9:46 PM, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
 >
-> Now that i_ino is u64 and the PRIino format macro has been removed,
-> replace all uses in security with the concrete format strings.
+> There's issue as follows:
+> ...
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
 >
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 206 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2243 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>
+> EXT4-fs (mmcblk0p1): Delayed block allocation failed for inode 2239 at logical offset 0 with max blocks 1 with error 117
+> EXT4-fs (mmcblk0p1): This should not happen!! Data will be lost
+>
+> EXT4-fs (mmcblk0p1): error count since last fsck: 1
+> EXT4-fs (mmcblk0p1): initial error at time 1765597433: ext4_mb_generate_buddy:760
+> EXT4-fs (mmcblk0p1): last error at time 1765597433: ext4_mb_generate_buddy:760
+> ...
+>
+> According to the log analysis, blocks are always requested from the
+> corrupted block group. This may happen as follows:
+> ext4_mb_find_by_goal
+>   ext4_mb_load_buddy
+>    ext4_mb_load_buddy_gfp
+>      ext4_mb_init_cache
+>       ext4_read_block_bitmap_nowait
+>       ext4_wait_block_bitmap
+>        ext4_validate_block_bitmap
+>         if (!grp || EXT4_MB_GRP_BBITMAP_CORRUPT(grp))
+>          return -EFSCORRUPTED; // There's no logs.
+>  if (err)
+>   return err;  // Will return error
+> ext4_lock_group(ac->ac_sb, group);
+>   if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) // Unreachable
+>    goto out;
+>
+> After commit 9008a58e5dce ("ext4: make the bitmap read routines return
+> real error codes") merged, Commit 163a203ddb36 ("ext4: mark block group
+> as corrupt on block bitmap error") is no real solution for allocating
+> blocks from corrupted block groups. This is because if
+> 'EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)' is true, then
+> 'ext4_mb_load_buddy()' may return an error. This means that the block
+> allocation will fail.
+> Therefore, check block group if corrupted when ext4_mb_load_buddy()
+> returns error.
+
+Good catch!
+
+Agreed, we should try other groups upon failure unless it's a goal-only
+allocation.
+
+But note that e4b->bd_info might be uninitialized if ext4_mb_load_buddy()
+fails.
+
+I think we can optimize this in ext4_mb_regular_allocator(): we can record
+the error from ext4_mb_find_by_goal() but avoid an early exit.
+
+Specifically, after checking that EXT4_MB_HINT_GOAL_ONLY is not set,
+we can assign the error to ac->ac_first_err. This way, if subsequent
+allocation attempts still fail, we can preserve the original.
+
+
+Cheers,
+Baokun
+
+> Fixes: 163a203ddb36 ("ext4: mark block group as corrupt on block bitmap error")
+> Fixes: 9008a58e5dce ("ext4: make the bitmap read routines return real error codes")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  security/apparmor/apparmorfs.c       |  4 ++--
->  security/integrity/integrity_audit.c |  2 +-
->  security/ipe/audit.c                 |  2 +-
->  security/lsm_audit.c                 | 10 +++++-----
->  security/selinux/hooks.c             | 10 +++++-----
->  security/smack/smack_lsm.c           | 12 ++++++------
->  6 files changed, 20 insertions(+), 20 deletions(-)
-
-For the LSM framework and SELinux changes ...
-
-Acked-by: Paul Moore <paul@paul-moore.com> (LSM/SELinux)
-
---=20
-paul-moore.com
+>  fs/ext4/mballoc.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index e2341489f4d0..ffa6886de8a3 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2443,8 +2443,12 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
+>  		return 0;
+>  
+>  	err = ext4_mb_load_buddy(ac->ac_sb, group, e4b);
+> -	if (err)
+> +	if (err) {
+> +		if (EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info) &&
+> +		    !(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
+> +			return 0;
+>  		return err;
+> +	}
+>  
+>  	ext4_lock_group(ac->ac_sb, group);
+>  	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
 
