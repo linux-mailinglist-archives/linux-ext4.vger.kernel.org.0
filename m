@@ -1,146 +1,153 @@
-Return-Path: <linux-ext4+bounces-14471-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14472-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uHxUHLA/pmkZNAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14471-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:56:00 +0100
+	id qEeYGGdDpmlyNQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14472-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:11:51 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1B81E7DBA
-	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 02:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C131E7E4B
+	for <lists+linux-ext4@lfdr.de>; Tue, 03 Mar 2026 03:11:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9337230743CE
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 01:55:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 752BB306902E
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2026 02:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4FD373BE4;
-	Tue,  3 Mar 2026 01:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209C634E765;
+	Tue,  3 Mar 2026 02:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="EHRbEgKC"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="DQc9dPKx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BF2282F27
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Mar 2026 01:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14B16330B0B;
+	Tue,  3 Mar 2026 02:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772502956; cv=none; b=bGxwn06b9/IxioA71y+MDUJlw7ln6ZGdAVuEK79lLmUGottJLT1fErCKbHOcCdN/4f5CkQoZhMI+qyHOv+KkEv3XiHAaOrYSDzA4jxxh8PDQSjtSbSGTDlKY2TxWm8437WRQMM1O2QM7SDQ17IU2rAqIKvPEc5uhBHDRjrjdYts=
+	t=1772503900; cv=none; b=dmHJrKnvwxt9pxTA3N47Q3MkTeWfng/3GAT53DbrUt71AkBjgW9AMHWB+nzKyp5ZILItliZfj3qvy5aL6V7as7zVQJw5o8n5p9VqR8RurfYtOqL5pJKMPcpYB/pVFUC7/bp6CGNV0Ly2h/jUJSi4TYJduMlz5Ypuz/TLdrhfkcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772502956; c=relaxed/simple;
-	bh=7xMQmdykjNEjdwemZwhaQn5gi/74+H9bg1NU0yjB2tw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TfEboulv9q1I1/NryO7Is8ONzfEoKXyykRAWX620miag1D0Sx7UclYuZaCJmrQvCFsgyLKGmh4ITpNOTSIjZsHnZmlXDb7E0ct4ImhMXw2uopy6Tk4yFsRUnSpwC3v1jQ/xRKBO+tvp6ThHBGY215k/AJAQkmn7uVa0L5pf/Tco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=EHRbEgKC; arc=none smtp.client-ip=115.124.30.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1772502950; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=BU9i7ek1rGiqJNvhWqYgIHcjwcXJLXQu5iL1st1pQ0g=;
-	b=EHRbEgKCvJkifmYBlmY0ADZOS+Z0ZSaf+azI8iG5NmxHgouDF3oCp6cXYYlYw8Ff7/znqqetiZOFjGu7PuFaDJO16EQCPgkEyrdPe8wpQqTLRMrXV9kpH67Kx3vq907Q2e9O85KPAAKCgo76dY2z9UQS2vWEUOEt+UKiNpbIvG8=
-Received: from 30.221.146.232(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X-80Zrx_1772502948 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 03 Mar 2026 09:55:49 +0800
-Message-ID: <765b1b39-3043-4a24-ba74-5e018071455e@linux.alibaba.com>
-Date: Tue, 3 Mar 2026 09:55:48 +0800
+	s=arc-20240116; t=1772503900; c=relaxed/simple;
+	bh=X48+k5qA9PQ46GW/jztGCV/mM0ltPoP+BKObF2W8H7k=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qgkLhjwZKy3ar+N6ds+t9vdWIn4U7yFM8oWKlePfScPNLgcYLLdYveFzAP0TKOnqAvoWXLEdCv1rReMtTPpeTle3IZjJVKIZ1zg/fNnnC1fwIoYKSX+ISYJyx6qHBmkkbjcQvvpAUS/NEri0UpNz45owRIeJQTlmu+dpEymaH+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=DQc9dPKx; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=ZbOXwFI8ufgGK6gTJdsE49m/wTyhWiTOcsrAkxIpCEw=;
+	b=DQc9dPKxQ0/I5Sk1qADPU/J2Zp42trQheOplD2+JBS8d3X2J56TrwB44k+ChspesK5Ajklv3C
+	bup+WHKEUenlkFhCvanw4B0qjtLGfA7lxAk2BQrOBHCX7orrLw2MqpAxzlE4Me2NC70sF6Cbe+V
+	bXBqFmFWVN0u8NrtxaUvQvA=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fPzh15NQQznTxj;
+	Tue,  3 Mar 2026 10:06:57 +0800 (CST)
+Received: from dggemv706-chm.china.huawei.com (unknown [10.3.19.33])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F5FD4056F;
+	Tue,  3 Mar 2026 10:11:35 +0800 (CST)
+Received: from kwepemq500016.china.huawei.com (7.202.194.202) by
+ dggemv706-chm.china.huawei.com (10.3.19.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 3 Mar 2026 10:11:29 +0800
+Received: from [10.174.178.185] (10.174.178.185) by
+ kwepemq500016.china.huawei.com (7.202.194.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 3 Mar 2026 10:11:29 +0800
+Subject: Re: [PATCH v3 0/2] jbd2: audit and convert legacy J_ASSERT usage
+To: <jack@suse.cz>
+References: <20260303005502.337108-1-nikic.milos@gmail.com>
+CC: <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+From: "yebin (H)" <yebin10@huawei.com>
+Message-ID: <69A6434F.9070205@huawei.com>
+Date: Tue, 3 Mar 2026 10:11:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ext4: Minor fix for ext4_split_extent_zeroout()
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
- "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>
-References: <20260302143811.605174-1-ojaswin@linux.ibm.com>
-Content-Language: en-US
-From: Baokun Li <libaokun@linux.alibaba.com>
-In-Reply-To: <20260302143811.605174-1-ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20260303005502.337108-1-nikic.milos@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: AF1B81E7DBA
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemq500016.china.huawei.com (7.202.194.202)
+X-Rspamd-Queue-Id: 06C131E7E4B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14471-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linaro.org,gmail.com,vger.kernel.org,mit.edu];
+	DKIM_TRACE(0.00)[huawei.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-0.995];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14472-lists,linux-ext4=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linaro.org:email,alibaba.com:email,linux.alibaba.com:dkim,linux.alibaba.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,huawei.com:dkim,huawei.com:mid];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	FROM_NEQ_ENVFROM(0.00)[yebin10@huawei.com,linux-ext4@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
+The macro `J_ASSERT_JH` is a rather troublesome implementation. There
+are numerous calls to `J_ASSERT_JH` within
+`jbd2_journal_commit_transaction()`, and after compilation, these may
+all jump to the same address for execution, making it difficult to
+determine exactly where the assertion is being triggered. If there is a
+functional issue in just a single file system, using `BUG_ON` to handle
+it seems a bit too aggressive.
+I wonder if you all have any good ideas or suggestions.
 
-On 3/2/26 10:38 PM, Ojaswin Mujoo wrote:
-> We missed storing the error which triggerd smatch warning:
+On 2026/3/3 8:55, Milos Nikic wrote:
+> Hello Jan and the ext4 team,
 >
-> 	fs/ext4/extents.c:3369 ext4_split_extent_zeroout()
-> 	warn: duplicate zero check 'err' (previous on line 3363)
+> This patch series follows up on the previous discussion regarding
+> converting hard J_ASSERT panics into graceful journal aborts.
 >
-> fs/ext4/extents.c
->     3361
->     3362         err = ext4_ext_get_access(handle, inode, path + depth);
->     3363         if (err)
->     3364                 return err;
->     3365
->     3366         ext4_ext_mark_initialized(ex);
->     3367
->     3368         ext4_ext_dirty(handle, inode, path + depth);
-> --> 3369         if (err)
->     3370                 return err;
->     3371
->     3372         return 0;
->     3373 }
+> In v1, we addressed a specific panic on unlock. Per Jan's suggestion,
+> I have audited fs/jbd2/transaction.c for other low-hanging fruit
+> where state machine invariants are enforced by J_ASSERT inside
+> functions that natively support error returns.
 >
-> Fix it by correctly storing the err value from ext4_ext_dirty().
+> Changes in v3:
 >
-> Link: https://lore.kernel.org/all/aYXvVgPnKltX79KE@stanley.mountain/
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Fixes: a985e07c26455 ("ext4: refactor zeroout path and handle all cases")
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Looks good to me.
-
-Reviewed-by: Baokun Li <libaokun@linux.alibaba.com>
-> ---
->  fs/ext4/extents.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>      Patch 2: Added pr_err() statements inside the ambiguous WARN_ON_ONCE()
+>      blocks (where multiple conditions are checked via logical OR/AND) to
+>      explicitly dump the b_transaction, b_next_transaction, and
+>      j_committing_transaction pointers. This provides necessary context for
+>      debugging state machine corruptions from the dmesg stack trace.
 >
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 3630b27e4fd7..5579e0e68c0f 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3365,7 +3365,7 @@ static int ext4_split_extent_zeroout(handle_t *handle, struct inode *inode,
->  
->  	ext4_ext_mark_initialized(ex);
->  
-> -	ext4_ext_dirty(handle, inode, path + depth);
-> +	err = ext4_ext_dirty(handle, inode, path + depth);
->  	if (err)
->  		return err;
->  
+> Changes in v2:
+>
+>      Patch 1: Unmodified from v1. Collected Reviewed-by tags.
+>
+>      Patch 2: New patch resulting from the broader audit. Systematically
+>      replaces J_ASSERTs with WARN_ON_ONCE and graceful -EINVAL returns
+>      across 6 core transaction lifecycle functions. Careful attention was
+>      paid to ensuring spinlocks are safely dropped before triggering
+>      jbd2_journal_abort(), and no memory is leaked on the error paths.
+>
+> Milos Nikic (2):
+>    jbd2: gracefully abort instead of panicking on unlocked buffer
+>    jbd2: gracefully abort on transaction state corruptions
+>
+>   fs/jbd2/transaction.c | 115 +++++++++++++++++++++++++++++++++---------
+>   1 file changed, 91 insertions(+), 24 deletions(-)
+>
 
