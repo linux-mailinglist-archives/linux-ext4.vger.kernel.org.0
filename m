@@ -1,189 +1,198 @@
-Return-Path: <linux-ext4+bounces-14598-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14599-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AL2ILRz8p2mlnAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14598-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 10:32:12 +0100
+	id gOOwJ+gHqGnSnQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14599-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 11:22:32 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51E2D1FDA00
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 10:32:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 159161FE403
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 11:22:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1F3CE30BFAB6
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 09:30:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6DE3D301A172
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 10:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0094F3542E1;
-	Wed,  4 Mar 2026 09:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720D23A1A5F;
+	Wed,  4 Mar 2026 10:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9sIRKFF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EEBPn++p";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1E4VrZ4z";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EEBPn++p";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1E4VrZ4z"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0175F3988F0
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Mar 2026 09:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F9739A068
+	for <linux-ext4@vger.kernel.org>; Wed,  4 Mar 2026 10:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772616639; cv=none; b=KhZudyn4z/u8QpeRs/bfFs3sFxH76iZ6G0mOsPczX+YhCcIYKDKBMGdMvxkT4qW3Tdx/D6ZQV6rztNTxCo2Bip3q4jc7tPaOnNNooPbk4nMML/RiuQDxoZkb4Nu1mREA75umstSZTTtjDZUPifuDDcveUF294zq4ioavIdslmkw=
+	t=1772619597; cv=none; b=qA5iFbxDsKZTeC7tknO2AT1ral9kPhkc2tBQwc7MoYfxCj3V0TmGRhlqJoN1KYbnvu0mQrcTGZi+nhxfOfzvRMxc/H/b0QenIN+0qWz7HbA33V1CuN0SIx6ZgOe/Bb2IIQrOt5kEITr6SRz6NBHndSlYRPwArkMu0LcziovQjr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772616639; c=relaxed/simple;
-	bh=qyvL/iXE6+TakoKVVxVCaopqm1BpX+f7Q05dx5gBHDE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rwyo+svmMDYXiYxG8SfbGuVK6aXGevH1jQU2fvuks1qBiGTDLVxTT98v0GV3IIotCKZwnpXbdOn6YAPHchvBkI+D6Dtz7EcJTNVta4dJnO+Ei3sQYsTl5lxyzrAvrJHQFA2JsPYPJJxhHlwSUX9zwIk1f86DVgz35DIYDokR2jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9sIRKFF; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-483a233819aso64872335e9.3
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Mar 2026 01:30:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772616636; x=1773221436; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BUzQoESoh9/PqMSFbMpuw4Pmh5IPXiGP/qvOjxX4wwo=;
-        b=b9sIRKFFaokgkSrgeWrbA/ViOpJjWP1ViLK9R1Hc1//m2coegBzgKtpFqwevCmiACZ
-         C7afbaacWCHtjdaHICcRaatb9x6ZEJn6NhG6Zj9DIWESFWJ1Wfs22M1hBHSvsJT6ov0y
-         u+gbatvToXFWw4Ws1z6B810aDtF2H+NtjWSzWUXjnH2Uagh4gEk5+S1nkLp8lVzxzopS
-         A1lgIkzEEAlqX7ANlEMButL3162rmrsjjiFCTqL06qEr4gqfcdGAwI6S5Z1yvtqPS7rR
-         QeMeyyLIZ4ZsiMHZmsjBPBW/Gjz82S/2K6mHxq88plnIdodtUPQPjzOSR2cd/SZiIcXY
-         bgtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772616636; x=1773221436;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=BUzQoESoh9/PqMSFbMpuw4Pmh5IPXiGP/qvOjxX4wwo=;
-        b=fpUt+xz7lhRnjAmUlBvcMjKI4M+7ie+fm5GC5bZRCffUDtBjuXm/7QLdAaQRCmzmCX
-         0m4VD9vN8AjahHpOt3oT4lwnaMIiIF6O2VJA8hSIwim2d/IJObmIBNhglioM41DXG4oR
-         opb5aODsF1BII5oDA9woIEf8Af6bS97TuSGNtgReFsDj6H6aFd1MjN+xPW385c/2+db4
-         ls4Hp5/zdVZTt221sJgk7hvNU0nkoGHNKBMoU1RVOVU+mFE3UdiA92Ilhdv6DKuXnSnY
-         1XGK5cs+jTy2h2CyemgG/zH4EeU5oRBs5jBlMWa2fVyUzbXSNLUAJmKGo42f/3w+sGGa
-         wC5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWSvNjAUpPYmaVkkiJBFSHPGQll21PcM9nth/yTfLjZnr5CZ+mm0ZjQKy3qlsFkjBCEsnQBS1KHpHHR@vger.kernel.org
-X-Gm-Message-State: AOJu0YxuQ/5elod3qcBdf6X7j1spol7gPVOATjg8S+IF1nWLhBKfqiBT
-	g9avSZuWBKdPcZ6HCqlXY9KW02zN1Nr7uj8SC/3TNmtSo4pOdBm3nzck
-X-Gm-Gg: ATEYQzxzH+gFLeRI/C+Qam8Ja01hUQW4q00932ckfkH2kcgJErsHP7kPV70bK9m/Goy
-	DJG7iirJWdqPjuM/UFY1pqrcf9AU1xy+7Tzj/MpFCPysXByoWBjc1osqhCGO5fW+8M38Dwaai/x
-	gt6/bHc0DvZHu+mSOX4afTDTFCQWvcdsycFycFbK9Py73jDvOlnnbULJJ/TP5/LVyXvLbd0Y/eA
-	g5faGzZwGvyfsNu0AfKhi7AoyZ3H5nERoicPZoXrXXL933s5n7pgIxJpdssJJ8VDXYEAuxVttY/
-	C85pTzzi2VRQSDRhdidCdqZnCTFc5vedRrXnd+2ap48anGQ4L/uc+kujcCHuQligoxnLoWWTdl5
-	veIjAb6UmueJm0EBb33zV/ld7MkrmWb7tlfhtzrkj60OL0w1QYTmZhh6hCb8PgwlELEjW1n7REh
-	SIe61MUlPMPR0gZQaeLdig1xDmMsZMIv2nl0VRw3+00ICVwEXnZTZlE3e4ysuRKBvB
-X-Received: by 2002:a05:600c:8b53:b0:483:498f:7963 with SMTP id 5b1f17b1804b1-4851989024emr19550785e9.26.1772616636117;
-        Wed, 04 Mar 2026 01:30:36 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4851884225asm38972555e9.6.2026.03.04.01.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2026 01:30:35 -0800 (PST)
-Date: Wed, 4 Mar 2026 09:30:33 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: NeilBrown <neilb@ownmail.net>
-Cc: "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- nvdimm@lists.linux.dev, fsverity@lists.linux.dev, linux-mm@kvack.org,
- netfs@lists.linux.dev, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
- linux-nilfs@vger.kernel.org, v9fs@lists.linux.dev,
- linux-afs@lists.infradead.org, autofs@vger.kernel.org,
- ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
- ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org,
- jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev,
- ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
- linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com,
- linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org,
- selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org,
- linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org,
- linux-x25@vger.kernel.org, audit@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
- linux-sctp@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 000/110] vfs: change inode->i_ino from unsigned long
- to u64
-Message-ID: <20260304092559.554ac9a9@pumpkin>
-In-Reply-To: <177260561903.7472.14075475865748618717@noble.neil.brown.name>
-References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
-	<1787281.1772535332@warthog.procyon.org.uk>
-	<1c28e34c7167acf4e20c3e201476504135aa44e8.camel@kernel.org>
-	<177260561903.7472.14075475865748618717@noble.neil.brown.name>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1772619597; c=relaxed/simple;
+	bh=dpY0qOrQWN/nkptgXwsR5b7l9Lk3V7Ag/77fLUaGvhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FFWbs2qHixslbmRd1rHECoJN2rXk50IBKCfpdEbsHbB6WjS1aq+7/qtMq+yqUTgOuN3btBNSr8E5eKeBf5eg7yx3/Y15wWNLt/7dXfPYPyWeQonVL5ls9fTU+hMOX3bh5/6tD8ziwmyvQcBZZgJU3ojvee80zS7vMdr/6Igowhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EEBPn++p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1E4VrZ4z; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EEBPn++p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1E4VrZ4z; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 22A853F8D3;
+	Wed,  4 Mar 2026 10:19:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1772619594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdNF1YIP5o4QSdMScbwtBPYeFJ0P1YwLxvqA4Vs8xUQ=;
+	b=EEBPn++pL92sJVsuOW5hx9ho4GUwGTn2O+6A9aFJDEfrm21E6eE1PkulWf8d2EYAOuZPD3
+	t3jhvwnFs6NPjvrz5f5yKfiyE9eNo+bA/oMVanHxwaeK4vAm0ZCyZ4bVSpn7ACRO+XFU1Y
+	AUcJhr5BPgxEBp3ZmFW4hdgsc+H8GHo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1772619594;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdNF1YIP5o4QSdMScbwtBPYeFJ0P1YwLxvqA4Vs8xUQ=;
+	b=1E4VrZ4zI9GZ15BE29tLbl3RSU4CYdQ3GcrxlfpettU3XyzY+2W9sbwyA2G95smgFp5dnH
+	rldhG8XkBeAdZcAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1772619594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdNF1YIP5o4QSdMScbwtBPYeFJ0P1YwLxvqA4Vs8xUQ=;
+	b=EEBPn++pL92sJVsuOW5hx9ho4GUwGTn2O+6A9aFJDEfrm21E6eE1PkulWf8d2EYAOuZPD3
+	t3jhvwnFs6NPjvrz5f5yKfiyE9eNo+bA/oMVanHxwaeK4vAm0ZCyZ4bVSpn7ACRO+XFU1Y
+	AUcJhr5BPgxEBp3ZmFW4hdgsc+H8GHo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1772619594;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sdNF1YIP5o4QSdMScbwtBPYeFJ0P1YwLxvqA4Vs8xUQ=;
+	b=1E4VrZ4zI9GZ15BE29tLbl3RSU4CYdQ3GcrxlfpettU3XyzY+2W9sbwyA2G95smgFp5dnH
+	rldhG8XkBeAdZcAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 189173EA69;
+	Wed,  4 Mar 2026 10:19:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cm/+BUoHqGkNBAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 04 Mar 2026 10:19:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CEBD2A0A1B; Wed,  4 Mar 2026 11:19:45 +0100 (CET)
+Date: Wed, 4 Mar 2026 11:19:45 +0100
+From: Jan Kara <jack@suse.cz>
+To: Ye Bin <yebin@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	jack@suse.cz
+Subject: Re: [PATCH -next v3] ext4: test if inode's all dirty pages are
+ submitted to disk
+Message-ID: <2yhgpemj3uapus647p7anjtr33dvscpnqeznnr462vtlhsjfle@7eey7koee76p>
+References: <20260303012242.3206465-1-yebin@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 51E2D1FDA00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260303012242.3206465-1-yebin@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 159161FE403
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.com:email,suse.cz:dkim,suse.cz:email];
+	DMARC_NA(0.00)[suse.cz];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14598-lists,linux-ext4=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_TO(0.00)[ownmail.net];
-	RCPT_COUNT_TWELVE(0.00)[46];
+	TAGGED_FROM(0.00)[bounces-14599-lists,linux-ext4=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-ext4@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ownmail.net:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-On Wed, 04 Mar 2026 17:26:59 +1100
-NeilBrown <neilb@ownmail.net> wrote:
-
-> On Tue, 03 Mar 2026, Jeff Layton wrote:
-> > On Tue, 2026-03-03 at 10:55 +0000, David Howells wrote:  
-> > > Jeff Layton <jlayton@kernel.org> wrote:
-> > >   
-> > > > This version splits the change up to be more bisectable. It first adds a
-> > > > new kino_t typedef and a new "PRIino" macro to hold the width specifier
-> > > > for format strings. The conversion is done, and then everything is
-> > > > changed to remove the new macro and typedef.  
-> > > 
-> > > Why remove the typedef?  It might be better to keep it.
-> > >   
-> > 
-> > Why? After this change, internel kernel inodes will be u64's -- full
-> > stop. I don't see what the macro or typedef will buy us at that point.  
+On Tue 03-03-26 09:22:42, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
 > 
-> Implicit documentation?
-> ktime_t is (now) always s64, but we still keep the typedef;
+> The commit aa373cf55099 ("writeback: stop background/kupdate works from
+> livelocking other works") introduced an issue where unmounting a filesystem
+> in a multi-logical-partition scenario could lead to batch file data loss.
+> This problem was not fixed until the commit d92109891f21 ("fs/writeback:
+> bail out if there is no more inodes for IO and queued once"). It took
+> considerable time to identify the root cause. Additionally, in actual
+> production environments, we frequently encountered file data loss after
+> normal system reboots. Therefore, we are adding a check in the inode
+> release flow to verify whether all dirty pages have been flushed to disk,
+> in order to determine whether the data loss is caused by a logic issue in
+> the filesystem code.
 > 
-> It would be cool if we could teach vsprintf to understand some new
-> specifier to mean "kinode_t" or "ktime_t" etc.  But that would trigger
-> gcc warnings.
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-A more interesting one would be something that made gcc re-write the
-format with the correct 'length modifier' for the parameter.
+OK, I guess the warning is better than the stacktrace. BTW, what did
+trigger the false positive warnings this time (I didn't really look at
+syzbot reproducers)? Anyway, feel free to add:
 
-That would save a lot of effort!
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-	David
+								Honza
 
+> ---
+>  fs/ext4/inode.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> NeilBrown
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 396dc3a5d16b..d4d65593bce2 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -184,6 +184,14 @@ void ext4_evict_inode(struct inode *inode)
+>  	if (EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)
+>  		ext4_evict_ea_inode(inode);
+>  	if (inode->i_nlink) {
+> +		/*
+> +		 * If there's dirty page will lead to data loss, user
+> +		 * could see stale data.
+> +		 */
+> +		if (unlikely(!ext4_emergency_state(inode->i_sb) &&
+> +		    mapping_tagged(&inode->i_data, PAGECACHE_TAG_DIRTY)))
+> +			ext4_warning_inode(inode, "data will be lost");
+> +
+>  		truncate_inode_pages_final(&inode->i_data);
+>  
+>  		goto no_delete;
+> -- 
+> 2.34.1
 > 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
