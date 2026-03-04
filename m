@@ -1,243 +1,189 @@
-Return-Path: <linux-ext4+bounces-14597-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14598-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IH56FATgp2lnkgAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14597-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 08:32:20 +0100
+	id AL2ILRz8p2mlnAAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14598-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 10:32:12 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB531FB9DB
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 08:32:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51E2D1FDA00
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 10:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4D42F302C6FF
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 07:32:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1F3CE30BFAB6
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 09:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA41369999;
-	Wed,  4 Mar 2026 07:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0094F3542E1;
+	Wed,  4 Mar 2026 09:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="pY0RdbIW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9sIRKFF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from TYPPR03CU001.outbound.protection.outlook.com (mail-japaneastazolkn19012058.outbound.protection.outlook.com [52.103.43.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B171930649C;
-	Wed,  4 Mar 2026 07:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.43.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772609533; cv=fail; b=T8hXhNVqc03wKuGini9TISrjYy9j15z3lAiXIhyxtDlossMmf6SGjHHREkCjSJFdFaYcYWPKy0fK3SzUbgfho+OZfFVCCbYX6MkbgZw5Atlz9z0xbNP0MfoBS1db8itHLVnUU/8iSeemgVhDM1UZ01r9NJhVh0O5YrC2z9E+P+A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772609533; c=relaxed/simple;
-	bh=5+DjjIBAgQ10EbCnEJClqQiwK3684BaDwR5CJLbuKAE=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ZU8P2dHdwOFSJg+sUwPPgIogwtusPCSd3GjBeK0DMIorne/5GniCYArj8KJGnGSOyxgIa4OGZgYU4kCXVFtKrEEEkkrnh0MGdNTgpk3+27wGkwtHofNqN6V3pLzJHRgl0kMpVt3ymwrYGV0UBZ5aQ1L2CmoPVrE5RT1h0wxNsNA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=pY0RdbIW; arc=fail smtp.client-ip=52.103.43.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rMcyJ/VBJnVZ56cp0J2/fSlXqSduEaJHlejJHrrDtdmvtNCCVeDAWZ76Y9VXBlasO2MYFkjanYRdrfyV/q6DqhKcD6n9FqO/JoRyPIG9bKMDHcn3fWFe0RKHyM78CSMfXiYo1rc5bxdv9UajUtORrdkZahXRQlJt1EcTSjbYbLXmCySh3rMl08o7Mw8w8Y15cxgDjTjN3Vx84W0LRXXc0CPyhZWhpfE4A53ejzn9ebEc5+gLLR45R/Uv2sLh7+6u4lTHzs/aztMWgZcpbUa74cpma8d8PGr0CUgL1i464ckTTduXfJ4FWAcyPNnRS6bbEakHG82PT/vuok/H+ucsRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xvMT7Zjs1IfY8t1aOTwpByCncSscZIcU5zvXwprY5eE=;
- b=kknMSp5aZ3Eiq6ffIDri0cOl/3rhd9CnI1yKaY5GUJ8V7qeSntaLg3o2+YkvwcDAua45K80m9s+eEZSUv/gPK2r5+MQA2SR2wME3C+nXYmB2r3Zny8JkWYlbPzXl0DeF0mHbCYqD3Yn1aJm18+j/rEE+HfkXjAYqhmE8sAp4r5OHTH2l6d6Sj76cOGaeBFw44MTArRvxO7UVCfxinRhMqr+7Su/9QF/B9WNxjdS9bwBr6ks0tkTp2SZqrG51HAg5mSshXSWqXT9Y9shYoYeQgq9yXFL4QFsuYFc77Ji5rnrm5qhEgAMte4Ip2Jnt4sY12ESnd/sK1ET3xy480AmVeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xvMT7Zjs1IfY8t1aOTwpByCncSscZIcU5zvXwprY5eE=;
- b=pY0RdbIW6X63ZZ2APaW88t29Ri6mk4X61b8Nt9qMnaUN4mBlNsVGeI71Qc+un1lftc7ppkoI9POEyqML1fS9MTi5oiyVxGCtFKPoGjIt8zLjz/htIKq2fWknI4V7VCA18YilicsPcREJcSJLsuAWy0BDfChRj6qzSyFc5sbiIt7+lZPa0/jY+SI2zJ6be8LcfvvLXKiluix8kuPCQ6tS71F4Js+T4+fEE7sNexjiWco6qDaoTAqwB9bcQCSHIoyaoeCxkKm160LqJub3tSY6OLNbYfKRcZrP627414ZK/JUSpYQOc3idxSjMskFAs9HX98jiLKcNKwNk70LCp+AVUA==
-Received: from JH0PR06MB6632.apcprd06.prod.outlook.com (2603:1096:990:3f::11)
- by TY0PR06MB5626.apcprd06.prod.outlook.com (2603:1096:400:31f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.17; Wed, 4 Mar
- 2026 07:32:08 +0000
-Received: from JH0PR06MB6632.apcprd06.prod.outlook.com
- ([fe80::4fa1:706f:f4e0:6bad]) by JH0PR06MB6632.apcprd06.prod.outlook.com
- ([fe80::4fa1:706f:f4e0:6bad%5]) with mapi id 15.20.9654.020; Wed, 4 Mar 2026
- 07:32:08 +0000
-From: tejas bharambe <tejas.bharambe@outlook.com>
-To: "tytso@mit.edu" <tytso@mit.edu>, "adilger.kernel@dilger.ca"
-	<adilger.kernel@dilger.ca>
-CC: "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ext4: validate p_idx bounds in ext4_ext_correct_indexes
-Thread-Topic: [PATCH] ext4: validate p_idx bounds in ext4_ext_correct_indexes
-Thread-Index: AQHcq6d7R3cc5YXVYE2X6U/f6mdq8w==
-Date: Wed, 4 Mar 2026 07:32:08 +0000
-Message-ID:
- <JH0PR06MB66326016F9B6AD24097D232B897CA@JH0PR06MB6632.apcprd06.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: JH0PR06MB6632:EE_|TY0PR06MB5626:EE_
-x-ms-office365-filtering-correlation-id: aa271d0d-ba52-4a03-1511-08de79c02457
-x-microsoft-antispam:
- BCL:0;ARA:14566002|5062599005|39105399006|19110799012|461199028|8062599012|8060799015|41001999006|31061999003|15080799012|15030799006|10035399007|440099028|3412199025|4302099013|102099032|1602099012|40105399003;
-x-microsoft-antispam-message-info:
- =?iso-8859-1?Q?SAFt7p3wfpSOHEGtChqhqlD+X6FEI7NAud4pJSg7D1UpKj68bOypoTYY34?=
- =?iso-8859-1?Q?qgfCfky5hWaBFtNlf0k+Dpr8vBgPt01BEMl2Ls4Lg4MlBKNtztN3SBWR/x?=
- =?iso-8859-1?Q?qgUROpGVWMUVSllTS19OZI6jUwBKR6iKM3ZDYGoWuMiXl1lTGrm5MH+U0m?=
- =?iso-8859-1?Q?lwwHVc5YEkPf5hREuOT5AuOGWuWRtoEmGDtWnah3wf+vhXY81MmODCnWEC?=
- =?iso-8859-1?Q?5j0jl1O2QAAiT8ZAlZD5lRPuAFKC1KZ7gP6Iv1WNq7lPywy8uYse5xQKSe?=
- =?iso-8859-1?Q?MPNEBAd4ho1uYELP+NdQ8+VocVc1VbbcvO6me6rPzjkP0rf/3XX+VQ+iQn?=
- =?iso-8859-1?Q?kNBRL1DYLIU3puT8G8tqLKWcUaPQ2MaaTbdkF5HJhXdbSRWiUw9cAsNL4X?=
- =?iso-8859-1?Q?dq6lwBSyKLbvVg+qxHPhpkvG1Rd4iCulwAZ1RMi4r1ZynXmnm30PzlYvq2?=
- =?iso-8859-1?Q?tmxRFiE6Si1TxQcY9CZmBTkW39AQ9WNpL7Vzjf5NJbwkfTh2NQ3fFkI0m0?=
- =?iso-8859-1?Q?jo95TIWqO/XOKnI3ySlhnSj8dHUd5GAXV/3exofeMenzBwBrrM+9fOwPCW?=
- =?iso-8859-1?Q?0IEs1BS2VT0LE5Lq+zDK7XUfbSzgwKQraFWoVWQ05hIpPIb1B33qbJzYDL?=
- =?iso-8859-1?Q?TawEpdG1je5t+kTxCm+/vxlZ/QYteSWP4Ks2IM+RA+O/3HLPzfruIUAFSE?=
- =?iso-8859-1?Q?yIN4zQYYutryZsEhBdcA12sjChg/17Q3c8BjY5vC/DQAeVNX/r/CBlVjl8?=
- =?iso-8859-1?Q?k7JSmm3b6VIY5dvSUhIMBKQUIbMDZueiHk4K9M98J3xdOhd5bT+T8Ck4E5?=
- =?iso-8859-1?Q?DLCmsj3kigvJDymxTpwdC+ABpe+kPU1Zyf4yRYUv6LdKLIV6NRppuTSdFV?=
- =?iso-8859-1?Q?NvuUFEgB2ZQQy6ORUojRG5lPLa0HPX2CVqgOXZIROeBgSiuMFUOH1bIY/1?=
- =?iso-8859-1?Q?dagPrYt4kRToNFSMQGZmPgnTSJLRVoToPYqz7T7rintVAi7F00v2PD90+L?=
- =?iso-8859-1?Q?sz5/Z37GKqmQFhIEqOVTmbVcCjZHwPS7ROS+IG+d6x5EekS8BZ6Rc8MfmP?=
- =?iso-8859-1?Q?TjSrVNoOaqpr2f5nSJYDB/WgNlUVm7VrPj7FlVaoTbTo?=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?zvmyUQgSgTnSIK6a5qEaB4R0wy7P6LwsOY8svMwcKouhLXNNXt7VLXg/4J?=
- =?iso-8859-1?Q?Uz+KE/sUzcCWvcd/PGL8RaAJRrwHN48SqbXPpXN7Vd0hnV/GFTy6BRIXvF?=
- =?iso-8859-1?Q?KunHId4I079/gocYTNMFwViYJeLNTdpnp/awhsOK8pdX/psiXWf1IvOvjL?=
- =?iso-8859-1?Q?Ye89OzZpqWt1d8XKi9iGOEALxxU8bWorKomP2eKJrX5KJHFGvzvTatq+Py?=
- =?iso-8859-1?Q?UpUbw3aqhU34J8H7MOX1mwN66CP2ShrOHqE//5iVPyvW6iNS+A7yR1e0HJ?=
- =?iso-8859-1?Q?+KII45Q+Rkzs1blMh1vk8CsgnkzJYllwlKypGZmqWKPHz+0pVe1zipgjTQ?=
- =?iso-8859-1?Q?J7j+4nX4ITLcO3JAnusQwQ2iqPB8+bF4qaL7URTkT4kZo+0YDhZ34MveJj?=
- =?iso-8859-1?Q?XHEUW6kIBSZ9EK2oJDWDr0IPQlV6Yr/wpOyIek0jDJ/Fb1pD8gLxD2cDIk?=
- =?iso-8859-1?Q?FjSfZTBXc2PE0liIeTh+ObR29mZJ4I9uyq9qzc63VgsviLByGrAwbmRuit?=
- =?iso-8859-1?Q?Embm+XCQ9p73Z4T6vJs8IRwcASWtf47kpav/E3qFxXmr2Kmk4QEW+j8sml?=
- =?iso-8859-1?Q?LNTKfzrE7r7m13V75LhEsHsSANLjk2XAmWtBvQB3S2ndgWmHc9U8BCrH0h?=
- =?iso-8859-1?Q?WJx8l9d9ab+Zezt0U+Voq+wWvOQtMTrDlqS5iFIeYGoRFhVNsdLA0p5ETX?=
- =?iso-8859-1?Q?Ztf/TstPFg3kIK2e7LSnHNr0B+W1Db4YLhIXVrucUVtIL/2/BMqltDryB6?=
- =?iso-8859-1?Q?5xMLK7qwbvWkh7edR687pnbA2OTRwCWPlv4xF3hjkjQnZzc5bE5fSPr7AM?=
- =?iso-8859-1?Q?D6r30gU0rLEVUXzxYTGV0ihkJKGZ/QI2v+SQMatdEnJKjUs5essxROgR7K?=
- =?iso-8859-1?Q?SnAWA7vfljWVCu7765l3+4LCe8XGUPgRSDjWEDKKE01x7w7sNhKffQFznc?=
- =?iso-8859-1?Q?9xdwUGFLIaDoAPADKzRm+C3BIdd/z4tsF5m2FOVPlqnEkrjUkeVKYiHHUO?=
- =?iso-8859-1?Q?nR1jtEKU9HjBWWGiF3Br+cGosx/IbENQ9ot8VvHq1eF7R1Kg9wZJ7SDYck?=
- =?iso-8859-1?Q?JXejcr2GCWJfAQukK3ZknPyyz96U6E8dezuWinVTHN6Ty7l/ti2nOClo5w?=
- =?iso-8859-1?Q?WhiHLtrteamFMt37hSZ9D8K/Gm8Q4o+xIuktHtQoQGUh5TzlkZUovhcXit?=
- =?iso-8859-1?Q?dNjaLricV6R2wsoS5DFuP94O7jGg+awrFtaZffePhqCI4jSgaZ1BVxhPds?=
- =?iso-8859-1?Q?lUCuZHZH98p4D1bPX4pC+1bQopNQAwi0D/qdjo5C7lS4oiPkW1RRXebLx4?=
- =?iso-8859-1?Q?OBayg3Yk6Y1J3E/oShnZfFKKIAYCFjRYeiqVmYaqiWLJGKG/exo68ycSia?=
- =?iso-8859-1?Q?r/deJf3fqrsvSaU9hp+qfyy9w2gi9VdM+L4nSagwXT0jdE8nbe1GglpRkv?=
- =?iso-8859-1?Q?Jb5pH4+AdzPPTH7GRH/5Xbu8cpCDxJC+K3MGuA=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0175F3988F0
+	for <linux-ext4@vger.kernel.org>; Wed,  4 Mar 2026 09:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772616639; cv=none; b=KhZudyn4z/u8QpeRs/bfFs3sFxH76iZ6G0mOsPczX+YhCcIYKDKBMGdMvxkT4qW3Tdx/D6ZQV6rztNTxCo2Bip3q4jc7tPaOnNNooPbk4nMML/RiuQDxoZkb4Nu1mREA75umstSZTTtjDZUPifuDDcveUF294zq4ioavIdslmkw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772616639; c=relaxed/simple;
+	bh=qyvL/iXE6+TakoKVVxVCaopqm1BpX+f7Q05dx5gBHDE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rwyo+svmMDYXiYxG8SfbGuVK6aXGevH1jQU2fvuks1qBiGTDLVxTT98v0GV3IIotCKZwnpXbdOn6YAPHchvBkI+D6Dtz7EcJTNVta4dJnO+Ei3sQYsTl5lxyzrAvrJHQFA2JsPYPJJxhHlwSUX9zwIk1f86DVgz35DIYDokR2jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9sIRKFF; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-483a233819aso64872335e9.3
+        for <linux-ext4@vger.kernel.org>; Wed, 04 Mar 2026 01:30:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772616636; x=1773221436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BUzQoESoh9/PqMSFbMpuw4Pmh5IPXiGP/qvOjxX4wwo=;
+        b=b9sIRKFFaokgkSrgeWrbA/ViOpJjWP1ViLK9R1Hc1//m2coegBzgKtpFqwevCmiACZ
+         C7afbaacWCHtjdaHICcRaatb9x6ZEJn6NhG6Zj9DIWESFWJ1Wfs22M1hBHSvsJT6ov0y
+         u+gbatvToXFWw4Ws1z6B810aDtF2H+NtjWSzWUXjnH2Uagh4gEk5+S1nkLp8lVzxzopS
+         A1lgIkzEEAlqX7ANlEMButL3162rmrsjjiFCTqL06qEr4gqfcdGAwI6S5Z1yvtqPS7rR
+         QeMeyyLIZ4ZsiMHZmsjBPBW/Gjz82S/2K6mHxq88plnIdodtUPQPjzOSR2cd/SZiIcXY
+         bgtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772616636; x=1773221436;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=BUzQoESoh9/PqMSFbMpuw4Pmh5IPXiGP/qvOjxX4wwo=;
+        b=fpUt+xz7lhRnjAmUlBvcMjKI4M+7ie+fm5GC5bZRCffUDtBjuXm/7QLdAaQRCmzmCX
+         0m4VD9vN8AjahHpOt3oT4lwnaMIiIF6O2VJA8hSIwim2d/IJObmIBNhglioM41DXG4oR
+         opb5aODsF1BII5oDA9woIEf8Af6bS97TuSGNtgReFsDj6H6aFd1MjN+xPW385c/2+db4
+         ls4Hp5/zdVZTt221sJgk7hvNU0nkoGHNKBMoU1RVOVU+mFE3UdiA92Ilhdv6DKuXnSnY
+         1XGK5cs+jTy2h2CyemgG/zH4EeU5oRBs5jBlMWa2fVyUzbXSNLUAJmKGo42f/3w+sGGa
+         wC5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWSvNjAUpPYmaVkkiJBFSHPGQll21PcM9nth/yTfLjZnr5CZ+mm0ZjQKy3qlsFkjBCEsnQBS1KHpHHR@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuQ/5elod3qcBdf6X7j1spol7gPVOATjg8S+IF1nWLhBKfqiBT
+	g9avSZuWBKdPcZ6HCqlXY9KW02zN1Nr7uj8SC/3TNmtSo4pOdBm3nzck
+X-Gm-Gg: ATEYQzxzH+gFLeRI/C+Qam8Ja01hUQW4q00932ckfkH2kcgJErsHP7kPV70bK9m/Goy
+	DJG7iirJWdqPjuM/UFY1pqrcf9AU1xy+7Tzj/MpFCPysXByoWBjc1osqhCGO5fW+8M38Dwaai/x
+	gt6/bHc0DvZHu+mSOX4afTDTFCQWvcdsycFycFbK9Py73jDvOlnnbULJJ/TP5/LVyXvLbd0Y/eA
+	g5faGzZwGvyfsNu0AfKhi7AoyZ3H5nERoicPZoXrXXL933s5n7pgIxJpdssJJ8VDXYEAuxVttY/
+	C85pTzzi2VRQSDRhdidCdqZnCTFc5vedRrXnd+2ap48anGQ4L/uc+kujcCHuQligoxnLoWWTdl5
+	veIjAb6UmueJm0EBb33zV/ld7MkrmWb7tlfhtzrkj60OL0w1QYTmZhh6hCb8PgwlELEjW1n7REh
+	SIe61MUlPMPR0gZQaeLdig1xDmMsZMIv2nl0VRw3+00ICVwEXnZTZlE3e4ysuRKBvB
+X-Received: by 2002:a05:600c:8b53:b0:483:498f:7963 with SMTP id 5b1f17b1804b1-4851989024emr19550785e9.26.1772616636117;
+        Wed, 04 Mar 2026 01:30:36 -0800 (PST)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4851884225asm38972555e9.6.2026.03.04.01.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Mar 2026 01:30:35 -0800 (PST)
+Date: Wed, 4 Mar 2026 09:30:33 +0000
+From: David Laight <david.laight.linux@gmail.com>
+To: NeilBrown <neilb@ownmail.net>
+Cc: "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ nvdimm@lists.linux.dev, fsverity@lists.linux.dev, linux-mm@kvack.org,
+ netfs@lists.linux.dev, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+ linux-nilfs@vger.kernel.org, v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+ jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev,
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+ linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com,
+ linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org,
+ selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+ linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org,
+ linux-x25@vger.kernel.org, audit@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 000/110] vfs: change inode->i_ino from unsigned long
+ to u64
+Message-ID: <20260304092559.554ac9a9@pumpkin>
+In-Reply-To: <177260561903.7472.14075475865748618717@noble.neil.brown.name>
+References: <20260302-iino-u64-v2-0-e5388800dae0@kernel.org>
+	<1787281.1772535332@warthog.procyon.org.uk>
+	<1c28e34c7167acf4e20c3e201476504135aa44e8.camel@kernel.org>
+	<177260561903.7472.14075475865748618717@noble.neil.brown.name>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6632.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa271d0d-ba52-4a03-1511-08de79c02457
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2026 07:32:08.3422
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR06MB5626
-X-Rspamd-Queue-Id: 9EB531FB9DB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 51E2D1FDA00
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[outlook.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[outlook.com:s=selector1];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_EQ_ADDR_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14597-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14598-lists,linux-ext4=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_TO(0.00)[ownmail.net];
+	RCPT_COUNT_TWELVE(0.00)[46];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[outlook.com:+];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_FROM(0.00)[outlook.com];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tejas.bharambe@outlook.com,linux-ext4@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,syzkaller.appspot.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,outlook.com:dkim,outlook.com:email,JH0PR06MB6632.apcprd06.prod.outlook.com:mid]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ownmail.net:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-From 980406b391b29715589842a4ae4391a87afaaef9 Mon Sep 17 00:00:00 2001=0A=
-From: Tejas Bharambe <tejas.bharambe@outlook.com>=0A=
-Date: Tue, 3 Mar 2026 23:14:34 -0800=0A=
-Subject: [PATCH] ext4: validate p_idx bounds in ext4_ext_correct_indexes=0A=
-=0A=
-ext4_ext_correct_indexes() walks up the extent tree correcting=0A=
-index entries when the first extent in a leaf is modified. Before=0A=
-accessing path[k].p_idx->ei_block, there is no validation that=0A=
-p_idx falls within the valid range of index entries for that=0A=
-level.=0A=
-=0A=
-If the on-disk extent header contains a corrupted or crafted=0A=
-eh_entries value, p_idx can point past the end of the allocated=0A=
-buffer, causing a slab-out-of-bounds read.=0A=
-=0A=
-Fix this by validating path[k].p_idx against EXT_LAST_INDEX() at=0A=
-both access sites: before the while loop and inside it. Return=0A=
--EFSCORRUPTED if the index pointer is out of range, consistent=0A=
-with how other bounds violations are handled in the ext4 extent=0A=
-tree code.=0A=
-=0A=
-Reported-by: syzbot+04c4e65cab786a2e5b7e@syzkaller.appspotmail.com=0A=
-Closes: https://syzkaller.appspot.com/bug?extid=3D04c4e65cab786a2e5b7e=0A=
-Signed-off-by: Tejas Bharambe <tejas.bharambe@outlook.com>=0A=
----=0A=
- fs/ext4/extents.c | 15 +++++++++++++++=0A=
- 1 file changed, 15 insertions(+)=0A=
-=0A=
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c=0A=
-index ae3804f365..f204285c71 100644=0A=
---- a/fs/ext4/extents.c=0A=
-+++ b/fs/ext4/extents.c=0A=
-@@ -1736,6 +1736,13 @@ static int ext4_ext_correct_indexes(handle_t *handle=
-, struct inode *inode,=0A=
-        err =3D ext4_ext_get_access(handle, inode, path + k);=0A=
-        if (err)=0A=
-                return err;=0A=
-+       if (unlikely(path[k].p_idx > EXT_LAST_INDEX(path[k].p_hdr))) {=0A=
-+               EXT4_ERROR_INODE(inode,=0A=
-+                       "path[%d].p_idx %p > EXT_LAST_INDEX %p",=0A=
-+                       k, path[k].p_idx,=0A=
-+                       EXT_LAST_INDEX(path[k].p_hdr));=0A=
-+               return -EFSCORRUPTED;=0A=
-+       }=0A=
-        path[k].p_idx->ei_block =3D border;=0A=
-        err =3D ext4_ext_dirty(handle, inode, path + k);=0A=
-        if (err)=0A=
-@@ -1748,6 +1755,14 @@ static int ext4_ext_correct_indexes(handle_t *handle=
-, struct inode *inode,=0A=
-                err =3D ext4_ext_get_access(handle, inode, path + k);=0A=
-                if (err)=0A=
-                        goto clean;=0A=
-+               if (unlikely(path[k].p_idx > EXT_LAST_INDEX(path[k].p_hdr))=
-) {=0A=
-+                       EXT4_ERROR_INODE(inode,=0A=
-+                               "path[%d].p_idx %p > EXT_LAST_INDEX %p",=0A=
-+                               k, path[k].p_idx,=0A=
-+                               EXT_LAST_INDEX(path[k].p_hdr));=0A=
-+                       err =3D -EFSCORRUPTED;=0A=
-+                       goto clean;=0A=
-+               }=0A=
-                path[k].p_idx->ei_block =3D border;=0A=
-                err =3D ext4_ext_dirty(handle, inode, path + k);=0A=
-                if (err)=0A=
--- =0A=
-2.53.0=0A=
+On Wed, 04 Mar 2026 17:26:59 +1100
+NeilBrown <neilb@ownmail.net> wrote:
+
+> On Tue, 03 Mar 2026, Jeff Layton wrote:
+> > On Tue, 2026-03-03 at 10:55 +0000, David Howells wrote:  
+> > > Jeff Layton <jlayton@kernel.org> wrote:
+> > >   
+> > > > This version splits the change up to be more bisectable. It first adds a
+> > > > new kino_t typedef and a new "PRIino" macro to hold the width specifier
+> > > > for format strings. The conversion is done, and then everything is
+> > > > changed to remove the new macro and typedef.  
+> > > 
+> > > Why remove the typedef?  It might be better to keep it.
+> > >   
+> > 
+> > Why? After this change, internel kernel inodes will be u64's -- full
+> > stop. I don't see what the macro or typedef will buy us at that point.  
+> 
+> Implicit documentation?
+> ktime_t is (now) always s64, but we still keep the typedef;
+> 
+> It would be cool if we could teach vsprintf to understand some new
+> specifier to mean "kinode_t" or "ktime_t" etc.  But that would trigger
+> gcc warnings.
+
+A more interesting one would be something that made gcc re-write the
+format with the correct 'length modifier' for the parameter.
+
+That would save a lot of effort!
+
+	David
+
+> 
+> NeilBrown
+> 
+
 
