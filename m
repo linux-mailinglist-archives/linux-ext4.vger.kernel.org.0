@@ -1,57 +1,56 @@
-Return-Path: <linux-ext4+bounces-14610-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14611-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0LIJGQE1qGm+pQAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14610-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 14:34:57 +0100
+	id MLuaFZY2qGm+pQAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14611-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 14:41:42 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0597B2007E3
-	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 14:34:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF86200908
+	for <lists+linux-ext4@lfdr.de>; Wed, 04 Mar 2026 14:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C21F530FF3CE
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 13:29:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D923E3027B77
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2026 13:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C099136B06A;
-	Wed,  4 Mar 2026 13:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DECB534CFC6;
+	Wed,  4 Mar 2026 13:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n5QQoG7N"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ebsPMKaT"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0DF366DC1;
-	Wed,  4 Mar 2026 13:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECE25C613;
+	Wed,  4 Mar 2026 13:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772630960; cv=none; b=VhdZH7MPQeV8GHE5gNQj22GJJgBlXPLJv7tuqnbjr3FAhZYwzisyaS/IlviS542xhgDU0+5kT4zOEZ/TjtTVmydHU2eCIH43btadkme80MVL8xXrlyUJUyb8hyuH6V0O7T4fh17iCH+c+pBSr/lbqHS8dNWT/sSkvags1Ge34vM=
+	t=1772631486; cv=none; b=bIRvuGoH5abL95Zu3unWkIW6w18SjdvQ2njWlZmoTOg6DWRm2CLbuKT8K0HUVuRTO+bD2i86/7c6oDFQJm3Br3TwBzOPRCnTdJao83PLLjK2j6OiJJXosWTjany/sdOrLSX0dDsFZdYVwxAmeV4qVWFJ9fbJZHa0l5HGKwMTCHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772630960; c=relaxed/simple;
-	bh=IaqFF/isbWyXQxyyhesVMPgi3xKmZ9eiNwwQIv/o3A8=;
+	s=arc-20240116; t=1772631486; c=relaxed/simple;
+	bh=KcnJZ5GcRmxZSNqRVZ8ueAG/BKkaYuYvTpHl4+/qLTA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TPJHc0IPFYy6IfwsOUxdvFXZBd731agKTLF9VeyEPqDPkvaz4+mLIx2CQfZ3u9x7ee9CUps2CFu9WdrHZVS2uEgWzy9wB3DHzi3StGd17QwCIJDd0lLwzqjyvX0NVijE757t5gWPooNvtI+b7VVsp8N64jmoWMU+D72fJUCWMf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n5QQoG7N; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=USeJEOCiNsMjR1uVLEuT2gZEA30bucr1uJovhU1SMs1aJ8KedZskdy9uU8ao1qCSkB3KvIZ116lar3Xe11MlG4z5HUwOzvPM53WfejSi08F8fQwSGZaLGd3Mr4x68MM7hYGMG2PyuOCqEe6e6r01cnrqAz1FVHlUh5fobv7IMEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ebsPMKaT; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=FPYKHuv7AZ8xAducUFk6uwSA1xo0j120mBJpQUPt22c=; b=n5QQoG7NOMOH6TEptJh/ogSnaC
-	3AJmft4GcyF4eyoO13GGaPp+l/ZRDQ4b7Ptiscp2Vaj6Ck0j9oEIW3/JSHXOnhzbSuALODACCxojE
-	SsKBb9DpB6I32LEDU1bvZLlShpPWhMuCy8SII00FJjfj+juKVt1A41YvVWRgEqNESR14Y4vhemMol
-	GZgSYGXGksYtXcG+66fJpGUbZRCTz0Z4EyEc5gp0CqGvhccqlLF8QHBhyT3Wq/xrTW0nYaPbaHrKB
-	sK4gs24MZ//2nDpGlVTl7dZpopefdPsa82gEJR4fpzqLjMrYV0MekOvPO8ZG/JF0/GxIY8ODTtw/h
-	hdGC8DRA==;
+	bh=KcnJZ5GcRmxZSNqRVZ8ueAG/BKkaYuYvTpHl4+/qLTA=; b=ebsPMKaTp9H7t/hQ92QY4u1DkG
+	zKuhWcKM6/QbdMthk6UntN+XsckWYhbqpeXouW3CD/VRwr89pfmjZsMSgT/m2Ce12xpz9PN2aJ9yQ
+	leWM1BsBc6hkYy4nMgzB3B9XxhkA8x3Ns96/0ESGIG3Gg54CPdFBZd2cA3cAhxhuNU/kdCp4Zjf/H
+	zKX4SYZjHaOK5eqQvVn9Edh9eUXLwgrx/buazH5JiJJFhID7L3WPr2QtJ0ihGotqnVIYXfsxCJ9kJ
+	cRchsSLhwhfZP8Ivkg/vFPUSD/+ERzIKBpKKn1f93mq4rGsX1xRcRN/XlFOY+Xe90/ygmn2GH696I
+	rz51RF/g==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxmHt-0000000HFO7-32GD;
-	Wed, 04 Mar 2026 13:29:17 +0000
-Date: Wed, 4 Mar 2026 05:29:17 -0800
+	id 1vxmQO-0000000HG8S-2KEN;
+	Wed, 04 Mar 2026 13:38:04 +0000
+Date: Wed, 4 Mar 2026 05:38:04 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: Jan Kara <jack@suse.cz>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>,
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
 	Al Viro <viro@zeniv.linux.org.uk>, linux-ext4@vger.kernel.org,
 	Ted Tso <tytso@mit.edu>,
 	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
@@ -60,15 +59,11 @@ Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
 	Muchun Song <muchun.song@linux.dev>,
 	Oscar Salvador <osalvador@suse.de>,
 	David Hildenbrand <david@kernel.org>, linux-mm@kvack.org,
-	linux-aio@kvack.org, Benjamin LaHaise <bcrl@kvack.org>,
-	Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Subject: Re: [PATCH 21/32] bdev: Drop pointless invalidate_mapping_buffers()
- call
-Message-ID: <aagzrZBKdftBb84n@infradead.org>
+	linux-aio@kvack.org, Benjamin LaHaise <bcrl@kvack.org>
+Subject: Re: [PATCH 17/32] fs: Move metadata bhs tracking to a separate struct
+Message-ID: <aag1vDoCVwAlIKPq@infradead.org>
 References: <20260303101717.27224-1-jack@suse.cz>
- <20260303103406.4355-53-jack@suse.cz>
- <aabrf4YhPJ2X7n9q@infradead.org>
- <n3anrkzfguzbn5sfwsom472cx4uzejyfemz3d5jm7c4rt3qr6z@ez2cgwzmbfyi>
+ <20260303103406.4355-49-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -77,25 +72,25 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <n3anrkzfguzbn5sfwsom472cx4uzejyfemz3d5jm7c4rt3qr6z@ez2cgwzmbfyi>
+In-Reply-To: <20260303103406.4355-49-jack@suse.cz>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Rspamd-Queue-Id: 0597B2007E3
+X-Rspamd-Queue-Id: AAF86200908
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14610-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14611-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,vger.kernel.org,kernel.org,zeniv.linux.org.uk,mit.edu,gmail.com,suse.com,mail.parknet.co.jp,linux.dev,suse.de,kvack.org,kernel.dk];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,zeniv.linux.org.uk,mit.edu,gmail.com,suse.com,mail.parknet.co.jp,linux.dev,suse.de,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -105,27 +100,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-ext4@vger.kernel.org];
 	DKIM_TRACE(0.00)[infradead.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,infradead.org:dkim,infradead.org:mid]
 X-Rspamd-Action: no action
 
-On Wed, Mar 04, 2026 at 11:36:29AM +0100, Jan Kara wrote:
-> On Tue 03-03-26 06:09:03, Christoph Hellwig wrote:
-> > FYI, linux-block only got this patch which is totally messed up.
-> > Please always send all patches to every list and person, otherwise
-> > you fill peoples inboxes with unreviewable junk.
-> 
-> Well, I've CCed on the whole series everybody who was non-trivially
-> impacted. But there are couple of these trivial "remove effectively dead
-> code" patches which stand on their own and a lot of people actually prefer
-> to only get individual patches in such cases. So I don't plan on changing
-> that but I guess I could have CCed linux-block on the whole series as
-> buffer_heads are tangentially related to block layer anyway.
-
-Ccing people or lists on just part of a series is always broken, don't
-do that.  If you think something is just a FYI only CC the list to cut
-down the spam.
+Maybe just call the structure buffer_head_list at it really just is a
+totall generic list of buffer heads with a lock?
 
 
