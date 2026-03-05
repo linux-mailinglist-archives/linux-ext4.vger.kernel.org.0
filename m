@@ -1,171 +1,189 @@
-Return-Path: <linux-ext4+bounces-14647-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14648-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id O7+bG/buqGkwzAAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14647-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 03:48:22 +0100
+	id sNoZGhQwqWmO2wAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14648-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 08:26:12 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC6620A4EC
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 03:48:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC6720C9FF
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 08:26:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D1A6A3022444
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 02:48:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 08E453027B46
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 07:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730EF225788;
-	Thu,  5 Mar 2026 02:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CDD31AA87;
+	Thu,  5 Mar 2026 07:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Y8O/TdxX"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ZHEW3Rr9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECE420ED
-	for <linux-ext4@vger.kernel.org>; Thu,  5 Mar 2026 02:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AA6191F91;
+	Thu,  5 Mar 2026 07:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772678893; cv=none; b=iGWKq6gkZQJvT1V2k+LO/jdwiSxXNHUBcdxKflrjUoaCIvavBHs2RzSxebjtUQ043fDXhyuUV/4/rL1CeAuhnvF2czNWbRw2rrbSs/yWtoN1f+HT1zufuOoa+l8trLz0Owcm4ftcpSJK0+E42CJ7WpNBeHOwVcQYFZ0dhyPJmLA=
+	t=1772695563; cv=none; b=hzNiU0HckWkuP7D2J4LNSkHNT+X78dFmPiwqayaC9qxISdkNXMN9ysIea74+4/vLson+yiuMz7YM/g4o1ACBIWUSbDRNcM96nJbF8pTA/zO3TPhY/hOsfIC7u1ZKp50ZYTCyEaC+lYWcYv9HL03A/lrsAwIa3bTG0NEHOn3pjRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772678893; c=relaxed/simple;
-	bh=QmasTkVXWRunJx2spfadq6ddDSa18yF+5K1YlbU9KlQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6KIeb0NiZoby8SiwCB49n3huPuRZx12alDC6e/dnAAPd+A8HjJ5Aotil7FyUEGrXgEdKeEevfkV33aQmQ3Yplred16nOnKM/N1p4mtdNAYD0KuhsMDMfJJvEg2gi323Zcig+RvXpZvhClC+jMlTaoPoyRQcsM91788Pmgfauhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Y8O/TdxX; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([76.148.192.212])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6252lZSC015160
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 4 Mar 2026 21:47:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1772678858; bh=0RlI02kvYjGT3WiYSDErGrwZiWjHXV+9b0LZ4y8xZMA=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Y8O/TdxXC1TX63spC4UrtOnG8/MhO7KYPOtxjDoTOEkS6oZr0QgMpz0AaqnjZfHXT
-	 KgQeQmv4gcDzO4VX/GsFIpGfBd7odmCMv3bbireA0HnNIkLAt2McVie5GAmi/AfvKx
-	 XDU3LjBhiPYqzYvszCV0P3r5MlzKsCgO8RBbG4XFTgPOw7dW3EoCMj9EbD1hjKWtwo
-	 jt8CvTmwDs0Gs732oQZxKT+n7ZuuHoCTim7jB6ETyT0NekEggow2r8cAHzartfIm0U
-	 Sl+6WEx2z4C+npxud1bMIrdVz/WvgoqsMtp3zqcWgpy8G48BvO2Em8ijQMEPjcJpWI
-	 2pwx2zGaXNVdA==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id DA2FF5B9B709; Wed,  4 Mar 2026 21:47:34 -0500 (EST)
-Date: Wed, 4 Mar 2026 21:47:34 -0500
-From: "Theodore Tso" <tytso@mit.edu>
-To: Mario Lohajner <mario_lohajner@rocketmail.com>
-Cc: Andreas Dilger <adilger@dilger.ca>, libaokun1@huawei.com,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangerkun@huawei.com,
-        libaokun9@gmail.com
-Subject: Re: [PATCH] ext4: rralloc - (former rotalloc) improved round-robin
- allocation policy
-Message-ID: <20260305024734.GC8243@macsyma-wired.lan>
-References: <20260225201520.220071-1-mario_lohajner@rocketmail.com>
- <D135BB30-388D-4B4F-9E09-211F6DA74FCA@dilger.ca>
- <20260226024819.GA39209@macsyma-wired.lan>
- <04dfeda0-8c13-4233-b631-d8912d4fe6f0@rocketmail.com>
- <20260227011200.GA68551@macsyma-wired.lan>
- <2af6328d-5a72-476d-9768-9398a9417ea6@rocketmail.com>
- <20260227164319.GB93969@macsyma-wired.lan>
- <c156caec-e2c8-4b85-a135-0adecb56a859@rocketmail.com>
- <20260303013309.GB6520@macsyma-wired.lan>
- <cba02030-752e-43e1-9f65-8b726c4d42fb@rocketmail.com>
+	s=arc-20240116; t=1772695563; c=relaxed/simple;
+	bh=serZQOjnyKdUf+Hv6YV4uym9KicUIWkjWuwieX7M2VY=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=OK1TaItzo0tU1xxLBEA0LILAnmurMajQP+dVq/yeu0A/D8jAD1GY8a1VJzTsqUovXgcBQEmeiZPiVoqhPWRKouoMNX+3LQmoCjokci4Y/kXL1D8LMsALfe1jVyOcPKLhJzho/vE2pGtmy4x3cMi+JP5kIO5f+dWqwdpP+KRo+Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ZHEW3Rr9; arc=none smtp.client-ip=162.62.57.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1772695550; bh=tpTsQ2K114SC6xh+ee+XJnACDZ9x/Yy2EK81NPiw8jY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ZHEW3Rr96kLoXWdqopctCfbDv+EVwGSAevgEPMNNVu7EV5f9IyzzMVvYDLRiqBQlf
+	 fQRhnjcPcV2NFHPr9sYlGrbi42S0kOrgjGlXDCkJcEa+2LCwOD3D1KmLDllBAtPtWI
+	 sPEAR0LAGkXvGtloIPYHC2u480lfRGQCM4varWh0=
+Received: from lxu-ped-host.. ([111.201.4.63])
+	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
+	id 66EB40F4; Thu, 05 Mar 2026 15:25:46 +0800
+X-QQ-mid: xmsmtpt1772695546tlk118xcc
+Message-ID: <tencent_722F916D689510E89EEE92CD8C78226D480A@qq.com>
+X-QQ-XMAILINFO: NKDEJ657lpu+IGcb52ag05LJhLwenjCN9xNlMgJ6/gYss4YmkT0oDFCNR1S6SZ
+	 0uK4ps7p/NaTt9+dsX3mqt4OPhWKb+FmDWE4beqp+A/Ncjjvd7fOZnpiPiVLox6KLv86K4P+vRAH
+	 EDYxJc9M+kipg9jU3NJCVddWXFKH0HkL6it4G7V31GvLWQsH8QOIoP1WoAVGm1qDzvxUNsojKtWS
+	 AH6EMOuHgMmeSHlIQwjDbN6s9Ur2GgKQGddrtnoES+kN1tGKR4xkXW4ebF0TYaEpCOMDrnRz4pw/
+	 NfIKSmNWNwVD1rin5T+I43uNWBHJWykSFeU7zJwyYw/5Y4TOnWOc27XYa8ZsVWCiRRFDfVt2cCQX
+	 HOIeCoKop/hK7BaFxShD1h1bqa+R2n6PBLXOJu3nCNU4EeYEGR9oGikK6YlTX+osLy28z4ZJrpCA
+	 Ka1mFGZK04QQE5XREanKOLSSb7NNk70Cb5TvWFUQUeI5/RkhfjhU6ktku1JcAD6ZylhyBp0pMxaq
+	 3D4HZr7QnyHRU8FFI7WJF4C/q8BQPnu50UdWI8LGpS+GUA4BChXL3MHXuA06DYy9gKva7d5uSRhZ
+	 b5eM99rgHRMu/YjMvsUb2+e+pNLxTLsz+hJ77t2b9YGWotSN1lk4QBnuYlrFl32M8NeGFDNHaRFS
+	 DECLiZZzApCclrL8OiUu57o3hUi3ZeHVSLVyv3IkdUJK22SSH8F2hq1LqKMwCKlqSFqzTGARqTbl
+	 9tRd2u8Zd9yU67wE41gYPdUdexeI0cHnWXIIvwJSqJl4EUigZYBWpTkXcyGA0H+VmxYdSCc6tpKh
+	 zwMsVf0X2UId6Wk0LxYGKbd9sUQmQP4SVk8Fd/dKOaXtfzrYjDaL6mpfJNfXQt5ukzy2odnVKCgb
+	 V1NwIsOle9IlE++QwpryMEdJkSzFrfcsbYRkVJ2WXjwwpDxC8pmzHPv9L4xKKSwGftcgq+To7IX7
+	 qP649uOyKsHv8cLkGojsT9NfcIGTh+/78Ph932ZCAOFbw74s1OxDHvUVqge/YRnqR+85pjWfOT5d
+	 QyVyfK9fzOqTLXlezH6pMlmEBYDT5vbWqId8p+3g==
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+From: Edward Adam Davis <eadavis@qq.com>
+To: jack@suse.cz
+Cc: brauner@kernel.org,
+	eadavis@qq.com,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com,
+	viro@zeniv.linux.org.uk
+Subject: [PATCH v3] ext4: avoid infinite loops caused by residual data
+Date: Thu,  5 Mar 2026 15:25:46 +0800
+X-OQ-MSGID: <20260305072546.414952-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <4x3xixojbclwq45cpitmylbhis4ya4g3sugtnmj2yzv6avngqb@5xkwu6l467rm>
+References: <4x3xixojbclwq45cpitmylbhis4ya4g3sugtnmj2yzv6avngqb@5xkwu6l467rm>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cba02030-752e-43e1-9f65-8b726c4d42fb@rocketmail.com>
-X-Rspamd-Queue-Id: 5FC6620A4EC
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BEC6720C9FF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[dilger.ca,huawei.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-14647-lists,linux-ext4=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[rocketmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14648-lists,linux-ext4=lfdr.de];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[mit.edu:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,qq.com,vger.kernel.org,syzkaller.appspotmail.com,googlegroups.com,zeniv.linux.org.uk];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.995];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[qq.com:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	FREEMAIL_FROM(0.00)[qq.com];
+	TAGGED_RCPT(0.00)[linux-ext4,1659aaaaa8d9d11265d7];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:dkim,qq.com:email,qq.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,syzkaller.appspot.com:url]
 X-Rspamd-Action: no action
 
-On Tue, Mar 03, 2026 at 02:28:47PM +0100, Mario Lohajner wrote:
-> RRALLOC targets sustained parallel overwrite-heavy workloads such as
-> scratch disks, rendering outputs, database storage and VM image storage.
-> ....
-> It is not intended to improve write-once/read-many workloads and remains
-> disabled by default.
+On the mkdir/mknod path, when mapping logical blocks to physical blocks,
+if inserting a new extent into the extent tree fails (in this example,
+because the file system disabled the huge file feature when marking the
+inode as dirty), ext4_ext_map_blocks() only calls ext4_free_blocks() to
+reclaim the physical block without deleting the corresponding data in
+the extent tree. This causes subsequent mkdir operations to reference
+the previously reclaimed physical block number again, even though this
+physical block is already being used by the xattr block. Therefore, a
+situation arises where both the directory and xattr are using the same
+buffer head block in memory simultaneously.
 
-First of all, databases and VM images are use cases which are almost
-the definition of write-once / read-many workloads.
+The above causes ext4_xattr_block_set() to enter an infinite loop about
+"inserted" and cannot release the inode lock, ultimately leading to the
+143s blocking problem mentioned in [1].
 
-As far as your first two examples, I've been part of teams that have
-built storage systems for scratch disks and rendering outputs at an
-extremely large scale, at *extremely* large scale.  (A public estimate
-from 2013[1], for which I make no comments about how accurate it was
-back then, but it's fair to say that there have been at least a few more
-data centers built since then; also, disks and SSD have gotten
-somewhat more efficient from storage density since them.  :-)
+By using ext4_ext_remove_space() to delete the inserted logical block
+and reclaim the physical block when inserting a new extent fails during
+extent block mapping, residual extent data can be prevented from affecting
+subsequent logical block physical mappings. 
 
-[1] https://what-if.xkcd.com/63/
+[1]
+INFO: task syz.0.17:5995 blocked for more than 143 seconds.
+Call Trace:
+ inode_lock_nested include/linux/fs.h:1073 [inline]
+ __start_dirop fs/namei.c:2923 [inline]
+ start_dirop fs/namei.c:2934 [inline]
 
-Having built and supported systems for these first two use cases, I
-can quite confidentially tell you that the problem that you are
-trying to solve for weren't even *close* to real world issues that we
-had to overcome.
+Reported-by: syzbot+512459401510e2a9a39f@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=1659aaaaa8d9d11265d7
+Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
+Reported-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=512459401510e2a9a39f
+Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+v1 -> v2: fix ci reported issues
+v2 -> v3: new fix for removing residual data and update subject and coments
 
-Now, it may be that you are doing some very different (or perhaps very
-dumb; I can't say given how few details you've given).  But what
-you've described is so vague and scatter-shot that it could have come
-from the output of a very Large Language Model given a very sloppily
-written prompt.  (In other words, what is commonlly called "AI Slop".)
+ fs/ext4/extents.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-If you want to be convincing, you'll need to give a lot more specific
-detail about the nature of the workloads.  How many Petabytes (or
-whatever the appropriate unit in your case) per hour of data is being
-written?  What kind of storage devices are you using?  How many are
-you using?  Attached to how many servers?  How many files are being
-written in parallel?  At what throughput rate?
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index ae3804f36535..0bed3379f2d2 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4458,19 +4458,13 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+ 	if (IS_ERR(path)) {
+ 		err = PTR_ERR(path);
+ 		if (allocated_clusters) {
+-			int fb_flags = 0;
+-
+ 			/*
+ 			 * free data blocks we just allocated.
+ 			 * not a good idea to call discard here directly,
+ 			 * but otherwise we'd need to call it every free().
+ 			 */
+ 			ext4_discard_preallocations(inode);
+-			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
+-				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
+-			ext4_free_blocks(handle, inode, NULL, newblock,
+-					 EXT4_C2B(sbi, allocated_clusters),
+-					 fb_flags);
++			ext4_ext_remove_space(inode, newex.ee_block, newex.ee_block);
+ 		}
+ 		goto out;
+ 	}
+-- 
+2.43.0
 
-When you use stock ext4 for this workload, what are you seeing?  What
-sort of benchmarking did you use to convince yourself that the
-bottleneck is indeed block allocation algorithm.  What kind of
-percentage increase did your replacement algorithm have for this
-specific workload.
-
-If you want to see examples of well-written papers of various
-performance improvements, I will refer you to papers from Usenix's
-File System and Storage Technologies conference[2] for examples of how
-to write a convincing paper when you're not free to share *all* of the
-details of the workload, or the specific storage devices that you are
-using.  The problem is right now, you've shared nothing about your
-specific workload.
-
-[2] https://www.usenix.org/conferences/byname/146
-
-Cheers,
-
-						- Ted
 
