@@ -1,189 +1,168 @@
-Return-Path: <linux-ext4+bounces-14648-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14649-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sNoZGhQwqWmO2wAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14648-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 08:26:12 +0100
+	id cK0PI1ZPqWk14AAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14649-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 10:39:34 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC6720C9FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 08:26:11 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDA020EAE7
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 10:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 08E453027B46
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 07:26:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9835E306C87C
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 09:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CDD31AA87;
-	Thu,  5 Mar 2026 07:26:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036B237B021;
+	Thu,  5 Mar 2026 09:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ZHEW3Rr9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jG2lEdIy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AA6191F91;
-	Thu,  5 Mar 2026 07:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9614437B014
+	for <linux-ext4@vger.kernel.org>; Thu,  5 Mar 2026 09:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772695563; cv=none; b=hzNiU0HckWkuP7D2J4LNSkHNT+X78dFmPiwqayaC9qxISdkNXMN9ysIea74+4/vLson+yiuMz7YM/g4o1ACBIWUSbDRNcM96nJbF8pTA/zO3TPhY/hOsfIC7u1ZKp50ZYTCyEaC+lYWcYv9HL03A/lrsAwIa3bTG0NEHOn3pjRM=
+	t=1772703160; cv=none; b=HcvsjCCd1QBsOSk2vsGS5NSMn8SpCmOsuakKRANZpZo6Hxl4Dbyl9/vYOmJYfEM3qaQBm7rKt5hPvMgjTr30uszrbd4dGZhRfJKhtCGicHdDWH6YK7SW7aUiyupL2TIyWOFXkTQhLWfVzZu33A/BYEmHtP9DeYAm518I0lJ7NPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772695563; c=relaxed/simple;
-	bh=serZQOjnyKdUf+Hv6YV4uym9KicUIWkjWuwieX7M2VY=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=OK1TaItzo0tU1xxLBEA0LILAnmurMajQP+dVq/yeu0A/D8jAD1GY8a1VJzTsqUovXgcBQEmeiZPiVoqhPWRKouoMNX+3LQmoCjokci4Y/kXL1D8LMsALfe1jVyOcPKLhJzho/vE2pGtmy4x3cMi+JP5kIO5f+dWqwdpP+KRo+Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ZHEW3Rr9; arc=none smtp.client-ip=162.62.57.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1772695550; bh=tpTsQ2K114SC6xh+ee+XJnACDZ9x/Yy2EK81NPiw8jY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZHEW3Rr96kLoXWdqopctCfbDv+EVwGSAevgEPMNNVu7EV5f9IyzzMVvYDLRiqBQlf
-	 fQRhnjcPcV2NFHPr9sYlGrbi42S0kOrgjGlXDCkJcEa+2LCwOD3D1KmLDllBAtPtWI
-	 sPEAR0LAGkXvGtloIPYHC2u480lfRGQCM4varWh0=
-Received: from lxu-ped-host.. ([111.201.4.63])
-	by newxmesmtplogicsvrszb51-1.qq.com (NewEsmtp) with SMTP
-	id 66EB40F4; Thu, 05 Mar 2026 15:25:46 +0800
-X-QQ-mid: xmsmtpt1772695546tlk118xcc
-Message-ID: <tencent_722F916D689510E89EEE92CD8C78226D480A@qq.com>
-X-QQ-XMAILINFO: NKDEJ657lpu+IGcb52ag05LJhLwenjCN9xNlMgJ6/gYss4YmkT0oDFCNR1S6SZ
-	 0uK4ps7p/NaTt9+dsX3mqt4OPhWKb+FmDWE4beqp+A/Ncjjvd7fOZnpiPiVLox6KLv86K4P+vRAH
-	 EDYxJc9M+kipg9jU3NJCVddWXFKH0HkL6it4G7V31GvLWQsH8QOIoP1WoAVGm1qDzvxUNsojKtWS
-	 AH6EMOuHgMmeSHlIQwjDbN6s9Ur2GgKQGddrtnoES+kN1tGKR4xkXW4ebF0TYaEpCOMDrnRz4pw/
-	 NfIKSmNWNwVD1rin5T+I43uNWBHJWykSFeU7zJwyYw/5Y4TOnWOc27XYa8ZsVWCiRRFDfVt2cCQX
-	 HOIeCoKop/hK7BaFxShD1h1bqa+R2n6PBLXOJu3nCNU4EeYEGR9oGikK6YlTX+osLy28z4ZJrpCA
-	 Ka1mFGZK04QQE5XREanKOLSSb7NNk70Cb5TvWFUQUeI5/RkhfjhU6ktku1JcAD6ZylhyBp0pMxaq
-	 3D4HZr7QnyHRU8FFI7WJF4C/q8BQPnu50UdWI8LGpS+GUA4BChXL3MHXuA06DYy9gKva7d5uSRhZ
-	 b5eM99rgHRMu/YjMvsUb2+e+pNLxTLsz+hJ77t2b9YGWotSN1lk4QBnuYlrFl32M8NeGFDNHaRFS
-	 DECLiZZzApCclrL8OiUu57o3hUi3ZeHVSLVyv3IkdUJK22SSH8F2hq1LqKMwCKlqSFqzTGARqTbl
-	 9tRd2u8Zd9yU67wE41gYPdUdexeI0cHnWXIIvwJSqJl4EUigZYBWpTkXcyGA0H+VmxYdSCc6tpKh
-	 zwMsVf0X2UId6Wk0LxYGKbd9sUQmQP4SVk8Fd/dKOaXtfzrYjDaL6mpfJNfXQt5ukzy2odnVKCgb
-	 V1NwIsOle9IlE++QwpryMEdJkSzFrfcsbYRkVJ2WXjwwpDxC8pmzHPv9L4xKKSwGftcgq+To7IX7
-	 qP649uOyKsHv8cLkGojsT9NfcIGTh+/78Ph932ZCAOFbw74s1OxDHvUVqge/YRnqR+85pjWfOT5d
-	 QyVyfK9fzOqTLXlezH6pMlmEBYDT5vbWqId8p+3g==
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-From: Edward Adam Davis <eadavis@qq.com>
-To: jack@suse.cz
-Cc: brauner@kernel.org,
-	eadavis@qq.com,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	viro@zeniv.linux.org.uk
-Subject: [PATCH v3] ext4: avoid infinite loops caused by residual data
-Date: Thu,  5 Mar 2026 15:25:46 +0800
-X-OQ-MSGID: <20260305072546.414952-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <4x3xixojbclwq45cpitmylbhis4ya4g3sugtnmj2yzv6avngqb@5xkwu6l467rm>
-References: <4x3xixojbclwq45cpitmylbhis4ya4g3sugtnmj2yzv6avngqb@5xkwu6l467rm>
+	s=arc-20240116; t=1772703160; c=relaxed/simple;
+	bh=NTI2sbNqmXefHVl9iq5aGjDsfbtqWEWb9pGbTAhKmbA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=QzCnDXp5mE/pwoglyyYhibSocMmIuY73fomL9ij2Oo85IMdUonSKgPHObuD3ZGTylX5YzCZfYDBCgEkqmr1RNDNCHfQKKqzpdNoKYByPYhDkG6Ov+iwF0Ba+sMMATDQTQIdB31pwMIfSq3HOCAJcKZJQLhTwjE77PtwtlIoTIg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jG2lEdIy; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-35995cb33a8so2172776a91.0
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Mar 2026 01:32:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772703159; x=1773307959; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6YxMc0zSq1+O+4DI+93m766Ua5MlZWmUYfipBYyLeUE=;
+        b=jG2lEdIy5LvJPs9ufYconitWsAzUepVcBeFffZROeOIiGrQMWX+lg1xNcV0ysHOeOd
+         UNE/WsDJg6zmXXuuTVEuKbGjEV/8jkjrA/QJdTgqK0ecEaS8Vl+KK3r9gUzIhRSkqWOP
+         sn9mljtddmD57o8sxB9KZHD0bz9P17aMkHZRZnp4T7iUa34JwE2yfWQHAhYVZip998M0
+         Ogf6dT+VdBW7oLqCwJuuTeTnAW+XCNIzloKLmthAgYnnTR9EZe73MkdozmwGHS+OPn+N
+         BrINXtX4gGKpwyg2B4XzgNQs9ySmN4paKYyNOo426Kn4NiajOQh+hUrK3piCVaAur9Ta
+         o1JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772703159; x=1773307959;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6YxMc0zSq1+O+4DI+93m766Ua5MlZWmUYfipBYyLeUE=;
+        b=mzzW+mPTWlMowkMoWFDxGAZwt4+rRmBsxtnUJygt9Q7N0ODg0B10vNx7v43MZTRFCS
+         hk3kqO3AaGqbNez4diiOJ71cwSGC5ooOSQp/aniID1Ecc/PDjbOPKyTP/Ltrj28/rFBf
+         Mm+PLunCRmUjPfpWeQTnd5uD7amxrWhMaxEhw1rryYqkLGIXpcfZHC0u60ZrzNfFRKqg
+         Yj0JXTl+gsZnnqWj8xVueJM2fIwkEwXJqV8yciRSvW8RDGsu7fM2SRaPJOGBoAvodyb9
+         ULMzAoHDPa6Fz35VnBeAO2HEsnN2VPNMuIgOM1Y4uwQAk00FWC1qhslAaRbj5eW/dM32
+         6WAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+uWxtIAtOfWm2eI2wBYhD/kGImLFENKZ+hBdXkl7RHe3bFurZPWyvBwPPIssRekfb8nCXZHbZgogb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxjj90jrnlcNgtU5s1LeZDIJbju5WPigzk/kx/WLpIFllaGusa+
+	tKqXznBUg1I0Oq2RgEXASE4aAQTEIMHma73p3M0e2SbNR5iC9rGcL+w/
+X-Gm-Gg: ATEYQzxHc13Gq/4PSwKDaec/i2tNQ+0MnzuNapjKR3zrMymC2vQe9hkBXA095YqaEBE
+	sUaaChXjtYDlmVe1oYlmB2a+IQX8jWloHUJUat3XMd0HAZvYj4OIJxYpm9LyrY4BrHZDtKqSNhk
+	A3gmwu6FsLX0BSxvlBLIiyV3qOcxSXWgIRH04D3rgvDY1fFqkKsdSC1tLhgh+IBogoqf/dRszrq
+	BDboeskNilQfRtxUqWKQR6I9KbPV+WBruZ/8eYdfNWSAhX2pdp/JG0Eo3wt5LeWgkbMxmpBcNGr
+	lqxKEXSmiJwGrkUaTmzlQftsWKtSi4+ka3l1nPqvL7a47Fk4OBGbjP8TchRMmzbMOT4T1mviLL3
+	L2GYcQl3YvwzZ0BeA+Z6lJsbxBFUzfRE5b9D0LfJkkQws7zmV+N9UNZtT3datGAVOa6KiYdy8Hh
+	OJtq0wg54n112PP1x8kTI6XeDFPhg=
+X-Received: by 2002:a17:90b:5102:b0:359:8a78:5696 with SMTP id 98e67ed59e1d1-359b1ba0e7bmr1521475a91.1.1772703158842;
+        Thu, 05 Mar 2026 01:32:38 -0800 (PST)
+Received: from [192.168.50.90] ([116.87.14.48])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-359b2d2b1c7sm1899251a91.4.2026.03.05.01.32.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Mar 2026 01:32:38 -0800 (PST)
+Message-ID: <9078e07d-5997-41f3-9991-c1f6975c768b@gmail.com>
+Date: Thu, 5 Mar 2026 17:32:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BEC6720C9FF
+User-Agent: Mozilla Thunderbird
+From: Anand Jain <anajain.sg@gmail.com>
+Subject: Re: [PATCH 0/3] fix s_uuid and f_fsid consistency for cloned
+ filesystems
+To: Christoph Hellwig <hch@infradead.org>, Anand Jain <asj@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org
+References: <cover.1772095546.git.asj@kernel.org>
+ <aagzcbj_CohXgIXe@infradead.org>
+Content-Language: en-US
+In-Reply-To: <aagzcbj_CohXgIXe@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 8FDA020EAE7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14648-lists,linux-ext4=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,qq.com,vger.kernel.org,syzkaller.appspotmail.com,googlegroups.com,zeniv.linux.org.uk];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,linux-ext4@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14649-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[anajainsg@gmail.com,linux-ext4@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[qq.com:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FREEMAIL_FROM(0.00)[qq.com];
-	TAGGED_RCPT(0.00)[linux-ext4,1659aaaaa8d9d11265d7];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:dkim,qq.com:email,qq.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,syzkaller.appspot.com:url]
+	TAGGED_RCPT(0.00)[linux-ext4];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On the mkdir/mknod path, when mapping logical blocks to physical blocks,
-if inserting a new extent into the extent tree fails (in this example,
-because the file system disabled the huge file feature when marking the
-inode as dirty), ext4_ext_map_blocks() only calls ext4_free_blocks() to
-reclaim the physical block without deleting the corresponding data in
-the extent tree. This causes subsequent mkdir operations to reference
-the previously reclaimed physical block number again, even though this
-physical block is already being used by the xattr block. Therefore, a
-situation arises where both the directory and xattr are using the same
-buffer head block in memory simultaneously.
 
-The above causes ext4_xattr_block_set() to enter an infinite loop about
-"inserted" and cannot release the inode lock, ultimately leading to the
-143s blocking problem mentioned in [1].
 
-By using ext4_ext_remove_space() to delete the inserted logical block
-and reclaim the physical block when inserting a new extent fails during
-extent block mapping, residual extent data can be prevented from affecting
-subsequent logical block physical mappings. 
+On 4/3/26 21:28, Christoph Hellwig wrote:
+> On Thu, Feb 26, 2026 at 10:23:32PM +0800, Anand Jain wrote:
+>> This series resolves the tradeoff by aligning btrfs and ext4 behaviour
+>> with XFS: f_fsid incorporates device identity (devt) to remain unique
+>> across clones, while s_uuid is preserved consistently matching the on-disk
+>> uuid.
+> 
+> While I like fixing this up, switching the f_fsid construction to a
+> different method might break things.  Is there a way to only change
+> it for cloned file systems to reduce the surface of this change?
 
-[1]
-INFO: task syz.0.17:5995 blocked for more than 143 seconds.
-Call Trace:
- inode_lock_nested include/linux/fs.h:1073 [inline]
- __start_dirop fs/namei.c:2923 [inline]
- start_dirop fs/namei.c:2934 [inline]
+The problem is that we won't know which filesystem is the original
+and which is the clone. Generally, the first one mounted is treated
+as the original and the following one as the clone. However, f_fsid
+should remain consistent regardless of mount order, at least for
+the duration that the block device is connected (or until a
+system reboot).
 
-Reported-by: syzbot+512459401510e2a9a39f@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=1659aaaaa8d9d11265d7
-Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-Reported-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=512459401510e2a9a39f
-Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
-v1 -> v2: fix ci reported issues
-v2 -> v3: new fix for removing residual data and update subject and coments
+>> Patches
+>> -------
+>> Patch 1/3: btrfs: fix f_fsid to include rootid and devt
+>> Patch 2/3: btrfs: fix s_uuid to be stable across mounts for cloned filesystems  
+>> Patch 3/3: ext4: fix f_fsid to use devt instead of s_uuid
+> 
+> I don't really see that patch 3 in my inbox on linux-btrfs.
 
- fs/ext4/extents.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index ae3804f36535..0bed3379f2d2 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4458,19 +4458,13 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	if (IS_ERR(path)) {
- 		err = PTR_ERR(path);
- 		if (allocated_clusters) {
--			int fb_flags = 0;
--
- 			/*
- 			 * free data blocks we just allocated.
- 			 * not a good idea to call discard here directly,
- 			 * but otherwise we'd need to call it every free().
- 			 */
- 			ext4_discard_preallocations(inode);
--			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
--				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
--			ext4_free_blocks(handle, inode, NULL, newblock,
--					 EXT4_C2B(sbi, allocated_clusters),
--					 fb_flags);
-+			ext4_ext_remove_space(inode, newex.ee_block, newex.ee_block);
- 		}
- 		goto out;
- 	}
--- 
-2.43.0
+My bad, I sent the btrfs/ext4 patches only to their respective
+mailing lists. I'll copy both in v2.
 
+Here it is:
+
+ https://lore.kernel.org/linux-ext4/e269a49eed2de23eb9f9bd7f506f0fe47696a023.1772095546.git.asj@kernel.org/
+
+
+Thanks, Anand
 
