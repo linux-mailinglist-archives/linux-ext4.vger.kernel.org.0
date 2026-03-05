@@ -1,82 +1,58 @@
-Return-Path: <linux-ext4+bounces-14654-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14655-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YK/jAkZzqWnH7AAAu9opvQ
-	(envelope-from <linux-ext4+bounces-14654-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 13:12:54 +0100
+	id cEMmMBd9qWnl8wAAu9opvQ
+	(envelope-from <linux-ext4+bounces-14655-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 13:54:47 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F70C21161C
-	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 13:12:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B58B2122A5
+	for <lists+linux-ext4@lfdr.de>; Thu, 05 Mar 2026 13:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BFDD03099166
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 12:12:19 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BB6D33037050
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Mar 2026 12:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA2739A07A;
-	Thu,  5 Mar 2026 12:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E59E3A0B29;
+	Thu,  5 Mar 2026 12:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="O5EUwk0M"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="d6+fX6gq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E3ED334C28;
-	Thu,  5 Mar 2026 12:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CCF3A0E9B;
+	Thu,  5 Mar 2026 12:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772712737; cv=none; b=VJ4Nyz24yucSnRr9mPLKipZmCowo34dPAOHihpVSlbhCUX+q0v682OFOgBn10UO5QCeKZ6RWctjGYdbKll5S5E6PIXgPk/DWgrYxSxfgXooW7ZMAzqdpCa5K0GwVkQNwLVRREbsBHRiCPXanopq+QZpvJMRgky+EeZtMChcTqXc=
+	t=1772715281; cv=none; b=q/SloEg+UjBx2Nide/K7u68i72PWqIaM5G4UqehO6eX8Osfz8HgWXAK+IVLuEUn3ZSRBqPx7XEVZTY2iIWYVxGyph5IDoWjuiQQE5T+FzJC8j/NlaojGoKo8jRws0Xuv/3pB8RgHlfCgdJchyLMUKtBvn47SWq/y7NiD2mSC+Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772712737; c=relaxed/simple;
-	bh=0c+/cl48xzUSzjYrm7fybWAEPBSyCp9mYNtzhGpxtpk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=ZP/ouvmNWFRD01Hjrbt57YPGRKuk1QndND3JiaHizRAf5x//rSGMR+HKHs9qGpOx0jcP331irn/q84qo6bFrNi7KmjlshxE1fjmdmdlUgrTz0NqshIUNGQt0lO+WgBKQ07SOt8giVdhTr0ssakHfs61x9EtUay9V2JkTJF8Ftmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=O5EUwk0M; arc=none smtp.client-ip=203.205.221.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1772712732; bh=XLhUb8BciiyArELdv3LJggsSFprn8fACXGFyTDwQLVA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=O5EUwk0M3tHXbPJsBueX0B8TJNIsHGVgzbFEmAYGh3ZrQde/l1tV/xXyj2Lt5pil+
-	 OIjBXJ7VGvuv0t0T5oMWPHAuL3Kqi0rvWro/NEctAnleDpjNzHCNZccINbJ9LAblDu
-	 HHFizMBLBPOGWXs3glSp5YFuXJAUNogLut4t9BJE=
-Received: from lxu-ped-host.. ([111.201.4.63])
-	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
-	id 2B7A0A22; Thu, 05 Mar 2026 20:10:55 +0800
-X-QQ-mid: xmsmtpt1772712655t9mljvqel
-Message-ID: <tencent_ACFA334E9EFE1B0F4BFC1BEA2530BA52BB08@qq.com>
-X-QQ-XMAILINFO: NZcTxHzy+2XTw6t6VMmhdE4ksUU5/H6G9Gfv7vYEMOhYRwfwKJhNltBLs0ZiZl
-	 dHVvsBH4No9APsrV2PvH5mHA7kgf1a/SwNCRft7ktAd3UvJDSRLLBVfsXjW/BTpwuPYiqN/+8tna
-	 5MzLKlGeIn2ygz/SHRDARF8mkh0x/PHjH/r9fgaDfO/swYneK8oTH23okjib6EXFPcyhtjRfFMJ3
-	 LZzlS1ToJeb+1Z3riwKi1R3/IWYp84LS4qfdPaziVYy3dCiiqWMO/3akGoQQA+q2FVSVtC3CtGPj
-	 jvrQcyQKqib1pK3uGVE1y3oqv1h8Zi/wkl+H1azsyNbzGHOalTH1HJhyO7mGMMyiO7adkCB0jh4S
-	 UVAYpBtYMMlve7zbN3z5sQPUjQDLQOQEbOHlZGDBZGQBWHfjI8FBr20xs+3+9jrDKPU6EwFzSr/Z
-	 //7Ws5PO6Zk9eKKh3tpdsvMlY2u+ZWBLNtVV8wnzi3Fq55cwzUt7XP8ob38l+cs4a1UGUZmJNmPb
-	 PvrZJxU7GW2ComzU1CZlSg9TWlTOaGiY1bmGWUP17JU2F1VdJdBmdPTJVgla8haAtrdPjEgfU8kt
-	 lW+IO8VCdEMQY0naA3gYzJhQk8apSMwGposeBqNgm+vYXfs3Jy1YXkl1+MVbgOH+4nzjxz0Z7GaI
-	 WTFqYWHTQozoKvpfScLDhr9SZ0M/jYoGAbCCQ/lu9s54S1JD8bnhpDdyc6kHB3V6Y1bxJvq4SQCr
-	 aOnXSsZqMJV0Gq6sVKU2idbVr3/ntna+rrhdEyTkyIXPA1FPrxrVNyYHpKH3zQQOwipKytXvEUbY
-	 QjwMr9DBIo5jhoVwiPGSWJtRNS7r+kRJcMRbuSsY6GFOhjSQHtK16IhSK+Y21Tna/jAZ4Bd0QfJb
-	 4wLWb3aT1veNBk7uIHOhAClrbHZ+WAQgK2ReGMmwnt2X3Cypd/CotRRm473eRnbRyGYPHRJSBlnB
-	 024aAg4eTjL87QcWqxbXT0WFueNsE+mXbPZqDprgUFFZ12/5Wjpc98MELDMTeWhXB72k8LNsGvXk
-	 3gOPYLmke3npkXWVr9MOIJE4QV4rEgQ+vBvZU1rclMiLl/gsp3ntKTO4HlKho=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-From: Edward Adam Davis <eadavis@qq.com>
-To: jack@suse.cz
-Cc: brauner@kernel.org,
-	eadavis@qq.com,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
+	s=arc-20240116; t=1772715281; c=relaxed/simple;
+	bh=GZk/N0E/wF8+Xx7ZO9AmbYjUoG01Cr7tbSFWJHf0+/k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IsVvf4sbLjgN1pgUuy6y5RskQfLBabjn1QV/ATgLmJm2nOFlaI34vJmPQmryLvw5vcoXv/dtKQGuOyrgWu/Nd+vU1BTAuYrFAcCt2X4hae1uZH15FPp7fiTq4PnjKdvzrQJxnqE+v+DoRzw1mEpLAyV6JURvfcBKvR1745nNE0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=d6+fX6gq; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=7B
+	xrdldPld4NNfK57RZPi7vOl7bWXuAHdghwRK0VBzo=; b=d6+fX6gqBlNQ290tGl
+	dAgPF2BaXWEALeGEJi6g2KCnD+dnO20D8wWf0j0N7gs+QGQObgCj7S6g0Fs/dYyu
+	kWTR3ETRC6P9D2/otiZ7/1skBy6dPA5S9uTAFidu/gf9p0Reqf5deIxAoDGtS9JE
+	yOG8qVMGuWOW16jz8EeUnwsfw=
+Received: from liubaolin-VMware-Virtual-Platform.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wCnbX72fKlp1oFqPQ--.12728S2;
+	Thu, 05 Mar 2026 20:54:16 +0800 (CST)
+From: Baolin Liu <liubaolin12138@163.com>
+To: tytso@mit.edu,
+	jack@suse.com
+Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v3] ext4: avoid infinite loops caused by residual data
-Date: Thu,  5 Mar 2026 20:10:56 +0800
-X-OQ-MSGID: <20260305121055.426662-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <uweckkartekmwpzpt2kt34bbjyn3a2a4tc3lw7qyyghkxhfl5l@st7yfcuu73f4>
-References: <uweckkartekmwpzpt2kt34bbjyn3a2a4tc3lw7qyyghkxhfl5l@st7yfcuu73f4>
+	wangguanyu@vivo.com,
+	Baolin Liu <liubaolin@kylinos.cn>
+Subject: [PATCH v1] jbd2: check transaction state before stopping handle
+Date: Thu,  5 Mar 2026 20:54:02 +0800
+Message-Id: <20260305125402.71285-1-liubaolin12138@163.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -84,155 +60,124 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 5F70C21161C
+X-CM-TRANSID:_____wCnbX72fKlp1oFqPQ--.12728S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZry7Aw15Ar18ZF17Wr1xKrg_yoW5XF1kpr
+	yrCw15Cw15Ka4jvFn7Zr4UArWYya48CryUGrZrKas3ta1agwn3t397t34jkrWDKrWrua48
+	XryDCwnrGw4jka7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jY1v3UUUUU=
+X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbCwhgi7GmpfPh70gAA35
+X-Rspamd-Queue-Id: 5B58B2122A5
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
+	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14654-lists,linux-ext4=lfdr.de];
-	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,qq.com,vger.kernel.org,syzkaller.appspotmail.com,googlegroups.com,zeniv.linux.org.uk];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,linux-ext4@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[163.com];
+	TAGGED_FROM(0.00)[bounces-14655-lists,linux-ext4=lfdr.de];
+	DKIM_TRACE(0.00)[163.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[liubaolin12138@163.com,linux-ext4@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[qq.com:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FREEMAIL_FROM(0.00)[qq.com];
-	TAGGED_RCPT(0.00)[linux-ext4,1659aaaaa8d9d11265d7];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,appspotmail.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,qq.com:dkim,qq.com:email,qq.com:mid]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-ext4];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Action: no action
 
-On Thu, 5 Mar 2026 11:38:00 +0100 Jan Kara wrote:
-> > On the mkdir/mknod path, when mapping logical blocks to physical blocks,
-> > if inserting a new extent into the extent tree fails (in this example,
-> > because the file system disabled the huge file feature when marking the
-> > inode as dirty),
-> 
-> I don't quite understand what you mean here but I think you say that
-> ext4_ext_dirty() -> ext4_mark_inode_dirty() returns error due to whatever
-> corruption it has hit.
-It returns -EFSCORRUPTED in following calltrace: 
-ext4_ext_dirty()->
-  ext4_mark_inode_dirty()->
-    __ext4_mark_inode_dirty()->
-      ext4_mark_iloc_dirty()->
-        ext4_do_update_inode()->
-	  ext4_fill_raw_inode()->
-	    ext4_inode_blocks_set()->
-	      if (!ext4_has_feature_huge_file(sb))
-	          return -EFSCORRUPTED;
-> 
-> > ext4_ext_map_blocks() only calls ext4_free_blocks() to
-> > reclaim the physical block without deleting the corresponding data in
-> > the extent tree. This causes subsequent mkdir operations to reference
-> > the previously reclaimed physical block number again, even though this
-> > physical block is already being used by the xattr block. Therefore, a
-> > situation arises where both the directory and xattr are using the same
-> > buffer head block in memory simultaneously.
-> 
-> OK, this indeed looks like "not so great" error handling. Thanks for
-> digging into this.
-> 
-> > The above causes ext4_xattr_block_set() to enter an infinite loop about
-> > "inserted" and cannot release the inode lock, ultimately leading to the
-> > 143s blocking problem mentioned in [1].
-> >
-> > By using ext4_ext_remove_space() to delete the inserted logical block
-> > and reclaim the physical block when inserting a new extent fails during
-> > extent block mapping, residual extent data can be prevented from affecting
-> > subsequent logical block physical mappings.
-> >
-> > [1]
-> > INFO: task syz.0.17:5995 blocked for more than 143 seconds.
-> > Call Trace:
-> >  inode_lock_nested include/linux/fs.h:1073 [inline]
-> >  __start_dirop fs/namei.c:2923 [inline]
-> >  start_dirop fs/namei.c:2934 [inline]
-> >
-> > Reported-by: syzbot+512459401510e2a9a39f@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=1659aaaaa8d9d11265d7
-> > Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-> > Reported-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=512459401510e2a9a39f
-> > Tested-by: syzbot+1659aaaaa8d9d11265d7@syzkaller.appspotmail.com
-> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > ---
-> ...
-> > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > index ae3804f36535..0bed3379f2d2 100644
-> > --- a/fs/ext4/extents.c
-> > +++ b/fs/ext4/extents.c
-> > @@ -4458,19 +4458,13 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
-> >  	if (IS_ERR(path)) {
-> >  		err = PTR_ERR(path);
-> >  		if (allocated_clusters) {
-> > -			int fb_flags = 0;
-> > -
-> >  			/*
-> >  			 * free data blocks we just allocated.
-> >  			 * not a good idea to call discard here directly,
-> >  			 * but otherwise we'd need to call it every free().
-> >  			 */
-> >  			ext4_discard_preallocations(inode);
-> > -			if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE)
-> > -				fb_flags = EXT4_FREE_BLOCKS_NO_QUOT_UPDATE;
-> > -			ext4_free_blocks(handle, inode, NULL, newblock,
-> > -					 EXT4_C2B(sbi, allocated_clusters),
-> > -					 fb_flags);
-> > +			ext4_ext_remove_space(inode, newex.ee_block, newex.ee_block);
-> 
-> So I'm concerned that if the metadata is corrupted, then trying to remove
-> some extent space can do even more harm. Also in case
-> EXT4_GET_BLOCKS_DELALLOC_RESERVE was passed, we now wrongly update quota
-> information. So this definitely isn't a correct fix. What I'd do instead
-> would be distinguishing two cases:
-> 
-> 1) The error is ENOSPC or EDQUOT - in this case the filesystem is fully
-> consistent and we must maintain its consistency including all the
-> accounting. However these errors can happen only early before we've
-> inserted the extent into the extent tree. So current code works correctly
-> for this case.
-> 
-> 2) Some other error - this means metadata is corrupted. We should strive to
-> do as few modifications as possible to limit damage. So I'd just skip
-> freeing of allocated blocks.
-> 
-> Long story short I think we should just modify the above condition:
-> 
-> 	if (allocated_clusters)
-> 
-> to
-> 
-> 	/*
-> 	 * Gracefully handle out of space conditions. If the filesystem is
-> 	 * inconsistent, we'll just leak allocated blocks to avoid causing
-> 	 * even more damage.
-> 	 */
-> 	if (allocated_clusters && (err == -EDQUOT || err == -ENOSPC))
-I have tested the modified code, and now it no longer deletes any data
-for the -EFSCORRUPTED error (before applying my patch, it only deleted
-the physical block and not the corresponding data in the extent tree).
-This also prevents conflicts caused by data being reused by dir and
-xattr.
+From: Baolin Liu <liubaolin@kylinos.cn>
 
-I will release a new patch later to add the filtering you requested.
+When a transaction enters T_FLUSH or later states,
+handle->h_transaction may still point to it.
+If jbd2_journal_stop() or jbd2__journal_restart() is called,
+stop_this_handle() checks t_updates > 0, but t_updates is
+already 0 for these states, causing a kernel BUG.
 
-BR,
-Edward
+Fix by checking transaction->t_state in jbd2_journal_stop()
+and jbd2__journal_restart() before calling stop_this_handle().
+If the transaction is not in T_RUNNING or T_LOCKED state,
+clear handle->h_transaction and skip stop_this_handle().
+
+Crash stack:
+  Call trace:
+  stop_this_handle+0x148/0x158
+  jbd2_journal_stop+0x198/0x388
+  __ext4_journal_stop+0x70/0xf0
+  ext4_create+0x12c/0x188
+  lookup_open+0x214/0x6d8
+  do_last+0x364/0x878
+  path_openat+0x6c/0x280
+  do_filp_open+0x70/0xe8
+  do_sys_open+0x178/0x200
+  sys_openat+0x3c/0x50
+  el0_svc_naked+0x44/0x48
+
+Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
+---
+ fs/jbd2/transaction.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index dca4b5d8aaaa..3779382dbb80 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -772,14 +772,25 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, int revoke_records,
+ 	journal = transaction->t_journal;
+ 	tid = transaction->t_tid;
+ 
++	jbd2_debug(2, "restarting handle %p\n", handle);
++
++	/* Check if transaction is in invalid state */
++	if (transaction->t_state != T_RUNNING &&
++		transaction->t_state != T_LOCKED) {
++		if (current->journal_info == handle)
++			current->journal_info = NULL;
++		handle->h_transaction = NULL;
++		memalloc_nofs_restore(handle->saved_alloc_context);
++		goto skip_stop;
++	}
++
+ 	/*
+ 	 * First unlink the handle from its current transaction, and start the
+ 	 * commit on that.
+ 	 */
+-	jbd2_debug(2, "restarting handle %p\n", handle);
+ 	stop_this_handle(handle);
+ 	handle->h_transaction = NULL;
+-
++skip_stop:
+ 	/*
+ 	 * TODO: If we use READ_ONCE / WRITE_ONCE for j_commit_request we can
+  	 * get rid of pointless j_state_lock traffic like this.
+@@ -1856,6 +1867,16 @@ int jbd2_journal_stop(handle_t *handle)
+ 		memalloc_nofs_restore(handle->saved_alloc_context);
+ 		goto free_and_exit;
+ 	}
++	/* Check if transaction is in invalid state */
++	if (transaction->t_state != T_RUNNING &&
++		transaction->t_state != T_LOCKED) {
++		if (current->journal_info == handle)
++			current->journal_info = NULL;
++		handle->h_transaction = NULL;
++		memalloc_nofs_restore(handle->saved_alloc_context);
++		goto free_and_exit;
++	}
++
+ 	journal = transaction->t_journal;
+ 	tid = transaction->t_tid;
+ 
+-- 
+2.39.2
 
 
