@@ -1,277 +1,179 @@
-Return-Path: <linux-ext4+bounces-14685-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14686-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IDJjE6ymqmlTVAEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14685-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 11:04:28 +0100
+	id iPIxA4K3qmkiVwEAu9opvQ
+	(envelope-from <linux-ext4+bounces-14686-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:16:18 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C836721E66F
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 11:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F38421F882
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 310FB304EA45
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 10:01:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 08D1930488E3
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 11:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD1335839F;
-	Fri,  6 Mar 2026 10:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4313E3630A6;
+	Fri,  6 Mar 2026 11:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="HEuLWpDA"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="NR8dMX02"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382DA3590A9;
-	Fri,  6 Mar 2026 10:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A9732F748
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Mar 2026 11:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772791261; cv=none; b=Tt8TjIAx5JnWOppxFxG/oxitskklftV+lDv4W7jZsOGghBNev64EuLgJQCDKlAKZFtMj8pWScVGLR6fPzxvfHHRiSRJchH2JK9Gx3Pintbp9h+H/EDZiErzIT8K1XmSRr/RykUyJr7TEUizSRO6di5vHd+b6ORS8uePObE1hFIc=
+	t=1772795774; cv=none; b=drROowgQO5WX+pkBiHGsuNs9Kpaz+Jb1H/uIcIs8uQTlCHPm5wbjC1xcO/JaBuQX6tGsepxujU3xqkVgvbppOP3Z3eplUSvnHiBcUgXlnZJY/noG/DdE9K9hOhi2vBLclge3+9fCORMMMyqEUytKFwtotFNhyCirh1bK4Xj6/W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772791261; c=relaxed/simple;
-	bh=to1h6nyJsP/6jJ6aElkhfONsB1k2y+frzq0M1f2H8Bg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YC3CFUzmWud4pcnfsoB9PghXAHjIKTQGvidXcto23m27GH5FasrhpCES8TPu7d6PjNlVESFlipqR2c33Gx4CSys6aSuIe+EBj4Xgzkq3AgeSJLBCZFTvnhKORWjH6x/8VGjltKdbP645ngCceRDuMDF836Pn6JTs61FWtg2ofaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=HEuLWpDA; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:To:From:
-	Content-Type; bh=t8FqolWz5rxYxmQqL4/NDfsOlwCqIRItZ8uOllRTuWs=;
-	b=HEuLWpDAb80FE2H6i3cnfWD0OR2VF2SYBr6c9RgjsEDOnsAujoswcGZvGMx9zA
-	E/rD8xnqrkmIbarE6wU2H+szEXw3nEw3Ib9c+PnlmRDFVQgNaHPxZZEpJraF1vts
-	PpBe/wd8o6EOBF1k7dzvQyZUhGeEfzFlpS4Lg5+rxjes0=
-Received: from [192.168.213.68] (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wBHU6e+pappl2GSOQ--.53081S2;
-	Fri, 06 Mar 2026 18:00:31 +0800 (CST)
-Message-ID: <1fabe316-2c5b-45d1-8f56-48269f226b9c@163.com>
-Date: Fri, 6 Mar 2026 18:00:28 +0800
+	s=arc-20240116; t=1772795774; c=relaxed/simple;
+	bh=mv/RHve6D2xvhbuvCKOwfz3uc+PVsrnRe5rvLcPbLog=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=nOW9DlT9hwVSDfIEcAY9Nvkvth2oXiGi9gPG+2GRBiVAjC7w0tbiUV3/AtWRZefcx4qxBtMJa04xYfX1rX+dWWsVI4bUye7qPucRtTBWq+4NYfmDxZdHnn2MXljTxkS0TsMSLudcuj+wkUF8NyV3jDv+kj1ccOJkrp0o5Q8VnwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=NR8dMX02; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-829ac8d56c5so38429b3a.3
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Mar 2026 03:16:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772795772; x=1773400572; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MB1vOMP+Nolx+MoTaN64094W5fQe56/R4b51YXJC8I8=;
+        b=NR8dMX02rG2ILtA/MW3OKgJdNu9GcaJ/5o6EXK3wBkdRq89oPqVLVUydDrYdBYi9Sm
+         sWlXNt61KFNAa98IrXtkc/KzM+fDkDJPIeVrkeWkwinUHtu5eEB8xmeHLbisastnD3/y
+         VHtinC9b/ml/fSU5zr64x6RukrOcDyZ/w7lShmRdd+ec9PEzHkQmDrxFxqhKBzjNmTV0
+         WkENdQes2lZ9d1NI4n5N7ViQXHKcH7sCfYN7Q8+z1t7Oz4lMJghrupRdtMI1rQM1VGhZ
+         tAxH6kg9cJtLNuSoHfMIPpRMFJR8V7qA/nY/tdI6FuLaB8P0Y8zNkFA+CdVUCKT+Vocv
+         nRQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772795772; x=1773400572;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MB1vOMP+Nolx+MoTaN64094W5fQe56/R4b51YXJC8I8=;
+        b=ui/WT6lJ5AZ/JWuti8sCoJtiHjGMUe6fpaI4cjkjLh8etxXeETeGhTzpJ1iyiRKs0I
+         EkZHc73/bkRNsldg9KGnQW+rnFmR5318Qx4QrWF+bsiKpy12LfbFFSXInuCP/cwJb9md
+         jd4HEsptrjrdidF5rKmOLn77sgN8Od4wAHwNB472qdl+b1X060lTxo6KOeT8fuW2/A8F
+         3er5gaJXwKFfKxSJlWLkzF1KlTSvsoQ3I32oP1B2fR+wMKp70c96CV0Qve+unxAg0HOK
+         BJnRl7WexApqo/fpn/fz1yySxjLWF8bBm+65pqzywP5yETo4XDQ1HTnmjxZUzL3Q9XEZ
+         tgPQ==
+X-Gm-Message-State: AOJu0Ywp7K+1vnKqE+FSLqA/fiqTnskv9P725PUVDClaE7lUOpRf8Zzz
+	oxaMx8tnHZhy6QQ1ZqhYKZiE4hNXNtQs64AntaE/YuXWIDo4lY++vOH2a1za5FPWhX4=
+X-Gm-Gg: ATEYQzwcrR8NvNZH9gMoWZdoyRWu5JAAA5NOpIXTyyCbZLp0WjSbG76vTs8+5zF2I8b
+	Xt4z+cfLWpcWwM2sp1fbDoriNxjacRmgxD+j+JkcpwCisOIJULbReLvjytXHr/E78PVVJHyf57x
+	GS9UuuLBoVcAw9HNSqaCDiWztyw2XJmQsBCfTe+Qh9O4HpdD+ElJS2/3G4VljRIy8MTwvO2Y2OB
+	JHXpoVx6UhsXLVW6Pc+bQd0cPpwehkGTNB1SOL1yBbWeURXHtoIyS5b95hrdyo0tQd9nNKCLM4p
+	6/Q0O6CuHst+KfYh2WOTiJ1NDqlTePJecXFTeaX5nlplojT2/B5B/wfpc0gsqp17ek55mu15zB/
+	+J5isgwYlbYBjsDL9UmAgyQPfK8a3O62sWhqOjkrrPW9YMEj6WlQl1XhfRBwcIlqm4L9YdhIcYq
+	yMLFcsVBB72qW/IZt2pFXmId/sWUUXJcEJQhY02H+QgLDeYwevjfitoOpD/ZKjCAHmHpU5BE2IF
+	Pes8g==
+X-Received: by 2002:a05:6a00:1d9f:b0:829:9a7b:db84 with SMTP id d2e1a72fcca58-829a2f319d6mr1563257b3a.49.1772795772482;
+        Fri, 06 Mar 2026 03:16:12 -0800 (PST)
+Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-829a48647e8sm1524999b3a.33.2026.03.06.03.16.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Mar 2026 03:16:11 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] jbd2: check transaction state before stopping handle
-To: "yebin (H)" <yebin10@huawei.com>, tytso@mit.edu, jack@suse.com
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- wangguanyu@vivo.com, Baolin Liu <liubaolin@kylinos.cn>
-References: <20260305125402.71285-1-liubaolin12138@163.com>
- <257c6f1e.a166.19cbe12f387.Coremail.liubaolin12138@163.com>
- <e52f326a-8da2-457f-8aee-5729373b9582@163.com> <69AA2BF5.3000403@huawei.com>
-From: liubaolin <liubaolin12138@163.com>
-In-Reply-To: <69AA2BF5.3000403@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBHU6e+pappl2GSOQ--.53081S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Xry5uw1kKrWkXr45tr15CFg_yoWxXFyUpr
-	y8C3WYkr4UJa4jvr1Ivr4jyrZFya48KryUXrZrKas3JanIgwn3tFWkt34jkr4qkr1ru3W8
-	Xr1jk39xGw4jya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07USiiDUUUUU=
-X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbC6h+daGmqpb8eeAAA3-
-X-Rspamd-Queue-Id: C836721E66F
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
+Subject: Re: [PATCH e2fsprogs] e2fsck: preen inline data no attr
+From: Andreas Dilger <adilger@dilger.ca>
+In-Reply-To: <3188418.mvXUDI8C0e@daniel-desktop3>
+Date: Fri, 6 Mar 2026 04:16:00 -0700
+Cc: linux-ext4@vger.kernel.org,
+ Theodore Tso <tytso@mit.edu>,
+ "Darrick J. Wong" <djwong@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DEC84F37-1DE2-48D2-B9C2-40E3A6FE8451@dilger.ca>
+References: <3188418.mvXUDI8C0e@daniel-desktop3>
+To: Daniel Tang <danielzgtg.opensource@gmail.com>
+X-Mailer: Apple Mail (2.3864.100.1.1.5)
+X-Rspamd-Queue-Id: 5F38421F882
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
+	MV_CASE(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
+	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14685-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[163.com:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[dilger.ca];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-14686-lists,linux-ext4=lfdr.de];
+	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[liubaolin12138@163.com,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	FREEMAIL_FROM(0.00)[163.com]
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-> Dear yebin,
-> 
-> Thank you for your feedback.
-> 
-> From the crash, we can see this issue was triggered by the MemTableFlushTh process. 
-> I agree with your point that if this state occurs, there must be something wrong somewhere. 
-> Once we find and fix the root cause, we should add J_ASSERT((transaction->t_state == T_RUNNING) || (transaction->t_state == T_LOCKED)) to detect such anomalies, rather than directly skipping the assertion check.
-> 
-> I will continue to investigate the root cause and try to find a way to reproduce this issue. 
-> If you have any thoughts or suggestions on this problem, I'd be happy to discuss.
-> 
-> Best regards,
-> Baolin Liu
+On Mar 4, 2026, at 06:56, Daniel Tang <danielzgtg.opensource@gmail.com> =
+wrote:
+>=20
+> I don't like being forcibly dropped into an emergency shell to =
+truncate
+> pidfiles and other temporary files every time my tablet uncleanly =
+shuts
+> down.
+>=20
+> This seems safe. The only thing that should be erased is the size.
+> The removed inline data flag is remembered by the extent flag being
+> absent. There is no data to lose because there are no extents/blocks,
+> and the system.data attribute is already diagnosed missing.
+>=20
+> Signed-off-by: Daniel Tang <danielzgtg.opensource@gmail.com>
+> Link: https://github.com/tytso/e2fsprogs/pull/268
 
+This seems pretty safe.
 
+Reviewed-by: Andreas Dilger <adilger@dilger.ca =
+<mailto:adilger@dilger.ca>>
 
-在 2026/3/6 9:20, yebin (H) 写道:
-> 
-> 
-> On 2026/3/5 21:11, liubaolin wrote:
->>> Dear maintainers and community,
->>>
->>> Our customer reported a kernel crash issue. The kernel crashes in
->>> stop_this_handle() with:
->>> J_ASSERT(atomic_read(&transaction->t_updates) > 0);
->>>
->>> Crash stack:
->>> Call trace:
->>> stop_this_handle+0x148/0x158
->>> jbd2_journal_stop+0x198/0x388
->>> __ext4_journal_stop+0x70/0xf0
->>> ext4_create+0x12c/0x188
->>> ...
->>>
->>> From the vmcore dump, I found that handle->h_transaction->t_updates is
->>> 0 and handle->h_transaction->t_state is T_FINISHED. This means the
->>> handle is still bound to a transaction that has already completed.
->>>
->>> In the JBD2 commit process, once a transaction enters T_LOCKED state,
->>> the commit thread waits for all associated handles to complete
->>> (t_updates becomes 0). After T_LOCKED completes, the transaction
->>> transitions to T_FLUSH, T_COMMIT, and eventually T_FINISHED. At this
->>> point, t_updates is legitimately 0, and there should be no active
->>> handles bound to this transaction.
->>>
->>> This appears to be a low-probability race condition that occurs under
->>> high concurrency scenarios. The crash happened during ext4_create(),
-> I'm curious about what race condition causes this?
-> 
->>> and at some rare timing point during the execution, a handle ended up
->>> bound to a transaction that had already completed. The symptom is
->>> clear: a handle is bound to a T_FINISHED transaction with t_updates 
->>> == 0.
->>>
->>> To prevent this, I added a transaction state check in both
->>> jbd2_journal_stop() and jbd2__journal_restart() before calling
->>> stop_this_handle().
->>> If the transaction is not in T_RUNNING or T_LOCKED state (i.e., it's
->>> in T_FLUSH or later states), I clear handle->h_transaction, clear
->>> current->journal_info if needed, restore the memalloc_nofs context,
->>> and skip calling stop_this_handle(). This is a defensive check to
->>> handle the edge case where a handle is bound to a transaction in an
->>> invalid state.
->>>
-> If this state occurs, there must be something wrong somewhere.
-> Assertions should also be added to detect such anomalies. I think
-> directly skipping the assertion check is not a good way to solve the
-> problem.
->>> Please let me know if you have any questions or concerns.
->>>
->>> Best regards,
->>> Baolin Liu
->>
->>
->>
->> 在 2026/3/5 20:57, Baolin Liu 写道:
->>>
->>> Add others
->>>
->>>
->>>
->>>
->>>
->>> At 2026-03-05 20:54:02, "Baolin Liu" <liubaolin12138@163.com> wrote:
->>>> From: Baolin Liu <liubaolin@kylinos.cn>
->>>>
->>>> When a transaction enters T_FLUSH or later states,
->>>> handle->h_transaction may still point to it.
->>>> If jbd2_journal_stop() or jbd2__journal_restart() is called,
->>>> stop_this_handle() checks t_updates > 0, but t_updates is
->>>> already 0 for these states, causing a kernel BUG.
->>>>
->>>> Fix by checking transaction->t_state in jbd2_journal_stop()
->>>> and jbd2__journal_restart() before calling stop_this_handle().
->>>> If the transaction is not in T_RUNNING or T_LOCKED state,
->>>> clear handle->h_transaction and skip stop_this_handle().
->>>>
->>>> Crash stack:
->>>>  Call trace:
->>>>  stop_this_handle+0x148/0x158
->>>>  jbd2_journal_stop+0x198/0x388
->>>>  __ext4_journal_stop+0x70/0xf0
->>>>  ext4_create+0x12c/0x188
->>>>  lookup_open+0x214/0x6d8
->>>>  do_last+0x364/0x878
->>>>  path_openat+0x6c/0x280
->>>>  do_filp_open+0x70/0xe8
->>>>  do_sys_open+0x178/0x200
->>>>  sys_openat+0x3c/0x50
->>>>  el0_svc_naked+0x44/0x48
->>>>
->>>> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
->>>> ---
->>>> fs/jbd2/transaction.c | 25 +++++++++++++++++++++++--
->>>> 1 file changed, 23 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
->>>> index dca4b5d8aaaa..3779382dbb80 100644
->>>> --- a/fs/jbd2/transaction.c
->>>> +++ b/fs/jbd2/transaction.c
->>>> @@ -772,14 +772,25 @@ int jbd2__journal_restart(handle_t *handle, int
->>>> nblocks, int revoke_records,
->>>>     journal = transaction->t_journal;
->>>>     tid = transaction->t_tid;
->>>>
->>>> +    jbd2_debug(2, "restarting handle %p\n", handle);
->>>> +
->>>> +    /* Check if transaction is in invalid state */
->>>> +    if (transaction->t_state != T_RUNNING &&
->>>> +        transaction->t_state != T_LOCKED) {
->>>> +        if (current->journal_info == handle)
->>>> +            current->journal_info = NULL;
->>>> +        handle->h_transaction = NULL;
->>>> +        memalloc_nofs_restore(handle->saved_alloc_context);
->>>> +        goto skip_stop;
->>>> +    }
->>>> +
->>>>     /*
->>>>      * First unlink the handle from its current transaction, and
->>>> start the
->>>>      * commit on that.
->>>>      */
->>>> -    jbd2_debug(2, "restarting handle %p\n", handle);
->>>>     stop_this_handle(handle);
->>>>     handle->h_transaction = NULL;
->>>> -
->>>> +skip_stop:
->>>>     /*
->>>>      * TODO: If we use READ_ONCE / WRITE_ONCE for j_commit_request we
->>>> can
->>>>       * get rid of pointless j_state_lock traffic like this.
->>>> @@ -1856,6 +1867,16 @@ int jbd2_journal_stop(handle_t *handle)
->>>>         memalloc_nofs_restore(handle->saved_alloc_context);
->>>>         goto free_and_exit;
->>>>     }
->>>> +    /* Check if transaction is in invalid state */
->>>> +    if (transaction->t_state != T_RUNNING &&
->>>> +        transaction->t_state != T_LOCKED) {
->>>> +        if (current->journal_info == handle)
->>>> +            current->journal_info = NULL;
->>>> +        handle->h_transaction = NULL;
->>>> +        memalloc_nofs_restore(handle->saved_alloc_context);
->>>> +        goto free_and_exit;
->>>> +    }
->>>> +
->>>>     journal = transaction->t_journal;
->>>>     tid = transaction->t_tid;
->>>>
->>>> -- 
->>>> 2.39.2
->>
->>
->>
->> .
->>
+> ---
+> e2fsck/problem.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/e2fsck/problem.c b/e2fsck/problem.c
+> index e433281f..e6f055f2 100644
+> --- a/e2fsck/problem.c
+> +++ b/e2fsck/problem.c
+> @@ -1170,7 +1170,7 @@ static struct e2fsck_problem problem_table[] =3D =
+{
+> { PR_1_INLINE_DATA_NO_ATTR,
+>  /* xgettext:no-c-format */
+>  N_("@i %i has INLINE_DATA_FL flag but @a not found.  "),
+> -  PROMPT_TRUNCATE, 0, 0, 0, 0 },
+> +  PROMPT_TRUNCATE, PR_PREEN_OK, 0, 0, 0 },
+>=20
+> /* Special (device/socket/fifo) file (inode num) has extents
+> * or inline-data flag set */
+> --=20
+> 2.51.0
+>=20
+>=20
+>=20
+>=20
+>=20
 
 
