@@ -1,317 +1,292 @@
-Return-Path: <linux-ext4+bounces-14690-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14691-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kCoQOgC/qmlXWQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14690-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:48:16 +0100
+	id WAf3CDrDqmlXWQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-14691-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 13:06:18 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91ECD21FDFB
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:48:16 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A0D2201BA
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 13:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 933D930E32E9
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 11:45:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BBCEE30900F5
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 12:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE40367F27;
-	Fri,  6 Mar 2026 11:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8045638E108;
+	Fri,  6 Mar 2026 12:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSK/XAQL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PCjBLVlD"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E47339863;
-	Fri,  6 Mar 2026 11:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2E63815E4;
+	Fri,  6 Mar 2026 12:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772797528; cv=none; b=kvhZgoXV4lwqldo0njf8aePZPPqmlyRTjGFDEQprpx+FctDrqmfZhAXLeoXSWK9p7Vcp0N1DTxZG90/Agj7WC++N2/kMnGQYIwzYwbKB4w/DKyWGSDAY/0qe1tiWTG6CRMnKYgKamEotVzpbIaeWT0RTxcoILKGqq6u6TMEfb+w=
+	t=1772798614; cv=none; b=U5EuB+a3ys7VQ28qqJozNh6iajgiRSjUEZe3hPqYwb4zakSK3Cy8LxoW2W6XkGgO60GUVcfydSFs7S40Bh7HmrzZbIU5I9SnoKeiHpCh65WZV0R8496xYU43SzZ/8WYzTvch2w+HemKtw3/+tl2dY1tjY1HQn/Sm6fg6jC/GYmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772797528; c=relaxed/simple;
-	bh=R0Pw6Rvi1Mhd+owNp6fekaCHGfNY8HGW5Ezw3BximRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NrIY+RWaGvHQZ174g2ZeF36YwVuHJQwoSZsM2WQMDlF+rdl5qknTiYiNlIKIrlDeMcle3KbvjHuaueUUAuX+Jq9KuUSWL8m9Sq8iVILNC60FZ4172D0Px4I1LuQ/RevjuPdmGjzuv4+hIF682IbWJGRE/UppS7O3DtCsfyrf37Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSK/XAQL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A66C4CEF7;
-	Fri,  6 Mar 2026 11:45:26 +0000 (UTC)
+	s=arc-20240116; t=1772798614; c=relaxed/simple;
+	bh=CzoqwvSAeRfK44X4Sq+CvuqCGufXKFog8r6S8FJOxVw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=f8U5qjJOB6Qa3ZrRhhxLmYZBy6joJV7uEreoY6X8rxboHZ/LotIz7GNFDJlnZKQTyCmI/l8uBdkl52xigwoGVudKq9sqvlacEdIMLwEhrmBxpadf8HwdS0SLgQiQaYqPgNUX92CJmz+41flZLkSlj6zQCUkrrdFKpNNniMWRjsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PCjBLVlD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1420C2BCB7;
+	Fri,  6 Mar 2026 12:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772797528;
-	bh=R0Pw6Rvi1Mhd+owNp6fekaCHGfNY8HGW5Ezw3BximRg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fSK/XAQLAWrXgjeiTk3XlTolP/BrZo51IJvpeJZGw2osWtvnYdKil+TQMDx8gWiRi
-	 WjuQV6ZeyS/m6ni5W9gNsA2w9RKNJwzanT8/GnfMrboUr9Gbo4aVh2Mn/o2+vlLsjv
-	 4PWo7PC7OublPZdNgrtwgO4Z2w9v6j7fcHKxDxv09GvTy61OlC8iHrQfKGPJGqGONd
-	 M0ALOZf6QGWhuKnQcihp+k2WJXsFw4+ryjYEvUIiElVerrlDn/O4aKeIuaVu+rMseL
-	 zWWevBBNjgHPZpEgylrlPgorL36cHHh2UT5GUH7Mk8QSGuUi3c21N1pC1/msfyBSRQ
-	 8CjN9YQXQSKGA==
-Date: Fri, 6 Mar 2026 11:45:24 +0000
-From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
-To: Tal Zussman <tz2294@columbia.edu>
-Cc: David Howells <dhowells@redhat.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Chris Li <chrisl@kernel.org>, 
-	Kairui Song <kasong@tencent.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>, Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Paulo Alcantara <pc@manguebit.org>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, Steve French <sfrench@samba.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
-	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>, 
-	Qi Zheng <zhengqi.arch@bytedance.com>, linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, linux-ext4@vger.kernel.org, netfs@lists.linux.dev, 
-	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
-	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, gfs2@lists.linux.dev, 
-	linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] folio_batch: Rename PAGEVEC_SIZE to
- FOLIO_BATCH_SIZE
-Message-ID: <56265c07-962d-4bfc-b332-17f04c97429e@lucifer.local>
-References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
- <20260225-pagevec_cleanup-v2-4-716868cc2d11@columbia.edu>
+	s=k20201202; t=1772798613;
+	bh=CzoqwvSAeRfK44X4Sq+CvuqCGufXKFog8r6S8FJOxVw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=PCjBLVlDFqG1oBbiQd+HrQ8rEG3m21Qiku684yY84WX7GTtS+y22sDcetMx6fqlDG
+	 LyaV2QWfjEjHKnaTBhb2ZyNX9SFxkrcFxd8xmBSw10TVnHnhS0zklAYvDZWfy1MhCv
+	 EqAAKKPvBAf8/leoZU2xyvvUC2H2ff6epkVxlixuQAdN30RqgGAAANDm6+QgRlIONP
+	 nSZFLHXIxiEEdhVxKiUpBs4MgDfHXlWKg6jpYf1CJ6BWin5R9K6G5kaUjvZWbwwqHc
+	 /GlMSkLIs98hGrKPSpz99NUzB1chQOGo7EfaFgQI/brIj9+nBjb2M5ZbjJGNoDObHM
+	 NMEjDVji5mrvw==
+Message-ID: <c1845a4b8d35d367953ac6cbfcf91ac36958ba51.camel@kernel.org>
+Subject: Re: [PATCH v3 01/12] vfs: widen inode hash/lookup functions to u64
+From: Jeff Layton <jlayton@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner	
+ <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt	
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams
+ <dan.j.williams@intel.com>, Eric Biggers	 <ebiggers@kernel.org>, "Theodore
+ Y. Ts'o" <tytso@mit.edu>, Muchun Song	 <muchun.song@linux.dev>, Oscar
+ Salvador <osalvador@suse.de>, David Hildenbrand	 <david@kernel.org>, David
+ Howells <dhowells@redhat.com>, Paulo Alcantara	 <pc@manguebit.org>, Andreas
+ Dilger <adilger.kernel@dilger.ca>, Jan Kara	 <jack@suse.com>, Jaegeuk Kim
+ <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,  Trond Myklebust
+ <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, Chuck Lever
+ <chuck.lever@oracle.com>,  NeilBrown <neil@brown.name>, Olga Kornievskaia
+ <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>,  Tom Talpey
+ <tom@talpey.com>, Steve French <sfrench@samba.org>, Ronnie Sahlberg
+ <ronniesahlberg@gmail.com>,  Shyam Prasad N <sprasad@microsoft.com>,
+ Bharath SM <bharathsm@microsoft.com>, Alexander Aring	
+ <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
+ Viacheslav Dubeyko	 <slava@dubeyko.com>, Eric Van Hensbergen
+ <ericvh@kernel.org>, Latchesar Ionkov	 <lucho@ionkov.net>, Dominique
+ Martinet <asmadeus@codewreck.org>, Christian Schoenebeck
+ <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, Marc Dionne	
+ <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, Luis de
+ Bethencourt	 <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>,
+ "Tigran A. Aivazian"	 <aivazian.tigran@gmail.com>, Ilya Dryomov
+ <idryomov@gmail.com>, Alex Markuze	 <amarkuze@redhat.com>, Jan Harkes
+ <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,  Nicolas Pitre <nico@fluxnic.net>,
+ Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, John
+ Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li
+ <frank.li@vivo.com>, Mikulas Patocka	 <mikulas@artax.karlin.mff.cuni.cz>,
+ David Woodhouse <dwmw2@infradead.org>,  Richard Weinberger	
+ <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, Konstantin Komarov	
+ <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
+ Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>,
+ Mike Marshall	 <hubcap@omnibond.com>, Martin Brandenburg
+ <martin@omnibond.com>, Miklos Szeredi	 <miklos@szeredi.hu>, Anders Larsen
+ <al@alarsen.net>, Zhihao Cheng	 <chengzhihao1@huawei.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Naohiro Aota	 <naohiro.aota@wdc.com>, Johannes
+ Thumshirn <jth@kernel.org>, John Johansen	 <john.johansen@canonical.com>,
+ Paul Moore <paul@paul-moore.com>, James Morris	 <jmorris@namei.org>, "Serge
+ E. Hallyn" <serge@hallyn.com>, Mimi Zohar	 <zohar@linux.ibm.com>, Roberto
+ Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin
+ <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, Fan
+ Wu	 <wufan@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler
+ <casey@schaufler-ca.com>, Alex Deucher	 <alexander.deucher@amd.com>,
+ Christian =?ISO-8859-1?Q?K=F6nig?=	 <christian.koenig@amd.com>, David
+ Airlie <airlied@gmail.com>, Simona Vetter	 <simona@ffwll.ch>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Eric Dumazet	 <edumazet@google.com>, Kuniyuki
+ Iwashima <kuniyu@google.com>, Paolo Abeni	 <pabeni@redhat.com>, Willem de
+ Bruijn <willemb@google.com>, "David S. Miller"	 <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Simon Horman	 <horms@kernel.org>, Oleg
+ Nesterov <oleg@redhat.com>, Peter Zijlstra	 <peterz@infradead.org>, Ingo
+ Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland	 <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,  Jiri Olsa
+ <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, Adrian Hunter
+ <adrian.hunter@intel.com>,  James Clark <james.clark@linaro.org>, "Darrick
+ J. Wong" <djwong@kernel.org>, Martin Schiller <ms@dev.tdt.de>,  Eric Paris
+ <eparis@redhat.com>, Joerg Reuter <jreuter@yaina.de>, Marcel Holtmann
+ <marcel@holtmann.org>,  Johan Hedberg <johan.hedberg@gmail.com>, Luiz
+ Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp	
+ <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, David
+ Ahern	 <dsahern@kernel.org>, Neal Cardwell <ncardwell@google.com>, Steffen
+ Klassert	 <steffen.klassert@secunet.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>,  Remi Denis-Courmont	 <courmisch@gmail.com>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,  Xin Long
+ <lucien.xin@gmail.com>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
+ Fijalkowski	 <maciej.fijalkowski@intel.com>, Stanislav Fomichev
+ <sdf@fomichev.me>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer	 <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, 	linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-trace-kernel@vger.kernel.org,
+ nvdimm@lists.linux.dev, 	fsverity@lists.linux.dev, linux-mm@kvack.org,
+ netfs@lists.linux.dev, 	linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, 	linux-nfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, 	samba-technical@lists.samba.org,
+ linux-nilfs@vger.kernel.org, 	v9fs@lists.linux.dev,
+ linux-afs@lists.infradead.org, autofs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu,
+ ecryptfs@vger.kernel.org, 	linux-mtd@lists.infradead.org,
+ jfs-discussion@lists.sourceforge.net, 	ntfs3@lists.linux.dev,
+ ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+	linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com, 
+	linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, 
+	linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org,
+ linux-x25@vger.kernel.org, 	audit@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, 	linux-can@vger.kernel.org,
+ linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+Date: Fri, 06 Mar 2026 07:03:15 -0500
+In-Reply-To: <aamSFgXhrORAJLBC@infradead.org>
+References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
+	 <20260304-iino-u64-v3-1-2257ad83d372@kernel.org>
+	 <aamSFgXhrORAJLBC@infradead.org>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260225-pagevec_cleanup-v2-4-716868cc2d11@columbia.edu>
-X-Rspamd-Queue-Id: 91ECD21FDFB
+X-Rspamd-Queue-Id: B3A0D2201BA
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu,dilger.ca,manguebit.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,ursulin.net,fb.com,dubeyko.com,linux.dev,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org];
-	TAGGED_FROM(0.00)[bounces-14690-lists,linux-ext4=lfdr.de];
+	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,infradead.org,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.or
+ g];
+	TAGGED_FROM(0.00)[bounces-14691-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[97];
+	RCPT_COUNT_GT_50(0.00)[170];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,columbia.edu:email,lucifer.local:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,lst.de:email]
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 06:44:28PM -0500, Tal Zussman wrote:
-> struct pagevec no longer exists. Rename the macro appropriately.
->
-> Signed-off-by: Tal Zussman <tz2294@columbia.edu>
+On Thu, 2026-03-05 at 06:24 -0800, Christoph Hellwig wrote:
+> > =C2=A0extern struct inode *ilookup5_nowait(struct super_block *sb,
+> > -		unsigned long hashval, int (*test)(struct inode *, void *),
+> > +		u64 hashval, int (*test)(struct inode *, void *),
+> > =C2=A0		void *data, bool *isnew);
+> > -extern struct inode *ilookup5(struct super_block *sb, unsigned long ha=
+shval,
+> > +extern struct inode *ilookup5(struct super_block *sb, u64 hashval,
+> > =C2=A0		int (*test)(struct inode *, void *), void *data);
+>=20
+> ...
+>=20
+> Can you please drop all these pointless externs while you're at it?
+>=20
 
-Nice thanks for this! LGTM, so:
+I was planning to do that, but then Christian merged it!
 
-Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+I'll do a patch on top of this that does this in the range of fs.h that
+the patch touches. Christian can throw it on top of the series, and
+that shouldn't be too bad for backports.
 
-> ---
->  fs/btrfs/extent_io.c        | 4 ++--
->  include/linux/folio_batch.h | 6 +++---
->  include/linux/folio_queue.h | 6 +++---
->  mm/shmem.c                  | 4 ++--
->  mm/swap.c                   | 2 +-
->  mm/swap_state.c             | 2 +-
->  mm/truncate.c               | 6 +++---
->  7 files changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c373d113f1e7..d82ca509503f 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2095,13 +2095,13 @@ static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
->  struct eb_batch {
->  	unsigned int nr;
->  	unsigned int cur;
-> -	struct extent_buffer *ebs[PAGEVEC_SIZE];
-> +	struct extent_buffer *ebs[FOLIO_BATCH_SIZE];
->  };
->
->  static inline bool eb_batch_add(struct eb_batch *batch, struct extent_buffer *eb)
->  {
->  	batch->ebs[batch->nr++] = eb;
-> -	return (batch->nr < PAGEVEC_SIZE);
-> +	return (batch->nr < FOLIO_BATCH_SIZE);
->  }
->
->  static inline void eb_batch_init(struct eb_batch *batch)
-> diff --git a/include/linux/folio_batch.h b/include/linux/folio_batch.h
-> index a2f3d3043f7e..b45946adc50b 100644
-> --- a/include/linux/folio_batch.h
-> +++ b/include/linux/folio_batch.h
-> @@ -12,7 +12,7 @@
->  #include <linux/types.h>
->
->  /* 31 pointers + header align the folio_batch structure to a power of two */
-> -#define PAGEVEC_SIZE	31
-> +#define FOLIO_BATCH_SIZE	31
->
->  struct folio;
->
-> @@ -29,7 +29,7 @@ struct folio_batch {
->  	unsigned char nr;
->  	unsigned char i;
->  	bool percpu_pvec_drained;
-> -	struct folio *folios[PAGEVEC_SIZE];
-> +	struct folio *folios[FOLIO_BATCH_SIZE];
->  };
->
->  /**
-> @@ -58,7 +58,7 @@ static inline unsigned int folio_batch_count(const struct folio_batch *fbatch)
->
->  static inline unsigned int folio_batch_space(const struct folio_batch *fbatch)
->  {
-> -	return PAGEVEC_SIZE - fbatch->nr;
-> +	return FOLIO_BATCH_SIZE - fbatch->nr;
->  }
->
->  /**
-> diff --git a/include/linux/folio_queue.h b/include/linux/folio_queue.h
-> index 0d3765fa9d1d..f6d5f1f127c9 100644
-> --- a/include/linux/folio_queue.h
-> +++ b/include/linux/folio_queue.h
-> @@ -29,12 +29,12 @@
->   */
->  struct folio_queue {
->  	struct folio_batch	vec;		/* Folios in the queue segment */
-> -	u8			orders[PAGEVEC_SIZE]; /* Order of each folio */
-> +	u8			orders[FOLIO_BATCH_SIZE]; /* Order of each folio */
->  	struct folio_queue	*next;		/* Next queue segment or NULL */
->  	struct folio_queue	*prev;		/* Previous queue segment of NULL */
->  	unsigned long		marks;		/* 1-bit mark per folio */
->  	unsigned long		marks2;		/* Second 1-bit mark per folio */
-> -#if PAGEVEC_SIZE > BITS_PER_LONG
-> +#if FOLIO_BATCH_SIZE > BITS_PER_LONG
->  #error marks is not big enough
->  #endif
->  	unsigned int		rreq_id;
-> @@ -70,7 +70,7 @@ static inline void folioq_init(struct folio_queue *folioq, unsigned int rreq_id)
->   */
->  static inline unsigned int folioq_nr_slots(const struct folio_queue *folioq)
->  {
-> -	return PAGEVEC_SIZE;
-> +	return FOLIO_BATCH_SIZE;
->  }
->
->  /**
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 149fdb051170..5e7dcf5bc5d3 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1113,7 +1113,7 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, uoff_t lend,
->  	pgoff_t start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
->  	pgoff_t end = (lend + 1) >> PAGE_SHIFT;
->  	struct folio_batch fbatch;
-> -	pgoff_t indices[PAGEVEC_SIZE];
-> +	pgoff_t indices[FOLIO_BATCH_SIZE];
->  	struct folio *folio;
->  	bool same_folio;
->  	long nr_swaps_freed = 0;
-> @@ -1510,7 +1510,7 @@ static int shmem_unuse_inode(struct inode *inode, unsigned int type)
->  	struct address_space *mapping = inode->i_mapping;
->  	pgoff_t start = 0;
->  	struct folio_batch fbatch;
-> -	pgoff_t indices[PAGEVEC_SIZE];
-> +	pgoff_t indices[FOLIO_BATCH_SIZE];
->  	int ret = 0;
->
->  	do {
-> diff --git a/mm/swap.c b/mm/swap.c
-> index 2e517ede6561..78b4aa811fc6 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -1018,7 +1018,7 @@ EXPORT_SYMBOL(folios_put_refs);
->  void release_pages(release_pages_arg arg, int nr)
->  {
->  	struct folio_batch fbatch;
-> -	int refs[PAGEVEC_SIZE];
-> +	int refs[FOLIO_BATCH_SIZE];
->  	struct encoded_page **encoded = arg.encoded_pages;
->  	int i;
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index a0c64db2b275..6313b59d7eab 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -385,7 +385,7 @@ void free_folio_and_swap_cache(struct folio *folio)
->  void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
->  {
->  	struct folio_batch folios;
-> -	unsigned int refs[PAGEVEC_SIZE];
-> +	unsigned int refs[FOLIO_BATCH_SIZE];
->
->  	folio_batch_init(&folios);
->  	for (int i = 0; i < nr; i++) {
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index df0b7a7e6aff..2931d66c16d0 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -369,7 +369,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  	pgoff_t		start;		/* inclusive */
->  	pgoff_t		end;		/* exclusive */
->  	struct folio_batch fbatch;
-> -	pgoff_t		indices[PAGEVEC_SIZE];
-> +	pgoff_t		indices[FOLIO_BATCH_SIZE];
->  	pgoff_t		index;
->  	int		i;
->  	struct folio	*folio;
-> @@ -534,7 +534,7 @@ EXPORT_SYMBOL(truncate_inode_pages_final);
->  unsigned long mapping_try_invalidate(struct address_space *mapping,
->  		pgoff_t start, pgoff_t end, unsigned long *nr_failed)
->  {
-> -	pgoff_t indices[PAGEVEC_SIZE];
-> +	pgoff_t indices[FOLIO_BATCH_SIZE];
->  	struct folio_batch fbatch;
->  	pgoff_t index = start;
->  	unsigned long ret;
-> @@ -672,7 +672,7 @@ int folio_unmap_invalidate(struct address_space *mapping, struct folio *folio,
->  int invalidate_inode_pages2_range(struct address_space *mapping,
->  				  pgoff_t start, pgoff_t end)
->  {
-> -	pgoff_t indices[PAGEVEC_SIZE];
-> +	pgoff_t indices[FOLIO_BATCH_SIZE];
->  	struct folio_batch fbatch;
->  	pgoff_t index;
->  	int i;
->
-> --
-> 2.39.5
->
+> Otherwise looks good:
+>=20
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+Thanks for the review!
+--=20
+Jeff Layton <jlayton@kernel.org>
 
