@@ -1,179 +1,211 @@
-Return-Path: <linux-ext4+bounces-14686-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14687-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iPIxA4K3qmkiVwEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14686-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:16:18 +0100
+	id CN6yFgG+qmlXWQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-14687-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:44:01 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F38421F882
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:16:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFD521FCE2
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 12:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 08D1930488E3
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 11:16:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2851A30C4C90
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 11:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4313E3630A6;
-	Fri,  6 Mar 2026 11:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6742D3822A3;
+	Fri,  6 Mar 2026 11:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="NR8dMX02"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VmPUWeBa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A9732F748
-	for <linux-ext4@vger.kernel.org>; Fri,  6 Mar 2026 11:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CF02DC35C;
+	Fri,  6 Mar 2026 11:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772795774; cv=none; b=drROowgQO5WX+pkBiHGsuNs9Kpaz+Jb1H/uIcIs8uQTlCHPm5wbjC1xcO/JaBuQX6tGsepxujU3xqkVgvbppOP3Z3eplUSvnHiBcUgXlnZJY/noG/DdE9K9hOhi2vBLclge3+9fCORMMMyqEUytKFwtotFNhyCirh1bK4Xj6/W8=
+	t=1772797343; cv=none; b=I3C+QrI70rJYxMKwH7PaFThTVEg5Eoy2gJhEq+HMAREqAv/2c3xsucRupL59oco5Q7kw+s9NJZtrwtiswt3rT6KwcI1gzakqnKvJlVQJ+IJleZFtNDiLPy1HeOiErcObz/QWfvMSgKPWSlsK0e7WxgLfJ/CQpqQEKFuk0OqePVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772795774; c=relaxed/simple;
-	bh=mv/RHve6D2xvhbuvCKOwfz3uc+PVsrnRe5rvLcPbLog=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=nOW9DlT9hwVSDfIEcAY9Nvkvth2oXiGi9gPG+2GRBiVAjC7w0tbiUV3/AtWRZefcx4qxBtMJa04xYfX1rX+dWWsVI4bUye7qPucRtTBWq+4NYfmDxZdHnn2MXljTxkS0TsMSLudcuj+wkUF8NyV3jDv+kj1ccOJkrp0o5Q8VnwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=NR8dMX02; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-829ac8d56c5so38429b3a.3
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Mar 2026 03:16:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1772795772; x=1773400572; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MB1vOMP+Nolx+MoTaN64094W5fQe56/R4b51YXJC8I8=;
-        b=NR8dMX02rG2ILtA/MW3OKgJdNu9GcaJ/5o6EXK3wBkdRq89oPqVLVUydDrYdBYi9Sm
-         sWlXNt61KFNAa98IrXtkc/KzM+fDkDJPIeVrkeWkwinUHtu5eEB8xmeHLbisastnD3/y
-         VHtinC9b/ml/fSU5zr64x6RukrOcDyZ/w7lShmRdd+ec9PEzHkQmDrxFxqhKBzjNmTV0
-         WkENdQes2lZ9d1NI4n5N7ViQXHKcH7sCfYN7Q8+z1t7Oz4lMJghrupRdtMI1rQM1VGhZ
-         tAxH6kg9cJtLNuSoHfMIPpRMFJR8V7qA/nY/tdI6FuLaB8P0Y8zNkFA+CdVUCKT+Vocv
-         nRQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772795772; x=1773400572;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MB1vOMP+Nolx+MoTaN64094W5fQe56/R4b51YXJC8I8=;
-        b=ui/WT6lJ5AZ/JWuti8sCoJtiHjGMUe6fpaI4cjkjLh8etxXeETeGhTzpJ1iyiRKs0I
-         EkZHc73/bkRNsldg9KGnQW+rnFmR5318Qx4QrWF+bsiKpy12LfbFFSXInuCP/cwJb9md
-         jd4HEsptrjrdidF5rKmOLn77sgN8Od4wAHwNB472qdl+b1X060lTxo6KOeT8fuW2/A8F
-         3er5gaJXwKFfKxSJlWLkzF1KlTSvsoQ3I32oP1B2fR+wMKp70c96CV0Qve+unxAg0HOK
-         BJnRl7WexApqo/fpn/fz1yySxjLWF8bBm+65pqzywP5yETo4XDQ1HTnmjxZUzL3Q9XEZ
-         tgPQ==
-X-Gm-Message-State: AOJu0Ywp7K+1vnKqE+FSLqA/fiqTnskv9P725PUVDClaE7lUOpRf8Zzz
-	oxaMx8tnHZhy6QQ1ZqhYKZiE4hNXNtQs64AntaE/YuXWIDo4lY++vOH2a1za5FPWhX4=
-X-Gm-Gg: ATEYQzwcrR8NvNZH9gMoWZdoyRWu5JAAA5NOpIXTyyCbZLp0WjSbG76vTs8+5zF2I8b
-	Xt4z+cfLWpcWwM2sp1fbDoriNxjacRmgxD+j+JkcpwCisOIJULbReLvjytXHr/E78PVVJHyf57x
-	GS9UuuLBoVcAw9HNSqaCDiWztyw2XJmQsBCfTe+Qh9O4HpdD+ElJS2/3G4VljRIy8MTwvO2Y2OB
-	JHXpoVx6UhsXLVW6Pc+bQd0cPpwehkGTNB1SOL1yBbWeURXHtoIyS5b95hrdyo0tQd9nNKCLM4p
-	6/Q0O6CuHst+KfYh2WOTiJ1NDqlTePJecXFTeaX5nlplojT2/B5B/wfpc0gsqp17ek55mu15zB/
-	+J5isgwYlbYBjsDL9UmAgyQPfK8a3O62sWhqOjkrrPW9YMEj6WlQl1XhfRBwcIlqm4L9YdhIcYq
-	yMLFcsVBB72qW/IZt2pFXmId/sWUUXJcEJQhY02H+QgLDeYwevjfitoOpD/ZKjCAHmHpU5BE2IF
-	Pes8g==
-X-Received: by 2002:a05:6a00:1d9f:b0:829:9a7b:db84 with SMTP id d2e1a72fcca58-829a2f319d6mr1563257b3a.49.1772795772482;
-        Fri, 06 Mar 2026 03:16:12 -0800 (PST)
-Received: from smtpclient.apple (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-829a48647e8sm1524999b3a.33.2026.03.06.03.16.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Mar 2026 03:16:11 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1772797343; c=relaxed/simple;
+	bh=CA2vkPrs+KBRPBb6HWrkcW5f3nw7u13fgvwPYP4Knsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KqiqSnvVyhN9EyJpzMQTN7IFvE7tX0PKB+e6rGlqNaeN7m5tFfRaHJYcWQkrycOh+hOxUMvRusV4pX4I7647mVKeP45FQSQB4B4+wj9JScX0IFWLiTiN++X+lQeZQD4yBr0WpnN2cayAy59YPnHh+F7+A6mjxBN3YyJRrHSL0eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VmPUWeBa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC4FAC4CEF7;
+	Fri,  6 Mar 2026 11:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772797342;
+	bh=CA2vkPrs+KBRPBb6HWrkcW5f3nw7u13fgvwPYP4Knsw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VmPUWeBaQkwHyNWrIgE+k6VTvF58sgBu9LcG+6SertLT2ce7KXBFZ0We86Id7A25U
+	 Q+HpvLqR5cHvWiwcCko03D2oM0ZKE14Cr+BxZZDDmzCKdHkCFk9RqTfMemJZDDnloC
+	 Ew767ufZJ7CKXy/CG6eJzT3vDrdM6zE9ZYv22SYiUP3CREBCfUFzOy3pucv0xCVXiW
+	 9MsH74masuCdJlZ8BntBknVUwyKbUCdud5oUJoRnrzrGTDqUqCnck040huUBGNP38a
+	 rVd+D+l7txMQlbfz48dBDZDt3rCVTj4/qKf0/Air3/s23aXm7SQiY2Tv5T9Owh5nxk
+	 DlcAdpF9cammw==
+Date: Fri, 6 Mar 2026 11:42:19 +0000
+From: "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>
+To: Tal Zussman <tz2294@columbia.edu>
+Cc: David Howells <dhowells@redhat.com>, 
+	Marc Dionne <marc.dionne@auristor.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Chris Li <chrisl@kernel.org>, 
+	Kairui Song <kasong@tencent.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>, Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Paulo Alcantara <pc@manguebit.org>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
+	Joseph Qi <joseph.qi@linux.alibaba.com>, Steve French <sfrench@samba.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Simona Vetter <simona@ffwll.ch>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
+	Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
+	Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
+	Viacheslav Dubeyko <slava@dubeyko.com>, Andreas Gruenbacher <agruenba@redhat.com>, 
+	Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>, 
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
+	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>, Pedro Falcato <pfalcato@suse.de>, 
+	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>, Hugh Dickins <hughd@google.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	nvdimm@lists.linux.dev, linux-ext4@vger.kernel.org, netfs@lists.linux.dev, 
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org, 
+	samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
+	linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org, gfs2@lists.linux.dev, 
+	linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] mm: Remove stray references to struct pagevec
+Message-ID: <3f262490-ebed-49b5-99ff-7a8aaa12cada@lucifer.local>
+References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
+ <20260225-pagevec_cleanup-v2-1-716868cc2d11@columbia.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.100.1.1.5\))
-Subject: Re: [PATCH e2fsprogs] e2fsck: preen inline data no attr
-From: Andreas Dilger <adilger@dilger.ca>
-In-Reply-To: <3188418.mvXUDI8C0e@daniel-desktop3>
-Date: Fri, 6 Mar 2026 04:16:00 -0700
-Cc: linux-ext4@vger.kernel.org,
- Theodore Tso <tytso@mit.edu>,
- "Darrick J. Wong" <djwong@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DEC84F37-1DE2-48D2-B9C2-40E3A6FE8451@dilger.ca>
-References: <3188418.mvXUDI8C0e@daniel-desktop3>
-To: Daniel Tang <danielzgtg.opensource@gmail.com>
-X-Mailer: Apple Mail (2.3864.100.1.1.5)
-X-Rspamd-Queue-Id: 5F38421F882
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260225-pagevec_cleanup-v2-1-716868cc2d11@columbia.edu>
+X-Rspamd-Queue-Id: BCFD521FCE2
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[dilger-ca.20230601.gappssmtp.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[dilger.ca];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-14686-lists,linux-ext4=lfdr.de];
-	DKIM_TRACE(0.00)[dilger-ca.20230601.gappssmtp.com:+];
-	RCPT_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu,dilger.ca,manguebit.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,ursulin.net,fb.com,dubeyko.com,linux.dev,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-14687-lists,linux-ext4=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[97];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adilger@dilger.ca,linux-ext4@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[ljs@kernel.org,linux-ext4@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+	TAGGED_RCPT(0.00)[linux-ext4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,columbia.edu:email,lucifer.local:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Mar 4, 2026, at 06:56, Daniel Tang <danielzgtg.opensource@gmail.com> =
-wrote:
->=20
-> I don't like being forcibly dropped into an emergency shell to =
-truncate
-> pidfiles and other temporary files every time my tablet uncleanly =
-shuts
-> down.
->=20
-> This seems safe. The only thing that should be erased is the size.
-> The removed inline data flag is remembered by the extent flag being
-> absent. There is no data to lose because there are no extents/blocks,
-> and the system.data attribute is already diagnosed missing.
->=20
-> Signed-off-by: Daniel Tang <danielzgtg.opensource@gmail.com>
-> Link: https://github.com/tytso/e2fsprogs/pull/268
+On Wed, Feb 25, 2026 at 06:44:25PM -0500, Tal Zussman wrote:
+> struct pagevec was removed in commit 1e0877d58b1e ("mm: remove struct
+> pagevec"). Remove remaining forward declarations and change
+> __folio_batch_release()'s declaration to match its definition.
+>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+> Acked-by: Chris Li <chrisl@kernel.org>
+> Signed-off-by: Tal Zussman <tz2294@columbia.edu>
 
-This seems pretty safe.
+LGTM, so:
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca =
-<mailto:adilger@dilger.ca>>
+Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 
 > ---
-> e2fsck/problem.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/e2fsck/problem.c b/e2fsck/problem.c
-> index e433281f..e6f055f2 100644
-> --- a/e2fsck/problem.c
-> +++ b/e2fsck/problem.c
-> @@ -1170,7 +1170,7 @@ static struct e2fsck_problem problem_table[] =3D =
-{
-> { PR_1_INLINE_DATA_NO_ATTR,
->  /* xgettext:no-c-format */
->  N_("@i %i has INLINE_DATA_FL flag but @a not found.  "),
-> -  PROMPT_TRUNCATE, 0, 0, 0, 0 },
-> +  PROMPT_TRUNCATE, PR_PREEN_OK, 0, 0, 0 },
->=20
-> /* Special (device/socket/fifo) file (inode num) has extents
-> * or inline-data flag set */
-> --=20
-> 2.51.0
->=20
->=20
->=20
->=20
->=20
-
+>  fs/afs/internal.h       | 1 -
+>  fs/f2fs/f2fs.h          | 2 --
+>  include/linux/pagevec.h | 2 +-
+>  include/linux/swap.h    | 2 --
+>  4 files changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+> index 009064b8d661..599353c33337 100644
+> --- a/fs/afs/internal.h
+> +++ b/fs/afs/internal.h
+> @@ -31,7 +31,6 @@
+>
+>  #define AFS_CELL_MAX_ADDRS 15
+>
+> -struct pagevec;
+>  struct afs_call;
+>  struct afs_vnode;
+>  struct afs_server_probe;
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index bb34e864d0ef..d9e8531a5301 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -28,8 +28,6 @@
+>  #include <linux/fscrypt.h>
+>  #include <linux/fsverity.h>
+>
+> -struct pagevec;
+> -
+>  #ifdef CONFIG_F2FS_CHECK_FS
+>  #define f2fs_bug_on(sbi, condition)	BUG_ON(condition)
+>  #else
+> diff --git a/include/linux/pagevec.h b/include/linux/pagevec.h
+> index 63be5a451627..007affabf335 100644
+> --- a/include/linux/pagevec.h
+> +++ b/include/linux/pagevec.h
+> @@ -93,7 +93,7 @@ static inline struct folio *folio_batch_next(struct folio_batch *fbatch)
+>  	return fbatch->folios[fbatch->i++];
+>  }
+>
+> -void __folio_batch_release(struct folio_batch *pvec);
+> +void __folio_batch_release(struct folio_batch *fbatch);
+>
+>  static inline void folio_batch_release(struct folio_batch *fbatch)
+>  {
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 0effe3cc50f5..4b1f13b5bbad 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -20,8 +20,6 @@ struct notifier_block;
+>
+>  struct bio;
+>
+> -struct pagevec;
+> -
+>  #define SWAP_FLAG_PREFER	0x8000	/* set if swap priority specified */
+>  #define SWAP_FLAG_PRIO_MASK	0x7fff
+>  #define SWAP_FLAG_DISCARD	0x10000 /* enable discard for swap */
+>
+> --
+> 2.39.5
+>
 
