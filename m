@@ -1,251 +1,179 @@
-Return-Path: <linux-ext4+bounces-14674-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14675-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iINXH75FqmnxOQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14674-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 04:10:54 +0100
+	id +GjOEj1pqmlORAEAu9opvQ
+	(envelope-from <linux-ext4+bounces-14675-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 06:42:21 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4FB421AE92
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 04:10:53 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id D615221BC54
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 06:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A917330789CB
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 03:09:35 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BF3C7302524C
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 05:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C74536C0C5;
-	Fri,  6 Mar 2026 03:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5566036C0D9;
+	Fri,  6 Mar 2026 05:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="dAwPI33N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lMohkKru"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C06B36B05B
-	for <linux-ext4@vger.kernel.org>; Fri,  6 Mar 2026 03:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A66176FB1
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Mar 2026 05:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.217.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772766569; cv=pass; b=Xf4onJC9nMjOAQV4E/xy2YjKyydnwPVbF+c6qXNlQFxnesGDgfocbDRtielT+kmu8k7SdRjlGk/TKDRCLfoBdoganS/iEdFzUCOOeKICmCv3GkvLzsN18jYjrVkmo9f66g7wpMdcWGk10z5EevQohbNgpiBb29vXMbv23cpTBa4=
+	t=1772775738; cv=pass; b=DOwsadPjjmEPQSmIeYGZBRqlYWea9h3wogKq2LhLcD3zaYU9nb8p52/G9MAioQKULUubzOL6m9uyEo7qYdPnVt1Imo8rgn/JPxJxFdejRMnbYz15kY7/s2Fdu++CY1SCy0xwYOTm672E7dL6XJRHeXbcgJ7EbI41SJ0tLxGwQXY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772766569; c=relaxed/simple;
-	bh=bviOEAiclB40zHgWtMns3qOTI6tH10B4GOXwr6aNFqE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NObUJn+H+iwKdadKmQKVRPn5QqyboyZwBoayThy/v9u6mNxwsBEaybWF7XgZyRYQOwrLdDg7vn7Gx4UoUsYSJQaltMQGqXF4UQ1NMQoCnmDYyQjnOW6K6L6lpBIoUWdsxscnU8FOhcbD28Hntl/+XfOjqlPrNs/bPIuNqRHV9KE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=dAwPI33N; arc=pass smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3597b474cbdso3158033a91.1
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Mar 2026 19:09:25 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772766565; cv=none;
+	s=arc-20240116; t=1772775738; c=relaxed/simple;
+	bh=Tx6xGtCsEqR8ulR7rnTo7nAJacfroyqUnQD4Hvdrn9s=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=IvFJdgNn4G1Df9JFvq69590VZnEG7EsOVGydvWEft5oBmpMsk+okwyKp/ZQlX++M5HfWQg45AzxqBk1YaswEQynrUQJ89FNIzUOqR24+k3QlJ49ICRrUlJMQnyPmaqj+q5/bpprPo3u3uRt422I7ioaoW0aIbRjmpuArEzShfSU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lMohkKru; arc=pass smtp.client-ip=209.85.217.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-5ffa277c115so1585818137.3
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Mar 2026 21:42:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772775736; cv=none;
         d=google.com; s=arc-20240605;
-        b=b9GFxZ8/1ScFXD3tf5JNyO0RebgG6EUp6QZcxUcUe28XV6NXGVmdw+UQ3/J+KwZQtl
-         a/cQbIXq7l7F86kZDQWuHQ3ZubBtLia2qUQFHZjBO/1tkgTiI5PK3qsF9ZgQlqkSQe5A
-         D2PRZJYXxK9yPD20o02/pC/AUyXRigHLxLVj78Gk3bzP8FiNXxiuEwTIjrUNZHlf/+XA
-         HXIYJ/SZgW7XJ3nBObfrNDDldWCwMLDyhJ2U7jMPt0f17EKmcnr4QfM8XE+qBepJGtp8
-         jODz2h8TPjH3CdelWSqHOpXIjNriMumVpcmSMTPkjmiknS0IvfocP2F9cphKcMXjWNoL
-         oRHg==
+        b=QdSePAkmU6DHX0wOqJ+PdgIHwZLplGcduFcZsubAHtH1V2s4xC7gSXGZU7Rkk1QZis
+         mfFMO15gVCEbQx+vwZJWAudTpDxqss18GnBBR4V+/Nw9pBlHafFieyAHdD68RG96WK44
+         mHZo5PaM1azovpcpTweP/4bHtlSwDZgWhRNmn/VxjFDSvhc3plxVUEWRERo8uIDz1AZ9
+         IOyCX9KZYKn7TWeaIXJmURXkjRIefnqirgpLxYedh9tuadRVtWAtoFGk6lQ3uioN8fxl
+         FlSole+WOpBmAIcgn57rZhNdfdcVV5HpPI4N2A4Ba0CydzQc4eSgPS5/dZOh1OJVJ8JJ
+         fK/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=a2wyFmqtgQuSSxu/y1lHXpYQVnaUEjD/9HUkzSu97q4=;
-        fh=ypvL028vjsyQc+RTBB53helv8HdEfs7j3pTF7sS91E0=;
-        b=P/+ydAg6134wcfI/89+/x+DVRGeqCIxCb2GowvrrOv2b/JUupDzJc8GEyVbEfQPTCc
-         C214Y3bYu+yfgPx/0x4o6AhSdyRG0XQtXvkP73qsLVlhTKMFlUhe5AahPZhVwMinlSuJ
-         A5V7QfKMBHnBErgG1tmhPZMEW4rd2Dxb+CfwGMlsQv+oUzQ3vCct/mGRm0SlfJjxouSg
-         LySk2knSJY3PX2YexRV+AcV+NlkKyD8oPBr0LQ2DZIYIW6pKCer4Xepzc/kq+8SzTLBQ
-         kgvkJ/xyQ+9uBWWflmWmiifddcGj2b5jAs0e1ShJrKdBCwGe1ObVd6IaAxvf8960nDGv
-         8muQ==;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=Tx6xGtCsEqR8ulR7rnTo7nAJacfroyqUnQD4Hvdrn9s=;
+        fh=iIqum7rtdLWpMI6fq+TuzpiLHiccG2gmNmcyEJYeeTA=;
+        b=TNy+k7+QSRMpsFq8XTFHyU5uJRUJ1LcpzzHjzzdVoe9wiDRgII8q7fVxR3QGLBodM3
+         uj6gidT2/Mc/VORn4LJuGfnlxniAdGsgW+4mM5jAzVta4yr/rVBDCNKk2kgHjrcyYEF3
+         tvJSJE7vOeYAp0dSyl8n5hw5PuuvKQQnnN28qL2YESg+xYM2sU52s75rMTL1UMhyCJkF
+         JBkLyKAFUz5MEy6erNN9og323N11+9Bi+AipGfndq7c0M2nxb0mOeRrEI++mqyCP3pam
+         X/TljKpz4agOhPKQjeBM45seESkl4g4p0zapNExs2+9H4MxuGqtMNQjTXN0s/kN85P0k
+         n6Jg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1772766565; x=1773371365; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a2wyFmqtgQuSSxu/y1lHXpYQVnaUEjD/9HUkzSu97q4=;
-        b=dAwPI33NE0I1N7/Ob8GYMBqsbwtzcp+gp2GDnYiH04YPQzdL4RUvdUR0iBjC13xcQv
-         aMlFvamolK9EzpBi4IgqFSnNpby7fEcumrjWtlKePL62YAyLDCmP7hU8YhE4e5dTV4im
-         bxKYh3oOr1YE19tfvZlpSAD+OmVZB0B+qCCPL7+9ujo1/bE5Vg3GerBiI72kjcw8sVjb
-         lkjdL/w3VuY7xlT09hsIXHjJpUJEi/Ru/lQnfTbU8FKYq4PXRFBSV8fwkeEqIgfI8cIW
-         ZF0zTRPVDBbS2bScfd71WgeyHuBjROxPuT+4Rc9LFHrrJ3RGMuKypOfKDAdxE+j0N1PI
-         Ht5A==
+        d=gmail.com; s=20230601; t=1772775736; x=1773380536; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Tx6xGtCsEqR8ulR7rnTo7nAJacfroyqUnQD4Hvdrn9s=;
+        b=lMohkKruMbo0IZoSpBlASWOxZUct5atK4PsT4U0mO9bgBt9nkI0NDk4x5CFWNdJOGN
+         BIXA3Q0TJJF6tawI0FgbKuKnP5tRQbQ2VuM07HeXtBO0Ne9OEdpcE5sYlkNkXMn/bWbJ
+         qmt7wPD70VMRRdeGtXpjgmT0eZoeHOcLdCHTIlAXbuOD9fxm8obg9abShl5yfoaqJ9H3
+         ennFMxilS7fbe1Z5EfwDfcTFCZhyIFcN+UuOmsCTntoZxHNCuO+jbuxQwUnJIQLLiCMj
+         tgtLI1HrZmKtj4eRxBj/YIUI98T0RQFMqfKKyux29u103F4EDKILv2C1ske52zrhl5Dq
+         Atcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772766565; x=1773371365;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=a2wyFmqtgQuSSxu/y1lHXpYQVnaUEjD/9HUkzSu97q4=;
-        b=BJK0kjta5iEjnG+mE29j4FjRIGdTM74dS7twoddvfk+a0CqKL3/5Br/IeyLxrPETnb
-         MaR2+S9IYC1T/TkM2AM4r7fKToRViiKHgcHxYsCaPedcdR9i0tBQGjusRGohNNAmeynl
-         JGEC0hGjN3YWbIa1I8Sn5TbMLzTrKxbZrcDK4Zao50dtoWeMK/DYJSz4E5b2W8zWYLVk
-         xKvl29fPzAuMWoUSCRXV1HKyGi0a2deCDXkTRv3R3MOyeTx7/JrWmQfFX89On+CyJ4iW
-         e+/oZ3CdAer0UE0idFXBxNFUQiyjJ7ibOGnmwbo0AjqK+xWDAflcIp/mPRpQt3ixNnw+
-         E12Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXVVvbrPbaVRVFmS5OzbF/RS43G6Ab1buLP0KoO/H6oyfgCHTAqHQLfJuzMvaCECdQ5g3VIxfiODuqt@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKtV/9P3m7Y5RP2qKsXAfuf1g/DV9e0r10WNKgXxaUvVmfDxN+
-	sf8i9RhpzDfEfT0xuVwyErzMcNIUTcFbkUXlbtqnHFRFWVUqHoTIQcaQsUPknyOo+DfEYu7fiKv
-	j6E9PxByaNGhdohPcqQtVXMvsm+d4pcmJsqbXF1/n
-X-Gm-Gg: ATEYQzxT4wugKrm7mJ5lg7NjD5/Ombzq1QkMKqnSTi/vxsoce2WqKfdFAkQXFmxNRIe
-	sz6ROw7twea/JDpj0ozK8/LYecZi01pIPzQpnHUrRIb4xzarGBmxU/uGsrdkrJnDM/Scpq08Wog
-	bhI5mfzQ/pq67WKlvDIvAySbFmH5DdNvPrdro4uAtJjRp1qE9aJEK3e4DKLET+HoS9XlaQ/YI4w
-	sRh7xyxpRPxJLAZ9thzfJ8rNisbK5xZVYRG0GN2UMhH3wEadie5WBjFJl+8eE4UKwV3fh3mHpRd
-	hoJL0oQ=
-X-Received: by 2002:a17:90b:390a:b0:34c:35ce:3c5f with SMTP id
- 98e67ed59e1d1-359be28da81mr585228a91.5.1772766564424; Thu, 05 Mar 2026
- 19:09:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1772775736; x=1773380536;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tx6xGtCsEqR8ulR7rnTo7nAJacfroyqUnQD4Hvdrn9s=;
+        b=t/gRqtLjx7Wggwxrz2mGU5MpZ+I8p9AMYQeZ9sjDBQmgaOdRqhuGOAwB6j3VfvKdkh
+         +2/UXXzqX2D6VVGsWRrvzJMXolOnrlq8x2Z1o4VKzdM5sJdPplk5z8JQuDyjaA6DPILk
+         O7E7y359OJyDkr+E2eRmVc6eM9wLtnK6svzsSYV86GRFotPt3UarXS4Z80t08DDG5ofS
+         jQ7hxxtY4UY7rCZmB4aiJIjy0mPAO76Gt0C1/IC70PVer3nP7WNlLNaOiCEMAiVyBRYp
+         j7wWZUBB4adPZqbAhbsy7BGaPiYuoyYkGkAiOXhqBBzgPeCXTN3t8ufOkWZXemZZBqSP
+         qb0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU0S4legt3zfMxOpNIRUKKRz4N0hzuGVPCrp5uIU4WFgY83YIpP7aQCr2c1YF5d60q1C9WrCT2AVXpF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy02r4zoWuIjqi4UpxhE8Zl68QD9QH+DVixyMN6FxOVNEHBAyqk
+	mo/LjTkOcMoGu8x6D9R7vDN/umSLUMRqkBSZtVw+/4kxrVGh5EJ2MM97TJBbrjJncBamxJG7xo5
+	FY+tQDzUhk6VqsixoiF88YZ8pr+yP8iQ=
+X-Gm-Gg: ATEYQzza91yP7tr8KUJHhQeKJUSkWhY7bRcbTlgL4moOASEUtOV971KliE8D3SPr4fz
+	ivbEiNzKclgYVYE4Mp7NlPltkW1EyczAmx6SOdqei/+ZrsaBfVuwA1LosUFG9UzvI0JcDR3m9lw
+	59ZRJuUsMPyB70LFByvX1Lfx2RzNkMugKlDpe/le9rW0uiChCFjlZjor7e4Xkpf0gqhyvheCDhG
+	gDcoyBPAxYyBUqJV+8smvptkLeEMiBo6vUiEN0iQnXRm6cPjPEg3XzhL7X9ZtUfZw/RcvSGCGVn
+	GWrlLmrN/k+DJ70iNJNQAHofF6aITpZ1QSgmdmI=
+X-Received: by 2002:a05:6102:3e93:b0:5f5:320c:4d36 with SMTP id
+ ada2fe7eead31-5ffe639be56mr392574137.40.1772775735631; Thu, 05 Mar 2026
+ 21:42:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org> <20260304-iino-u64-v3-2-2257ad83d372@kernel.org>
-In-Reply-To: <20260304-iino-u64-v3-2-2257ad83d372@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 5 Mar 2026 22:09:12 -0500
-X-Gm-Features: AaiRm51A9fGFpauPslQfX6LBJuSyutri4HG-shh7wAOHtGm4QDzvXC5jtThE_pI
-Message-ID: <CAHC9VhQix8opxrX--w-pw5vEAiLaYX=kPhnm4x+dEFEwHiVnfQ@mail.gmail.com>
-Subject: Re: [PATCH v3 02/12] audit: widen ino fields to u64
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Eric Biggers <ebiggers@kernel.org>, "Theodore Y. Ts'o" <tytso@mit.edu>, Muchun Song <muchun.song@linux.dev>, 
-	Oscar Salvador <osalvador@suse.de>, David Hildenbrand <david@kernel.org>, 
-	David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.org>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Steve French <sfrench@samba.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
-	Shyam Prasad N <sprasad@microsoft.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Alexander Aring <alex.aring@gmail.com>, Ryusuke Konishi <konishi.ryusuke@gmail.com>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, David Sterba <dsterba@suse.com>, 
-	Marc Dionne <marc.dionne@auristor.com>, Ian Kent <raven@themaw.net>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>, Ilya Dryomov <idryomov@gmail.com>, 
-	Alex Markuze <amarkuze@redhat.com>, Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu, 
-	Nicolas Pitre <nico@fluxnic.net>, Tyler Hicks <code@tyhicks.com>, Amir Goldstein <amir73il@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Yangtao Li <frank.li@vivo.com>, 
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>, David Woodhouse <dwmw2@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Anders Larsen <al@alarsen.net>, 
-	Zhihao Cheng <chengzhihao1@huawei.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
-	John Johansen <john.johansen@canonical.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, Fan Wu <wufan@kernel.org>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, Eric Dumazet <edumazet@google.com>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Willem de Bruijn <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	James Clark <james.clark@linaro.org>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Martin Schiller <ms@dev.tdt.de>, Eric Paris <eparis@redhat.com>, Joerg Reuter <jreuter@yaina.de>, 
-	Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Oliver Hartkopp <socketcan@hartkopp.net>, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, David Ahern <dsahern@kernel.org>, 
-	Neal Cardwell <ncardwell@google.com>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Remi Denis-Courmont <courmisch@gmail.com>, 
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Xin Long <lucien.xin@gmail.com>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, 
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, nvdimm@lists.linux.dev, 
-	fsverity@lists.linux.dev, linux-mm@kvack.org, netfs@lists.linux.dev, 
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-nilfs@vger.kernel.org, 
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org, autofs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, 
-	ecryptfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, ntfs3@lists.linux.dev, 
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, apparmor@lists.ubuntu.com, 
-	linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	selinux@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, 
-	linaro-mm-sig@lists.linaro.org, netdev@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-hams@vger.kernel.org, 
-	linux-x25@vger.kernel.org, audit@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, linux-can@vger.kernel.org, 
-	linux-sctp@vger.kernel.org, bpf@vger.kernel.org
+From: Xianying Wang <wangxianying546@gmail.com>
+Date: Fri, 6 Mar 2026 13:42:04 +0800
+X-Gm-Features: AaiRm53_PqCIfa5pK0k1qFxDa6UGy3ZBMLVb-PKiHrR88buWt0F9yso6zddyoVo
+Message-ID: <CAOU40uDHsLY6KOor1A-uuozEn8yJgF+gmQx_MLnkU6oSnyAERw@mail.gmail.com>
+Subject: [BUG] kernel BUG in ext4_do_writepages
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: D4FB421AE92
+X-Rspamd-Queue-Id: D615221BC54
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14675-lists,linux-ext4=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,goodmis.org,efficios.com,intel.com,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,infradead.org,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.net,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.org];
-	TAGGED_FROM(0.00)[bounces-14674-lists,linux-ext4=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[170];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-ext4@vger.kernel.org];
-	DKIM_TRACE(0.00)[paul-moore.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[wangxianying546@gmail.com,linux-ext4@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,paul-moore.com:dkim,paul-moore.com:email,paul-moore.com:url]
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.gmail.com:mid]
 X-Rspamd-Action: no action
 
-On Wed, Mar 4, 2026 at 10:33=E2=80=AFAM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> inode->i_ino is being widened from unsigned long to u64. The audit
-> subsystem uses unsigned long ino in struct fields, function parameters,
-> and local variables that store inode numbers from arbitrary filesystems.
-> On 32-bit platforms this truncates inode numbers that exceed 32 bits,
-> which will cause incorrect audit log entries and broken watch/mark
-> comparisons.
->
-> Widen all audit ino fields, parameters, and locals to u64, and update
-> the inode format string from %lu to %llu to match.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  include/linux/audit.h   |  2 +-
->  kernel/audit.h          | 13 ++++++-------
->  kernel/audit_fsnotify.c |  4 ++--
->  kernel/audit_watch.c    | 12 ++++++------
->  kernel/auditsc.c        |  4 ++--
->  5 files changed, 17 insertions(+), 18 deletions(-)
+Hi,
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+I would like to report a kernel BUG triggered by a syzkaller
+reproducer in the ext4 filesystem writeback path.
 
---=20
-paul-moore.com
+The issue was originally observed on Linux 6.19.0-rc8 and can also be
+reproduced on Linux 7.0-rc2. The crash occurs in the ext4 writeback
+routine while the background writeback worker is flushing dirty pages
+to disk.
+
+During the crash, the filesystem reports that no free blocks are
+available while dirty pages and reserved blocks still exist. Under
+this condition, the writeback worker continues processing pending
+writeback operations and eventually reaches an internal consistency
+check inside the ext4 writeback routine, which triggers a kernel BUG.
+
+Based on the execution context, the issue appears to be related to the
+interaction between delayed allocation and the writeback mechanism
+when the filesystem runs out of available blocks. When the writeback
+thread attempts to flush dirty pages in this state, ext4 enters an
+unexpected internal state that causes the BUG to be triggered.
+
+This can be reproduced on:
+
+HEAD commit:
+
+11439c4635edd669ae435eec308f4ab8a0804808
+
+report: https://pastebin.com/raw/dNFvCatE
+
+console output : https://pastebin.com/raw/LAPYKL5P
+
+kernel config : https://pastebin.com/7hk2cU0G
+
+C reproducer :https://pastebin.com/raw/v07yFCWP
+
+Let me know if you need more details or testing.
+
+Best regards,
+
+Xianying
 
