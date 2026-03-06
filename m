@@ -1,397 +1,326 @@
-Return-Path: <linux-ext4+bounces-14681-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14682-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WAV0EKSaqmmbUQEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14681-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 10:13:08 +0100
+	id aJmyFMebqmnPUQEAu9opvQ
+	(envelope-from <linux-ext4+bounces-14682-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 10:17:59 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4F5321DAEA
-	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 10:13:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114FD21DC4D
+	for <lists+linux-ext4@lfdr.de>; Fri, 06 Mar 2026 10:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D772C3016893
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 09:13:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EBFAB305DA27
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2026 09:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBD033B6D2;
-	Fri,  6 Mar 2026 09:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74258344031;
+	Fri,  6 Mar 2026 09:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="fUecrIVh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TyR366hp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E764533A9CB;
-	Fri,  6 Mar 2026 09:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772788383; cv=pass; b=OB0DzAVlVxkJgPYqmmWowrWk7iLKah82mZ21Zycxf40TKgsGJCV1Hsm/RGJ9cERRyAu4KnU7YUmJOdtWFvgeZHC/qj/kjTJDxhDnVKPWrvd8KXYqidTzRtXwPCo7xqiC9DU91PCCMqWgw2hymJbwv7n6EioSa5Xq6O6yrwP7W9Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772788383; c=relaxed/simple;
-	bh=RIt/K3dbf/jCBmOegl2T65GE6fBo2ZoBdKGc4eUCYhA=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD9A33B6CB;
+	Fri,  6 Mar 2026 09:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772788508; cv=none; b=e+8vKnSn84cLNLd4ZqnhbpZQ8kIURZi7XqPNUAdVTGF1vkwY96Wprk7pcQZqALiso2xj+M5ginnmVgyAJ/eu6l2y/nFH+GVemtYGsUX4wnV8uZpVUki+WoGqVbpm++w6Mtq9LozfiSAAp/feMTT1fvNbOojpBxMNczzpuS6lCwI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772788508; c=relaxed/simple;
+	bh=7RvOdnrFs/iEe9G84pPe+q4PLv+gFd3Sa58Nl0eTC8M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TPGgDsEappyljHobq2wJqVsaCVvgjoKopbOzEmo7xDPCKdZEsoyHza8XHqZH21uLgGLnHGdi/ZGmcy8pMOTZjvWtahxPwKnMbY5tb8mkXyIxLaKiUfnHmanfNJMaUM1fMjZ4bwtCVl5LYPv3yJJMsFl9xU02H/KhvwHgr33hpm8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=fUecrIVh; arc=pass smtp.client-ip=136.143.188.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.beauty
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
-ARC-Seal: i=1; a=rsa-sha256; t=1772788374; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=DQllaLyE4kOpyrUg5MDFGu9pZfm2BvG0bvJNsctmFTA699vMmLs8EOO9hLShntAfsNycgTSMO1nMFr+J8YSWDIAy61BAcHuh3ZN+ABuOVsnPqf1d7vA3STEsVqxrMca2i0S2/1LCexdjkKzMenf+pAuUaWOdxF0djmfDKLFtKCw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1772788374; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=UhaLQnxw6IYxJZMyMwnG0zOmGc8AkVob2k0lQF7GI3w=; 
-	b=kZvU/Hy/GI/Imla6+iHQwkJ1OvrxPFkeKN70//rzXyV6rwl2R0qfIrlJ9i7rlOc+7XSIMPZypmljmzOl66a0U908RErR0KVV5jvyQT3GEV0DEeg2ohJ8djBu7d7YtDX7GobY4NMLmH1zZSbDOWQDXYHH4JWKuYtu6IbYF2TL7pU=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=linux.beauty;
-	spf=pass  smtp.mailfrom=me@linux.beauty;
-	dmarc=pass header.from=<me@linux.beauty>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1772788374;
-	s=zmail; d=linux.beauty; i=me@linux.beauty;
-	h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=UhaLQnxw6IYxJZMyMwnG0zOmGc8AkVob2k0lQF7GI3w=;
-	b=fUecrIVhMi8FWdtsnANomBJjdkYvQlXciigGoOgtgujA8tB0pmjzp/UzLIiXoI+4
-	Yfpv8LWjdNRY71KVfo3JdkLvGCvhl7SrnYnwcpm7kzRNzhkqVwI7NDL57GMilil1x/G
-	v7OrUMq14bsW3kuSj+Vl7Yc4aBAuuWLZ62GPEwqE=
-Received: by mx.zohomail.com with SMTPS id 1772788372569154.52324977364003;
-	Fri, 6 Mar 2026 01:12:52 -0800 (PST)
-From: Li Chen <me@linux.beauty>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>,
-	Mark Fasheh <mark@fasheh.com>,
+	 MIME-Version:Content-Type; b=MhkrUNew/kVjjDX00OOp2HBs5hVrUxZeQ+VO91IGOaVaGPyrv/7spRARgvL4zQSEQEm5Soq62lHODY+P8EFU2BSfjsBxus5wxEs6wP6knTO423TDZzAZK0kJ8WCPPK06gaQ5BB7kgguVlb6DEYYVM5ZKe5J9x4Q4fnwuwp8KipI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TyR366hp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C425BC4CEF7;
+	Fri,  6 Mar 2026 09:14:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772788507;
+	bh=7RvOdnrFs/iEe9G84pPe+q4PLv+gFd3Sa58Nl0eTC8M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TyR366hpH5SBgvb3stJOO+3+JgB4eyp8Ub6SIcEY5Wv5+DIXq3qwQ1akUuyGzm4GI
+	 oVWqv0SYGKFQk/aIJcLbDc3SkZdh03GwnjPJPfc8DHBxnnTk3pTwokbH2aquirHejB
+	 nz1gJxpKMhkWSd0cvlbIm12Yo0dUUSzlaMGnA70lo5LCfYmGHYkoB3BEoaWxEw9skO
+	 0XSBCv8+kTn/Gf5HrA+24udlPqxoLhC1731SEC00PUdG+t6hKArOjAPEtT/hHxR1LY
+	 s+VuE2scXcViJMBvNGcnMzw7bfK0RAeQxP1RLAMHfxMD+S62KQ5DOUo/0QF6h57vkJ
+	 rf8R3FiiVNktg==
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	fsverity@lists.linux.dev,
+	linux-mm@kvack.org,
+	netfs@lists.linux.dev,
 	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-nfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	linux-nilfs@vger.kernel.org,
+	v9fs@lists.linux.dev,
+	linux-afs@lists.infradead.org,
+	autofs@vger.kernel.org,
+	ceph-devel@vger.kernel.org,
+	codalist@coda.cs.cmu.edu,
+	ecryptfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net,
+	ntfs3@lists.linux.dev,
 	ocfs2-devel@lists.linux.dev,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	selinux@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org,
+	linaro-mm-sig@lists.linaro.org,
+	netdev@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-hams@vger.kernel.org,
+	linux-x25@vger.kernel.org,
+	audit@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-sctp@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
 	Jan Kara <jack@suse.com>,
-	linux-kernel@vger.kernel.org
-Cc: Li Chen <me@linux.beauty>
-Subject: [PATCH v4 4/4] jbd2: store jinode dirty range in PAGE_SIZE units
-Date: Fri,  6 Mar 2026 16:56:42 +0800
-Message-ID: <20260306085643.465275-5-me@linux.beauty>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260306085643.465275-1-me@linux.beauty>
-References: <20260306085643.465275-1-me@linux.beauty>
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	NeilBrown <neil@brown.name>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	Steve French <sfrench@samba.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	David Sterba <dsterba@suse.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Ian Kent <raven@themaw.net>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Alex Markuze <amarkuze@redhat.com>,
+	Jan Harkes <jaharkes@cs.cmu.edu>,
+	coda@cs.cmu.edu,
+	Nicolas Pitre <nico@fluxnic.net>,
+	Tyler Hicks <code@tyhicks.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>,
+	Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Anders Larsen <al@alarsen.net>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <jth@kernel.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	Fan Wu <wufan@kernel.org>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Simona Vetter <simona@ffwll.ch>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Willem de Bruijn <willemb@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	James Clark <james.clark@linaro.org>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Martin Schiller <ms@dev.tdt.de>,
+	Eric Paris <eparis@redhat.com>,
+	Joerg Reuter <jreuter@yaina.de>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Ahern <dsahern@kernel.org>,
+	Neal Cardwell <ncardwell@google.com>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Remi Denis-Courmont <courmisch@gmail.com>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Xin Long <lucien.xin@gmail.com>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH v3 00/12] vfs: change inode->i_ino from unsigned long to u64
+Date: Fri,  6 Mar 2026 10:09:33 +0100
+Message-ID: <20260306-kennen-zubrot-2605fcfd6950@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
+References: <20260304-iino-u64-v3-0-2257ad83d372@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2708; i=brauner@kernel.org; h=from:subject:message-id; bh=7RvOdnrFs/iEe9G84pPe+q4PLv+gFd3Sa58Nl0eTC8M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSumvWu2uNxbBFXikaZQKrMtl0PLj1c+kZGWOrvZiHz/ W/CTGOed5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk4A5GhimT869vPnNH4Vqj t6Tr0fqPLXs3v0g/qbXpwf6o52L5D7YyMnxU+idovG+O5JQe0WVOK45/sI9bw9AjJfah78/izrQ aXg4A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Rspamd-Queue-Id: C4F5321DAEA
+X-Rspamd-Queue-Id: 114FD21DC4D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.beauty,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.beauty:s=zmail];
+X-Spamd-Result: default: False [3.84 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14682-lists,linux-ext4=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14681-lists,linux-ext4=lfdr.de];
-	DKIM_TRACE(0.00)[linux.beauty:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[me@linux.beauty,linux-ext4@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,lists.linux.dev,kvack.org,lists.sourceforge.net,lists.samba.org,lists.infradead.org,coda.cs.cmu.edu,lists.orangefs.org,lists.ubuntu.com,lists.freedesktop.org,lists.linaro.org,zeniv.linux.org.uk,suse.cz,goodmis.org,efficios.com,intel.com,mit.edu,linux.dev,suse.de,redhat.com,manguebit.org,dilger.ca,suse.com,oracle.com,brown.name,talpey.com,samba.org,gmail.com,microsoft.com,dubeyko.com,ionkov.net,codewreck.org,crudebyte.com,auristor.com,themaw.net,cs.cmu.edu,fluxnic.net,tyhicks.com,infradead.org,physik.fu-berlin.de,vivo.com,artax.karlin.mff.cuni.cz,nod.at,paragon-software.com,fasheh.com,evilplan.org,linux.alibaba.com,omnibond.com,szeredi.hu,alarsen.net,huawei.com,wdc.com,canonical.com,paul-moore.com,namei.org,hallyn.com,linux.ibm.com,schaufler-ca.com,amd.com,ffwll.ch,linaro.org,google.com,davemloft.net,arm.com,linux.intel.com,dev.tdt.de,yaina.de,holtmann.org,hartkopp.net,pengutronix.de,secunet.com,gondor.apana.org.au,fomichev.me,iogearbox.ne
+ t];
+	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[171];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,linux-ext4@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.beauty:dkim,linux.beauty:email,linux.beauty:mid,suse.cz:email]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-jbd2_inode fields are updated under journal->j_list_lock, but some paths
-read them without holding the lock (e.g. fast commit helpers and ordered
-truncate helpers).
+On Wed, 04 Mar 2026 10:32:30 -0500, Jeff Layton wrote:
+> Christian said [1] to "just do it" when I proposed this, so here we are!
+> 
+> For historical reasons, the inode->i_ino field is an unsigned long,
+> which means that it's 32 bits on 32 bit architectures. This has caused a
+> number of filesystems to implement hacks to hash a 64-bit identifier
+> into a 32-bit field, and deprives us of a universal identifier field for
+> an inode.
+> 
+> [...]
 
-READ_ONCE() alone is not sufficient for the dirty range fields when they
-are stored as loff_t because 32-bit platforms can observe torn loads.
-Store the dirty range in PAGE_SIZE units as pgoff_t instead.
+This series makes me happy. We've been talking about this conversion for
+a while and I'm thankful that you did this work. Without the automation
+available this probably wouldn't have happened as quickly as it did now.
+Let's see what bits and pieces it missed.
 
-Represent the dirty range end as an exclusive end page. This avoids a
-special sentinel value and keeps MAX_LFS_FILESIZE on 32-bit representable.
-
-Publish a new dirty range by updating end_page before start_page, and
-treat start_page >= end_page as empty in the accessor for robustness.
-
-Use READ_ONCE() on the read side and WRITE_ONCE() on the write side for the
-dirty range and i_flags to match the existing lockless access pattern.
-
-Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Li Chen <me@linux.beauty>
 ---
-Changes since v3:
-- Store i_dirty_end_page as an exclusive end page and drop the sentinel.
-- Publish end_page before start_page and treat start_page >= end_page as
-  empty in the accessor.
-- Document the empty-range encoding and publication ordering in comments.
 
-Changes since v2:
-- Rename i_dirty_start/end to i_dirty_start_page/end_page.
-- Use jbd2_jinode_get_dirty_range() for byte conversions in commit paths.
+Applied to the vfs-7.1.kino branch of the vfs/vfs.git tree.
+Patches in the vfs-7.1.kino branch should appear in linux-next soon.
 
- fs/jbd2/commit.c      | 55 +++++++++++++++++++++++++++++++++----------
- fs/jbd2/journal.c     |  5 ++--
- fs/jbd2/transaction.c | 21 +++++++++++------
- include/linux/jbd2.h  | 34 ++++++++++++++++----------
- 4 files changed, 80 insertions(+), 35 deletions(-)
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 7203d2d2624d7..8cf61e7185c44 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -180,7 +180,13 @@ static int journal_wait_on_commit_record(journal_t *journal,
- /* Send all the data buffers related to an inode */
- int jbd2_submit_inode_data(journal_t *journal, struct jbd2_inode *jinode)
- {
--	if (!jinode || !(jinode->i_flags & JI_WRITE_DATA))
-+	unsigned long flags;
-+
-+	if (!jinode)
-+		return 0;
-+
-+	flags = READ_ONCE(jinode->i_flags);
-+	if (!(flags & JI_WRITE_DATA))
- 		return 0;
- 
- 	trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
-@@ -191,12 +197,30 @@ EXPORT_SYMBOL(jbd2_submit_inode_data);
- 
- int jbd2_wait_inode_data(journal_t *journal, struct jbd2_inode *jinode)
- {
--	if (!jinode || !(jinode->i_flags & JI_WAIT_DATA) ||
--		!jinode->i_vfs_inode || !jinode->i_vfs_inode->i_mapping)
-+	struct address_space *mapping;
-+	struct inode *inode;
-+	unsigned long flags;
-+	loff_t start_byte, end_byte;
-+
-+	if (!jinode)
-+		return 0;
-+
-+	flags = READ_ONCE(jinode->i_flags);
-+	if (!(flags & JI_WAIT_DATA))
-+		return 0;
-+
-+	inode = jinode->i_vfs_inode;
-+	if (!inode)
-+		return 0;
-+
-+	mapping = inode->i_mapping;
-+	if (!mapping)
-+		return 0;
-+
-+	if (!jbd2_jinode_get_dirty_range(jinode, &start_byte, &end_byte))
- 		return 0;
- 	return filemap_fdatawait_range_keep_errors(
--		jinode->i_vfs_inode->i_mapping, jinode->i_dirty_start,
--		jinode->i_dirty_end);
-+		mapping, start_byte, end_byte);
- }
- EXPORT_SYMBOL(jbd2_wait_inode_data);
- 
-@@ -218,7 +242,8 @@ static int journal_submit_data_buffers(journal_t *journal,
- 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
- 		if (!(jinode->i_flags & JI_WRITE_DATA))
- 			continue;
--		jinode->i_flags |= JI_COMMIT_RUNNING;
-+		WRITE_ONCE(jinode->i_flags,
-+			   jinode->i_flags | JI_COMMIT_RUNNING);
- 		spin_unlock(&journal->j_list_lock);
- 		/* submit the inode data buffers. */
- 		trace_jbd2_submit_inode_data(jinode->i_vfs_inode);
-@@ -229,7 +254,8 @@ static int journal_submit_data_buffers(journal_t *journal,
- 		}
- 		spin_lock(&journal->j_list_lock);
- 		J_ASSERT(jinode->i_transaction == commit_transaction);
--		jinode->i_flags &= ~JI_COMMIT_RUNNING;
-+		WRITE_ONCE(jinode->i_flags,
-+			   jinode->i_flags & ~JI_COMMIT_RUNNING);
- 		smp_mb();
- 		wake_up_bit(&jinode->i_flags, __JI_COMMIT_RUNNING);
- 	}
-@@ -240,10 +266,13 @@ static int journal_submit_data_buffers(journal_t *journal,
- int jbd2_journal_finish_inode_data_buffers(struct jbd2_inode *jinode)
- {
- 	struct address_space *mapping = jinode->i_vfs_inode->i_mapping;
-+	loff_t start_byte, end_byte;
-+
-+	if (!jbd2_jinode_get_dirty_range(jinode, &start_byte, &end_byte))
-+		return 0;
- 
- 	return filemap_fdatawait_range_keep_errors(mapping,
--						   jinode->i_dirty_start,
--						   jinode->i_dirty_end);
-+						   start_byte, end_byte);
- }
- 
- /*
-@@ -262,7 +291,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 	list_for_each_entry(jinode, &commit_transaction->t_inode_list, i_list) {
- 		if (!(jinode->i_flags & JI_WAIT_DATA))
- 			continue;
--		jinode->i_flags |= JI_COMMIT_RUNNING;
-+		WRITE_ONCE(jinode->i_flags, jinode->i_flags | JI_COMMIT_RUNNING);
- 		spin_unlock(&journal->j_list_lock);
- 		/* wait for the inode data buffers writeout. */
- 		if (journal->j_finish_inode_data_buffers) {
-@@ -272,7 +301,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 		}
- 		cond_resched();
- 		spin_lock(&journal->j_list_lock);
--		jinode->i_flags &= ~JI_COMMIT_RUNNING;
-+		WRITE_ONCE(jinode->i_flags, jinode->i_flags & ~JI_COMMIT_RUNNING);
- 		smp_mb();
- 		wake_up_bit(&jinode->i_flags, __JI_COMMIT_RUNNING);
- 	}
-@@ -288,8 +317,8 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
- 				&jinode->i_transaction->t_inode_list);
- 		} else {
- 			jinode->i_transaction = NULL;
--			jinode->i_dirty_start = 0;
--			jinode->i_dirty_end = 0;
-+			WRITE_ONCE(jinode->i_dirty_start_page, 0);
-+			WRITE_ONCE(jinode->i_dirty_end_page, 0);
- 		}
- 	}
- 	spin_unlock(&journal->j_list_lock);
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index c973162d5b316..0bf09aa900277 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -3020,8 +3020,8 @@ void jbd2_journal_init_jbd_inode(struct jbd2_inode *jinode, struct inode *inode)
- 	jinode->i_next_transaction = NULL;
- 	jinode->i_vfs_inode = inode;
- 	jinode->i_flags = 0;
--	jinode->i_dirty_start = 0;
--	jinode->i_dirty_end = 0;
-+	jinode->i_dirty_start_page = 0;
-+	jinode->i_dirty_end_page = 0;
- 	INIT_LIST_HEAD(&jinode->i_list);
- }
- 
-@@ -3178,4 +3178,3 @@ MODULE_DESCRIPTION("Generic filesystem journal-writing module");
- MODULE_LICENSE("GPL");
- module_init(journal_init);
- module_exit(journal_exit);
--
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index dca4b5d8aaaa3..17709ecdd22c0 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -2646,6 +2646,7 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
- {
- 	transaction_t *transaction = handle->h_transaction;
- 	journal_t *journal;
-+	pgoff_t start_page, end_page;
- 
- 	if (is_handle_aborted(handle))
- 		return -EROFS;
-@@ -2654,15 +2655,21 @@ static int jbd2_journal_file_inode(handle_t *handle, struct jbd2_inode *jinode,
- 	jbd2_debug(4, "Adding inode %lu, tid:%d\n", jinode->i_vfs_inode->i_ino,
- 			transaction->t_tid);
- 
-+	start_page = (pgoff_t)(start_byte >> PAGE_SHIFT);
-+	end_page = (pgoff_t)(end_byte >> PAGE_SHIFT) + 1;
-+
- 	spin_lock(&journal->j_list_lock);
--	jinode->i_flags |= flags;
-+	WRITE_ONCE(jinode->i_flags, jinode->i_flags | flags);
- 
--	if (jinode->i_dirty_end) {
--		jinode->i_dirty_start = min(jinode->i_dirty_start, start_byte);
--		jinode->i_dirty_end = max(jinode->i_dirty_end, end_byte);
-+	if (jinode->i_dirty_start_page != jinode->i_dirty_end_page) {
-+		WRITE_ONCE(jinode->i_dirty_start_page,
-+			   min(jinode->i_dirty_start_page, start_page));
-+		WRITE_ONCE(jinode->i_dirty_end_page,
-+			   max(jinode->i_dirty_end_page, end_page));
- 	} else {
--		jinode->i_dirty_start = start_byte;
--		jinode->i_dirty_end = end_byte;
-+		/* Publish a new non-empty range by making end visible first. */
-+		WRITE_ONCE(jinode->i_dirty_end_page, end_page);
-+		WRITE_ONCE(jinode->i_dirty_start_page, start_page);
- 	}
- 
- 	/* Is inode already attached where we need it? */
-@@ -2739,7 +2746,7 @@ int jbd2_journal_begin_ordered_truncate(journal_t *journal,
- 	int ret = 0;
- 
- 	/* This is a quick check to avoid locking if not necessary */
--	if (!jinode->i_transaction)
-+	if (!READ_ONCE(jinode->i_transaction))
- 		goto out;
- 	/* Locks are here just to force reading of recent values, it is
- 	 * enough that the transaction was not committing before we started
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 64392baf5f4b4..7e785aa6d35d6 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -429,33 +429,43 @@ struct jbd2_inode {
- 	unsigned long i_flags;
- 
- 	/**
--	 * @i_dirty_start:
-+	 * @i_dirty_start_page:
-+	 *
-+	 * Dirty range start in PAGE_SIZE units.
-+	 *
-+	 * The dirty range is empty if @i_dirty_start_page is greater than or
-+	 * equal to @i_dirty_end_page.
- 	 *
--	 * Offset in bytes where the dirty range for this inode starts.
- 	 * [j_list_lock]
- 	 */
--	loff_t i_dirty_start;
-+	pgoff_t i_dirty_start_page;
- 
- 	/**
--	 * @i_dirty_end:
-+	 * @i_dirty_end_page:
-+	 *
-+	 * Dirty range end in PAGE_SIZE units (exclusive).
- 	 *
--	 * Inclusive offset in bytes where the dirty range for this inode
--	 * ends. [j_list_lock]
-+	 * [j_list_lock]
- 	 */
--	loff_t i_dirty_end;
-+	pgoff_t i_dirty_end_page;
- };
- 
-+/*
-+ * Lockless readers treat start_page >= end_page as an empty range.
-+ * Writers publish a new non-empty range by storing i_dirty_end_page before
-+ * i_dirty_start_page.
-+ */
- static inline bool jbd2_jinode_get_dirty_range(const struct jbd2_inode *jinode,
- 					       loff_t *start, loff_t *end)
- {
--	loff_t start_byte = jinode->i_dirty_start;
--	loff_t end_byte = jinode->i_dirty_end;
-+	pgoff_t start_page = READ_ONCE(jinode->i_dirty_start_page);
-+	pgoff_t end_page = READ_ONCE(jinode->i_dirty_end_page);
- 
--	if (!end_byte)
-+	if (start_page >= end_page)
- 		return false;
- 
--	*start = start_byte;
--	*end = end_byte;
-+	*start = (loff_t)start_page << PAGE_SHIFT;
-+	*end = ((loff_t)end_page << PAGE_SHIFT) - 1;
- 	return true;
- }
- 
--- 
-2.53.0
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-7.1.kino
+
+[01/12] vfs: widen inode hash/lookup functions to u64
+        https://git.kernel.org/vfs/vfs/c/2412a9fa518a
+[02/12] audit: widen ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/a5e863be4d02
+[03/12] net: change sock.sk_ino and sock_i_ino() to u64
+        https://git.kernel.org/vfs/vfs/c/c21144a0a33f
+[04/12] vfs: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/5e5c380870b2
+[05/12] cachefiles: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/25291f67aad7
+[06/12] ext2: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/797d04a355e3
+[07/12] hugetlbfs: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/3c976fb36a9a
+[08/12] zonefs: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/988f68c01b3a
+[09/12] ext4: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/1c1427c79bc2
+[10/12] f2fs: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/6e62bf74bd8a
+[11/12] nilfs2: widen trace event i_ino fields to u64
+        https://git.kernel.org/vfs/vfs/c/6ce73711525a
+[12/12] treewide: change inode->i_ino from unsigned long to u64
+        https://git.kernel.org/vfs/vfs/c/af82d143e869
 
