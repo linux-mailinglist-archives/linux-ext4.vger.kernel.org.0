@@ -1,202 +1,217 @@
-Return-Path: <linux-ext4+bounces-14704-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14705-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id x5H9ImEDrWncxAEAu9opvQ
-	(envelope-from <linux-ext4+bounces-14704-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Sun, 08 Mar 2026 06:04:33 +0100
+	id ALDKEU87rmn4AgIAu9opvQ
+	(envelope-from <linux-ext4+bounces-14705-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 04:15:27 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD90222E8AE
-	for <lists+linux-ext4@lfdr.de>; Sun, 08 Mar 2026 06:04:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E422337DB
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 04:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 17A003024507
-	for <lists+linux-ext4@lfdr.de>; Sun,  8 Mar 2026 05:04:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 003DE301938A
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2026 03:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD0C23EA8B;
-	Sun,  8 Mar 2026 05:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E0B287511;
+	Mon,  9 Mar 2026 03:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="j6JPit4J"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dHqFZgNE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2DC1548C
-	for <linux-ext4@vger.kernel.org>; Sun,  8 Mar 2026 05:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772946268; cv=none; b=mK+AKLnRflUOVXSdNNEtCjpvtz5CnJC4V2CIVodu52uHPigUMZzMpY7DLKyNez3sjQ2WFmGWX1cSTZnDytTN+68Z8SaVjf/t+ENQXXqY2zJY+1EKcPfI9ePeHf/ozat2wQCDuyLYczC3cJocXwG57cEKnGrPMRIv7D9xlJHW0o0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772946268; c=relaxed/simple;
-	bh=6EYJJa7iQzv4zQEfg5Ye/lzcHHUN67TUE8+g+2SBajc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pNWOLa4SjfGSbxJ3byiQ9uYRvZucyoQvA4zY3nM75cX1HJ+hLv6BLlCI5N0GgsOtHcniYJv3z0DMidNUq9joKzVgYaxEXzTfxUxwE5EvyQR/vVSlKModpp4a3OQhHDgNsDMY8h0nRVMa83ogXL4i7XQKhybWyULhLmml+YdsbOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=j6JPit4J; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([76.148.192.212])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 6285447q022335
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 8 Mar 2026 00:04:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1772946249; bh=V1j++RJnmClxNB3myTBSIav7vvmuiq7Jeu39DTxtlo0=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=j6JPit4JYsE4nsEl8uQpOfLt7SN1DhKI1A52S7xJkfVadHSIbt0B5PFuMwUEGQMh0
-	 cVdH+W+OCdJQphLFSAePYhX/7pgtVV62cAAHqQ4ORM40qKz/9GCK45i9hEs5v03sg6
-	 cnVKMLlWEa1iWpFGyon4mvAkqAg5qGSGUUeYLkiqn0yL0QTfWAhkLYAkDworCc7slt
-	 1q3/U/cNyJ9764QWYbEWn0EZ9F6zo0xFxYJGyI9lkVdyTgnSbvdZ3URq6emVbX2ZEO
-	 LUf2u1OkXA/fqf7aT7GcCGIfrtUNr2Mne60QvTx+uQKFzeUeUU02v6U6vfL1Yiks6C
-	 toOFPgk+NlhKw==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 5CA8E5C13172; Sun,  8 Mar 2026 00:04:03 -0500 (EST)
-Date: Sun, 8 Mar 2026 00:04:03 -0500
-From: "Theodore Tso" <tytso@mit.edu>
-To: Daniel Tang <danielzgtg.opensource@gmail.com>
-Cc: linux-ext4@vger.kernel.org, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH e2fsprogs] e2fsck: preen inline data no attr
-Message-ID: <20260308050403.GA61017@macsyma.local>
-References: <3188418.mvXUDI8C0e@daniel-desktop3>
- <2415922.vCJZsxu672@daniel-desktop3>
- <20260306222315.GA42132@macsyma.local>
- <25105329.ouqheUzb2q@daniel-desktop3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A85287263
+	for <linux-ext4@vger.kernel.org>; Mon,  9 Mar 2026 03:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.170
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773026113; cv=pass; b=Jw8/qjrK10FEZrWMgrkHXPA0L6Qj2f68LZrFc/M4dI2n/XjXyjIzitpgzbbKufUVCIa15/lHeD03Q18BDLfbsLmTM3Ov7It9kcHxnBfyugM6suKK1pKySCmazA1Hg3L52597ifp26P4H7HwdF8FS3DJWzOAJ2P2PxItr9gJJGIA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773026113; c=relaxed/simple;
+	bh=SZSiPj1NVyhvizWhUUC0wPEd9YxwtDfmbckRRyPoO0c=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=bChZQ92dopnUTGtKShDXIx1SprSI1JTBRS1HXEnSxxIclp5RsTBviKhLtCG+6rzrnmz6BJvSWlBDeALPg5lCbA7/gVLXah/+bDlBBa+dxVWfvk0tRdAVipFVIHiuL7w2LqrqmJFnhefxYVZGyXk3Tvsro86FD7onBdoxLCd9/DE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dHqFZgNE; arc=pass smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-82735a41920so4132087b3a.2
+        for <linux-ext4@vger.kernel.org>; Sun, 08 Mar 2026 20:15:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773026109; cv=none;
+        d=google.com; s=arc-20240605;
+        b=K3BiCbYhFuyxpX0e9dB96KJ1iD8XyZ48hQNBnoria0WqOzLycB8rh/0xJm7qUDSdGc
+         Yp1L8wi3okRXy7CQMgwCq8uiFjUTdoim57yLy08Hjx9Ujv+A9Z1TYMo9bl8Py1N6LhxS
+         rXe+k9HrbTpytfKH4qlglj/O2Rb9b211ZdMrR3JdmGcEGEV4ZeVAECSymxhP+ffW/9wP
+         hrDkS7dIgpL7OCEGoIMeyFT8NlAMb4/Ee8oEG4Tc+M6HGmzoMRKS/BBLYvhTH34dqXgR
+         M1/hm5MI6PT7gudafXy5F9UZcLlp55hPeCCniYx1oQwZt8CrHhttAWTJpiogc/ox7jW2
+         czmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:dkim-signature;
+        bh=SZSiPj1NVyhvizWhUUC0wPEd9YxwtDfmbckRRyPoO0c=;
+        fh=TLRCVuseuHUHrWm/0vpcm0VW4DNQYKhS+kh5DpHwr9o=;
+        b=Rekp9TOlPgD2fV1wtqY+wr1L+EDlXW2ytL81IdKz/oGaNOroakYT5HzMOLJKzyRF+8
+         sqQcp0eSmfyDoK5hYhjT3gw/bJpLioepuUSPGOc6XVfxN8sDIdLB5ZXmWWS9L1uyqNgc
+         0pIPu/n5TEZ3MvrF8416LWcMiIU8bEL3Bumfq+3/tkQ1w1+21bbS6+voRDtZU3oIinfe
+         xLR753c/A73PwQKkaiDj0K37ZfmZvPr7s7MoCw2wi6Bt0gAbZ/8B0XwSC8BobmOi6ICY
+         dL5ZVkgxn5zPHV16x1taJ1JyrFmIBUHlID/z6vSF/Fy0JpL13FPyT7OAhDc5muBIgv8W
+         4QWA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773026109; x=1773630909; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SZSiPj1NVyhvizWhUUC0wPEd9YxwtDfmbckRRyPoO0c=;
+        b=dHqFZgNEQs5te4kW8xYyzm0XhoJQpWk0YW72SU2h9W4Cxi7BMjBin16+bRAcexVKWi
+         FGU0c16KaFr3LcoxghkwkpoVBELD6evfUlBxD4LD2pejkQr20BQvvPiGrw5s8DFMKd6a
+         Q6eTNEux5uD1WJz/MzqeOS7cNYGDQbCG82r1/9VgdMDT4WoZbBMU0RrDdlP+YyzknOXx
+         GAh8+DhjSQ8JulYj5SMGHnvspUJ6jbRodm6iE6QFr5vJQvfPIovGDRrG9NPWv2G19DzJ
+         28o5Rg8PH6GK+bXTrXqDXGLHBLJKpnTE3GG/lc4HkNQaSiXE95iJ2+hAh692r9P+8tO5
+         9B/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773026109; x=1773630909;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SZSiPj1NVyhvizWhUUC0wPEd9YxwtDfmbckRRyPoO0c=;
+        b=SLhrEkqiH1bjOlklxgMy4NuIKc6UyW0+LeFcL7qVfS4aOg44PyQaw2mBy5BBKzw4md
+         BG+eoFASOHSwdBdCB5LI8+ywjIFo8HFK+Lt0Q9nl8vZtScA02AwLcWxkLqQ64Fms1ar1
+         ZESt8PcMn1QaG15LzrbaCoFhpnYvJS2LHm7I6GuT+eQ8b/eqGStRcgBjaktoIwoWhGPH
+         BisX7Xb2gpeUVU7bAJFcIM2Q9sDOCvfao0KnR2pwmL+wp85AqWqOpO3U+FnNdoNgvUQs
+         v1YspaJJyX2IKEWCrnc8tDqe89Kr0JlgNtX1Zg4sPMWRFtuUvWuxFiGeQ510Kn0YZCxq
+         OVJw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfWbDxLO3yI//L38hnkOShFnh1Hamp1Zhyu54yVf6xO80qXZSMuciRjSCoUGsGLLbb3AQzOfYJ2B+H@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPle1zXVhpGItXhZSfbRp5UTz/EqKFBeOqwlHXqzKId1j/82Tt
+	ZFmmJL9Ttxm11wr0kGl0999ynN2EpntRdFNnUn1p/6xWDAj4oMDRuQ/C/GutVr6O1Ric1L+kbRJ
+	Hc4T/OrLNquQirON/3OaIwjnTjQYik9o=
+X-Gm-Gg: ATEYQzzv6Ft3CPkVfR01B3vidkvdbKLvFUWuypdOVjpn9GnL1DQ0uDgM9klOWyhJrDX
+	vcDE/Ti5jssMp9Wv1/YgNZxGab3Jb2gU5zUk3sb0BsMjgmF+SXPp/4YrFbU2EFA0MZ0DUXLSVA6
+	eT6vHZd6T/HDruds04fV0E/489FMk8+LgJbw48MbJGVS9rRz2oBlyFzeGJa+8mkxDF6KT0CzVcI
+	Zdo7R//SKSM/XbMPrfs+ZG04udRxmbnKZYNPPUNKQK4nP1fbrTxxAthSaIEizlvu2mstbCsMETt
+	m+cWRdU=
+X-Received: by 2002:a05:6300:492:b0:398:7d6e:27f1 with SMTP id
+ adf61e73a8af0-3987d6e4e98mr3093477637.9.1773026108783; Sun, 08 Mar 2026
+ 20:15:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25105329.ouqheUzb2q@daniel-desktop3>
-X-Rspamd-Queue-Id: CD90222E8AE
+From: Zw Tang <shicenci@gmail.com>
+Date: Mon, 9 Mar 2026 11:14:58 +0800
+X-Gm-Features: AaiRm52UI71Zsv1DyyQfuTtqar8_kcar-WvI_WLGIKWrKj10BzZgSbMrapZjPpE
+Message-ID: <CAPHJ_VKuMKSke8b11AZQw1PTSFN4n2C0gFxC6xGOG0ZLHgPmnA@mail.gmail.com>
+Subject: [BUG] WARNING in alloc_slab_obj_exts triggered by __d_alloc
+To: Vlastimil Babka <vbabka@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Andreas Dilger <adilger.kernel@dilger.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: B2E422337DB
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[mit.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[mit.edu:s=outgoing];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14704-lists,linux-ext4=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[mit.edu:+];
+	TAGGED_FROM(0.00)[bounces-14705-lists,linux-ext4=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.837];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tytso@mit.edu,linux-ext4@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[shicenci@gmail.com,linux-ext4@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-ext4];
-	NEURAL_HAM(-0.00)[-0.965];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,kronis.dev:url]
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,mail.gmail.com:mid]
 X-Rspamd-Action: no action
 
-On Sat, Mar 07, 2026 at 08:42:04PM -0500, Daniel Tang wrote:
-> 
-> 
-> > More importantly, information about the source of the inconsistency
-> > report would be written to the superblock
-> 
-> What could have the opportunity to write anything to the superblock?
-> Before a panic, there's no inconsistency.
+Hi,
 
-I don't know that.  It's possible that the kernel could have detected
-an inconsistency, and if you've left the default errors=continue
-behavior, this will cause a EXT4-fs error log, but if people don't pay
-attention to the console log messages, they might not realize it.
-That's why I needed to rule it out.
+I encountered a WARNING in alloc_slab_obj_exts() while running a
+syzkaller-generated reproducer on Linux 7.0-rc2.
 
-> After a panic, Linux would
-> say "not syncing", or after a panic, hardware stops before new writes
-> can reach the disk. systemd, as shown by `systemd-analyze plot` runs
-> fsck before attempting any `.mount`.
+The warning is triggered during dentry allocation (__d_alloc) after
+mounting a crafted ext4 filesystem image.
 
-The problem is that *if* the file system does not have ERROR_FS set
-before the crash, *then* the fsck log that you sent me can't
-*possibly* have been the first fsck run after the crash.
+Kernel
+git tree: torvalds/linux
+commit=EF=BC=9A 0031c06807cfa8aa51a759ff8aa09e1aa48149af
+kernel version:Linux 7.0.0-rc2-00057-g0031c06807cf
+hardware: QEMU Ubuntu 24.10
 
-That's because this message:
+I was able to reproduce this issue reliably using the attached
+reproducer.
 
-root@daniel-tablet1:~# fsck.ext4 -p /dev/nvme0n1p7 # For example
-/dev/nvme0n1p7 contains a file system with errors, check forced.
+Reproducer=EF=BC=9A
+C reproducer: https://pastebin.com/raw/eHjm2Aw6
+console output: https://pastebin.com/raw/FQAhquTy
+kernel config: pastebin.com/raw/CnHdTQNm
 
-... means that the ERROR_FS bit has already been set.  And the only
-two entities that could have set that bit is (a) the kernel, or (b)
-fsck.ext4.
+The warning originates from:
 
-Now yes, most distributions will run fsck before mounting.  But
-normally, all fsck.ext4 will do is replay the journal (if necessary),
-and then perform basic sanity checks on the superblock.  It doesn't do
-a full check of the file system unless (1) something is obviously
-wrong with the superblock, (2) the ERROR_FS bit is set (check forced
-message above), or (3) the user has explicitly requested a full fsck
-by running fsck with the -f flag.
+mm/slub.c:2189
 
-So if the theory that the ERROR_FS bit was not set by the kernel is
-correct, then there must be an fsck run where (a) the "check forced"
-message is not present (so the ERROR_FS bit is not yet set), and (b)
-the fsck log shows that the fsck ran into some kind of major
-difficulty or something obviously wrong with the file system leading
-to the ERROR_FS bit being set.  It was this log that I was asking if
-you could find, since the one that you sent me had the "checked force"
-message, meaning ERROR_FS was already set.
+Call trace:
 
-> Inline data is for mostly-reading
-> 30,000 mostly-small Javascript files totalling 100 MiB.
+WARNING: mm/slub.c:2189 at alloc_slab_obj_exts+0x132/0x180
+CPU: 0 UID: 0 PID: 699 Comm: syz.0.118
 
-You actually have a lot of Javascript files which are smaller than 160
-bytes or so?  That's.... surprising.
+Call Trace:
+ <TASK>
+ __memcg_slab_post_alloc_hook+0x130/0x460 mm/memcontrol.c:3234
+ memcg_slab_post_alloc_hook mm/slub.c:2464 [inline]
+ slab_post_alloc_hook.constprop.0+0x9c/0xf0 mm/slub.c:4526
+ slab_alloc_node.constprop.0+0xaa/0x160 mm/slub.c:4844
+ __do_kmalloc_node mm/slub.c:5237 [inline]
+ __kmalloc_noprof+0x82/0x200 mm/slub.c:5250
+ kmalloc_noprof include/linux/slab.h:954 [inline]
+ __d_alloc+0x235/0x2f0 fs/dcache.c:1757
+ d_alloc_pseudo+0x1d/0x70 fs/dcache.c:1871
+ alloc_path_pseudo fs/file_table.c:364 [inline]
+ alloc_file_pseudo+0x64/0x140 fs/file_table.c:380
+ __shmem_file_setup+0x136/0x270 mm/shmem.c:5863
+ memfd_alloc_file+0x81/0x240 mm/memfd.c:471
+ __do_sys_memfd_create mm/memfd.c:522 [inline]
+ __se_sys_memfd_create mm/memfd.c:505 [inline]
+ __x64_sys_memfd_create+0x205/0x440 mm/memfd.c:505
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x11d/0x5a0 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
->  Fast commit is
-> for monthly-apt-upgrading 250,000-max (TeX Live) 300-average
-> (google-chrome-stable) files totaling 64 GiB-max 2 GiB-average.
+The issue happens after mounting an ext4 filesystem image via a loop
+device created from a compressed image in the reproducer.
 
-Fast commit only happes if you have workloads where you need fsync(2)
-to be fast, and you don't mind writing some extra blocks 5 seconds
-later when the large (non-fast) journal commit takes place.
+Relevant kernel messages:
 
-> * apt-get is 7% (48.018 s) faster with fast_commit writes
+EXT4-fs (loop0): mounted filesystem
+00000000-0000-0000-0000-000000000000 r/w without journal.
+EXT4-fs (loop3): Delayed block allocation failed for inode 18 at
+logical offset 768 with max blocks 2 with error 28
+EXT4-fs (loop3): This should not happen!! Data will be lost
 
-That's.... surprising.
+The WARNING occurs in alloc_slab_obj_exts(), which is related to slab
+object extension allocation.
 
-Ah... looking at what you were doing, it appears you were setting
-fast_commit not on the root file system itself, but on the file system
-where /var/lib/containerd is located.  I'm going to guess that fsync's
-being issued by apt are getting amplified by whatever
-docker/containerd is doing with the writes plus fsync's to the
-writeable image layer file.
+This may indicate a slab metadata inconsistency triggered by the
+filesystem state.
 
-If that's your actual use case, try installing the apt-eatmydata
-package in your Dockerfile, and/or before you do this:
+Please let me know if additional debugging information would help.
 
-# time docker run --rm -v /run/archives:/mnt ubuntu:24.04 bash -c 'dpkg --force-all -i /mnt/*.deb ; sync'
-
-If you were just using this as a proxy for your real world use
-case.... I'd suggest finding a different way of measuring the benefits
-of fast commit.  That is, if what you *really* care about is running
-"apt get" on real, bare metal system (and not in your containers),
-then you need to measure that.  Trying to use docker run as a proxy is
-going to be misleading.
-
-But if you are really trying to improve container build times, see this article:
-
-https://blog.kronis.dev/blog/increase-container-build-speeds-when-you-use-apt
-
-It uses the eatmydata package directly, instead of using
-"apt-eatmydata", but it basically points out why having apt issue a
-huge number of fsync on what are generally disposable images in a CI
-run, or while building new docker images, is just waste of resources.
-
-Cheers,
-
-						- Ted
+Thanks.
+Zw Tang
 
