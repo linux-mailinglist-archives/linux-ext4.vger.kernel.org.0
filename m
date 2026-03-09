@@ -1,49 +1,49 @@
-Return-Path: <linux-ext4+bounces-14729-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-14730-lists+linux-ext4=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGdoFmggr2neOAIAu9opvQ
-	(envelope-from <linux-ext4+bounces-14729-lists+linux-ext4=lfdr.de@vger.kernel.org>)
-	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 20:32:56 +0100
+	id wDVMLPker2neOAIAu9opvQ
+	(envelope-from <linux-ext4+bounces-14730-lists+linux-ext4=lfdr.de@vger.kernel.org>)
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 20:26:49 +0100
 X-Original-To: lists+linux-ext4@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF6A02400AD
-	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 20:32:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B971123FE08
+	for <lists+linux-ext4@lfdr.de>; Mon, 09 Mar 2026 20:26:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E278531420B6
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2026 19:25:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2C037301CC4D
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2026 19:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B0ED407582;
-	Mon,  9 Mar 2026 19:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1EE3EDAC3;
+	Mon,  9 Mar 2026 19:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QW2xH7Hu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVfcmB8b"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5EE362120;
-	Mon,  9 Mar 2026 19:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7B02D978C;
+	Mon,  9 Mar 2026 19:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773084283; cv=none; b=RgVfhMWFaI6z2yASurGss++iSAiFQcyGfKc7OHDB8uhP2xCC9PZwC03ElK/hIgD/GW3AOvLY9ranYb9FA2J8jQT8M5Hq93oNNUvhCwGz2Zag+VVN9y1+iGlB+Ms9Fm8C/SAyFZ1zGEScGy//QvUgs1KJPRtZd60aMBoXky6Mnvw=
+	t=1773084286; cv=none; b=j8g05TrbkWNhD/SRTpPhDVEbtTgtrPOrj1eLecj2yTtHD1tbnkv1r/S64sRGu07fjF5Wd/P6PjNKbpmTJeVcQ6/LgKSQMPn9K0GsZeWTwyJzCVryPsYx7zAzS6r7YhXHtJG/AzNESL+yC5wMsxO8BOcogVB+rGSk9MRZNMrbC/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773084283; c=relaxed/simple;
-	bh=wy0fgG+OqF6cw22y7JDQIN2MJp1BJ6acjGWjdLKi8F0=;
+	s=arc-20240116; t=1773084286; c=relaxed/simple;
+	bh=ai0l+TjPij5MwNDs/3gUtyGkQTl29Bi0u94+mnmMY3Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GXMWAGkqH+2Ehs1el7yukkhS7+ljAi9KDkyvjl819syL8ADCT72JJL1nStNzLnYCuYoiIRx7WDPZuxB3t7AuxV7O9y3f2K7DL6gWCImc7Fo0iglrI1YAKxhnK6pLWfONpPqQH5U1En5Mxvg8AbO/k4LN6vOW5NlzgzofUYUQCnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QW2xH7Hu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 602A6C4CEF7;
-	Mon,  9 Mar 2026 19:24:41 +0000 (UTC)
+	 MIME-Version; b=S9uaQCMRQTPtW7SvuOSVuUzXOHQp8/xN3nbn1s/PlptAxwO2texIthzZTqo/Xxt2ny0EUf/YWvjlcdZNaZ++ggCKOUQXxdJ2lpKG9LznJbCTbNNIc/IK2Z8fIEGhNnx3128cXZpcRUfuCPK2DUIIYsKqYiEzB7HpU0ekwYf6vGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVfcmB8b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A61C2BCAF;
+	Mon,  9 Mar 2026 19:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773084283;
-	bh=wy0fgG+OqF6cw22y7JDQIN2MJp1BJ6acjGWjdLKi8F0=;
+	s=k20201202; t=1773084286;
+	bh=ai0l+TjPij5MwNDs/3gUtyGkQTl29Bi0u94+mnmMY3Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QW2xH7HuqQXoi83jcceoja9TI1YAhDBVMJNuiv/10JIE4wTymwbz9hphQZSXdqHZk
-	 1Fo8vHaMoH02qE0IMf0WXvAujp2unHUTVVoRzZpLecru3kyYMnSIWzdjeGFEwYThMr
-	 yigqa4+cyKQAayODnLk1YlPFvvjkAW3IXPfO4our8ug4p2ZBIvmY5eMrtZsL89QIuw
-	 RZutFoWAIwsMM6pX6NucYJSCSYjlnslXcRrKLKDopHz6Ti1snJBKH0n4qzkKcbzCOe
-	 yO/ntjkLR9zJuqp5evJrth13nVO8S0skkg2N20V/7manmi/inS+jRM0KnAGLKul/JP
-	 1oqZlXfBoS/SQ==
+	b=HVfcmB8bizDQ3c49TCk6ij6J6Q5Amea6RWV3k4d6ypgplF4Uchsh5hCgrDdWXTY1B
+	 WO0ZzSpDVC2YlZvRgt7eUu17Wbe35pSDxNeC1UcS/PhVRk4b0wLLfv7Lk+PLl6d9S+
+	 9bM6cv4FdJMAXgLhra4k2Gj4sRbWdmvu86nlmV1seZtZeDov40knQ1dI9iaUjwRwuO
+	 toMfgF6b3d0FUbEHSy8w9QnBxWEMWaNpbsmsy2KodjKj2uWzb46qWrdRNcjWrH6/nt
+	 gw+f1tSEx7N0bmeXAHG+Y/+RKdhNMggr/Q/kYPoAD6d3z5c2vc+y4JqXg6paPE8j10
+	 Ce6uTHOepVibg==
 From: Andrey Albershteyn <aalbersh@kernel.org>
 To: linux-xfs@vger.kernel.org,
 	fsverity@lists.linux.dev,
@@ -55,9 +55,9 @@ Cc: Andrey Albershteyn <aalbersh@kernel.org>,
 	linux-f2fs-devel@lists.sourceforge.net,
 	linux-btrfs@vger.kernel.org,
 	djwong@kernel.org
-Subject: [PATCH v4 09/25] iomap: issue readahead for fsverity merkle tree
-Date: Mon,  9 Mar 2026 20:23:24 +0100
-Message-ID: <20260309192355.176980-10-aalbersh@kernel.org>
+Subject: [PATCH v4 10/25] iomap: teach iomap to handle fsverity holes and verify data holes
+Date: Mon,  9 Mar 2026 20:23:25 +0100
+Message-ID: <20260309192355.176980-11-aalbersh@kernel.org>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20260309192355.176980-1-aalbersh@kernel.org>
 References: <20260309192355.176980-1-aalbersh@kernel.org>
@@ -68,20 +68,20 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: AF6A02400AD
+X-Rspamd-Queue-Id: B971123FE08
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14729-lists,linux-ext4=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14730-lists,linux-ext4=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -95,32 +95,75 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-ext4];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Issue reading of fsverity merkle tree on the fsverity inodes. This way
-metadata will be available at I/O completion time.
+fsverity metadata has two kinds of holes - ones in merkle tree and one
+after fsverity descriptor.
+
+Merkle tree holes are blocks full of hashes of zeroed data blocks. These
+are not stored on the disk but synthesized on the fly. This saves a bit
+of space for sparse files. Due to this iomap also need to lookup
+fsverity_info for folios with fsverity metadata. ->vi has a hash of the
+zeroed data block which will be used to fill the merkle tree block. This
+patch extends lookup of fsverity_info from just for file data but also
+for merkle tree holes.
+
+The hole past descriptor is interpreted as end of metadata region. As we
+don't have EOF here we use this hole as an indication that rest of the
+folio is empty. This patch marks rest of the folio beyond fsverity
+descriptor as uptodate.
+
+For file data, fsverity needs to verify consistency of the whole file
+against the root hash, hashes of holes are included in the merkle tree.
+Verify them too.
 
 Signed-off-by: Andrey Albershteyn <aalbersh@kernel.org>
 ---
- fs/iomap/buffered-io.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/iomap/buffered-io.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
 
 diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index a335a18c307f..1d9481f00b41 100644
+index 1d9481f00b41..31e39ab93a2e 100644
 --- a/fs/iomap/buffered-io.c
 +++ b/fs/iomap/buffered-io.c
-@@ -593,6 +593,9 @@ void iomap_read_folio(const struct iomap_ops *ops,
+@@ -542,9 +542,33 @@ static int iomap_read_folio_iter(struct iomap_iter *iter,
+ 		if (plen == 0)
+ 			return 0;
  
- 	if (iter.pos < i_size_read(iter.inode))
- 		ctx->vi = fsverity_get_info(iter.inode);
-+	if (ctx->vi)
-+		fsverity_readahead(ctx->vi, folio->index,
-+				   folio_nr_pages(folio));
- 
- 	while ((ret = iomap_iter(&iter, ops)) > 0)
- 		iter.status = iomap_read_folio_iter(&iter, ctx,
+-		/* zero post-eof blocks as the page may be mapped */
+-		if (iomap_block_needs_zeroing(iter, pos)) {
++		/*
++		 * Handling of fsverity "holes". We hit this for two case:
++		 *   1. No need to go further, the hole after fsverity
++		 *	descriptor is the end of the fsverity metadata.
++		 *
++		 *   2. This folio contains merkle tree blocks which need to be
++		 *	synthesized. If we already have fsverity info (ctx->vi)
++		 *	synthesize these blocks.
++		 */
++		if ((iomap->flags & IOMAP_F_FSVERITY) &&
++		    iomap->type == IOMAP_HOLE) {
++			/*
++			 * Don't cause lookup if we already have fsverity
++			 * context from the previous tree hole
++			 */
++			if (!ctx->vi)
++				ctx->vi = fsverity_get_info(iter->inode);
++			if (ctx->vi)
++				fsverity_folio_zero_hash(folio, poff, plen,
++							 ctx->vi);
++			iomap_set_range_uptodate(folio, poff, plen);
++		} else if (iomap_block_needs_zeroing(iter, pos)) {
++			/* zero post-eof blocks as the page may be mapped */
+ 			folio_zero_range(folio, poff, plen);
++			if (ctx->vi &&
++			    !fsverity_verify_blocks(ctx->vi, folio, plen, poff))
++				return -EIO;
+ 			iomap_set_range_uptodate(folio, poff, plen);
+ 		} else {
+ 			if (!*bytes_submitted)
 -- 
 2.51.2
 
